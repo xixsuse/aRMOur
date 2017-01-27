@@ -14,6 +14,7 @@
         style="@style/TextAppearance.AppCompat.Large"
         android:gravity="center_horizontal"
         android:padding="16dp"
+        android:onClick="onDateClicked"
         />
     <TextView
         android:id="@+id/startTime"
