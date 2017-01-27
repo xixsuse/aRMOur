@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">MECA checker</string>
-    <string name="title_shift_detail">Shift Detail</string>
+    <string name="date">Date</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="duration">Duration</string>
+    <string name="duration_format">%.2f hours</string>
+    <string name="date_format">%1$ta %1$te/%1$tm/%1$ty</string>
+    <string name="time_format">%1$tl:%1$tM %1$tp</string>
+    <string name="plus_1_day">%s (+1d)</string>
 </resources>

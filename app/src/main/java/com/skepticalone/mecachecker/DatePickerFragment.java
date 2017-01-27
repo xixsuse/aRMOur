@@ -9,10 +9,20 @@ import android.support.v4.app.DialogFragment;
 
 public class DatePickerFragment extends DialogFragment {
 
-    public static final String YEAR = "YEAR";
-    public static final String MONTH = "MONTH";
-    public static final String DAY_OF_MONTH = "DAY_OF_MONTH";
+    private static final String YEAR = "YEAR";
+    private static final String MONTH = "MONTH";
+    private static final String DAY_OF_MONTH = "DAY_OF_MONTH";
     private DatePickerDialog.OnDateSetListener mListener;
+
+    public static DatePickerFragment create(int year, int month, int dayOfMonth){
+        DatePickerFragment fragment = new DatePickerFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(DatePickerFragment.YEAR, year);
+        arguments.putInt(DatePickerFragment.MONTH, month);
+        arguments.putInt(DatePickerFragment.DAY_OF_MONTH, dayOfMonth);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
 
     public void onAttach(Context context) {
         super.onAttach(context);

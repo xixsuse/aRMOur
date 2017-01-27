@@ -1,27 +1,27 @@
 package com.skepticalone.mecachecker;
 
 import android.app.DatePickerDialog;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
-public class ShiftActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class ShiftActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerFragment.OnShiftTimeSetListener {
 
-    public static final String DATE_PICKER_FRAGMENT = "date_picker_fragment";
+    private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
+    private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
+    private static final int DEFAULT_START_HOUR = 8;
+    private static final int DEFAULT_START_MINUTE = 5;
+    private static final int DEFAULT_END_HOUR = 15;
+    private static final int DEFAULT_END_MINUTE = 40;
+    private static final long MILLIS_IN_HOUR = 1000 * 60 * 60;
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
+    private double mDurationInHours;
     private final Calendar mStart = new GregorianCalendar(), mEnd = new GregorianCalendar();
-    private final DateFormat mTimeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.US);
-    private final DateFormat mDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-    private final static long MILLIS_IN_HOUR = 1000 * 60 * 60;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,85 +35,104 @@ public class ShiftActivity extends AppCompatActivity implements DatePickerDialog
         assert mEndTimeView != null;
         mDurationView = (TextView) findViewById(R.id.duration);
         assert mDurationView != null;
-        setStartTime(8, 0);
-        setEndTime(16, 15);
+        mStart.set(Calendar.MILLISECOND, 0);
+        mStart.set(Calendar.SECOND, 0);
+        setStart(DEFAULT_START_HOUR, DEFAULT_START_MINUTE);
+        setEnd(DEFAULT_END_HOUR, DEFAULT_END_MINUTE);
         updateTextViews();
     }
 
-//    private void setTime(boolean start, int hour, int minute) {
-//        if (start){
-//            mStart.set(Calendar.HOUR_OF_DAY, hour);
-//            mStart.set(Calendar.MINUTE, minute);
-//        }
-//        int endHour = start ? mEnd.get(Calendar.HOUR_OF_DAY) : hour;
-//        int endMinute = start ? mEnd.get(Calendar.MINUTE) : minute;
-//        mEnd.setTime(mStart.getTime());
-//        mEnd.set(Calendar.MINUTE, endMinute);
-//        mEnd.set(Calendar.HOUR_OF_DAY, endHour);
-//        while (mEnd.before(mStart)) {
-//            mEnd.add(Calendar.DATE, 1);
-//        }
-//    }
+    public void onDateClicked(@SuppressWarnings("UnusedParameters") View v) {
+        DatePickerFragment.create(
+                mStart.get(Calendar.YEAR),
+                mStart.get(Calendar.MONTH),
+                mStart.get(Calendar.DAY_OF_MONTH)
+        ).show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT);
+    }
 
-    private void setStartTime(int hour, int minute){
-        mStart.set(Calendar.HOUR_OF_DAY, hour);
+    public void onStartTimeClicked(@SuppressWarnings("UnusedParameters") View v) {
+        showTimePickerFragment(true);
+    }
+
+    public void onEndTimeClicked(@SuppressWarnings("UnusedParameters") View v) {
+        showTimePickerFragment(false);
+    }
+
+    private void showTimePickerFragment(boolean isStart) {
+        Calendar calendar = isStart ? mStart : mEnd;
+        TimePickerFragment.create(
+                isStart,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE)
+        ).show(getSupportFragmentManager(), TIME_PICKER_FRAGMENT);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        setDate(year, month, dayOfMonth);
+        updateTextViews();
+    }
+
+    @Override
+    public void onStartTimeSet(int hourOfDay, int minute) {
+        setStart(hourOfDay, minute);
+        updateTextViews();
+    }
+
+    @Override
+    public void onEndTimeSet(int hourOfDay, int minute) {
+        setEnd(hourOfDay, minute);
+        updateTextViews();
+    }
+
+    private void setDate(int year, int month, int dayOfMonth) {
+        mStart.set(Calendar.YEAR, year);
+        mStart.set(Calendar.MONTH, month);
+        mStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        setEnd(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
+    }
+
+    private void setStart(int hourOfDay, int minute) {
+        mStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mStart.set(Calendar.MINUTE, minute);
-        setEndTime(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
+        setEnd(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
     }
 
-    private void setEndTime(int hour, int minute){
+    private void setEnd(int hourOfDay, int minute) {
         mEnd.setTime(mStart.getTime());
-        mEnd.set(Calendar.HOUR_OF_DAY, hour);
+        mEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mEnd.set(Calendar.MINUTE, minute);
-        ensureEndAfterStart();
-    }
-
-    private void ensureEndAfterStart(){
-        while (mEnd.before(mStart)) {
+        while (!mEnd.after(mStart)) {
             mEnd.add(Calendar.DATE, 1);
         }
+        mDurationInHours = ((double) (mEnd.getTimeInMillis() - mStart.getTimeInMillis())) / MILLIS_IN_HOUR;
     }
 
-    private void updateTextViews(){
+    private void updateTextViews() {
         updateDate();
         updateStartTime();
         updateEndTime();
         updateDuration();
     }
 
-    private void updateDate(){
-        mDateView.setText("Date: " + mDateFormat.format(mStart.getTime()));
+    private void updateDate() {
+        mDateView.setText(getString(R.string.date_format, mStart));
     }
 
-    private void updateStartTime(){
-        mStartTimeView.setText("Start: " + mTimeFormat.format(mStart.getTime()));
+    private void updateStartTime() {
+        mStartTimeView.setText(getString(R.string.time_format, mStart));
     }
 
-    private void updateEndTime(){
-        mEndTimeView.setText("End: " + mTimeFormat.format(mEnd.getTime()));
+    private void updateEndTime() {
+        String timeString = getString(R.string.time_format, mEnd);
+        if (mEnd.get(Calendar.DATE) != mStart.get(Calendar.DATE)) {
+            timeString = getString(R.string.plus_1_day, timeString);
+        }
+        mEndTimeView.setText(timeString);
     }
 
     private void updateDuration() {
-        double durationInMillis = mEnd.getTimeInMillis() - mStart.getTimeInMillis();
-        mDurationView.setText(durationInMillis / MILLIS_IN_HOUR + " hours");
+        mDurationView.setText(getString(R.string.duration_format, mDurationInHours));
     }
 
-    public void onDateClicked(View v){
-        DialogFragment fragment = new DatePickerFragment();
-        Bundle arguments = new Bundle();
-        arguments.putInt(DatePickerFragment.YEAR, mStart.get(Calendar.YEAR));
-        arguments.putInt(DatePickerFragment.MONTH, mStart.get(Calendar.MONTH));
-        arguments.putInt(DatePickerFragment.DAY_OF_MONTH, mStart.get(Calendar.DAY_OF_MONTH));
-        fragment.setArguments(arguments);
-        fragment.show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT);
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        mStart.set(Calendar.YEAR, year);
-        mStart.set(Calendar.MONTH, month);
-        mStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        setEndTime(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
-        updateTextViews();
-    }
 }

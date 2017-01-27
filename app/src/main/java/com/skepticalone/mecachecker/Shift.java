@@ -3,7 +3,7 @@ package com.skepticalone.mecachecker;
 import java.util.Calendar;
 
 
-public class Shift {
+class Shift {
 
     private final Calendar mStart;
     private final Calendar mEnd;
