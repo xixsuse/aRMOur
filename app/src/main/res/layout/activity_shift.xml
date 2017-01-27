@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_shift"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.skepticalone.mecachecker.ShiftActivity">
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Date 27/01/2017"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        />
+    <TextView
+        android:id="@+id/startTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Start: 0800, 27,01,2017"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        />
+    <TextView
+        android:id="@+id/endTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="End: 16:15, 27/01/2017"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        />
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="8.25 hours"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        />
+</LinearLayout>
