@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/startDate"
+        android:text="12/02/2014"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="24sp"
+        />
+
+    <TextView
+        android:id="@+id/startTime"
+        android:text="Start: 08:00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:onClick="editStartTime"
+        android:textSize="24sp"
+        />
+
+    <TextView
+        android:id="@+id/endTime"
+        android:text="End: 16:00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:onClick="editEndTime"
+        android:textSize="24sp"
+        />
+
+    <TextView
+        android:id="@+id/duration"
+        android:text="Duration: 8 hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        />
+
+</LinearLayout>
