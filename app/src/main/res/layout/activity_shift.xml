@@ -5,143 +5,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.skepticalone.mecachecker.ShiftActivity"
-    android:orientation="vertical"
     android:layout_margin="4dp"
+    android:orientation="vertical"
+    tools:context="com.skepticalone.mecachecker.ShiftActivity"
     >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        >
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:onClick="onDateClicked"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="4dp"
-                >
-                <TextView
-                    android:text="@string/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/textAppearanceSmall"
-                    />
-                <TextView
-                    android:id="@+id/date"
-                    tools:text="Fri 27/01/2017"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    style="?android:attr/textAppearanceLarge"
-                    />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:onClick="onStartTimeClicked"
-            android:layout_margin="4dp"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="4dp"
-                >
-                <TextView
-                    android:text="@string/start"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/textAppearanceSmall"
-                    />
-                <TextView
-                    android:id="@+id/startTime"
-                    tools:text="08:00"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    style="?android:attr/textAppearanceLarge"
-                    />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:onClick="onEndTimeClicked"
-            android:layout_margin="4dp"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="4dp"
-                >
-                <TextView
-                    android:text="@string/end"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/textAppearanceSmall"
-                    />
-                <TextView
-                    android:id="@+id/endTime"
-                    tools:text="16:00"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    style="?android:attr/textAppearanceLarge"
-                    />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_margin="4dp"
+        android:layout_weight="1"
+        android:onClick="onDateClicked"
         >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+
+        <TextView
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+            android:text="@string/date" />
+
+        <TextView
+            android:id="@+id/date"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+                android:layout_margin="4dp"
+            tools:text="Fri 27/01/2017" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        android:onClick="onStartTimeClicked">
+
+        <TextView
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            >
-            <TextView
-                android:text="@string/duration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="?android:attr/textAppearanceSmall"
-                />
-            <TextView
-                android:id="@+id/duration"
-                tools:text="8 hours"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                style="?android:attr/textAppearanceLarge"
-                />
-            <SeekBar
-                android:id="@+id/durationBar"
-                tools:max="288"
-                tools:progress="96"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
+            android:text="@string/start" />
+
+        <TextView
+            android:id="@+id/startTime"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            tools:text="08:00" />
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        android:onClick="onEndTimeClicked">
+
+        <TextView
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/end" />
+
+        <TextView
+            android:id="@+id/endTime"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            tools:text="16:00" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/duration" />
+
+        <TextView
+            android:id="@+id/duration"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            tools:text="8 hours" />
+
+        <SeekBar
+            android:id="@+id/durationBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="4dp"
+            tools:max="288"
+            tools:progress="96" />
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

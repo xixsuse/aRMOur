@@ -1,10 +1,10 @@
 package com.skepticalone.mecachecker;
 
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.app.TimePickerDialog;
 import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
 
@@ -35,13 +35,20 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new TimePickerDialog(
+        TimePickerDialog dialog = new TimePickerDialog(
                 getActivity(),
                 this,
                 getArguments().getInt(HOUR),
                 getArguments().getInt(MINUTE),
                 false
-        );
+        ) {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                super.onTimeChanged(view, hourOfDay, minute);
+            }
+        };
+        dialog.setTitle(getArguments().getBoolean(IS_START) ? R.string.start : R.string.end);
+        return dialog;
     }
 
     @Override
