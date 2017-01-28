@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
-import com.skepticalone.mecachecker.R;
-
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private static final String IS_START = "IS_START";
@@ -37,15 +35,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        TimePickerDialog dialog = new TimePickerDialog(
+        return new TimePickerDialog(
                 getActivity(),
                 this,
                 getArguments().getInt(HOUR),
                 getArguments().getInt(MINUTE),
                 false
         );
-        dialog.setTitle(getArguments().getBoolean(IS_START) ? R.string.start : R.string.end);
-        return dialog;
     }
 
     @Override
