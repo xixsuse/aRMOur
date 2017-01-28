@@ -4,20 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="4dp"
+    android:layout_margin="@dimen/half_card_margin"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-
         <android.support.v7.widget.CardView
             android:id="@+id/dateSection"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/half_card_margin"
             android:layout_weight="1"
             tools:ignore="NestedWeights">
 
@@ -25,7 +23,7 @@
                 style="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 android:text="@string/date" />
 
             <TextView
@@ -34,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 tools:text="Fri 27/01/2017" />
         </android.support.v7.widget.CardView>
 
@@ -42,14 +40,13 @@
             android:id="@+id/startSection"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/half_card_margin"
             android:layout_weight="1">
-
             <TextView
                 style="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 android:text="@string/start" />
 
             <TextView
@@ -58,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 tools:text="08:00" />
         </android.support.v7.widget.CardView>
 
@@ -66,14 +63,14 @@
             android:id="@+id/endSection"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/half_card_margin"
             android:layout_weight="1">
 
             <TextView
                 style="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 android:text="@string/end" />
 
             <TextView
@@ -82,23 +79,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/card_contents_margin"
                 tools:text="16:00" />
         </android.support.v7.widget.CardView>
-
     </LinearLayout>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/half_card_margin"
         android:layout_weight="1">
 
         <TextView
             style="?android:attr/textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/card_contents_margin"
             android:text="@string/duration" />
 
         <TextView
@@ -107,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/card_contents_margin"
             tools:text="8 hours" />
 
         <SeekBar
@@ -115,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/card_contents_margin"
             tools:max="288"
             tools:progress="96" />
     </android.support.v7.widget.CardView>

@@ -22,10 +22,11 @@ public class ShiftDetailFragment
         SeekBar.OnSeekBarChangeListener,
         Shift.ShiftDisplayListener
 {
-
+    public static final String SHIFT_ID = "SHIFT_ID";
+    static final String TAG = "SHIFT_DETAIL_FRAGMENT";
+    static final long NO_ID = -1;
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
-
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
     private SeekBar mDurationBar;
     private Shift mShift;
