@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract.Shift;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.GregorianCalendar;
@@ -30,10 +30,10 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     private static final int LOADER_ID = 0;
     private static final String[] COLUMNS = {
-            Shift._ID,
-            Shift.START_AS_DATE,
-            Shift.START_AS_TIME,
-            Shift.END_AS_TIME
+            BaseColumns._ID,
+            ShiftProvider.FORMATTED_DATE,
+            ShiftProvider.FORMATTED_START_TIME,
+            ShiftProvider.FORMATTED_END_TIME,
     };
     private static final int
             COLUMN_INDEX_ID = 0,
@@ -73,8 +73,8 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     public void addShift(View v) {
         ContentValues values = new ContentValues();
-        values.put(Shift.COLUMN_NAME_START, new GregorianCalendar(2016, 3, 24, 8, 10).getTimeInMillis() / 1000);
-        values.put(Shift.COLUMN_NAME_END, new GregorianCalendar(2016, 3, 24, 14, 50).getTimeInMillis() / 1000);
+        values.put(ShiftProvider.START_TIME, new GregorianCalendar(2016, 3, 24, 8, 10).getTimeInMillis() / 1000);
+        values.put(ShiftProvider.END_TIME, new GregorianCalendar(2016, 3, 24, 14, 50).getTimeInMillis() / 1000);
         getContentResolver().insert(ShiftProvider.shiftsUri, values);
     }
 

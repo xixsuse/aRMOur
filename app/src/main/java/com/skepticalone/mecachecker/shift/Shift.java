@@ -59,6 +59,10 @@ class Shift {
         return (isStart ? mStart : mEnd).get(Calendar.MINUTE);
     }
 
+    long getContentValue(boolean isStart) {
+        return (isStart ? mStart : mEnd).getTimeInMillis() / 1000;
+    }
+
     void updateDate(int year, int month, int dayOfMonth) {
         mStart.set(Calendar.YEAR, year);
         mStart.set(Calendar.MONTH, month);

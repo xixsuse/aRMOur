@@ -2,19 +2,19 @@ package com.skepticalone.mecachecker.data;
 
 import android.provider.BaseColumns;
 
-public final class ShiftContract {
+final class ShiftContract {
     private ShiftContract() {
     }
 
-    public static class Shift implements BaseColumns {
-        public static final String
+    static class Shift implements BaseColumns {
+        static final String
                 TABLE_NAME = "shifts",
                 COLUMN_NAME_START = "start",
                 COLUMN_NAME_END = "end",
                 START_AS_DATE = "strftime('%d/%m/%Y', " + Shift.COLUMN_NAME_START + ", 'unixepoch', 'localtime')",
                 START_AS_TIME = asTime(Shift.COLUMN_NAME_START),
-                END_AS_TIME = asTime(Shift.COLUMN_NAME_END);
-        static final String SQL_CREATE_ENTRIES =
+                END_AS_TIME = asTime(Shift.COLUMN_NAME_END),
+                SQL_CREATE_ENTRIES =
                 "CREATE TABLE " + TABLE_NAME + " (" +
                         _ID + " INTEGER PRIMARY KEY," +
                         COLUMN_NAME_START + " INTEGER NOT NULL," +
@@ -26,5 +26,4 @@ public final class ShiftContract {
             return "strftime('%H:%M', " + columnName + ", 'unixepoch', 'localtime')";
         }
     }
-
 }

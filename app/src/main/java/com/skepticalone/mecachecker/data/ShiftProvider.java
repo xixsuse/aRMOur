@@ -13,9 +13,20 @@ import android.support.annotation.Nullable;
 
 public final class ShiftProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.skepticalone.mecachecker.provider";
+    public static final String
+            START_TIME = ShiftContract.Shift.COLUMN_NAME_START,
+            END_TIME = ShiftContract.Shift.COLUMN_NAME_END,
+            FORMATTED_DATE = ShiftContract.Shift.START_AS_DATE,
+            FORMATTED_START_TIME = ShiftContract.Shift.START_AS_TIME,
+            FORMATTED_END_TIME = ShiftContract.Shift.END_AS_TIME;
+    private static final String
+            AUTHORITY = "com.skepticalone.mecachecker.provider",
+            PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME).build();
+    private static final String
+            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
+            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME;
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -50,7 +61,7 @@ public final class ShiftProvider extends ContentProvider {
                 sortOrder = null;
                 break;
             default:
-                throw new UnsupportedOperationException();
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         Cursor cursor = mDbHelper.getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
         Context context = getContext();
@@ -63,7 +74,14 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        throw new UnsupportedOperationException();
+        switch (sUriMatcher.match(uri)) {
+            case SHIFTS:
+                return SHIFTS_TYPE;
+            case SHIFT_ID:
+                return SHIFT_TYPE;
+            default:
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
+        }
     }
 
     @Nullable
@@ -78,7 +96,7 @@ public final class ShiftProvider extends ContentProvider {
                 }
                 return shiftUri(shiftId);
             default:
-                throw new UnsupportedOperationException();
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
     }
 
@@ -95,12 +113,24 @@ public final class ShiftProvider extends ContentProvider {
                 }
                 return deleted;
             default:
-                throw new UnsupportedOperationException();
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        throw new UnsupportedOperationException();
+        switch (sUriMatcher.match(uri)) {
+            case SHIFT_ID:
+                int updated = mDbHelper.getWritableDatabase().update(ShiftContract.Shift.TABLE_NAME, values, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
+                if (updated > 0) {
+                    Context context = getContext();
+                    if (context != null) {
+                        context.getContentResolver().notifyChange(uri, null);
+                    }
+                }
+                return updated;
+            default:
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
+        }
     }
 }

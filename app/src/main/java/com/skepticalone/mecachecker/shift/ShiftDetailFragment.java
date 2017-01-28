@@ -2,9 +2,12 @@ package com.skepticalone.mecachecker.shift;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,7 +18,6 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
@@ -30,22 +32,35 @@ public class ShiftDetailFragment
         SeekBar.OnSeekBarChangeListener,
         Shift.ShiftDisplayListener
 {
-    public static final String SHIFT_ID = "SHIFT_ID";
+    static final String SHIFT_ID = "SHIFT_ID";
     static final String TAG = "SHIFT_DETAIL_FRAGMENT";
     static final long NO_ID = -1;
     private static final int LOADER_ID = 1;
     private static final String[] COLUMNS = {
-            ShiftContract.Shift.COLUMN_NAME_START,
-            ShiftContract.Shift.COLUMN_NAME_END
+            ShiftProvider.START_TIME,
+            ShiftProvider.END_TIME,
     };
     private static final int
             COLUMN_INDEX_START = 0,
             COLUMN_INDEX_END = 1;
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
+
+    private Uri mShiftUri;
+
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
     private SeekBar mDurationBar;
     private Shift mShift;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        long shiftId = getArguments().getLong(SHIFT_ID, NO_ID);
+        if (BuildConfig.DEBUG && shiftId == NO_ID) {
+            throw new AssertionError();
+        }
+        mShiftUri = ShiftProvider.shiftUri(shiftId);
+    }
 
     @Nullable
     @Override
@@ -92,7 +107,7 @@ public class ShiftDetailFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID, NO_ID)), COLUMNS, null, null, null);
+        return new CursorLoader(getActivity(), mShiftUri, COLUMNS, null, null, null);
     }
 
     @Override
@@ -103,6 +118,8 @@ public class ShiftDetailFragment
             Calendar end = new GregorianCalendar();
             end.setTimeInMillis(data.getLong(COLUMN_INDEX_END) * 1000);
             mShift = new Shift(this, start, end);
+        } else if (BuildConfig.DEBUG) {
+            throw new AssertionError();
         }
     }
 
@@ -181,5 +198,14 @@ public class ShiftDetailFragment
     @Override
     public void updateDurationBarMax(int steps) {
         mDurationBar.setMax(steps);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ContentValues values = new ContentValues();
+        values.put(ShiftProvider.START_TIME, mShift.getContentValue(true));
+        values.put(ShiftProvider.END_TIME, mShift.getContentValue(false));
+        getActivity().getContentResolver().update(mShiftUri, values, null, null);
     }
 }
