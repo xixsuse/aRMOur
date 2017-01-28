@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.shift;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,11 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftContract;
+import com.skepticalone.mecachecker.data.ShiftDbHelper;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class ShiftDetailFragment
         extends
@@ -25,6 +29,14 @@ public class ShiftDetailFragment
     public static final String SHIFT_ID = "SHIFT_ID";
     static final String TAG = "SHIFT_DETAIL_FRAGMENT";
     static final long NO_ID = -1;
+    private static final String[] COLUMNS = {
+            ShiftContract.Shift.COLUMN_NAME_START,
+            ShiftContract.Shift.COLUMN_NAME_END
+    };
+    private static final int
+            COLUMN_INDEX_START = 0,
+            COLUMN_INDEX_END = 1;
+    private static final String SELECTION = ShiftContract.Shift._ID + "=?";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
@@ -71,7 +83,22 @@ public class ShiftDetailFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mShift = new Shift(this, 2016, 3, 24, 8, 10, 16, 35);
+        Cursor cursor = new ShiftDbHelper(getActivity()).getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME,
+                COLUMNS,
+                SELECTION,
+                new String[]{Long.toString(getArguments().getLong(SHIFT_ID, NO_ID))},
+                null,
+                null,
+                null
+        );
+        if (cursor.moveToFirst()) {
+            Calendar start = new GregorianCalendar();
+            start.setTimeInMillis(cursor.getLong(COLUMN_INDEX_START) * 1000);
+            Calendar end = new GregorianCalendar();
+            end.setTimeInMillis(cursor.getLong(COLUMN_INDEX_END) * 1000);
+            mShift = new Shift(this, start, end);
+        }
+        cursor.close();
     }
 
     @Override
