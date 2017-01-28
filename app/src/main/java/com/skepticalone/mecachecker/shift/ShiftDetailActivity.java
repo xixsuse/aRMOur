@@ -17,7 +17,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
             Bundle arguments = new Bundle();
             arguments.putLong(ShiftDetailFragment.SHIFT_ID, getIntent().getLongExtra(ShiftDetailFragment.SHIFT_ID, ShiftDetailFragment.NO_ID));
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, fragment, ShiftDetailFragment.TAG)
                     .commit();
         }
@@ -25,7 +25,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onDateSet(year, month, dayOfMonth);
         }
@@ -33,7 +33,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onStartTimeSet(hourOfDay, minute);
         }
@@ -41,7 +41,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onEndTimeSet(hourOfDay, minute);
         }

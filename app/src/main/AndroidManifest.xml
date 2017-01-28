@@ -13,8 +13,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".shift.ShiftListActivity"
-            android:label="@string/title_shift_list"
-            android:theme="@style/AppTheme">
+            android:label="@string/title_shift_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,8 +22,7 @@
         <activity
             android:name=".shift.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".shift.ShiftListActivity"
-            android:theme="@style/AppTheme">
+            android:parentActivityName=".shift.ShiftListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.skepticalone.mecachecker.shift.ShiftListActivity" />

@@ -1,8 +1,12 @@
 package com.skepticalone.mecachecker.shift;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +16,16 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class ShiftDetailFragment
         extends
         Fragment
         implements
+        LoaderManager.LoaderCallbacks<Cursor>,
         TimePickerFragment.OnShiftTimeSetListener,
         SeekBar.OnSeekBarChangeListener,
         Shift.ShiftDisplayListener
@@ -26,6 +33,7 @@ public class ShiftDetailFragment
     public static final String SHIFT_ID = "SHIFT_ID";
     static final String TAG = "SHIFT_DETAIL_FRAGMENT";
     static final long NO_ID = -1;
+    private static final int LOADER_ID = 1;
     private static final String[] COLUMNS = {
             ShiftContract.Shift.COLUMN_NAME_START,
             ShiftContract.Shift.COLUMN_NAME_END
@@ -33,7 +41,6 @@ public class ShiftDetailFragment
     private static final int
             COLUMN_INDEX_START = 0,
             COLUMN_INDEX_END = 1;
-    private static final String SELECTION = ShiftContract.Shift._ID + "=?";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
@@ -77,26 +84,31 @@ public class ShiftDetailFragment
         return layout;
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        Cursor cursor = new ShiftDbHelper(getActivity()).getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME,
-//                COLUMNS,
-//                SELECTION,
-//                new String[]{Long.toString(getArguments().getLong(SHIFT_ID, NO_ID))},
-//                null,
-//                null,
-//                null
-//        );
-//        if (cursor.moveToFirst()) {
-//            Calendar start = new GregorianCalendar();
-//            start.setTimeInMillis(cursor.getLong(COLUMN_INDEX_START) * 1000);
-//            Calendar end = new GregorianCalendar();
-//            end.setTimeInMillis(cursor.getLong(COLUMN_INDEX_END) * 1000);
-//            mShift = new Shift(this, start, end);
-//        }
-//        cursor.close();
-//    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID, NO_ID)), COLUMNS, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            Calendar start = new GregorianCalendar();
+            start.setTimeInMillis(data.getLong(COLUMN_INDEX_START) * 1000);
+            Calendar end = new GregorianCalendar();
+            end.setTimeInMillis(data.getLong(COLUMN_INDEX_END) * 1000);
+            mShift = new Shift(this, start, end);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int steps, boolean fromUser) {

@@ -52,7 +52,12 @@ public final class ShiftProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException();
         }
-        return mDbHelper.getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = mDbHelper.getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        Context context = getContext();
+        if (context != null) {
+            cursor.setNotificationUri(context.getContentResolver(), uri);
+        }
+        return cursor;
     }
 
     @Nullable

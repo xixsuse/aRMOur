@@ -63,7 +63,6 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        data.setNotificationUri(getContentResolver(), ShiftProvider.shiftsUri);
         mAdapter.swapCursor(data);
     }
 
@@ -81,7 +80,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onDateSet(year, month, dayOfMonth);
         }
@@ -89,7 +88,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onStartTimeSet(hourOfDay, minute);
         }
@@ -97,7 +96,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getSupportFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
         if (fragment != null) {
             fragment.onEndTimeSet(hourOfDay, minute);
         }
@@ -145,7 +144,7 @@ public class ShiftListActivity extends AppCompatActivity implements
                         Bundle arguments = new Bundle();
                         arguments.putLong(ShiftDetailFragment.SHIFT_ID, id);
                         fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
+                        getFragmentManager().beginTransaction()
                                 .replace(R.id.shift_detail_container, fragment, ShiftDetailFragment.TAG)
                                 .commit();
                     } else {
