@@ -1,26 +1,28 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.shift;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.DatePicker;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.BuildConfig;
+import com.skepticalone.mecachecker.R;
+
 import java.util.Calendar;
 
-public class ShiftActivity
+public class ShiftDetailFragment
         extends
-        AppCompatActivity
+        Fragment
         implements
-        DatePickerDialog.OnDateSetListener,
         TimePickerFragment.OnShiftTimeSetListener,
         SeekBar.OnSeekBarChangeListener,
         Shift.ShiftDisplayListener
 {
 
-    //    public static final String TAG = "ShiftActivity";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
 
@@ -28,32 +30,47 @@ public class ShiftActivity
     private SeekBar mDurationBar;
     private Shift mShift;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shift);
-        mDateView = (TextView) findViewById(R.id.date);
-        mStartTimeView = (TextView) findViewById(R.id.startTime);
-        mEndTimeView = (TextView) findViewById(R.id.endTime);
-        mDurationView = (TextView) findViewById(R.id.duration);
-        mDurationBar = (SeekBar) findViewById(R.id.durationBar);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.shift_detail_fragment, container, false);
+        View dateSection = layout.findViewById(R.id.dateSection);
+        dateSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerFragment.create(mShift).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
+            }
+        });
+        mDateView = (TextView) dateSection.findViewById(R.id.date);
+        View startSection = layout.findViewById(R.id.startSection);
+        startSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerFragment(true);
+            }
+        });
+        mStartTimeView = (TextView) startSection.findViewById(R.id.startTime);
+        View endSection = layout.findViewById(R.id.endSection);
+        endSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerFragment(false);
+            }
+        });
+        mEndTimeView = (TextView) endSection.findViewById(R.id.endTime);
+        mDurationView = (TextView) layout.findViewById(R.id.duration);
+        mDurationBar = (SeekBar) layout.findViewById(R.id.durationBar);
         if (BuildConfig.DEBUG && (mDateView == null || mStartTimeView == null || mEndTimeView == null || mDurationView == null || mDurationBar == null)) {
             throw new AssertionError();
         }
         mDurationBar.setOnSeekBarChangeListener(this);
+        return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mShift = new Shift(this, 2016, 3, 24, 8, 10, 16, 35);
-    }
-
-    public void onDateClicked(@SuppressWarnings("UnusedParameters") View v) {
-        DatePickerFragment.create(mShift).show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT);
-    }
-
-    public void onStartTimeClicked(@SuppressWarnings("UnusedParameters") View v) {
-        showTimePickerFragment(true);
-    }
-
-    public void onEndTimeClicked(@SuppressWarnings("UnusedParameters") View v) {
-        showTimePickerFragment(false);
     }
 
     @Override
@@ -70,11 +87,10 @@ public class ShiftActivity
     }
 
     private void showTimePickerFragment(boolean isStart) {
-        TimePickerFragment.create(isStart, mShift).show(getSupportFragmentManager(), TIME_PICKER_FRAGMENT);
+        TimePickerFragment.create(isStart, mShift).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+    public void onDateSet(int year, int month, int dayOfMonth) {
         mShift.updateDate(year, month, dayOfMonth);
     }
 

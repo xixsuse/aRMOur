@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.shift;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

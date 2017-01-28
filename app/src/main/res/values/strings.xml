@@ -16,4 +16,6 @@
         <item quantity="other">%d hours</item>
     </plurals>
     <string name="hours_and_minutes">%1$s, %2$s</string>
+    <string name="title_shift_list">Shifts</string>
+    <string name="title_shift_detail">Shift Detail</string>
 </resources>

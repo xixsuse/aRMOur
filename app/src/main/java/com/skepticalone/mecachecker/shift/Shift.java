@@ -1,14 +1,12 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.shift;
+
+import com.skepticalone.mecachecker.BuildConfig;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 class Shift {
     static final int MINUTES_PER_STEP = 5;
-    //    private static final int DEFAULT_START_HOUR = 8;
-//    private static final int DEFAULT_START_MINUTE = 5;
-//    private static final int DEFAULT_END_HOUR = 15;
-//    private static final int DEFAULT_END_MINUTE = 40;
     private static final int MILLIS_PER_MINUTE = 1000 * 60;
     private static final int MILLIS_PER_STEP = MILLIS_PER_MINUTE * MINUTES_PER_STEP;
     private static final int MINUTES_PER_HOUR = 60;

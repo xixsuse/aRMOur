@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.shift;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
+
+import com.skepticalone.mecachecker.R;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
