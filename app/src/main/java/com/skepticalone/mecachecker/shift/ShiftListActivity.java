@@ -8,7 +8,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract.Shift;
-import com.skepticalone.mecachecker.data.ShiftDbHelper;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.GregorianCalendar;
@@ -30,7 +28,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         TimePickerFragment.OnShiftTimeSetListener,
         DatePickerDialog.OnDateSetListener {
 
-    public static final int LOADER_ID = 0;
+    private static final int LOADER_ID = 0;
     private static final String[] COLUMNS = {
             Shift._ID,
             Shift.START_AS_DATE,
@@ -65,6 +63,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        data.setNotificationUri(getContentResolver(), ShiftProvider.shiftsUri);
         mAdapter.swapCursor(data);
     }
 
@@ -74,11 +73,10 @@ public class ShiftListActivity extends AppCompatActivity implements
     }
 
     public void addShift(View v) {
-        SQLiteDatabase db = new ShiftDbHelper(ShiftListActivity.this).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Shift.COLUMN_NAME_START, new GregorianCalendar(2016, 3, 24, 8, 10).getTimeInMillis() / 1000);
         values.put(Shift.COLUMN_NAME_END, new GregorianCalendar(2016, 3, 24, 14, 50).getTimeInMillis() / 1000);
-        db.insertOrThrow(Shift.TABLE_NAME, null, values);
+        getContentResolver().insert(ShiftProvider.shiftsUri, values);
     }
 
     @Override
@@ -156,6 +154,13 @@ public class ShiftListActivity extends AppCompatActivity implements
                         intent.putExtra(ShiftDetailFragment.SHIFT_ID, id);
                         context.startActivity(intent);
                     }
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    getContentResolver().delete(ShiftProvider.shiftUri(id), null, null);
+                    return true;
                 }
             });
         }

@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,8 +25,11 @@ public final class ShiftProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/#", SHIFT_ID);
     }
 
-
     private ShiftDbHelper mDbHelper;
+
+    public static Uri shiftUri(long shiftId) {
+        return Uri.withAppendedPath(shiftsUri, Long.toString(shiftId));
+    }
 
     @Override
     public boolean onCreate() {
@@ -60,12 +64,34 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        throw new UnsupportedOperationException();
+        switch (sUriMatcher.match(uri)) {
+            case SHIFTS:
+                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
+                Context context = getContext();
+                if (context != null) {
+                    context.getContentResolver().notifyChange(uri, null);
+                }
+                return shiftUri(shiftId);
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        throw new UnsupportedOperationException();
+        switch (sUriMatcher.match(uri)) {
+            case SHIFT_ID:
+                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.Shift.TABLE_NAME, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
+                if (deleted > 0) {
+                    Context context = getContext();
+                    if (context != null) {
+                        context.getContentResolver().notifyChange(uri, null);
+                    }
+                }
+                return deleted;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Override

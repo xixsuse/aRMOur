@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/half_card_margin">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/shift_list"
@@ -21,4 +18,4 @@
         android:onClick="addShift"
         android:text="@string/add_shift" />
 
-</FrameLayout>
+</merge>

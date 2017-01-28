@@ -1,6 +1,5 @@
 package com.skepticalone.mecachecker.shift;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,10 +12,8 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftDbHelper;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class ShiftDetailFragment
         extends
@@ -80,26 +77,26 @@ public class ShiftDetailFragment
         return layout;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Cursor cursor = new ShiftDbHelper(getActivity()).getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME,
-                COLUMNS,
-                SELECTION,
-                new String[]{Long.toString(getArguments().getLong(SHIFT_ID, NO_ID))},
-                null,
-                null,
-                null
-        );
-        if (cursor.moveToFirst()) {
-            Calendar start = new GregorianCalendar();
-            start.setTimeInMillis(cursor.getLong(COLUMN_INDEX_START) * 1000);
-            Calendar end = new GregorianCalendar();
-            end.setTimeInMillis(cursor.getLong(COLUMN_INDEX_END) * 1000);
-            mShift = new Shift(this, start, end);
-        }
-        cursor.close();
-    }
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        Cursor cursor = new ShiftDbHelper(getActivity()).getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME,
+//                COLUMNS,
+//                SELECTION,
+//                new String[]{Long.toString(getArguments().getLong(SHIFT_ID, NO_ID))},
+//                null,
+//                null,
+//                null
+//        );
+//        if (cursor.moveToFirst()) {
+//            Calendar start = new GregorianCalendar();
+//            start.setTimeInMillis(cursor.getLong(COLUMN_INDEX_START) * 1000);
+//            Calendar end = new GregorianCalendar();
+//            end.setTimeInMillis(cursor.getLong(COLUMN_INDEX_END) * 1000);
+//            mShift = new Shift(this, start, end);
+//        }
+//        cursor.close();
+//    }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int steps, boolean fromUser) {
