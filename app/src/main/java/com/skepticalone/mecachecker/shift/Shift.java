@@ -19,9 +19,9 @@ class Shift {
         this(listener, start, end.get(Calendar.HOUR_OF_DAY), end.get(Calendar.MINUTE));
     }
 
-    Shift(ShiftDisplayListener listener, int year, int month, int dayOfMonth, int startHourOfDay, int startMinute, int endHourOfDay, int endMinute) {
-        this(listener, new GregorianCalendar(year, month, dayOfMonth, startHourOfDay, startMinute), endHourOfDay, endMinute);
-    }
+//    Shift(ShiftDisplayListener listener, int year, int month, int dayOfMonth, int startHourOfDay, int startMinute, int endHourOfDay, int endMinute) {
+//        this(listener, new GregorianCalendar(year, month, dayOfMonth, startHourOfDay, startMinute), endHourOfDay, endMinute);
+//    }
 
     private Shift(ShiftDisplayListener listener, Calendar start, int endHourOfDay, int endMinute) {
         mListener = listener;

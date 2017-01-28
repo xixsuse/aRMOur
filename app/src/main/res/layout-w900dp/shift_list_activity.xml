@@ -10,12 +10,25 @@
     android:showDividers="middle"
     tools:context="com.skepticalone.mecachecker.shift.ShiftListActivity">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/shift_list"
+    <FrameLayout
         android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/shift_list_content" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/shift_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/shift_list_content" />
+
+        <Button
+            android:id="@+id/add_shift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="@string/add_shift" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/shift_detail_container"
