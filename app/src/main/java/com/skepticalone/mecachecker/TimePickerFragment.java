@@ -46,6 +46,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        minute -= minute % ShiftActivity.MINUTES_PER_STEP;
         if (getArguments().getBoolean(IS_START)) mListener.onStartTimeSet(hourOfDay, minute);
         else mListener.onEndTimeSet(hourOfDay, minute);
     }

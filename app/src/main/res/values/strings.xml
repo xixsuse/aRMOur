@@ -7,5 +7,14 @@
     <string name="duration_format">%.2f hours</string>
     <string name="date_format">%1$ta %1$te/%1$tm/%1$ty</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
-    <string name="plus_1_day">%s (+1d)</string>
+    <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <string name="hours_and_minutes">%1$s, %2$s</string>
 </resources>
