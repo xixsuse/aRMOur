@@ -1,16 +1,14 @@
 package com.skepticalone.mecachecker;
 
 import android.app.DatePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class ShiftActivity
         extends
@@ -18,25 +16,17 @@ public class ShiftActivity
         implements
         DatePickerDialog.OnDateSetListener,
         TimePickerFragment.OnShiftTimeSetListener,
-        SeekBar.OnSeekBarChangeListener
+        SeekBar.OnSeekBarChangeListener,
+        Shift.ShiftDisplayListener
 {
 
-    public static final String TAG = "ShiftActivity";
+    //    public static final String TAG = "ShiftActivity";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
-    private static final int DEFAULT_START_HOUR = 8;
-    private static final int DEFAULT_START_MINUTE = 5;
-    private static final int DEFAULT_END_HOUR = 15;
-    private static final int DEFAULT_END_MINUTE = 40;
-    public static final int MINUTES_PER_STEP = 5;
-    private static final int MINUTES_PER_HOUR = 60;
-    private static final int STEPS_PER_HOUR = MINUTES_PER_HOUR / MINUTES_PER_STEP;
-    private static final int MILLIS_PER_MINUTE = 1000 * 60;
-    private static final int MILLIS_PER_STEP = MILLIS_PER_MINUTE * MINUTES_PER_STEP;
+
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
     private SeekBar mDurationBar;
-    private long mDurationInMillis, mMaxDurationInMillis;
-    private final Calendar mStart = new GregorianCalendar(), mEnd = new GregorianCalendar(), mMaxEnd = new GregorianCalendar();
+    private Shift mShift;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +40,12 @@ public class ShiftActivity
         if (BuildConfig.DEBUG && (mDateView == null || mStartTimeView == null || mEndTimeView == null || mDurationView == null || mDurationBar == null)) {
             throw new AssertionError();
         }
-        mStart.set(Calendar.SECOND, 0);
-        setStart(DEFAULT_START_HOUR, DEFAULT_START_MINUTE);
-        setEnd(DEFAULT_END_HOUR, DEFAULT_END_MINUTE);
         mDurationBar.setOnSeekBarChangeListener(this);
-        updateTextViews();
-        updateDurationBarMax();
-        updateDurationBarProgress();
+        mShift = new Shift(this, 2016, 3, 24, 8, 10, 16, 35);
     }
 
     public void onDateClicked(@SuppressWarnings("UnusedParameters") View v) {
-        DatePickerFragment.create(
-                mStart.get(Calendar.YEAR),
-                mStart.get(Calendar.MONTH),
-                mStart.get(Calendar.DAY_OF_MONTH)
-        ).show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT);
+        DatePickerFragment.create(mShift).show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT);
     }
 
     public void onStartTimeClicked(@SuppressWarnings("UnusedParameters") View v) {
@@ -75,51 +56,55 @@ public class ShiftActivity
         showTimePickerFragment(false);
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int steps, boolean fromUser) {
+        if (fromUser) mShift.onDurationUpdatedByUser(steps);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
+
     private void showTimePickerFragment(boolean isStart) {
-        Calendar calendar = isStart ? mStart : mEnd;
-        TimePickerFragment.create(
-                isStart,
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE)
-        ).show(getSupportFragmentManager(), TIME_PICKER_FRAGMENT);
+        TimePickerFragment.create(isStart, mShift).show(getSupportFragmentManager(), TIME_PICKER_FRAGMENT);
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        setDate(year, month, dayOfMonth);
-        updateTextViews();
-        updateDurationBarMax();
-        updateDurationBarProgress();
+        mShift.updateDate(year, month, dayOfMonth);
     }
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        setStart(hourOfDay, minute);
-        updateTextViews();
-        updateDurationBarMax();
-        updateDurationBarProgress();
+        mShift.updateStart(hourOfDay, minute);
     }
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        setEnd(hourOfDay, minute);
-        updateEndTime();
-//        updateDuration();
-        updateDurationBarProgress();
+        mShift.updateEnd(hourOfDay, minute);
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-            mEnd.setTime(mStart.getTime());
-            mEnd.add(Calendar.MINUTE, progress * MINUTES_PER_STEP);
-            mDurationInMillis = mEnd.getTimeInMillis() - mStart.getTimeInMillis();
-            updateEndTime();
-        } else {
-            Log.i(TAG, "onProgressChanged programmatically: progress = " + progress);
-        }
-        int hours = progress / STEPS_PER_HOUR;
-        int minutes = progress % STEPS_PER_HOUR * MINUTES_PER_STEP;
+    public void updateDate(Calendar date) {
+        mDateView.setText(getString(R.string.date_format, date));
+    }
+
+    @Override
+    public void updateStart(Calendar start) {
+        mStartTimeView.setText(getString(R.string.time_format, start));
+    }
+
+    @Override
+    public void updateEnd(Calendar end, boolean sameDay) {
+        mEndTimeView.setText(getString(sameDay ? R.string.time_format : R.string.time_format_with_day, end));
+    }
+
+    @Override
+    public void updateDuration(int hours, int minutes) {
         String duration;
         if (hours > 0){
             String hoursString = getResources().getQuantityString(R.plurals.hours, hours, hours);
@@ -136,66 +121,12 @@ public class ShiftActivity
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+    public void updateDurationBarProgress(int steps) {
+        mDurationBar.setProgress(steps);
     }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+    public void updateDurationBarMax(int steps) {
+        mDurationBar.setMax(steps);
     }
-
-    private void setDate(int year, int month, int dayOfMonth) {
-        mStart.set(Calendar.YEAR, year);
-        mStart.set(Calendar.MONTH, month);
-        mStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        setEnd(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
-    }
-
-    private void setStart(int hourOfDay, int minute) {
-        mStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mStart.set(Calendar.MINUTE, minute);
-        setEnd(mEnd.get(Calendar.HOUR_OF_DAY), mEnd.get(Calendar.MINUTE));
-    }
-
-    private void setEnd(int hourOfDay, int minute) {
-        mMaxEnd.setTime(mStart.getTime());
-        mMaxEnd.add(Calendar.DATE, 1);
-        mMaxDurationInMillis = mMaxEnd.getTimeInMillis() - mStart.getTimeInMillis();
-        mEnd.setTime(mStart.getTime());
-        mEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mEnd.set(Calendar.MINUTE, minute);
-        while (!mEnd.after(mStart)) {
-            mEnd.add(Calendar.DATE, 1);
-        }
-        if (BuildConfig.DEBUG && mEnd.after(mMaxEnd)){
-            throw new AssertionError();
-        }
-        mDurationInMillis = mEnd.getTimeInMillis() - mStart.getTimeInMillis();
-    }
-
-    private void updateTextViews() {
-        updateDate();
-        updateStartTime();
-        updateEndTime();
-    }
-
-    private void updateDate() {
-        mDateView.setText(getString(R.string.date_format, mStart));
-    }
-
-    private void updateStartTime() {
-        mStartTimeView.setText(getString(R.string.time_format, mStart));
-    }
-
-    private void updateEndTime() {
-        mEndTimeView.setText(getString(mEnd.get(Calendar.DATE) == mStart.get(Calendar.DATE) ? R.string.time_format : R.string.time_format_with_day, mEnd));
-    }
-
-    private void updateDurationBarMax() {
-        mDurationBar.setMax((int) (mMaxDurationInMillis / MILLIS_PER_STEP));
-    }
-
-    private void updateDurationBarProgress() {
-        mDurationBar.setProgress((int) (mDurationInMillis / MILLIS_PER_STEP));
-    }
-
 }

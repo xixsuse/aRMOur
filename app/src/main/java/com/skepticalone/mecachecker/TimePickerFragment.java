@@ -16,11 +16,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     private OnShiftTimeSetListener mListener;
 
-    public static TimePickerFragment create(boolean isStart, int hour, int minute){
+    public static TimePickerFragment create(boolean isStart, Shift shift) {
         Bundle arguments = new Bundle();
         arguments.putBoolean(IS_START, isStart);
-        arguments.putInt(HOUR, hour);
-        arguments.putInt(MINUTE, minute);
+        arguments.putInt(HOUR, shift.getHour(isStart));
+        arguments.putInt(MINUTE, shift.getMinute(isStart));
         TimePickerFragment fragment = new TimePickerFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -41,19 +41,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                 getArguments().getInt(HOUR),
                 getArguments().getInt(MINUTE),
                 false
-        ) {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                super.onTimeChanged(view, hourOfDay, minute);
-            }
-        };
+        );
         dialog.setTitle(getArguments().getBoolean(IS_START) ? R.string.start : R.string.end);
         return dialog;
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        minute -= minute % ShiftActivity.MINUTES_PER_STEP;
+        minute -= minute % Shift.MINUTES_PER_STEP;
         if (getArguments().getBoolean(IS_START)) mListener.onStartTimeSet(hourOfDay, minute);
         else mListener.onEndTimeSet(hourOfDay, minute);
     }

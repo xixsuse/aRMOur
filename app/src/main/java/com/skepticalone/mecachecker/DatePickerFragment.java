@@ -14,12 +14,12 @@ public class DatePickerFragment extends DialogFragment {
     private static final String DAY_OF_MONTH = "DAY_OF_MONTH";
     private DatePickerDialog.OnDateSetListener mListener;
 
-    public static DatePickerFragment create(int year, int month, int dayOfMonth){
+    public static DatePickerFragment create(Shift shift) {
         DatePickerFragment fragment = new DatePickerFragment();
         Bundle arguments = new Bundle();
-        arguments.putInt(DatePickerFragment.YEAR, year);
-        arguments.putInt(DatePickerFragment.MONTH, month);
-        arguments.putInt(DatePickerFragment.DAY_OF_MONTH, dayOfMonth);
+        arguments.putInt(DatePickerFragment.YEAR, shift.getYear());
+        arguments.putInt(DatePickerFragment.MONTH, shift.getMonth());
+        arguments.putInt(DatePickerFragment.DAY_OF_MONTH, shift.getDayOfMonth());
         fragment.setArguments(arguments);
         return fragment;
     }
