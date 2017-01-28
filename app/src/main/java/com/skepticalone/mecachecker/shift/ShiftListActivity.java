@@ -1,9 +1,12 @@
 package com.skepticalone.mecachecker.shift;
 
 import android.app.DatePickerDialog;
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -18,13 +21,16 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract.Shift;
 import com.skepticalone.mecachecker.data.ShiftDbHelper;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.GregorianCalendar;
 
 public class ShiftListActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
         TimePickerFragment.OnShiftTimeSetListener,
         DatePickerDialog.OnDateSetListener {
 
+    public static final int LOADER_ID = 0;
     private static final String[] COLUMNS = {
             Shift._ID,
             Shift.START_AS_DATE,
@@ -49,6 +55,22 @@ public class ShiftListActivity extends AppCompatActivity implements
         mAdapter = new SimpleItemRecyclerViewAdapter();
         recyclerView.setAdapter(mAdapter);
         mTwoPane = findViewById(R.id.shift_detail_container) != null;
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, ShiftProvider.shiftsUri, COLUMNS, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 
     public void addShift(View v) {
@@ -83,25 +105,24 @@ public class ShiftListActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAdapter.closeCursor();
-    }
-
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final Cursor mCursor;
+        private Cursor mCursor = null;
 
         SimpleItemRecyclerViewAdapter() {
             setHasStableIds(true);
-            SQLiteDatabase db = new ShiftDbHelper(ShiftListActivity.this).getReadableDatabase();
-            mCursor = db.query(Shift.TABLE_NAME, COLUMNS, null, null, null, null, Shift.COLUMN_NAME_START);
         }
 
-        void closeCursor() {
-            mCursor.close();
+        void swapCursor(Cursor cursor) {
+            mCursor = cursor;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            mCursor.moveToPosition(position);
+            return mCursor.getLong(COLUMN_INDEX_ID);
         }
 
         @Override
@@ -141,13 +162,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
         @Override
         public int getItemCount() {
-            return mCursor.getCount();
-        }
-
-        @Override
-        public long getItemId(int position) {
-            mCursor.moveToPosition(position);
-            return mCursor.getLong(COLUMN_INDEX_ID);
+            return mCursor == null ? 0 : mCursor.getCount();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

@@ -29,6 +29,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.skepticalone.mecachecker.shift.ShiftListActivity" />
         </activity>
+
+        <provider
+            android:name=".data.ShiftProvider"
+            android:authorities="com.skepticalone.mecachecker.provider"
+            android:exported="false" />
     </application>
 
 </manifest>
