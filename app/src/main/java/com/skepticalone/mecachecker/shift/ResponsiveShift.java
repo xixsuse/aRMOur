@@ -1,8 +1,10 @@
 package com.skepticalone.mecachecker.shift;
 
+import com.skepticalone.mecachecker.CheckedShift;
+
 import java.util.Date;
 
-class Shift extends com.skepticalone.mecachecker.Shift {
+class ResponsiveShift extends CheckedShift {
     static final int MINUTES_PER_STEP = 5;
     private static final int MILLIS_PER_MINUTE = 1000 * 60;
     private static final int MILLIS_PER_STEP = MILLIS_PER_MINUTE * MINUTES_PER_STEP;
@@ -10,7 +12,7 @@ class Shift extends com.skepticalone.mecachecker.Shift {
     private static final int STEPS_PER_HOUR = MINUTES_PER_HOUR / MINUTES_PER_STEP;
     private final ShiftDisplayListener mListener;
 
-    Shift(ShiftDisplayListener listener, long startSeconds, long endSeconds) {
+    ResponsiveShift(ShiftDisplayListener listener, long startSeconds, long endSeconds) {
         super(startSeconds, endSeconds);
         mListener = listener;
         updateListenerDate();
@@ -37,7 +39,7 @@ class Shift extends com.skepticalone.mecachecker.Shift {
 
     private void updateListenerDurationAll() {
         updateListenerDurationBarMax(getDurationInSteps(getMaxDuration()));
-        int currentDurationInSteps = getDurationInSteps(getCurrentDuration());
+        int currentDurationInSteps = getDurationInSteps(getDuration());
         updateListenerDuration(currentDurationInSteps);
         updateListenerDurationBar(currentDurationInSteps);
     }
@@ -71,7 +73,7 @@ class Shift extends com.skepticalone.mecachecker.Shift {
     void onEndUpdatedByUser(int hourOfDay, int minute) {
         updateEnd(hourOfDay, minute);
         updateListenerEndTime();
-        int currentDurationInSteps = getDurationInSteps(getCurrentDuration());
+        int currentDurationInSteps = getDurationInSteps(getDuration());
         updateListenerDuration(currentDurationInSteps);
         updateListenerDurationBar(currentDurationInSteps);
     }

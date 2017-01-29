@@ -26,6 +26,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     private static final int LOADER_ID = 0;
     private boolean mTwoPane;
+//    private Compliance mCompliance;
 
     private ShiftAdapter mAdapter;
 
@@ -57,6 +58,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        mCompliance = new Compliance(data, COLUMN_INDEX_RAW_START, COLUMN_INDEX_RAW_END);
         mAdapter.swapCursor(data);
     }
 

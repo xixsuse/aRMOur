@@ -14,7 +14,7 @@ public class DatePickerFragment extends DialogFragment {
     private static final String DAY_OF_MONTH = "DAY_OF_MONTH";
     private DatePickerDialog.OnDateSetListener mListener;
 
-    public static DatePickerFragment create(Shift shift) {
+    public static DatePickerFragment create(ResponsiveShift shift) {
         DatePickerFragment fragment = new DatePickerFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(DatePickerFragment.YEAR, shift.getYear());

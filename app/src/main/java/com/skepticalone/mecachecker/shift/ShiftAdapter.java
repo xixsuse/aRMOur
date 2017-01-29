@@ -11,14 +11,13 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
-
 class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
 
     static final String[] COLUMNS = {
             BaseColumns._ID,
             ShiftProvider.FORMATTED_DATE,
             ShiftProvider.FORMATTED_START_TIME,
-            ShiftProvider.FORMATTED_END_TIME,
+            ShiftProvider.FORMATTED_END_TIME
     };
 
     private static final int

@@ -29,7 +29,7 @@ public class ShiftDetailFragment
         LoaderManager.LoaderCallbacks<Cursor>,
         TimePickerFragment.OnShiftTimeSetListener,
         SeekBar.OnSeekBarChangeListener,
-        Shift.ShiftDisplayListener
+        ResponsiveShift.ShiftDisplayListener
 {
     static final String SHIFT_ID = "SHIFT_ID";
     static final String TAG = "SHIFT_DETAIL_FRAGMENT";
@@ -49,7 +49,7 @@ public class ShiftDetailFragment
 
     private TextView mDateView, mStartTimeView, mEndTimeView, mDurationView;
     private SeekBar mDurationBar;
-    private Shift mShift;
+    private ResponsiveShift mShift;
 
     @Override
     public void onAttach(Context context) {
@@ -112,7 +112,7 @@ public class ShiftDetailFragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            mShift = new Shift(this, data.getLong(COLUMN_INDEX_START), data.getLong(COLUMN_INDEX_END));
+            mShift = new ResponsiveShift(this, data.getLong(COLUMN_INDEX_START), data.getLong(COLUMN_INDEX_END));
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }

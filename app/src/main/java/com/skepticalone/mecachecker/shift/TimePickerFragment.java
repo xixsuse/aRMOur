@@ -16,7 +16,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     private OnShiftTimeSetListener mListener;
 
-    public static TimePickerFragment create(boolean isStart, Shift shift) {
+    public static TimePickerFragment create(boolean isStart, ResponsiveShift shift) {
         Bundle arguments = new Bundle();
         arguments.putBoolean(IS_START, isStart);
         arguments.putInt(HOUR, shift.getHour(isStart));
@@ -46,7 +46,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        minute -= minute % Shift.MINUTES_PER_STEP;
+        minute -= minute % ResponsiveShift.MINUTES_PER_STEP;
         if (getArguments().getBoolean(IS_START)) mListener.onStartTimeSet(hourOfDay, minute);
         else mListener.onEndTimeSet(hourOfDay, minute);
     }
