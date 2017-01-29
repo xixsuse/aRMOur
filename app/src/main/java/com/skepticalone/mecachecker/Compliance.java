@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-final class ComplianceChecks {
+final class Compliance {
 
     private static final int MINIMUM_REST_HOURS = 8;
     private static final int MAXIMUM_HOURS_PER_DAY = 16;

@@ -54,34 +54,34 @@ public class ComplianceTest {
 
     @Test
     public void checkBaselineCompliant() {
-        assertTrue(ComplianceChecks.checkMinimumRestHoursBetweenShifts(shifts));
-        assertTrue(ComplianceChecks.checkMaximumHoursPerDay(shifts));
-        assertTrue(ComplianceChecks.checkMaximumHoursPerWeek(shifts));
-        assertTrue(ComplianceChecks.checkMaximumHoursPerFortnight(shifts));
+        assertTrue(Compliance.checkMinimumRestHoursBetweenShifts(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerDay(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerWeek(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerFortnight(shifts));
     }
 
     @Test
     public void checkMinimumRestHoursBetweenShifts() {
         shifts.get(11).advance(Calendar.HOUR_OF_DAY, -8);
-        assertTrue(ComplianceChecks.checkMinimumRestHoursBetweenShifts(shifts));
+        assertTrue(Compliance.checkMinimumRestHoursBetweenShifts(shifts));
         shifts.get(11).advance(Calendar.MINUTE, -1);
-        assertFalse(ComplianceChecks.checkMinimumRestHoursBetweenShifts(shifts));
+        assertFalse(Compliance.checkMinimumRestHoursBetweenShifts(shifts));
     }
 
     @Test
     public void checkMaximumHoursPerDay() {
         shifts.get(11).end.add(Calendar.HOUR_OF_DAY, 8);
-        assertTrue(ComplianceChecks.checkMaximumHoursPerDay(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerDay(shifts));
         shifts.get(11).end.add(Calendar.MINUTE, 1);
-        assertFalse(ComplianceChecks.checkMaximumHoursPerDay(shifts));
+        assertFalse(Compliance.checkMaximumHoursPerDay(shifts));
     }
 
     @Test
     public void checkMaximumHoursPerWeek() {
         shifts.get(7).end.add(Calendar.HOUR_OF_DAY, 3);
-        assertTrue(ComplianceChecks.checkMaximumHoursPerWeek(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerWeek(shifts));
         shifts.get(7).end.add(Calendar.MINUTE, 1);
-        assertFalse(ComplianceChecks.checkMaximumHoursPerWeek(shifts));
+        assertFalse(Compliance.checkMaximumHoursPerWeek(shifts));
     }
 
     @Test
@@ -96,9 +96,9 @@ public class ComplianceTest {
         shifts.get(9).end.add(Calendar.HOUR_OF_DAY, 4);
         shifts.get(10).end.add(Calendar.HOUR_OF_DAY, 3);
         shifts.get(11).end.add(Calendar.HOUR_OF_DAY, 4);
-        assertTrue(ComplianceChecks.checkMaximumHoursPerFortnight(shifts));
+        assertTrue(Compliance.checkMaximumHoursPerFortnight(shifts));
         shifts.get(11).end.add(Calendar.MINUTE, 1);
-        assertFalse(ComplianceChecks.checkMaximumHoursPerFortnight(shifts));
+        assertFalse(Compliance.checkMaximumHoursPerFortnight(shifts));
     }
 
     private Shift getTestShift(int dayOfMonth, int startHourOfDay, int startMinute, int endHourOfDay, int endMinute) {
