@@ -15,45 +15,46 @@ final class ShiftContract {
                 END_AS_TIME = asTime(Shift.COLUMN_NAME_END),
                 SQL_CREATE_ENTRIES = "CREATE TABLE " +
                         TABLE_NAME +
-                        "(" +
-                        _ID + " INTEGER PRIMARY KEY," +
-                        COLUMN_NAME_START + " INTEGER NOT NULL UNIQUE," +
-                        COLUMN_NAME_END + " INTEGER NOT NULL UNIQUE," +
-                        "CHECK(" + COLUMN_NAME_START + "<" + COLUMN_NAME_END + ")" +
+                        " (" +
+                        _ID + " INTEGER PRIMARY KEY, " +
+                        COLUMN_NAME_START + " INTEGER NOT NULL UNIQUE, " +
+                        COLUMN_NAME_END + " INTEGER NOT NULL UNIQUE, " +
+                        "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + ")" +
                         ")",
                 SQL_CREATE_TRIGGER_BEFORE_INSERT = getTriggerProgram(true),
                 SQL_CREATE_TRIGGER_BEFORE_UPDATE = getTriggerProgram(false),
                 SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
-        private final static String
-                ERROR_MESSAGE_ON_OVERLAP = "Overlapping shifts",
-                TRIGGER_PROGRAM = "SELECT CASE WHEN (SELECT COUNT(*) FROM " +
-                        TABLE_NAME +
-                        " WHERE (" +
-                        COLUMN_NAME_START +
-                        "<NEW." +
-                        COLUMN_NAME_START +
-                        " AND " +
-                        COLUMN_NAME_END +
-                        ">NEW." +
-                        COLUMN_NAME_START +
-                        ") OR (" +
-                        COLUMN_NAME_START +
-                        "<NEW." +
-                        COLUMN_NAME_END +
-                        " AND " +
-                        COLUMN_NAME_END +
-                        ">NEW." +
-                        COLUMN_NAME_END +
-                        ")) THEN RAISE(ABORT, '" +
-                        ERROR_MESSAGE_ON_OVERLAP +
-                        "') " +
-                        "END";
+        private final static String ERROR_MESSAGE_ON_OVERLAP = "Overlapping shifts";
         private static String getTriggerProgram(boolean insert) {
             return "CREATE TRIGGER " +
                     (insert ? "insert" : "update") +
                     "_trigger BEFORE " +
                     (insert ? "INSERT" : "UPDATE") +
-                    " ON " + TABLE_NAME + " BEGIN " + TRIGGER_PROGRAM + ";END";
+                    " ON " +
+                    TABLE_NAME +
+                    " BEGIN SELECT CASE WHEN (SELECT COUNT(*) FROM " +
+                    TABLE_NAME +
+                    " WHERE " +
+                    (insert ? "(" : (_ID + " != OLD." + _ID + " AND ((")) +
+                    COLUMN_NAME_START +
+                    " < NEW." +
+                    COLUMN_NAME_START +
+                    " AND " +
+                    COLUMN_NAME_END +
+                    " > NEW." +
+                    COLUMN_NAME_START +
+                    ") OR (" +
+                    COLUMN_NAME_START +
+                    " < NEW." +
+                    COLUMN_NAME_END +
+                    " AND " +
+                    COLUMN_NAME_END +
+                    " > NEW." +
+                    COLUMN_NAME_END +
+                    (insert ? "" : ")") +
+                    ")) THEN RAISE (ABORT, '" +
+                    ERROR_MESSAGE_ON_OVERLAP +
+                    "') END; END";
         }
         private static String asTime(String columnName) {
             return formatTime(columnName, "%H:%M");
@@ -64,5 +65,12 @@ final class ShiftContract {
         private static String formatTime(String columnName, String formatString) {
             return "strftime('" + formatString + "'," + columnName + ",'unixepoch','localtime')";
         }
+//        static {
+//            String TAG = "Contract";
+//            Log.i(TAG, "SQL_CREATE_ENTRIES: " + SQL_CREATE_ENTRIES);
+//            Log.i(TAG, "SQL_CREATE_TRIGGER_BEFORE_INSERT: " + SQL_CREATE_TRIGGER_BEFORE_INSERT);
+//            Log.i(TAG, "SQL_CREATE_TRIGGER_BEFORE_UPDATE: " + SQL_CREATE_TRIGGER_BEFORE_UPDATE);
+//            Log.i(TAG, "SQL_DELETE_ENTRIES: " + SQL_DELETE_ENTRIES);
+//        }
     }
 }
