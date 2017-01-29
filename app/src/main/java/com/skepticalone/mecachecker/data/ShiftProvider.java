@@ -6,10 +6,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
+import android.util.Log;
+import android.widget.Toast;
 
 public final class ShiftProvider extends ContentProvider {
 
@@ -19,6 +21,8 @@ public final class ShiftProvider extends ContentProvider {
             FORMATTED_DATE = ShiftContract.Shift.START_AS_DATE,
             FORMATTED_START_TIME = ShiftContract.Shift.START_AS_TIME,
             FORMATTED_END_TIME = ShiftContract.Shift.END_AS_TIME;
+    public static final String TAG = "ShiftProvider";
+    public static final String SHIFT_OVERLAP_TOAST_MESSAGE = "Shift overlaps!";
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";
@@ -89,12 +93,18 @@ public final class ShiftProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
-                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
-                Context context = getContext();
-                if (context != null) {
-                    context.getContentResolver().notifyChange(uri, null);
+                try {
+                    long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
+                    Context context = getContext();
+                    if (context != null) {
+                        context.getContentResolver().notifyChange(uri, null);
+                    }
+                    return shiftUri(shiftId);
+                } catch (SQLiteConstraintException e) {
+                    Toast.makeText(getContext(), SHIFT_OVERLAP_TOAST_MESSAGE, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to insert new shift: ", e);
+                    return null;
                 }
-                return shiftUri(shiftId);
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -121,14 +131,20 @@ public final class ShiftProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
-                int updated = mDbHelper.getWritableDatabase().update(ShiftContract.Shift.TABLE_NAME, values, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
-                if (updated > 0) {
-                    Context context = getContext();
-                    if (context != null) {
-                        context.getContentResolver().notifyChange(uri, null);
+                try {
+                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.Shift.TABLE_NAME, values, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
+                    if (updated > 0) {
+                        Context context = getContext();
+                        if (context != null) {
+                            context.getContentResolver().notifyChange(uri, null);
+                        }
                     }
+                    return updated;
+                } catch (SQLiteConstraintException e) {
+                    Toast.makeText(getContext(), SHIFT_OVERLAP_TOAST_MESSAGE, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update shift: ", e);
+                    return 0;
                 }
-                return updated;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }

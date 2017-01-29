@@ -17,8 +17,8 @@ final class ShiftContract {
                         TABLE_NAME +
                         " (" +
                         _ID + " INTEGER PRIMARY KEY, " +
-                        COLUMN_NAME_START + " INTEGER NOT NULL UNIQUE, " +
-                        COLUMN_NAME_END + " INTEGER NOT NULL UNIQUE, " +
+                        COLUMN_NAME_START + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_END + " INTEGER NOT NULL, " +
                         "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + ")" +
                         ")",
                 SQL_CREATE_TRIGGER_BEFORE_INSERT = getTriggerProgram(true),
@@ -32,26 +32,20 @@ final class ShiftContract {
                     (insert ? "INSERT" : "UPDATE") +
                     " ON " +
                     TABLE_NAME +
-                    " BEGIN SELECT CASE WHEN (SELECT COUNT(*) FROM " +
+                    " BEGIN SELECT CASE WHEN EXISTS (SELECT " +
+                    _ID +
+                    " FROM " +
                     TABLE_NAME +
                     " WHERE " +
-                    (insert ? "(" : (_ID + " != OLD." + _ID + " AND ((")) +
-                    COLUMN_NAME_START +
-                    " < NEW." +
-                    COLUMN_NAME_START +
-                    " AND " +
+                    (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
+                    "NOT (" +
                     COLUMN_NAME_END +
-                    " > NEW." +
+                    " <= NEW." +
                     COLUMN_NAME_START +
-                    ") OR (" +
+                    " OR " +
                     COLUMN_NAME_START +
-                    " < NEW." +
+                    " >= NEW." +
                     COLUMN_NAME_END +
-                    " AND " +
-                    COLUMN_NAME_END +
-                    " > NEW." +
-                    COLUMN_NAME_END +
-                    (insert ? "" : ")") +
                     ")) THEN RAISE (ABORT, '" +
                     ERROR_MESSAGE_ON_OVERLAP +
                     "') END; END";
@@ -65,12 +59,5 @@ final class ShiftContract {
         private static String formatTime(String columnName, String formatString) {
             return "strftime('" + formatString + "'," + columnName + ",'unixepoch','localtime')";
         }
-//        static {
-//            String TAG = "Contract";
-//            Log.i(TAG, "SQL_CREATE_ENTRIES: " + SQL_CREATE_ENTRIES);
-//            Log.i(TAG, "SQL_CREATE_TRIGGER_BEFORE_INSERT: " + SQL_CREATE_TRIGGER_BEFORE_INSERT);
-//            Log.i(TAG, "SQL_CREATE_TRIGGER_BEFORE_UPDATE: " + SQL_CREATE_TRIGGER_BEFORE_UPDATE);
-//            Log.i(TAG, "SQL_DELETE_ENTRIES: " + SQL_DELETE_ENTRIES);
-//        }
     }
 }
