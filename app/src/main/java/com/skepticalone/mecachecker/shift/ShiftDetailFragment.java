@@ -20,8 +20,7 @@ import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class ShiftDetailFragment
         extends
@@ -113,11 +112,7 @@ public class ShiftDetailFragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            Calendar start = new GregorianCalendar();
-            start.setTimeInMillis(data.getLong(COLUMN_INDEX_START) * 1000);
-            Calendar end = new GregorianCalendar();
-            end.setTimeInMillis(data.getLong(COLUMN_INDEX_END) * 1000);
-            mShift = new Shift(this, start, end);
+            mShift = new Shift(this, data.getLong(COLUMN_INDEX_START), data.getLong(COLUMN_INDEX_END));
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
@@ -145,31 +140,31 @@ public class ShiftDetailFragment
     }
 
     public void onDateSet(int year, int month, int dayOfMonth) {
-        mShift.updateDate(year, month, dayOfMonth);
+        mShift.onDateUpdatedByUser(year, month, dayOfMonth);
     }
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        mShift.updateStart(hourOfDay, minute);
+        mShift.onStartUpdatedByUser(hourOfDay, minute);
     }
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        mShift.updateEnd(hourOfDay, minute);
+        mShift.onEndUpdatedByUser(hourOfDay, minute);
     }
 
     @Override
-    public void updateDate(Calendar date) {
+    public void updateDate(Date date) {
         mDateView.setText(getString(R.string.date_format, date));
     }
 
     @Override
-    public void updateStart(Calendar start) {
+    public void updateStart(Date start) {
         mStartTimeView.setText(getString(R.string.time_format, start));
     }
 
     @Override
-    public void updateEnd(Calendar end, boolean sameDay) {
+    public void updateEnd(Date end, boolean sameDay) {
         mEndTimeView.setText(getString(sameDay ? R.string.time_format : R.string.time_format_with_day, end));
     }
 

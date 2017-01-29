@@ -21,8 +21,8 @@ public final class ShiftProvider extends ContentProvider {
             FORMATTED_DATE = ShiftContract.Shift.START_AS_DATE,
             FORMATTED_START_TIME = ShiftContract.Shift.START_AS_TIME,
             FORMATTED_END_TIME = ShiftContract.Shift.END_AS_TIME;
-    public static final String TAG = "ShiftProvider";
-    public static final String SHIFT_OVERLAP_TOAST_MESSAGE = "Shift overlaps!";
+    private static final String TAG = "ShiftProvider";
+    private static final String SHIFT_OVERLAP_TOAST_MESSAGE = "Shift overlaps!";
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";

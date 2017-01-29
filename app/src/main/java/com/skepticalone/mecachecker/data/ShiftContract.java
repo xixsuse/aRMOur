@@ -53,7 +53,8 @@ final class ShiftContract {
         private static String asTime(String columnName) {
             return formatTime(columnName, "%H:%M");
         }
-        private static String asDate(String columnName) {
+
+        private static String asDate(@SuppressWarnings("SameParameterValue") String columnName) {
             return formatTime(columnName, "%d/%m/%Y");
         }
         private static String formatTime(String columnName, String formatString) {
