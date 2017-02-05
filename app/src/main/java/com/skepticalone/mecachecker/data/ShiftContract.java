@@ -57,6 +57,8 @@ final class ShiftContract {
         private static String asDate(@SuppressWarnings("SameParameterValue") String columnName) {
             return formatTime(columnName, "%d/%m/%Y");
         }
+
+        @SuppressWarnings("SpellCheckingInspection")
         private static String formatTime(String columnName, String formatString) {
             return "strftime('" + formatString + "'," + columnName + ",'unixepoch','localtime')";
         }

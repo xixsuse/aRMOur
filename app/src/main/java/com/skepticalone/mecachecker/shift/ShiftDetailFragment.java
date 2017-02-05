@@ -199,8 +199,8 @@ public class ShiftDetailFragment
     public void onStop() {
         super.onStop();
         ContentValues values = new ContentValues();
-        values.put(ShiftProvider.START_TIME, mShift.getContentValue(true));
-        values.put(ShiftProvider.END_TIME, mShift.getContentValue(false));
+        values.put(ShiftProvider.START_TIME, mShift.getTimeInSeconds(true));
+        values.put(ShiftProvider.END_TIME, mShift.getTimeInSeconds(false));
         getActivity().getContentResolver().update(mShiftUri, values, null, null);
     }
 }

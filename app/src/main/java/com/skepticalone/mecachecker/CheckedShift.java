@@ -3,12 +3,12 @@ package com.skepticalone.mecachecker;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CheckedShift extends Shift {
+public class CheckedShift extends Period {
 
     private final Calendar maxEnd = new GregorianCalendar();
     private long maxDuration, currentDuration;
 
-    public CheckedShift(long startSeconds, long endSeconds) {
+    protected CheckedShift(long startSeconds, long endSeconds) {
         super(startSeconds, endSeconds);
         updateMaxEnd();
         checkEndAndSetDuration();

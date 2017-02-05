@@ -5,49 +5,49 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("unused")
 public class ComplianceTest {
 
-    private List<Shift> shifts;
+    private List<Period> shifts;
 
     @Before
     public void setup() {
         shifts = new ArrayList<>();
         //WEEK
-        shifts.add(getTestShift(1, 8, 0, 16, 0));
-        shifts.add(getTestShift(2, 8, 0, 16, 0));
-        shifts.add(getTestShift(3, 8, 0, 16, 0));
-        shifts.add(getTestShift(4, 8, 0, 16, 0));
-        shifts.add(getTestShift(5, 8, 0, 16, 0));
-        shifts.add(getTestShift(6, 8, 0, 22, 30));
-        shifts.add(getTestShift(7, 8, 0, 22, 30));
+        shifts.add(new MockPeriod(1, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(2, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(3, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(4, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(5, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(6, 8, 0, 22, 30));
+        shifts.add(new MockPeriod(7, 8, 0, 22, 30));
         //WEEK
-        shifts.add(getTestShift(8, 8, 0, 16, 0));
-        shifts.add(getTestShift(9, 8, 0, 16, 0));
-        shifts.add(getTestShift(10, 8, 0, 16, 0));
-        shifts.add(getTestShift(11, 8, 0, 16, 0));
-        shifts.add(getTestShift(12, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(8, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(9, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(10, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(11, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(12, 8, 0, 16, 0));
         //free weekend
         //free weekend
         //WEEK
-        shifts.add(getTestShift(15, 8, 0, 16, 0));
-        shifts.add(getTestShift(16, 8, 0, 16, 0));
-        shifts.add(getTestShift(17, 8, 0, 16, 0));
-        shifts.add(getTestShift(18, 8, 0, 16, 0));
-        shifts.add(getTestShift(19, 8, 0, 16, 0));
-        shifts.add(getTestShift(20, 8, 0, 22, 30));
-        shifts.add(getTestShift(21, 8, 0, 22, 30));
+        shifts.add(new MockPeriod(15, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(16, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(17, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(18, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(19, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(20, 8, 0, 22, 30));
+        shifts.add(new MockPeriod(21, 8, 0, 22, 30));
         //WEEK
-        shifts.add(getTestShift(22, 8, 0, 16, 0));
-        shifts.add(getTestShift(23, 8, 0, 16, 0));
-        shifts.add(getTestShift(24, 8, 0, 16, 0));
-        shifts.add(getTestShift(25, 8, 0, 16, 0));
-        shifts.add(getTestShift(26, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(22, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(23, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(24, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(25, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(26, 8, 0, 16, 0));
         //free weekend
         //free weekend
     }
@@ -101,12 +101,12 @@ public class ComplianceTest {
         assertFalse(Compliance.checkMaximumHoursPerFortnight(shifts));
     }
 
-    private Shift getTestShift(int dayOfMonth, int startHourOfDay, int startMinute, int endHourOfDay, int endMinute) {
-        Calendar start = new GregorianCalendar(2017, 5, dayOfMonth, startHourOfDay, startMinute);
-        Calendar end = new GregorianCalendar(2017, 5, dayOfMonth, endHourOfDay, endMinute);
-        while (!end.after(start)) {
-            end.add(Calendar.DATE, 1);
-        }
-        return new Shift(start.getTimeInMillis() / 1000, end.getTimeInMillis() / 1000);
+    @Test
+    public void checkMaximumConsecutiveWeekends() {
+        shifts.add(12, new MockPeriod(15, 0, 0, 0, 1));
+        assertTrue(Compliance.checkMaximumConsecutiveWeekends(shifts));
+        shifts.get(12).advance(Calendar.MINUTE, -1);
+        assertFalse(Compliance.checkMaximumConsecutiveWeekends(shifts));
     }
+
 }
