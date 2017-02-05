@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.shift;
 
 import android.database.Cursor;
-import android.provider.BaseColumns;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,22 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftProvider;
 
 class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
 
-    static final String[] COLUMNS = {
-            BaseColumns._ID,
-            ShiftProvider.FORMATTED_DATE,
-            ShiftProvider.FORMATTED_START_TIME,
-            ShiftProvider.FORMATTED_END_TIME
-    };
-
-    private static final int
-            COLUMN_INDEX_ID = 0,
-            COLUMN_INDEX_DATE = 1,
-            COLUMN_INDEX_START = 2,
-            COLUMN_INDEX_END = 3;
     private final OnShiftClickListener mListener;
     private Cursor mCursor = null;
 
@@ -42,7 +28,7 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
     @Override
     public long getItemId(int position) {
         mCursor.moveToPosition(position);
-        return mCursor.getLong(COLUMN_INDEX_ID);
+        return mCursor.getLong(ShiftListActivity.COLUMN_INDEX_ID);
     }
 
     @Override
@@ -55,10 +41,10 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        final long id = mCursor.getLong(COLUMN_INDEX_ID);
-        holder.dateView.setText(mCursor.getString(COLUMN_INDEX_DATE));
-        holder.startView.setText(mCursor.getString(COLUMN_INDEX_START));
-        holder.endView.setText(mCursor.getString(COLUMN_INDEX_END));
+        final long id = mCursor.getLong(ShiftListActivity.COLUMN_INDEX_ID);
+        holder.dateView.setText(mCursor.getString(ShiftListActivity.COLUMN_INDEX_FORMATTED_DATE));
+        holder.startView.setText(mCursor.getString(ShiftListActivity.COLUMN_INDEX_FORMATTED_START));
+        holder.endView.setText(mCursor.getString(ShiftListActivity.COLUMN_INDEX_FORMATTED_END));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +65,12 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
         return mCursor == null ? 0 : mCursor.getCount();
     }
 
+    //
+//    public long getLastShiftEndSeconds(){
+//        mCursor.moveToLast();
+//        return mCursor.get
+//    }
+//
     interface OnShiftClickListener {
         void onShiftClick(long id);
 

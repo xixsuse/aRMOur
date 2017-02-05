@@ -22,15 +22,19 @@ public class Period {
         this.end = end;
     }
 
-    Period(long startSeconds, long endSeconds) {
-        start = new GregorianCalendar();
-        start.setTimeInMillis(startSeconds * MILLIS_PER_SECOND);
-        end = new GregorianCalendar();
-        end.setTimeInMillis(endSeconds * MILLIS_PER_SECOND);
+    public Period(long startSeconds, long endSeconds) {
+        start = fromSeconds(startSeconds);
+        end = fromSeconds(endSeconds);
     }
 
     static int getDaysFromDayUntilNextDay(int fromDay, int untilNextDay) {
         return fromDay == untilNextDay ? 7 : (untilNextDay - fromDay + 7) % 7;
+    }
+
+    public static Calendar fromSeconds(long seconds) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeInMillis(seconds * MILLIS_PER_SECOND);
+        return calendar;
     }
 
     private static Period getNextWeekend(Calendar date) {

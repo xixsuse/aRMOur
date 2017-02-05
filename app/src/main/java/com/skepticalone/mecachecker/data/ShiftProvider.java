@@ -28,16 +28,19 @@ public final class ShiftProvider extends ContentProvider {
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME).build();
+    //    public static final Uri lastShiftUri = Uri.withAppendedPath(shiftsUri, "last");
     private static final String
             SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
             SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME;
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
+    //    private static final int LAST_SHIFT = 3;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME, SHIFTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/#", SHIFT_ID);
+//        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/last", LAST_SHIFT);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -55,6 +58,7 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+//        String limit = null;
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
                 sortOrder = ShiftContract.Shift.COLUMN_NAME_START;
@@ -64,6 +68,10 @@ public final class ShiftProvider extends ContentProvider {
                 selectionArgs = null;
                 sortOrder = null;
                 break;
+//            case LAST_SHIFT:
+//                sortOrder = ShiftContract.Shift.COLUMN_NAME_START + " DESC";
+//                limit = "1";
+//                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -82,6 +90,7 @@ public final class ShiftProvider extends ContentProvider {
             case SHIFTS:
                 return SHIFTS_TYPE;
             case SHIFT_ID:
+//            case LAST_SHIFT:
                 return SHIFT_TYPE;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);

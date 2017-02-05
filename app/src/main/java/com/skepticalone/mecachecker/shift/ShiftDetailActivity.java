@@ -45,6 +45,5 @@ public class ShiftDetailActivity extends AppCompatActivity implements
         if (fragment != null) {
             fragment.onEndTimeSet(hourOfDay, minute);
         }
-
     }
 }

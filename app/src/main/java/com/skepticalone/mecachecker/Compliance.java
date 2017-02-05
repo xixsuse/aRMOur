@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-final class Compliance {
+public final class Compliance {
 
     private static final int MINIMUM_REST_HOURS = 8;
     private static final int MAXIMUM_HOURS_PER_DAY = 16;
@@ -14,7 +14,7 @@ final class Compliance {
     private static final int MILLIS_PER_HOUR = 1000 * 60 * 60;
     private static final int MINIMUM_REST_IN_MILLIS = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
 
-    static boolean checkMinimumRestHoursBetweenShifts(Iterable<Period> shifts) {
+    public static boolean checkMinimumRestHoursBetweenShifts(Iterable<Period> shifts) {
         Period lastShift = null;
         for (Period shift : shifts) {
             if (lastShift != null && shift.timeSince(lastShift) < MINIMUM_REST_IN_MILLIS) {
@@ -25,15 +25,15 @@ final class Compliance {
         return true;
     }
 
-    static boolean checkMaximumHoursPerDay(List<Period> shifts) {
+    public static boolean checkMaximumHoursPerDay(List<Period> shifts) {
         return checkMaximumHoursInPeriod(1, MAXIMUM_HOURS_PER_DAY, shifts);
     }
 
-    static boolean checkMaximumHoursPerWeek(List<Period> shifts) {
+    public static boolean checkMaximumHoursPerWeek(List<Period> shifts) {
         return checkMaximumHoursInPeriod(7, MAXIMUM_HOURS_PER_WEEK, shifts);
     }
 
-    static boolean checkMaximumHoursPerFortnight(List<Period> shifts) {
+    public static boolean checkMaximumHoursPerFortnight(List<Period> shifts) {
         return checkMaximumHoursInPeriod(14, MAXIMUM_HOURS_PER_FORTNIGHT, shifts);
     }
 
@@ -60,7 +60,7 @@ final class Compliance {
         return true;
     }
 
-    static boolean checkMaximumConsecutiveWeekends(Iterable<Period> shifts) {
+    public static boolean checkMaximumConsecutiveWeekends(Iterable<Period> shifts) {
         Period forbiddenWeekend = null;
         for (Period shift : shifts) {
             if (forbiddenWeekend == null || !shift.start.before(forbiddenWeekend.end)) {
