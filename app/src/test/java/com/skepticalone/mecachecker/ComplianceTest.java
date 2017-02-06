@@ -13,17 +13,18 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unused")
 public class ComplianceTest {
 
-    private List<Period> shifts;
+    private final List<PeriodWithComplianceData> shifts = new ArrayList<>();
 
     @Before
     public void setup() {
-        shifts = new ArrayList<>();
+        shifts.clear();
         //WEEK
         shifts.add(new MockPeriod(1, 8, 0, 16, 0));
         shifts.add(new MockPeriod(2, 8, 0, 16, 0));
         shifts.add(new MockPeriod(3, 8, 0, 16, 0));
         shifts.add(new MockPeriod(4, 8, 0, 16, 0));
         shifts.add(new MockPeriod(5, 8, 0, 16, 0));
+        //working weekend
         shifts.add(new MockPeriod(6, 8, 0, 22, 30));
         shifts.add(new MockPeriod(7, 8, 0, 22, 30));
         //WEEK
@@ -40,6 +41,7 @@ public class ComplianceTest {
         shifts.add(new MockPeriod(17, 8, 0, 16, 0));
         shifts.add(new MockPeriod(18, 8, 0, 16, 0));
         shifts.add(new MockPeriod(19, 8, 0, 16, 0));
+        //working weekend
         shifts.add(new MockPeriod(20, 8, 0, 22, 30));
         shifts.add(new MockPeriod(21, 8, 0, 22, 30));
         //WEEK
@@ -50,6 +52,32 @@ public class ComplianceTest {
         shifts.add(new MockPeriod(26, 8, 0, 16, 0));
         //free weekend
         //free weekend
+        //WEEK
+        shifts.add(new MockPeriod(29, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(30, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(31, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(32, 8, 0, 16, 0));
+        // going onto 7 nights
+        shifts.add(new MockPeriod(33, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(34, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(35, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(36, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(37, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(38, 22, 0, 8, 0));
+        shifts.add(new MockPeriod(39, 22, 0, 8, 0));
+        //free weekend
+        //free weekend
+        //WEEK
+        shifts.add(new MockPeriod(43, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(44, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(45, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(46, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(47, 8, 0, 16, 0));
+        //free weekend
+        //free weekend
+        //WEEK
+        shifts.add(new MockPeriod(50, 8, 0, 16, 0));
+        shifts.add(new MockPeriod(51, 8, 0, 16, 0));
     }
 
     @Test
@@ -58,6 +86,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMaximumHoursPerDay(shifts));
         assertTrue(Compliance.checkMaximumHoursPerWeek(shifts));
         assertTrue(Compliance.checkMaximumHoursPerFortnight(shifts));
+        assertTrue(Compliance.checkMaximumConsecutiveWeekends(shifts));
     }
 
     @Test
@@ -66,6 +95,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMinimumRestHoursBetweenShifts(shifts));
         shifts.get(11).advance(Calendar.MINUTE, -1);
         assertFalse(Compliance.checkMinimumRestHoursBetweenShifts(shifts));
+        assertFalse(shifts.get(11).isCompliantWithMinimumRestHoursBetweenShifts());
     }
 
     @Test
@@ -74,6 +104,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMaximumHoursPerDay(shifts));
         shifts.get(11).end.add(Calendar.MINUTE, 1);
         assertFalse(Compliance.checkMaximumHoursPerDay(shifts));
+        assertFalse(shifts.get(11).isCompliantWithMaximumHoursPerDay());
     }
 
     @Test
@@ -82,6 +113,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMaximumHoursPerWeek(shifts));
         shifts.get(7).end.add(Calendar.MINUTE, 1);
         assertFalse(Compliance.checkMaximumHoursPerWeek(shifts));
+        assertFalse(shifts.get(7).isCompliantWithMaximumHoursPerWeek());
     }
 
     @Test
@@ -99,6 +131,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMaximumHoursPerFortnight(shifts));
         shifts.get(11).end.add(Calendar.MINUTE, 1);
         assertFalse(Compliance.checkMaximumHoursPerFortnight(shifts));
+        assertFalse(shifts.get(11).isCompliantWithMaximumHoursPerFortnight());
     }
 
     @Test
@@ -107,6 +140,7 @@ public class ComplianceTest {
         assertTrue(Compliance.checkMaximumConsecutiveWeekends(shifts));
         shifts.get(12).advance(Calendar.MINUTE, -1);
         assertFalse(Compliance.checkMaximumConsecutiveWeekends(shifts));
+        assertFalse(shifts.get(12).isCompliantWithMaximumConsecutiveWeekends());
     }
 
 }

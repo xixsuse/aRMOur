@@ -16,13 +16,12 @@ public class Period {
     final Calendar start;
     final Calendar end;
 
-
     Period(Calendar start, Calendar end) {
         this.start = start;
         this.end = end;
     }
 
-    public Period(long startSeconds, long endSeconds) {
+    Period(long startSeconds, long endSeconds) {
         start = fromSeconds(startSeconds);
         end = fromSeconds(endSeconds);
     }
@@ -31,7 +30,7 @@ public class Period {
         return fromDay == untilNextDay ? 7 : (untilNextDay - fromDay + 7) % 7;
     }
 
-    public static Calendar fromSeconds(long seconds) {
+    private static Calendar fromSeconds(long seconds) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTimeInMillis(seconds * MILLIS_PER_SECOND);
         return calendar;
@@ -55,11 +54,11 @@ public class Period {
         return day == Calendar.SATURDAY || day == Calendar.SUNDAY;
     }
 
-    protected final Date getStart() {
+    public final Date getStart() {
         return start.getTime();
     }
 
-    protected final Date getEnd() {
+    public final Date getEnd() {
         return end.getTime();
     }
 
@@ -110,11 +109,15 @@ public class Period {
 
     @Nullable
     final Period getForbiddenWeekend() {
-        Period nextWeekend = getNextWeekend(start);
-        return (isOnWeekend(start) || overlapsWith(nextWeekend)) ? nextWeekend : null;
+        if (isOnWeekend(start)) return getNextWeekend(start);
+        else if (overlapsWith(getNextWeekend(start))) return getNextWeekend(end);
+        else return null;
+//
+//        Period nextWeekend = getNextWeekend(start);
+//        return (isOnWeekend(start) || overlapsWith(nextWeekend)) ? nextWeekend : null;
     }
 
-    protected final boolean isSameDay() {
+    public final boolean isSameDay() {
         return start.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH);
     }
 

@@ -19,11 +19,4 @@
         android:layout_height="wrap_content"
         android:text="@string/add_shift" />
 
-    <TextView
-        android:id="@+id/compliance_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        tools:text="false\ntrue\ntrue\nfalse\n" />
-
 </LinearLayout>

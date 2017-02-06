@@ -3,7 +3,7 @@ package com.skepticalone.mecachecker;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-final class MockPeriod extends Period {
+final class MockPeriod extends PeriodWithComplianceData {
 
     private static final int DEFAULT_YEAR = 2017;
     private static final int DEFAULT_MONTH = Calendar.MAY;

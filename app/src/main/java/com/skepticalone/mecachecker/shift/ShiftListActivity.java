@@ -14,17 +14,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
-import com.skepticalone.mecachecker.Compliance;
-import com.skepticalone.mecachecker.Period;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class ShiftListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -32,18 +28,6 @@ public class ShiftListActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         ShiftAdapter.OnShiftClickListener {
 
-    public static final int DEFAULT_START_HOUR_OF_DAY = 8;
-    public static final int DEFAULT_START_MINUTE = 0;
-    public static final int DEFAULT_END_HOUR_OF_DAY = 16;
-    public static final int DEFAULT_END_MINUTE = 0;
-    public static final String[] COLUMNS = {
-            BaseColumns._ID,
-            ShiftProvider.START_TIME,
-            ShiftProvider.END_TIME,
-            ShiftProvider.FORMATTED_DATE,
-            ShiftProvider.FORMATTED_START_TIME,
-            ShiftProvider.FORMATTED_END_TIME
-    };
     public static final int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
@@ -51,12 +35,24 @@ public class ShiftListActivity extends AppCompatActivity implements
             COLUMN_INDEX_FORMATTED_DATE = 3,
             COLUMN_INDEX_FORMATTED_START = 4,
             COLUMN_INDEX_FORMATTED_END = 5;
+    private static final int DEFAULT_START_HOUR_OF_DAY = 8;
+    private static final int DEFAULT_START_MINUTE = 0;
+    private static final int DEFAULT_END_HOUR_OF_DAY = 16;
+    private static final int DEFAULT_END_MINUTE = 0;
+    private static final String[] COLUMNS = {
+            BaseColumns._ID,
+            ShiftProvider.START_TIME,
+            ShiftProvider.END_TIME,
+            ShiftProvider.FORMATTED_DATE,
+            ShiftProvider.FORMATTED_START_TIME,
+            ShiftProvider.FORMATTED_END_TIME
+    };
     private static final int LOADER_ID = 0;
     private boolean mTwoPane;
-    private Cursor mCursor = null;
+    //    private Cursor mCursor = null;
     private ShiftAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TextView mCompliance;
+//    private TextView mCompliance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +64,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ShiftAdapter(this);
         recyclerView.setAdapter(mAdapter);
-        mCompliance = (TextView) findViewById(R.id.compliance_status);
+//        mCompliance = (TextView) findViewById(R.id.compliance_status);
         mTwoPane = findViewById(R.id.shift_detail_container) != null;
         findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,9 +82,9 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = data;
-        calculateCompliance();
-        mAdapter.swapCursor(mCursor);
+//        mCursor = data;
+//        calculateCompliance();
+        mAdapter.swapCursor(data);
         mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
@@ -142,47 +138,41 @@ public class ShiftListActivity extends AppCompatActivity implements
     public void onShiftLongClick(long id) {
         getContentResolver().delete(ShiftProvider.shiftUri(id), null, null);
     }
-
-    private void calculateCompliance() {
-        if (mCursor != null) {
-            StringBuilder sb = new StringBuilder();
-            if (mCursor.moveToFirst()) {
-                List<Period> shifts = new ArrayList<>();
-                do {
-                    shifts.add(new Period(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END)));
-                } while (mCursor.moveToNext());
-                sb
-                        .append("checkMaximumHoursPerDay: ").append(Compliance.checkMaximumHoursPerDay(shifts)).append('\n')
-                        .append("checkMaximumHoursPerWeek: ").append(Compliance.checkMaximumHoursPerWeek(shifts)).append('\n')
-                        .append("checkMaximumHoursPerFortnight: ").append(Compliance.checkMaximumHoursPerFortnight(shifts)).append('\n')
-                        .append("checkMinimumRestHoursBetweenShifts: ").append(Compliance.checkMinimumRestHoursBetweenShifts(shifts)).append('\n')
-                        .append("checkMaximumConsecutiveWeekends: ").append(Compliance.checkMaximumConsecutiveWeekends(shifts)).append('\n')
-                ;
-            }
-            mCompliance.setText(sb);
-        }
-    }
+//
+//    private void calculateCompliance() {
+//        if (mCursor != null) {
+//            StringBuilder sb = new StringBuilder();
+//            if (mCursor.moveToFirst()) {
+//                List<Period> shifts = new ArrayList<>();
+//                do {
+//                    shifts.add(new Period(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END)));
+//                } while (mCursor.moveToNext());
+//                sb
+//                        .append("checkMaximumHoursPerDay: ").append(Compliance.checkMaximumHoursPerDay(shifts)).append('\n')
+//                        .append("checkMaximumHoursPerWeek: ").append(Compliance.checkMaximumHoursPerWeek(shifts)).append('\n')
+//                        .append("checkMaximumHoursPerFortnight: ").append(Compliance.checkMaximumHoursPerFortnight(shifts)).append('\n')
+//                        .append("checkMinimumRestHoursBetweenShifts: ").append(Compliance.checkMinimumRestHoursBetweenShifts(shifts)).append('\n')
+//                        .append("checkMaximumConsecutiveWeekends: ").append(Compliance.checkMaximumConsecutiveWeekends(shifts)).append('\n')
+//                ;
+//            }
+//            mCompliance.setText(sb);
+//        }
+//    }
 
     private void onAddShiftClicked() {
-        Calendar start;
-        if (mCursor.moveToLast()) {
-            Calendar lastShiftEnd = Period.fromSeconds(mCursor.getLong(COLUMN_INDEX_END));
-            start = new GregorianCalendar(
-                    lastShiftEnd.get(Calendar.YEAR),
-                    lastShiftEnd.get(Calendar.MONTH),
-                    lastShiftEnd.get(Calendar.DAY_OF_MONTH),
-                    DEFAULT_START_HOUR_OF_DAY,
-                    DEFAULT_START_MINUTE
-            );
-            while (lastShiftEnd.after(start)) {
+        Calendar start = GregorianCalendar.getInstance();
+        Date lastShiftEnd = mAdapter.getLastShiftEnd();
+        if (lastShiftEnd != null) {
+            start.setTime(lastShiftEnd);
+        }
+        start.set(Calendar.MILLISECOND, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MINUTE, DEFAULT_START_MINUTE);
+        start.set(Calendar.HOUR_OF_DAY, DEFAULT_START_HOUR_OF_DAY);
+        if (lastShiftEnd != null) {
+            while (lastShiftEnd.after(start.getTime())) {
                 start.add(Calendar.DAY_OF_MONTH, 1);
             }
-        } else {
-            start = GregorianCalendar.getInstance();
-            start.set(Calendar.MILLISECOND, 0);
-            start.set(Calendar.SECOND, 0);
-            start.set(Calendar.MINUTE, DEFAULT_START_MINUTE);
-            start.set(Calendar.HOUR_OF_DAY, DEFAULT_START_HOUR_OF_DAY);
         }
         Calendar end = new GregorianCalendar(
                 start.get(Calendar.YEAR),

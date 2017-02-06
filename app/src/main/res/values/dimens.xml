@@ -4,5 +4,5 @@
 
     <dimen name="item_width">300dp</dimen>
     <dimen name="half_card_margin">4dp</dimen>
-    <dimen name="card_contents_margin">14dp</dimen>
+    <dimen name="card_contents_margin">6dp</dimen>
 </resources>
