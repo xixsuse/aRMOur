@@ -7,10 +7,10 @@ import java.util.List;
 
 public final class Compliance {
 
-    private static final int MINIMUM_REST_HOURS = 8;
-    private static final int MAXIMUM_HOURS_PER_DAY = 16;
-    private static final int MAXIMUM_HOURS_PER_WEEK = 72;
-    private static final int MAXIMUM_HOURS_PER_FORTNIGHT = 144;
+    public static final int MINIMUM_REST_HOURS = 8;
+    public static final int MAXIMUM_HOURS_PER_DAY = 16;
+    public static final int MAXIMUM_HOURS_PER_WEEK = 72;
+    public static final int MAXIMUM_HOURS_PER_FORTNIGHT = 144;
     private static final int MILLIS_PER_HOUR = 1000 * 60 * 60;
     private static final int MINIMUM_REST_IN_MILLIS = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
 
@@ -18,9 +18,14 @@ public final class Compliance {
         boolean compliant = true;
         Period lastShift = null;
         for (PeriodWithComplianceData shift : shifts) {
-            if (lastShift != null && shift.timeSince(lastShift) < MINIMUM_REST_IN_MILLIS) {
-                shift.markNonCompliantWithMinimumRestHoursBetweenShifts(lastShift.end.getTime());
-                compliant = false;
+            if (lastShift != null) {
+                long millis = shift.timeSince(lastShift);
+                if (millis < MINIMUM_REST_IN_MILLIS) {
+                    ConcreteTimeSpan timeSpan = new ConcreteTimeSpan(lastShift.getEnd(), shift.getStart());
+                    timeSpan.setHours(millis);
+                    shift.markNonCompliantWithMinimumRestHoursBetweenShifts(timeSpan);
+                    compliant = false;
+                }
             }
             lastShift = shift;
         }
@@ -64,6 +69,7 @@ public final class Compliance {
             Date startOfPeriod = shifts.get(i).start.getTime();
             periodFromNow.setTime(startOfPeriod);
             periodFromNow.add(Calendar.DATE, periodInDays);
+            ConcreteTimeSpan timeSpan = new ConcreteTimeSpan(startOfPeriod, periodFromNow.getTime());
             long totalDurationInMillis = 0;
             for (int j = i; j < shifts.size(); j++) {
                 PeriodWithComplianceData shift = shifts.get(j);
@@ -74,15 +80,16 @@ public final class Compliance {
                     totalDurationInMillis += shift.getDuration();
                 }
                 if (totalDurationInMillis > maxMillisInPeriod) {
+                    timeSpan.setHours(totalDurationInMillis);
                     switch (periodToCheck) {
                         case day:
-                            shift.markNonCompliantWithMaximumHoursPerDay(startOfPeriod);
+                            shift.markNonCompliantWithMaximumHoursPerDay(timeSpan);
                             break;
                         case week:
-                            shift.markNonCompliantWithMaximumHoursPerWeek(startOfPeriod);
+                            shift.markNonCompliantWithMaximumHoursPerWeek(timeSpan);
                             break;
                         case fortnight:
-                            shift.markNonCompliantWithMaximumHoursPerFortnight(startOfPeriod);
+                            shift.markNonCompliantWithMaximumHoursPerFortnight(timeSpan);
                             break;
                         default:
                             throw new IllegalArgumentException();
@@ -108,63 +115,40 @@ public final class Compliance {
         return compliant;
     }
 
-//    @NonNull
-//    private static List<PeriodWithComplianceData> checkMaximumHoursInPeriod(int periodInDays, int maxHoursInPeriod, List<? extends PeriodWithComplianceData> shifts, final int itemIndex) {
-//        List<PeriodWithComplianceData> nonCompliantShifts = new ArrayList<>();
-//        long maxMillisInPeriod = maxHoursInPeriod * MILLIS_PER_HOUR;
-//        Calendar periodFromNow = new GregorianCalendar();
-//        periodFromNow.setTime(shifts.get(itemIndex).start.getTime());
-//        periodFromNow.add(Calendar.DATE, periodInDays);
-//        long totalDurationInMillis = 0;
-//        for (int i = itemIndex; i < shifts.size(); i++) {
-//            PeriodWithComplianceData shift = shifts.get(i);
-//            if (shift.start.after(periodFromNow)) break;
-//            else if (shift.end.after(periodFromNow)) {
-//                totalDurationInMillis += periodFromNow.getTimeInMillis() - shift.start.getTimeInMillis();
-//            } else {
-//                totalDurationInMillis += shift.getDuration();
-//            }
-//            if (totalDurationInMillis > maxMillisInPeriod) {
-//                nonCompliantShifts.add(shift);
-//            }
-//        }
-//        return nonCompliantShifts;
-//    }
-
-//    @NonNull
-//    private static List<PeriodWithComplianceData> checkMaximumHoursInPeriod(int periodInDays, int maxHoursInPeriod, List<? extends PeriodWithComplianceData> shifts) {
-//        List<PeriodWithComplianceData> nonCompliantShifts = new ArrayList<>();
-//        long maxMillisInPeriod = maxHoursInPeriod * MILLIS_PER_HOUR;
-//        Calendar periodFromNow = new GregorianCalendar();
-//        for (int i = 0; i < shifts.size(); i++) {
-//            periodFromNow.setTime(shifts.get(i).start.getTime());
-//            periodFromNow.add(Calendar.DATE, periodInDays);
-//            long totalDurationInMillis = 0;
-//            for (int j = i; j < shifts.size(); j++) {
-//                PeriodWithComplianceData shift = shifts.get(j);
-//                if (shift.start.after(periodFromNow)) break;
-//                else if (shift.end.after(periodFromNow)) {
-//                    totalDurationInMillis += periodFromNow.getTimeInMillis() - shift.start.getTimeInMillis();
-//                } else {
-//                    totalDurationInMillis += shift.getDuration();
-//                }
-//                if (totalDurationInMillis > maxMillisInPeriod) {
-//                    nonCompliantShifts.add(shift);
-//                }
-//            }
-//        }
-//        return nonCompliantShifts;
-//    }
-
-//    abstract class MarkedPeriod extends PeriodWithComplianceData {
-//
-//        abstract void markAsNonCompliant();
-//    }
-
     private enum PeriodToCheck {
         day,
         week,
         fortnight
+    }
+
+    private static class ConcreteTimeSpan implements NonCompliantTimeSpan {
+
+        private final Date start, end;
+        private float hours = 0;
+
+        private ConcreteTimeSpan(Date start, Date end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public Date getStart() {
+            return start;
+        }
+
+        @Override
+        public Date getEnd() {
+            return end;
+        }
+
+        @Override
+        public float getHours() {
+            return hours;
+        }
+
+        void setHours(long millis) {
+            hours = (float) millis / MILLIS_PER_HOUR;
+        }
     }
 
 }

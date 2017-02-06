@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.Compliance;
+import com.skepticalone.mecachecker.NonCompliantTimeSpan;
 import com.skepticalone.mecachecker.PeriodWithStableId;
 import com.skepticalone.mecachecker.R;
 
@@ -22,8 +23,6 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
     private static final String TAG = "ShiftAdapter";
     private final OnShiftClickListener mListener;
     private final List<PeriodWithStableId> mShifts = new ArrayList<>();
-//    private static final DateFormat sDateFormat = new SimpleDateFormat("EEE d/MM/yyyy", Locale.US);
-//    private static final DateFormat sTimeFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
     ShiftAdapter(OnShiftClickListener listener) {
         super();
@@ -49,13 +48,6 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
             for (PeriodWithStableId shift : mShifts) {
                 Log.i(TAG, shift.toString());
             }
-//            sb
-//                    .append("checkMaximumHoursPerDay: ").append(Compliance.checkMaximumHoursPerDay(shifts)).append('\n')
-//                    .append("checkMaximumHoursPerWeek: ").append(Compliance.checkMaximumHoursPerWeek(shifts)).append('\n')
-//                    .append("checkMaximumHoursPerFortnight: ").append(Compliance.checkMaximumHoursPerFortnight(shifts)).append('\n')
-//                    .append("checkMinimumRestHoursBetweenShifts: ").append(Compliance.checkMinimumRestHoursBetweenShifts(shifts)).append('\n')
-//                    .append("checkMaximumConsecutiveWeekends: ").append(Compliance.checkMaximumConsecutiveWeekends(shifts)).append('\n')
-//            ;
         }
         notifyDataSetChanged();
     }
@@ -73,8 +65,8 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        PeriodWithStableId shift = mShifts.get(position);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final PeriodWithStableId shift = mShifts.get(position);
 //        holder.dateView.setText(sDateFormat.format(shift.getStart()));
         holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, shift.getStart()));
 //        holder.startView.setText(sTimeFormat.format(shift.getStart()));
@@ -86,36 +78,66 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
                         View.GONE :
                         View.VISIBLE
         );
+        holder.minimumRestHoursBetweenShiftsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showDialogNonCompliantWithMinimumRestHoursBetweenShifts(shift.nonCompliantPeriodWithMinimumRestHoursBetweenShifts());
+            }
+        });
         holder.maximumHoursPerDayView.setVisibility(
                 shift.isCompliantWithMaximumHoursPerDay() ?
                         View.GONE :
                         View.VISIBLE
         );
+        holder.maximumHoursPerDayView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showDialogNonCompliantWithMaximumHoursPerDay(shift.nonCompliantPeriodWithMaximumHoursPerDay());
+            }
+        });
         holder.maximumHoursPerWeekView.setVisibility(
                 shift.isCompliantWithMaximumHoursPerWeek() ?
                         View.GONE :
                         View.VISIBLE
         );
+        holder.maximumHoursPerWeekView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showDialogNonCompliantWithMaximumHoursPerWeek(shift.nonCompliantPeriodWithMaximumHoursPerWeek());
+            }
+        });
         holder.maximumHoursPerFortnightView.setVisibility(
                 shift.isCompliantWithMaximumHoursPerFortnight() ?
                         View.GONE :
                         View.VISIBLE
         );
+        holder.maximumHoursPerFortnightView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showDialogNonCompliantWithMaximumHoursPerFortnight(shift.nonCompliantPeriodWithMaximumHoursPerFortnight());
+            }
+        });
         holder.maximumConsecutiveWeekendsView.setVisibility(
                 shift.isCompliantWithMaximumConsecutiveWeekends() ?
                         View.GONE :
                         View.VISIBLE
         );
+        holder.maximumConsecutiveWeekendsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showDialogNonCompliantWithMaximumConsecutiveWeekends();
+            }
+        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onShiftClick(holder.getItemId());
+                mListener.onShiftClick(shift.getId());
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mListener.onShiftLongClick(holder.getItemId());
+                mListener.onShiftLongClick(shift.getId());
                 return true;
             }
         });
@@ -135,8 +157,17 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
 
     interface OnShiftClickListener {
         void onShiftClick(long id);
-
         void onShiftLongClick(long id);
+
+        void showDialogNonCompliantWithMinimumRestHoursBetweenShifts(NonCompliantTimeSpan nonCompliantPeriod);
+
+        void showDialogNonCompliantWithMaximumHoursPerDay(NonCompliantTimeSpan nonCompliantPeriod);
+
+        void showDialogNonCompliantWithMaximumHoursPerWeek(NonCompliantTimeSpan nonCompliantPeriod);
+
+        void showDialogNonCompliantWithMaximumHoursPerFortnight(NonCompliantTimeSpan nonCompliantPeriod);
+
+        void showDialogNonCompliantWithMaximumConsecutiveWeekends();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

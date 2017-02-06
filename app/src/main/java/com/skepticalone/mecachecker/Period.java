@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class Period {
+public class Period implements TimeSpan {
 
     private static final int MILLIS_PER_SECOND = 1000;
     private static final DateFormat sFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
@@ -54,10 +54,12 @@ public class Period {
         return day == Calendar.SATURDAY || day == Calendar.SUNDAY;
     }
 
+    @Override
     public final Date getStart() {
         return start.getTime();
     }
 
+    @Override
     public final Date getEnd() {
         return end.getTime();
     }

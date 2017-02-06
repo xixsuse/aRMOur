@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.DatePicker;
 
+import com.skepticalone.mecachecker.NonCompliantTimeSpan;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
@@ -47,6 +48,7 @@ public class ShiftListActivity extends AppCompatActivity implements
             ShiftProvider.FORMATTED_START_TIME,
             ShiftProvider.FORMATTED_END_TIME
     };
+    private static final String COMPLIANCE_FRAGMENT = "COMPLIANCE_FRAGMENT";
     private static final int LOADER_ID = 0;
     private boolean mTwoPane;
     //    private Cursor mCursor = null;
@@ -138,26 +140,6 @@ public class ShiftListActivity extends AppCompatActivity implements
     public void onShiftLongClick(long id) {
         getContentResolver().delete(ShiftProvider.shiftUri(id), null, null);
     }
-//
-//    private void calculateCompliance() {
-//        if (mCursor != null) {
-//            StringBuilder sb = new StringBuilder();
-//            if (mCursor.moveToFirst()) {
-//                List<Period> shifts = new ArrayList<>();
-//                do {
-//                    shifts.add(new Period(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END)));
-//                } while (mCursor.moveToNext());
-//                sb
-//                        .append("checkMaximumHoursPerDay: ").append(Compliance.checkMaximumHoursPerDay(shifts)).append('\n')
-//                        .append("checkMaximumHoursPerWeek: ").append(Compliance.checkMaximumHoursPerWeek(shifts)).append('\n')
-//                        .append("checkMaximumHoursPerFortnight: ").append(Compliance.checkMaximumHoursPerFortnight(shifts)).append('\n')
-//                        .append("checkMinimumRestHoursBetweenShifts: ").append(Compliance.checkMinimumRestHoursBetweenShifts(shifts)).append('\n')
-//                        .append("checkMaximumConsecutiveWeekends: ").append(Compliance.checkMaximumConsecutiveWeekends(shifts)).append('\n')
-//                ;
-//            }
-//            mCompliance.setText(sb);
-//        }
-//    }
 
     private void onAddShiftClicked() {
         Calendar start = GregorianCalendar.getInstance();
@@ -188,5 +170,30 @@ public class ShiftListActivity extends AppCompatActivity implements
         values.put(ShiftProvider.START_TIME, start.getTimeInMillis() / 1000);
         values.put(ShiftProvider.END_TIME, end.getTimeInMillis() / 1000);
         getContentResolver().insert(ShiftProvider.shiftsUri, values);
+    }
+
+    @Override
+    public void showDialogNonCompliantWithMinimumRestHoursBetweenShifts(NonCompliantTimeSpan nonCompliantPeriod) {
+        ComplianceFragment.createDialogNonCompliantWithMinimumRestHoursBetweenShifts(nonCompliantPeriod).show(getFragmentManager(), COMPLIANCE_FRAGMENT);
+    }
+
+    @Override
+    public void showDialogNonCompliantWithMaximumHoursPerDay(NonCompliantTimeSpan nonCompliantPeriod) {
+        ComplianceFragment.createDialogNonCompliantWithMaximumHoursPerDay(nonCompliantPeriod).show(getFragmentManager(), COMPLIANCE_FRAGMENT);
+    }
+
+    @Override
+    public void showDialogNonCompliantWithMaximumHoursPerWeek(NonCompliantTimeSpan nonCompliantPeriod) {
+        ComplianceFragment.createDialogNonCompliantWithMaximumHoursPerWeek(nonCompliantPeriod).show(getFragmentManager(), COMPLIANCE_FRAGMENT);
+    }
+
+    @Override
+    public void showDialogNonCompliantWithMaximumHoursPerFortnight(NonCompliantTimeSpan nonCompliantPeriod) {
+        ComplianceFragment.createDialogNonCompliantWithMaximumHoursPerFortnight(nonCompliantPeriod).show(getFragmentManager(), COMPLIANCE_FRAGMENT);
+    }
+
+    @Override
+    public void showDialogNonCompliantWithMaximumConsecutiveWeekends() {
+        ComplianceFragment.createDialogNonCompliantWithMaximumConsecutiveWeekends().show(getFragmentManager(), COMPLIANCE_FRAGMENT);
     }
 }

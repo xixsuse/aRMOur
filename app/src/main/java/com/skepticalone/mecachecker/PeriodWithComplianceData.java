@@ -3,12 +3,10 @@ package com.skepticalone.mecachecker;
 import android.support.annotation.Nullable;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class PeriodWithComplianceData extends Period {
 
-    @Nullable
-    private Date compliantWithMinimumRestHoursBetweenShifts = null,
+    private NonCompliantTimeSpan compliantWithMinimumRestHoursBetweenShifts = null,
             compliantWithMaximumHoursPerDay = null,
             compliantWithMaximumHoursPerWeek = null,
             compliantWithMaximumHoursPerFortnight = null;
@@ -26,40 +24,60 @@ public class PeriodWithComplianceData extends Period {
         return compliantWithMinimumRestHoursBetweenShifts == null;
     }
 
-    void markNonCompliantWithMinimumRestHoursBetweenShifts(Date startOfNonCompliantPeriod) {
+    void markNonCompliantWithMinimumRestHoursBetweenShifts(NonCompliantTimeSpan nonCompliantPeriod) {
         if (compliantWithMinimumRestHoursBetweenShifts == null) {
-            compliantWithMinimumRestHoursBetweenShifts = startOfNonCompliantPeriod;
+            compliantWithMinimumRestHoursBetweenShifts = nonCompliantPeriod;
         }
+    }
+
+    @Nullable
+    public NonCompliantTimeSpan nonCompliantPeriodWithMinimumRestHoursBetweenShifts() {
+        return compliantWithMinimumRestHoursBetweenShifts;
     }
 
     public boolean isCompliantWithMaximumHoursPerDay() {
         return compliantWithMaximumHoursPerDay == null;
     }
 
-    void markNonCompliantWithMaximumHoursPerDay(Date startOfNonCompliantPeriod) {
+    void markNonCompliantWithMaximumHoursPerDay(NonCompliantTimeSpan nonCompliantPeriod) {
         if (compliantWithMaximumHoursPerDay == null) {
-            compliantWithMaximumHoursPerDay = startOfNonCompliantPeriod;
+            compliantWithMaximumHoursPerDay = nonCompliantPeriod;
         }
+    }
+
+    @Nullable
+    public NonCompliantTimeSpan nonCompliantPeriodWithMaximumHoursPerDay() {
+        return compliantWithMaximumHoursPerDay;
     }
 
     public boolean isCompliantWithMaximumHoursPerWeek() {
         return compliantWithMaximumHoursPerWeek == null;
     }
 
-    void markNonCompliantWithMaximumHoursPerWeek(Date startOfNonCompliantPeriod) {
+    void markNonCompliantWithMaximumHoursPerWeek(NonCompliantTimeSpan nonCompliantPeriod) {
         if (compliantWithMaximumHoursPerWeek == null) {
-            compliantWithMaximumHoursPerWeek = startOfNonCompliantPeriod;
+            compliantWithMaximumHoursPerWeek = nonCompliantPeriod;
         }
+    }
+
+    @Nullable
+    public NonCompliantTimeSpan nonCompliantPeriodWithMaximumHoursPerWeek() {
+        return compliantWithMaximumHoursPerWeek;
     }
 
     public boolean isCompliantWithMaximumHoursPerFortnight() {
         return compliantWithMaximumHoursPerFortnight == null;
     }
 
-    void markNonCompliantWithMaximumHoursPerFortnight(Date startOfNonCompliantPeriod) {
+    void markNonCompliantWithMaximumHoursPerFortnight(NonCompliantTimeSpan nonCompliantPeriod) {
         if (compliantWithMaximumHoursPerFortnight == null) {
-            compliantWithMaximumHoursPerFortnight = startOfNonCompliantPeriod;
+            compliantWithMaximumHoursPerFortnight = nonCompliantPeriod;
         }
+    }
+
+    @Nullable
+    public NonCompliantTimeSpan nonCompliantPeriodWithMaximumHoursPerFortnight() {
+        return compliantWithMaximumHoursPerFortnight;
     }
 
     public boolean isCompliantWithMaximumConsecutiveWeekends() {
