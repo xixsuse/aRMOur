@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.DatePicker;
@@ -54,6 +55,7 @@ public class ShiftListActivity extends AppCompatActivity implements
     private boolean mTwoPane;
     private Cursor mCursor = null;
     private ShiftAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private TextView mCompliance;
 
     @Override
@@ -62,6 +64,8 @@ public class ShiftListActivity extends AppCompatActivity implements
         setContentView(R.layout.shift_list_activity);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.shift_list);
         assert recyclerView != null;
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ShiftAdapter(this);
         recyclerView.setAdapter(mAdapter);
         mCompliance = (TextView) findViewById(R.id.compliance_status);
@@ -85,6 +89,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         mCursor = data;
         calculateCompliance();
         mAdapter.swapCursor(mCursor);
+        mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
     @Override
