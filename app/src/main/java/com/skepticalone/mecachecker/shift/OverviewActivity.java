@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
+import android.util.LongSparseArray;
 
 import com.skepticalone.mecachecker.Compliance;
 import com.skepticalone.mecachecker.PeriodWithStableId;
@@ -24,6 +25,7 @@ import java.util.List;
 
 public class OverviewActivity extends Activity implements
         ShiftListFragment.Listener,
+        ShiftDetailFragment.Listener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int
@@ -36,6 +38,9 @@ public class OverviewActivity extends Activity implements
             ShiftProvider.END_TIME
     };
     private static final int LOADER_ID = 0;
+    private static final String
+            LIST_FRAGMENT = "LIST_FRAGMENT",
+            DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private static final int
             DEFAULT_START_HOUR_OF_DAY = 8,
             DEFAULT_START_MINUTE = 0,
@@ -43,11 +48,17 @@ public class OverviewActivity extends Activity implements
             DEFAULT_END_MINUTE = 0;
 
     private final List<PeriodWithStableId> mShifts = new ArrayList<>();
+    private final LongSparseArray<PeriodWithStableId> mShiftsIndex = new LongSparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shift_list_activity);
+        if (savedInstanceState == null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(android.R.id.content, new ShiftListFragment(), LIST_FRAGMENT)
+                    .commit();
+        }
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
@@ -59,13 +70,16 @@ public class OverviewActivity extends Activity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, @Nullable Cursor data) {
         mShifts.clear();
+        mShiftsIndex.clear();
         if (data != null && data.moveToFirst()) {
             do {
-                mShifts.add(new PeriodWithStableId(
+                PeriodWithStableId shift = new PeriodWithStableId(
                         data.getLong(ShiftListActivity.COLUMN_INDEX_START),
                         data.getLong(ShiftListActivity.COLUMN_INDEX_END),
                         data.getLong(ShiftListActivity.COLUMN_INDEX_ID)
-                ));
+                );
+                mShifts.add(shift);
+                mShiftsIndex.append(shift.getId(), shift);
             } while (data.moveToNext());
             Compliance.checkMinimumRestHoursBetweenShifts(mShifts);
             Compliance.checkMaximumHoursPerDay(mShifts);
@@ -84,7 +98,6 @@ public class OverviewActivity extends Activity implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        onLoadFinished(loader, null);
     }
 
     @Override
@@ -121,7 +134,12 @@ public class OverviewActivity extends Activity implements
 
     @Override
     public void onShiftClicked(PeriodWithStableId shift) {
-        // TODO: 7/02/17
+        ShiftDetailFragment fragment = ShiftDetailFragment.create(shift.getId());
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, fragment, DETAIL_FRAGMENT)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -130,8 +148,8 @@ public class OverviewActivity extends Activity implements
     }
 
     @Override
-    public void onShiftSwiped(PeriodWithStableId shift) {
-        getContentResolver().delete(ShiftProvider.shiftUri(shift.getId()), null, null);
+    public void onShiftSwiped(long shiftId) {
+        getContentResolver().delete(ShiftProvider.shiftUri(shiftId), null, null);
     }
 
     @Override
@@ -142,5 +160,10 @@ public class OverviewActivity extends Activity implements
     @Override
     public PeriodWithStableId getShift(int position) {
         return mShifts.get(position);
+    }
+
+    @Override
+    public PeriodWithStableId getShift(long id) {
+        return mShiftsIndex.get(id);
     }
 }

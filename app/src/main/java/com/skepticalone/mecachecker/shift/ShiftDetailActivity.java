@@ -13,19 +13,19 @@ public class ShiftDetailActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            ShiftDetailFragment fragment = new ShiftDetailFragment();
+            ShiftEditFragment fragment = new ShiftEditFragment();
             Bundle arguments = new Bundle();
-            arguments.putLong(ShiftDetailFragment.SHIFT_ID, getIntent().getLongExtra(ShiftDetailFragment.SHIFT_ID, ShiftDetailFragment.NO_ID));
+            arguments.putLong(ShiftEditFragment.SHIFT_ID, getIntent().getLongExtra(ShiftEditFragment.SHIFT_ID, ShiftEditFragment.NO_ID));
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, fragment, ShiftDetailFragment.TAG)
+                    .replace(android.R.id.content, fragment, ShiftEditFragment.TAG)
                     .commit();
         }
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onDateSet(year, month, dayOfMonth);
         }
@@ -33,7 +33,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onStartTimeSet(hourOfDay, minute);
         }
@@ -41,7 +41,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onEndTimeSet(hourOfDay, minute);
         }

@@ -60,7 +60,7 @@ public class ShiftListFragment extends Fragment {
 //                        Log.i(TAG, "onSwiped: Unknown: " + direction);
 //                        break;
 //                }
-                mListener.onShiftSwiped(mListener.getShift(viewHolder.getAdapterPosition()));
+                mListener.onShiftSwiped(viewHolder.getItemId());
             }
         }).attachToRecyclerView(recyclerView);
         layout.findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
@@ -76,7 +76,7 @@ public class ShiftListFragment extends Fragment {
         void onAddShiftClicked();
         void onShiftClicked(PeriodWithStableId shift);
 
-        void onShiftSwiped(PeriodWithStableId shift);
+        void onShiftSwiped(long shiftId);
         void onShiftLongClicked(PeriodWithStableId shift);
         int getShiftCount();
         PeriodWithStableId getShift(int position);

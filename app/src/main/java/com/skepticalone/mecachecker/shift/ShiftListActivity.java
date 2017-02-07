@@ -97,7 +97,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onDateSet(year, month, dayOfMonth);
         }
@@ -105,7 +105,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onStartTimeSet(hourOfDay, minute);
         }
@@ -113,7 +113,7 @@ public class ShiftListActivity extends AppCompatActivity implements
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute) {
-        ShiftDetailFragment fragment = (ShiftDetailFragment) getFragmentManager().findFragmentByTag(ShiftDetailFragment.TAG);
+        ShiftEditFragment fragment = (ShiftEditFragment) getFragmentManager().findFragmentByTag(ShiftEditFragment.TAG);
         if (fragment != null) {
             fragment.onEndTimeSet(hourOfDay, minute);
         }
@@ -122,16 +122,16 @@ public class ShiftListActivity extends AppCompatActivity implements
     @Override
     public void onShiftClick(long id) {
         if (mTwoPane) {
-            ShiftDetailFragment fragment = new ShiftDetailFragment();
+            ShiftEditFragment fragment = new ShiftEditFragment();
             Bundle arguments = new Bundle();
-            arguments.putLong(ShiftDetailFragment.SHIFT_ID, id);
+            arguments.putLong(ShiftEditFragment.SHIFT_ID, id);
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
-                    .replace(R.id.shift_detail_container, fragment, ShiftDetailFragment.TAG)
+                    .replace(R.id.shift_detail_container, fragment, ShiftEditFragment.TAG)
                     .commit();
         } else {
             Intent intent = new Intent(this, ShiftDetailActivity.class);
-            intent.putExtra(ShiftDetailFragment.SHIFT_ID, id);
+            intent.putExtra(ShiftEditFragment.SHIFT_ID, id);
             startActivity(intent);
         }
     }
