@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,28 @@ public class ShiftListFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new CustomAdapter();
         recyclerView.setAdapter(mAdapter);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                switch (direction){
+//                    case ItemTouchHelper.START:
+//                        Log.i(TAG, "onSwiped: Start");
+//                        break;
+//                    case ItemTouchHelper.END:
+//                        Log.i(TAG, "onSwiped: End");
+//                        break;
+//                    default:
+//                        Log.i(TAG, "onSwiped: Unknown: " + direction);
+//                        break;
+//                }
+                mListener.onShiftSwiped(mListener.getShift(viewHolder.getAdapterPosition()));
+            }
+        }).attachToRecyclerView(recyclerView);
         layout.findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,13 +74,11 @@ public class ShiftListFragment extends Fragment {
 
     interface Listener {
         void onAddShiftClicked();
-
         void onShiftClicked(PeriodWithStableId shift);
 
+        void onShiftSwiped(PeriodWithStableId shift);
         void onShiftLongClicked(PeriodWithStableId shift);
-
         int getShiftCount();
-
         PeriodWithStableId getShift(int position);
     }
 

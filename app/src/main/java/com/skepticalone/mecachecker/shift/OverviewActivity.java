@@ -130,6 +130,11 @@ public class OverviewActivity extends Activity implements
     }
 
     @Override
+    public void onShiftSwiped(PeriodWithStableId shift) {
+        getContentResolver().delete(ShiftProvider.shiftUri(shift.getId()), null, null);
+    }
+
+    @Override
     public int getShiftCount() {
         return mShifts.size();
     }
