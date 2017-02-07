@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shift_list_fragment"
+    android:name="com.skepticalone.mecachecker.shift.ShiftListFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/shift_list"
-        android:name="com.skepticalone.mecachecker.shift.ShiftListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:listitem="@layout/shift_list_content" />
-
-    <Button
-        android:id="@+id/add_shift"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_shift" />
-
-</LinearLayout>
+    android:layout_height="match_parent" />

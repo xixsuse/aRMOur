@@ -12,21 +12,21 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".shift.ShiftListActivity"
+            android:name=".shift.OverviewActivity"
             android:label="@string/title_shift_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".shift.ShiftDetailActivity"
-            android:label="@string/title_shift_detail"
-            android:parentActivityName=".shift.ShiftListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.skepticalone.mecachecker.shift.ShiftListActivity" />
-        </activity>
+        <!--<activity-->
+        <!--android:name=".shift.ShiftDetailActivity"-->
+        <!--android:label="@string/title_shift_detail"-->
+        <!--android:parentActivityName=".shift.ShiftListActivity">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.PARENT_ACTIVITY"-->
+        <!--android:value="com.skepticalone.mecachecker.shift.ShiftListActivity" />-->
+        <!--</activity>-->
 
         <provider
             android:name=".data.ShiftProvider"
