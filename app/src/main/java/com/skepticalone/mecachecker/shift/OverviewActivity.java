@@ -9,11 +9,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.skepticalone.mecachecker.Compliance;
 import com.skepticalone.mecachecker.PeriodWithStableId;
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class OverviewActivity extends Activity implements
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
             COLUMN_INDEX_END = 2;
+    public static final String TAG = "OverviewActivity";
     private static final String[] COLUMNS = {
             BaseColumns._ID,
             ShiftProvider.START_TIME,
@@ -46,7 +47,6 @@ public class OverviewActivity extends Activity implements
             DEFAULT_START_MINUTE = 0,
             DEFAULT_END_HOUR_OF_DAY = 16,
             DEFAULT_END_MINUTE = 0;
-
     private final List<PeriodWithStableId> mShifts = new ArrayList<>();
     private final LongSparseArray<PeriodWithStableId> mShiftsIndex = new LongSparseArray<>();
 
@@ -90,9 +90,12 @@ public class OverviewActivity extends Activity implements
 //                Log.i(TAG, shift.toString());
 //            }
         }
-        ShiftListFragment listFragment = (ShiftListFragment) getFragmentManager().findFragmentById(R.id.shift_list_fragment);
+        ShiftListFragment listFragment = (ShiftListFragment) getFragmentManager().findFragmentByTag(LIST_FRAGMENT);
         if (listFragment != null) {
+            Log.i(TAG, "onLoadFinished: notifying dataset changed");
             listFragment.notifyDataSetChanged();
+        } else {
+            Log.i(TAG, "onLoadFinished: couldn't find listFragment");
         }
     }
 
