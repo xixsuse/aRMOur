@@ -74,9 +74,9 @@ public class OverviewActivity extends Activity implements
         if (data != null && data.moveToFirst()) {
             do {
                 PeriodWithStableId shift = new PeriodWithStableId(
-                        data.getLong(ShiftListActivity.COLUMN_INDEX_START),
-                        data.getLong(ShiftListActivity.COLUMN_INDEX_END),
-                        data.getLong(ShiftListActivity.COLUMN_INDEX_ID)
+                        data.getLong(COLUMN_INDEX_START),
+                        data.getLong(COLUMN_INDEX_END),
+                        data.getLong(COLUMN_INDEX_ID)
                 );
                 mShifts.add(shift);
                 mShiftsIndex.append(shift.getId(), shift);

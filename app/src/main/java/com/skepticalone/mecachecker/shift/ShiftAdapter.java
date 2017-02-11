@@ -35,9 +35,9 @@ class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.ViewHolder> {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 mShifts.add(new PeriodWithStableId(
-                        cursor.getLong(ShiftListActivity.COLUMN_INDEX_START),
-                        cursor.getLong(ShiftListActivity.COLUMN_INDEX_END),
-                        cursor.getLong(ShiftListActivity.COLUMN_INDEX_ID)
+                        cursor.getLong(OverviewActivity.COLUMN_INDEX_START),
+                        cursor.getLong(OverviewActivity.COLUMN_INDEX_END),
+                        cursor.getLong(OverviewActivity.COLUMN_INDEX_ID)
                 ));
             } while (cursor.moveToNext());
             Compliance.checkMinimumRestHoursBetweenShifts(mShifts);
