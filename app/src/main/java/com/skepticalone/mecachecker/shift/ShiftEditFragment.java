@@ -30,9 +30,9 @@ public class ShiftEditFragment
         TimePickerFragment.OnShiftTimeSetListener,
         SeekBar.OnSeekBarChangeListener,
         ResponsiveShift.ShiftDisplayListener {
-    static final String SHIFT_ID = "SHIFT_ID";
     static final String TAG = "SHIFT_DETAIL_FRAGMENT";
-    static final long NO_ID = -1;
+    private static final String SHIFT_ID = "SHIFT_ID";
+    private static final long NO_ID = -1;
     private static final int LOADER_ID = 1;
     private static final String[] COLUMNS = {
             ShiftProvider.START_TIME,

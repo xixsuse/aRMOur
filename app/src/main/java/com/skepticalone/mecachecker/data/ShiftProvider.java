@@ -21,6 +21,7 @@ public final class ShiftProvider extends ContentProvider {
             FORMATTED_DATE = ShiftContract.Shift.START_AS_DATE,
             FORMATTED_START_TIME = ShiftContract.Shift.START_AS_TIME,
             FORMATTED_END_TIME = ShiftContract.Shift.END_AS_TIME;
+    private static final String WITH_COMPLIANCE = "_with_compliance";
     private static final String TAG = "ShiftProvider";
     private static final String SHIFT_OVERLAP_TOAST_MESSAGE = "CheckedShift overlaps!";
     private static final String
@@ -28,25 +29,33 @@ public final class ShiftProvider extends ContentProvider {
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME).build();
+    public static final Uri shiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME + WITH_COMPLIANCE).build();
     //    public static final Uri lastShiftUri = Uri.withAppendedPath(shiftsUri, "last");
     private static final String
             SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
             SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME;
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
+    private static final int SHIFTS_WITH_COMPLIANCE = 3;
+    private static final int SHIFT_ID_WITH_COMPLIANCE = 4;
     //    private static final int LAST_SHIFT = 3;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME, SHIFTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/#", SHIFT_ID);
-//        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/last", LAST_SHIFT);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + WITH_COMPLIANCE, SHIFTS_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + WITH_COMPLIANCE + "/#", SHIFT_ID_WITH_COMPLIANCE);
     }
 
     private ShiftDbHelper mDbHelper;
 
     public static Uri shiftUri(long shiftId) {
         return Uri.withAppendedPath(shiftsUri, Long.toString(shiftId));
+    }
+
+    public static Uri shiftWithComplianceUri(long shiftId) {
+        return Uri.withAppendedPath(shiftsWithComplianceUri, Long.toString(shiftId));
     }
 
     @Override
@@ -58,8 +67,14 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-//        String limit = null;
-        switch (sUriMatcher.match(uri)) {
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case SHIFTS_WITH_COMPLIANCE:
+            case SHIFT_ID_WITH_COMPLIANCE:
+                projection = ComplianceCursor.PROJECTION;
+                selection = null;
+                selectionArgs = null;
+                // intentional fall-through
             case SHIFTS:
                 sortOrder = ShiftContract.Shift.COLUMN_NAME_START;
                 break;
@@ -76,6 +91,11 @@ public final class ShiftProvider extends ContentProvider {
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         Cursor cursor = mDbHelper.getReadableDatabase().query(ShiftContract.Shift.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        if (match == SHIFTS_WITH_COMPLIANCE) {
+            cursor = new ComplianceCursor(cursor, null);
+        } else if (match == SHIFT_ID_WITH_COMPLIANCE) {
+            cursor = new ComplianceCursor(cursor, Long.valueOf(uri.getLastPathSegment()));
+        }
         Context context = getContext();
         if (context != null) {
             cursor.setNotificationUri(context.getContentResolver(), uri);
@@ -88,6 +108,7 @@ public final class ShiftProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
+            case SHIFTS_WITH_COMPLIANCE:
                 return SHIFTS_TYPE;
             case SHIFT_ID:
 //            case LAST_SHIFT:
@@ -106,7 +127,9 @@ public final class ShiftProvider extends ContentProvider {
                     long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
                     Context context = getContext();
                     if (context != null) {
-                        context.getContentResolver().notifyChange(uri, null);
+                        ContentResolver contentResolver = context.getContentResolver();
+                        contentResolver.notifyChange(uri, null);
+                        contentResolver.notifyChange(shiftsWithComplianceUri, null);
                     }
                     return shiftUri(shiftId);
                 } catch (SQLiteConstraintException e) {
@@ -127,7 +150,9 @@ public final class ShiftProvider extends ContentProvider {
                 if (deleted > 0) {
                     Context context = getContext();
                     if (context != null) {
-                        context.getContentResolver().notifyChange(uri, null);
+                        ContentResolver contentResolver = context.getContentResolver();
+                        contentResolver.notifyChange(uri, null);
+                        contentResolver.notifyChange(shiftsWithComplianceUri, null);
                     }
                 }
                 return deleted;
@@ -145,7 +170,9 @@ public final class ShiftProvider extends ContentProvider {
                     if (updated > 0) {
                         Context context = getContext();
                         if (context != null) {
-                            context.getContentResolver().notifyChange(uri, null);
+                            ContentResolver contentResolver = context.getContentResolver();
+                            contentResolver.notifyChange(uri, null);
+                            contentResolver.notifyChange(shiftsWithComplianceUri, null);
                         }
                     }
                     return updated;

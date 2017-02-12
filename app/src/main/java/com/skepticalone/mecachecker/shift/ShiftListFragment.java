@@ -1,7 +1,11 @@
 package com.skepticalone.mecachecker.shift;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -11,14 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.skepticalone.mecachecker.PeriodWithStableId;
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 
-public class ShiftListFragment extends Fragment {
+import java.util.Date;
+
+public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView.LayoutManager mLayoutManager;
     private CustomAdapter mAdapter;
     private Listener mListener;
+    private Cursor mCursor = null;
 
     @Override
     public void onAttach(Context context) {
@@ -26,10 +34,11 @@ public class ShiftListFragment extends Fragment {
         mListener = (Listener) context;
     }
 
-    public void notifyDataSetChanged() {
-        mAdapter.notifyDataSetChanged();
-        mLayoutManager.scrollToPosition(mListener.getShiftCount() - 1);
-    }
+
+//    public void notifyDataSetChanged() {
+//        mAdapter.notifyDataSetChanged();
+//        mLayoutManager.scrollToPosition(mListener.getShiftCount() - 1);
+//    }
 
     @Nullable
     @Override
@@ -37,8 +46,6 @@ public class ShiftListFragment extends Fragment {
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.shift_list);
         mLayoutManager = recyclerView.getLayoutManager();
-        mAdapter = new CustomAdapter();
-        recyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START | ItemTouchHelper.END) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -61,23 +68,50 @@ public class ShiftListFragment extends Fragment {
                 mListener.onShiftSwiped(viewHolder.getItemId());
             }
         }).attachToRecyclerView(recyclerView);
+        mAdapter = new CustomAdapter();
+        recyclerView.setAdapter(mAdapter);
         layout.findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onAddShiftClicked();
+                Date lastShiftEnd = new Date();
+                if (mCursor != null) {
+                    mCursor.moveToLast();
+                    lastShiftEnd.setTime(mCursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
+                }
+                mListener.onAddShiftClicked(lastShiftEnd);
             }
         });
         return layout;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(OverviewActivity.LOADER_LIST_ID, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsWithComplianceUri, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursor = data;
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursor = null;
+    }
+
     interface Listener {
-        void onAddShiftClicked();
-        void onShiftClicked(PeriodWithStableId shift);
+        void onAddShiftClicked(Date lastShiftEnd);
+
+        void onShiftClicked(long shiftId);
 
         void onShiftSwiped(long shiftId);
-        void onShiftLongClicked(PeriodWithStableId shift);
-        int getShiftCount();
-        PeriodWithStableId getShift(int position);
     }
 
     class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
@@ -86,10 +120,16 @@ public class ShiftListFragment extends Fragment {
             super();
             setHasStableIds(true);
         }
+//
+//        void swapCursor(Cursor cursor){
+//            mCursor = cursor;
+//            notifyDataSetChanged();
+//        }
 
         @Override
         public long getItemId(int position) {
-            return mListener.getShift(position).getId();
+            mCursor.moveToPosition(position);
+            return mCursor.getLong(ComplianceCursor.COLUMN_INDEX_ID);
         }
 
         @Override
@@ -101,14 +141,18 @@ public class ShiftListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(CustomViewHolder holder, int position) {
-            final PeriodWithStableId shift = mListener.getShift(position);
-            holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, shift.getStart()));
-            holder.startView.setText(holder.startView.getContext().getString(R.string.time_format, shift.getStart()));
-            holder.endView.setText(holder.endView.getContext().getString(shift.isSameDay() ? R.string.time_format : R.string.time_format_with_day, shift.getEnd()));
+            mCursor.moveToPosition(position);
+            final long shiftId = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_ID);
+            long start = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
+            long end = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
+            holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, start));
+            holder.startView.setText(holder.startView.getContext().getString(R.string.time_format, start));
+            holder.endView.setText(holder.endView.getContext().getString(R.string.time_format_with_day, end));
             holder.minimumRestHoursBetweenShiftsView.setVisibility(
-                    shift.isCompliantWithMinimumRestHoursBetweenShifts() ?
-                            View.GONE :
-                            View.VISIBLE
+                    View.GONE
+//                    shift.isCompliantWithMinimumRestHoursBetweenShifts() ?
+//                            View.GONE :
+//                            View.VISIBLE
             );
 //            holder.minimumRestHoursBetweenShiftsView.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -117,7 +161,7 @@ public class ShiftListFragment extends Fragment {
 //                }
 //            });
             holder.maximumHoursPerDayView.setVisibility(
-                    shift.isCompliantWithMaximumHoursPerDay() ?
+                    mCursor.getInt(ComplianceCursor.COLUMN_INDEX_MAX_HOURS) == 1 ?
                             View.GONE :
                             View.VISIBLE
             );
@@ -128,9 +172,10 @@ public class ShiftListFragment extends Fragment {
 //                }
 //            });
             holder.maximumHoursPerWeekView.setVisibility(
-                    shift.isCompliantWithMaximumHoursPerWeek() ?
-                            View.GONE :
-                            View.VISIBLE
+                    View.GONE
+//                    shift.isCompliantWithMaximumHoursPerWeek() ?
+//                            View.GONE :
+//                            View.VISIBLE
             );
 //            holder.maximumHoursPerWeekView.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -139,9 +184,11 @@ public class ShiftListFragment extends Fragment {
 //                }
 //            });
             holder.maximumHoursPerFortnightView.setVisibility(
-                    shift.isCompliantWithMaximumHoursPerFortnight() ?
-                            View.GONE :
-                            View.VISIBLE
+                    View.GONE
+
+//                    shift.isCompliantWithMaximumHoursPerFortnight() ?
+//                            View.GONE :
+//                            View.VISIBLE
             );
 //            holder.maximumHoursPerFortnightView.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -150,9 +197,10 @@ public class ShiftListFragment extends Fragment {
 //                }
 //            });
             holder.maximumConsecutiveWeekendsView.setVisibility(
-                    shift.isCompliantWithMaximumConsecutiveWeekends() ?
-                            View.GONE :
-                            View.VISIBLE
+                    View.GONE
+//                    shift.isCompliantWithMaximumConsecutiveWeekends() ?
+//                            View.GONE :
+//                            View.VISIBLE
             );
 //            holder.maximumConsecutiveWeekendsView.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -163,22 +211,22 @@ public class ShiftListFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShiftClicked(shift);
+                    mListener.onShiftClicked(shiftId);
                 }
             });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mListener.onShiftLongClicked(shift);
-                    return true;
-                }
-            });
+//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    mListener.onShiftLongClicked(shift);
+//                    return true;
+//                }
+//            });
 
         }
 
         @Override
         public int getItemCount() {
-            return mListener.getShiftCount();
+            return mCursor == null ? 0 : mCursor.getCount();
         }
 
         class CustomViewHolder extends RecyclerView.ViewHolder {

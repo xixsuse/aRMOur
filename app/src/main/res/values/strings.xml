@@ -18,7 +18,6 @@
     </plurals>
     <string name="hours_and_minutes">%1$s, %2$s</string>
     <string name="title_shift_list">Shifts</string>
-    <string name="title_shift_detail">Shift Detail</string>
     <string name="minimum_rest_hours_between_shifts">Insufficient rest since last shift</string>
     <string name="maximum_hours_per_day">Exceeds maximum hours per day</string>
     <string name="maximum_hours_per_week">Exceeds maximum hours per week</string>
