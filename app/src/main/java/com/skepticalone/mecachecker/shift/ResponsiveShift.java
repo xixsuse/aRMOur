@@ -5,11 +5,10 @@ import com.skepticalone.mecachecker.CheckedShift;
 import java.util.Date;
 
 class ResponsiveShift extends CheckedShift {
-    static final int MINUTES_PER_STEP = 5;
     private static final int MILLIS_PER_MINUTE = 1000 * 60;
-    private static final int MILLIS_PER_STEP = MILLIS_PER_MINUTE * MINUTES_PER_STEP;
+    private static final int MILLIS_PER_STEP = MILLIS_PER_MINUTE * TimePickerFragment.MINUTES_PER_STEP;
     private static final int MINUTES_PER_HOUR = 60;
-    private static final int STEPS_PER_HOUR = MINUTES_PER_HOUR / MINUTES_PER_STEP;
+    private static final int STEPS_PER_HOUR = MINUTES_PER_HOUR / TimePickerFragment.MINUTES_PER_STEP;
     private final ShiftDisplayListener mListener;
 
     ResponsiveShift(ShiftDisplayListener listener, long startSeconds, long endSeconds) {
@@ -50,7 +49,7 @@ class ResponsiveShift extends CheckedShift {
 
     private void updateListenerDuration(int steps) {
         int hours = steps / STEPS_PER_HOUR;
-        int minutes = steps % STEPS_PER_HOUR * MINUTES_PER_STEP;
+        int minutes = steps % STEPS_PER_HOUR * TimePickerFragment.MINUTES_PER_STEP;
         mListener.updateDuration(hours, minutes);
     }
 

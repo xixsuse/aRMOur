@@ -20,9 +20,16 @@ import com.skepticalone.mecachecker.data.ShiftProvider;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
+    public static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final String SHIFT_ID = "SHIFT_ID";
     private long mShiftId;
-    private TextView mDateView, mStartTimeView, mEndTimeView;
+    private long mStart, mEnd;
+    private TextView
+            mDateView,
+            mStartTimeView,
+            mEndTimeView,
+            maximumHoursPerDayView;
 
     static ShiftDetailFragment create(long id) {
         ShiftDetailFragment fragment = new ShiftDetailFragment();
@@ -43,8 +50,27 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_detail_fragment, container, false);
         mDateView = (TextView) layout.findViewById(R.id.date);
+        mDateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerFragment.create(mShiftId, mStart, mEnd).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
+            }
+        });
         mStartTimeView = (TextView) layout.findViewById(R.id.startTime);
+        mStartTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerFragment.create(mShiftId, mStart, mEnd, true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+            }
+        });
         mEndTimeView = (TextView) layout.findViewById(R.id.endTime);
+        mEndTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerFragment.create(mShiftId, mStart, mEnd, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+            }
+        });
+        maximumHoursPerDayView = (TextView) layout.findViewById(R.id.maximum_hours_per_day);
         return layout;
     }
 
@@ -62,11 +88,12 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            long start = data.getLong(ComplianceCursor.COLUMN_INDEX_START);
-            long end = data.getLong(ComplianceCursor.COLUMN_INDEX_END);
-            mDateView.setText(getString(R.string.date_format, start));
-            mStartTimeView.setText(getString(R.string.time_format, start));
-            mEndTimeView.setText(getString(R.string.time_format_with_day, end));
+            mStart = data.getLong(ComplianceCursor.COLUMN_INDEX_START);
+            mEnd = data.getLong(ComplianceCursor.COLUMN_INDEX_END);
+            mDateView.setText(getString(R.string.date_format, mStart));
+            mStartTimeView.setText(getString(R.string.time_format, mStart));
+            mEndTimeView.setText(getString(R.string.time_format_with_day, mEnd));
+            maximumHoursPerDayView.setVisibility(data.getInt(ComplianceCursor.COLUMN_INDEX_MAX_HOURS) == 1 ? View.GONE : View.VISIBLE);
         }
     }
 

@@ -8,41 +8,50 @@
 
     <TextView
         style="?android:attr/textAppearanceSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/date" />
 
     <TextView
         android:id="@+id/date"
         style="?android:attr/textAppearanceLarge"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Fri 27/01/2017" />
 
     <TextView
         style="?android:attr/textAppearanceSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start" />
 
     <TextView
         android:id="@+id/startTime"
         style="?android:attr/textAppearanceLarge"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="08:00" />
 
     <TextView
         style="?android:attr/textAppearanceSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/end" />
 
     <TextView
         android:id="@+id/endTime"
         style="?android:attr/textAppearanceLarge"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="16:00" />
+
+    <TextView
+        android:id="@+id/maximum_hours_per_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_warning_24dp"
+        android:drawableStart="@drawable/ic_warning_24dp"
+        android:text="@string/maximum_hours_per_day"
+        android:textColor="@color/colorError" />
 
 </LinearLayout>

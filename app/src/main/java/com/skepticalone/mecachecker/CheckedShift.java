@@ -14,6 +14,12 @@ public class CheckedShift extends Period {
         checkEndAndSetDuration();
     }
 
+    public CheckedShift(Calendar start, Calendar end) {
+        super(start, end);
+        updateMaxEnd();
+        checkEndAndSetDuration();
+    }
+
     @Override
     public final long getDuration() {
         return currentDuration;
@@ -23,7 +29,7 @@ public class CheckedShift extends Period {
         return maxDuration;
     }
 
-    protected final void updateDate(int year, int month, int dayOfMonth) {
+    public final void updateDate(int year, int month, int dayOfMonth) {
         start.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         start.set(Calendar.MONTH, month);
         start.set(Calendar.YEAR, year);
@@ -31,6 +37,13 @@ public class CheckedShift extends Period {
         updateEnd();
     }
 
+    public void updateTime(boolean isStart, int hourOfDay, int minute) {
+        if (isStart) {
+            updateStart(hourOfDay, minute);
+        } else {
+            updateEnd(hourOfDay, minute);
+        }
+    }
     protected void updateStart(int hourOfDay, int minute) {
         start.set(Calendar.HOUR_OF_DAY, hourOfDay);
         start.set(Calendar.MINUTE, minute);

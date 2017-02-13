@@ -3,39 +3,55 @@ package com.skepticalone.mecachecker.shift;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.DatePicker;
 
-public class DatePickerFragment extends DialogFragment {
+import com.skepticalone.mecachecker.CheckedShift;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 
-    private static final String YEAR = "YEAR";
-    private static final String MONTH = "MONTH";
-    private static final String DAY_OF_MONTH = "DAY_OF_MONTH";
-    private DatePickerDialog.OnDateSetListener mListener;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-    public static DatePickerFragment create(ResponsiveShift shift) {
-        DatePickerFragment fragment = new DatePickerFragment();
+public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+    private static final String SHIFT_ID = "SHIFT_ID";
+    private static final String START = "START";
+    private static final String END = "END";
+    private final Calendar mStart = new GregorianCalendar();
+    private final Calendar mEnd = new GregorianCalendar();
+
+    public static DatePickerFragment create(long shiftId, long start, long end) {
         Bundle arguments = new Bundle();
-        arguments.putInt(DatePickerFragment.YEAR, shift.getYear());
-        arguments.putInt(DatePickerFragment.MONTH, shift.getMonth());
-        arguments.putInt(DatePickerFragment.DAY_OF_MONTH, shift.getDayOfMonth());
+        arguments.putLong(SHIFT_ID, shiftId);
+        arguments.putLong(START, start);
+        arguments.putLong(END, end);
+        DatePickerFragment fragment = new DatePickerFragment();
         fragment.setArguments(arguments);
         return fragment;
-    }
-
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (DatePickerDialog.OnDateSetListener) context;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new DatePickerDialog(getActivity(), mListener,
-                getArguments().getInt(YEAR),
-                getArguments().getInt(MONTH),
-                getArguments().getInt(DAY_OF_MONTH)
+        mStart.setTimeInMillis(getArguments().getLong(START));
+        return new DatePickerDialog(getActivity(), this,
+                mStart.get(Calendar.YEAR),
+                mStart.get(Calendar.MONTH),
+                mStart.get(Calendar.DAY_OF_MONTH)
         );
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        mStart.setTimeInMillis(getArguments().getLong(START));
+        mEnd.setTimeInMillis(getArguments().getLong(END));
+        CheckedShift shift = new CheckedShift(mStart, mEnd);
+        shift.updateDate(year, month, dayOfMonth);
+        ContentValues values = new ContentValues();
+        values.put(ShiftProvider.START_TIME, shift.getStart().getTime() / 1000);
+        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime() / 1000);
+        getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
     }
 }
