@@ -14,7 +14,7 @@ public final class Compliance {
 //    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
 
 
-    public static boolean checkMinimumRestHoursBetweenShifts(Iterable<? extends PeriodWithComplianceData> shifts) {
+    static boolean checkMinimumRestHoursBetweenShifts(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
         Period lastShift = null;
         for (PeriodWithComplianceData shift : shifts) {
@@ -32,15 +32,15 @@ public final class Compliance {
         return compliant;
     }
 
-    public static boolean checkMaximumHoursPerDay(List<? extends PeriodWithComplianceData> shifts) {
+    static boolean checkMaximumHoursPerDay(List<? extends PeriodWithComplianceData> shifts) {
         return checkMaximumHoursInPeriod(shifts, PeriodToCheck.day);
     }
 
-    public static boolean checkMaximumHoursPerWeek(List<? extends PeriodWithComplianceData> shifts) {
+    static boolean checkMaximumHoursPerWeek(List<? extends PeriodWithComplianceData> shifts) {
         return checkMaximumHoursInPeriod(shifts, PeriodToCheck.week);
     }
 
-    public static boolean checkMaximumHoursPerFortnight(List<? extends PeriodWithComplianceData> shifts) {
+    static boolean checkMaximumHoursPerFortnight(List<? extends PeriodWithComplianceData> shifts) {
         return checkMaximumHoursInPeriod(shifts, PeriodToCheck.fortnight);
     }
 
@@ -142,7 +142,17 @@ public final class Compliance {
         return totalDuration;
     }
 
-    public static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {
+    public static long getDurationOfRest(Cursor cursor, int startColumnIndex, int endColumnIndex, int positionToCheck) {
+        cursor.moveToPosition(positionToCheck);
+        long currentStart = cursor.getLong(startColumnIndex);
+        if (cursor.moveToPrevious()) {
+            long previousEnd = cursor.getLong(endColumnIndex);
+            return currentStart - previousEnd;
+        } else return -1L;
+    }
+
+
+    static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
         Period forbiddenWeekend = null;
         for (PeriodWithComplianceData shift : shifts) {

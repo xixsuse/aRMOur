@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -24,9 +25,7 @@ import com.skepticalone.mecachecker.data.ShiftProvider;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    @SuppressWarnings("WeakerAccess")
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
-    @SuppressWarnings("WeakerAccess")
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final String SHIFT_ID = "SHIFT_ID";
     private long mShiftId;
@@ -35,6 +34,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mDateView,
             mStartTimeView,
             mEndTimeView,
+            mRestBetweenShiftsView,
             mDurationWorkedOverDayView,
             mDurationWorkedOverWeekView,
             mDurationWorkedOverFortnightView;
@@ -78,6 +78,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                 TimePickerFragment.create(mShiftId, mStart, mEnd, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
             }
         });
+        mRestBetweenShiftsView = (TextView) layout.findViewById(R.id.rest_between_shifts);
         mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
         mDurationWorkedOverWeekView = (TextView) layout.findViewById(R.id.duration_worked_over_week);
         mDurationWorkedOverFortnightView = (TextView) layout.findViewById(R.id.duration_worked_over_fortnight);
@@ -98,26 +99,41 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
+            Drawable errorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null);
+            int errorColor = ResourcesCompat.getColor(getResources(), R.color.colorError, null);
+            int betterColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
+            boolean error;
+            //
             mStart = cursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
             mEnd = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
             mDateView.setText(getString(R.string.date_format, mStart));
             mStartTimeView.setText(getString(R.string.time_format, mStart));
             mEndTimeView.setText(getString(R.string.time_format_with_day, mEnd));
             //
+            long restBetweenShifts = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OF_REST);
+            boolean restBetweenShiftsApplicable = restBetweenShifts >= 0;
+            error = restBetweenShiftsApplicable && restBetweenShifts < AppConstants.MINIMUM_DURATION_REST;
+            mRestBetweenShiftsView.setText(restBetweenShiftsApplicable ? DurationFormat.getDurationString(getActivity(), restBetweenShifts) : getString(R.string.not_applicable));
+            mRestBetweenShiftsView.setTextColor(error ? errorColor : betterColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mRestBetweenShiftsView, null, null, error ? errorDrawable : null, null);
+            //
             long durationOverDay = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY);
+            error = durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY;
             mDurationWorkedOverDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
-            mDurationWorkedOverDayView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY ? R.color.colorError : R.color.colorPrimary, null));
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
+            mDurationWorkedOverDayView.setTextColor(error ? errorColor : betterColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, error ? errorDrawable : null, null);
             //
             long durationOverWeek = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_WEEK);
+            error = durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK;
             mDurationWorkedOverWeekView.setText(DurationFormat.getDurationString(getActivity(), durationOverWeek));
-            mDurationWorkedOverWeekView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK ? R.color.colorError : R.color.colorPrimary, null));
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
+            mDurationWorkedOverWeekView.setTextColor(error ? errorColor : betterColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, error ? errorDrawable : null, null);
             //
             long durationOverFortnight = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
+            error = durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT;
             mDurationWorkedOverFortnightView.setText(DurationFormat.getDurationString(getActivity(), durationOverFortnight));
-            mDurationWorkedOverFortnightView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ? R.color.colorError : R.color.colorPrimary, null));
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
+            mDurationWorkedOverFortnightView.setTextColor(error ? errorColor : betterColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? errorDrawable : null, null);
         }
     }
 

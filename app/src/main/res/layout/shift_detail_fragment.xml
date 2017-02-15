@@ -49,6 +49,19 @@
         style="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/rest_between_shifts" />
+
+    <TextView
+        android:id="@+id/rest_between_shifts"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="15 hours, 30 minutes" />
+
+    <TextView
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/duration_worked_over_day" />
 
     <TextView

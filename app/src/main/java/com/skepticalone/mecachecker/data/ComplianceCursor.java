@@ -15,9 +15,10 @@ public class ComplianceCursor extends MatrixCursor {
     public final static int COLUMN_INDEX_ID = 0;
     public final static int COLUMN_INDEX_START = 1;
     public final static int COLUMN_INDEX_END = 2;
-    public final static int COLUMN_INDEX_DURATION_OVER_DAY = 3;
-    public final static int COLUMN_INDEX_DURATION_OVER_WEEK = 4;
-    public final static int COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 5;
+    public final static int COLUMN_INDEX_DURATION_OF_REST = 3;
+    public final static int COLUMN_INDEX_DURATION_OVER_DAY = 4;
+    public final static int COLUMN_INDEX_DURATION_OVER_WEEK = 5;
+    public final static int COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 6;
     final static String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
@@ -25,6 +26,7 @@ public class ComplianceCursor extends MatrixCursor {
     };
     private final static String[] COLUMN_NAMES;
     private final static String[] EXTRA_COLUMN_NAMES = new String[]{
+            "DURATION_OF_REST",
             "DURATION_OVER_DAY",
             "DURATION_OVER_WEEK",
             "DURATION_OVER_FORTNIGHT"
@@ -50,6 +52,7 @@ public class ComplianceCursor extends MatrixCursor {
                     .add(id)
                     .add(initialCursor.getLong(COLUMN_INDEX_START))
                     .add(initialCursor.getLong(COLUMN_INDEX_END))
+                    .add(Compliance.getDurationOfRest(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, i))
                     .add(Compliance.getDurationOverDay(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverWeek(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverFortnight(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
