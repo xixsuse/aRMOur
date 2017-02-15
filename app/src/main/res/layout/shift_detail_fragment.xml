@@ -46,12 +46,45 @@
         tools:text="16:00" />
 
     <TextView
-        android:id="@+id/maximum_hours_per_day"
+        style="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_warning_24dp"
-        android:drawableStart="@drawable/ic_warning_24dp"
-        android:text="@string/maximum_hours_per_day"
-        android:textColor="@color/colorError" />
+        android:text="@string/duration_worked_over_day" />
+
+    <TextView
+        android:id="@+id/duration_worked_over_day"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:drawableEnd="@drawable/ic_warning_24dp"
+        tools:drawableRight="@drawable/ic_warning_24dp"
+        tools:text="8 hours, 30 minutes"
+        tools:textColor="@color/colorError" />
+
+    <TextView
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/duration_worked_over_week" />
+
+    <TextView
+        android:id="@+id/duration_worked_over_week"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="80 hours, 30 minutes" />
+
+    <TextView
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/duration_worked_over_fortnight" />
+
+    <TextView
+        android:id="@+id/duration_worked_over_fortnight"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="120 hours" />
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.os.Bundle;
 
+import com.skepticalone.mecachecker.AppConstants;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
@@ -29,11 +30,6 @@ public class OverviewActivity extends Activity implements
     private static final String
             LIST_FRAGMENT = "LIST_FRAGMENT",
             DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
-    private static final int
-            DEFAULT_START_HOUR_OF_DAY = 8,
-            DEFAULT_START_MINUTE = 0,
-            DEFAULT_END_HOUR_OF_DAY = 16,
-            DEFAULT_END_MINUTE = 0;
 //    private final List<PeriodWithStableId> mShifts = new ArrayList<>();
 //    private final LongSparseArray<PeriodWithStableId> mShiftsIndex = new LongSparseArray<>();
 
@@ -54,8 +50,8 @@ public class OverviewActivity extends Activity implements
         start.setTime(lastShiftEnd);
         start.set(Calendar.MILLISECOND, 0);
         start.set(Calendar.SECOND, 0);
-        start.set(Calendar.MINUTE, DEFAULT_START_MINUTE);
-        start.set(Calendar.HOUR_OF_DAY, DEFAULT_START_HOUR_OF_DAY);
+        start.set(Calendar.MINUTE, AppConstants.DEFAULT_START_MINUTE);
+        start.set(Calendar.HOUR_OF_DAY, AppConstants.DEFAULT_START_HOUR_OF_DAY);
         if (lastShiftEnd != null) {
             while (lastShiftEnd.after(start.getTime())) {
                 start.add(Calendar.DAY_OF_MONTH, 1);
@@ -65,15 +61,15 @@ public class OverviewActivity extends Activity implements
                 start.get(Calendar.YEAR),
                 start.get(Calendar.MONTH),
                 start.get(Calendar.DAY_OF_MONTH),
-                DEFAULT_END_HOUR_OF_DAY,
-                DEFAULT_END_MINUTE
+                AppConstants.DEFAULT_END_HOUR_OF_DAY,
+                AppConstants.DEFAULT_END_MINUTE
         );
         while (!(end.after(start))) {
             end.add(Calendar.DAY_OF_MONTH, 1);
         }
         ContentValues values = new ContentValues();
-        values.put(ShiftProvider.START_TIME, start.getTimeInMillis() / 1000);
-        values.put(ShiftProvider.END_TIME, end.getTimeInMillis() / 1000);
+        values.put(ShiftProvider.START_TIME, start.getTimeInMillis());
+        values.put(ShiftProvider.END_TIME, end.getTimeInMillis());
         getContentResolver().insert(ShiftProvider.shiftsUri, values);
     }
 

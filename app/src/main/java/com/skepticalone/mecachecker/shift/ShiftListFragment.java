@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.AppConstants;
+import com.skepticalone.mecachecker.DurationFormat;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -23,7 +25,6 @@ import java.util.Date;
 
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private RecyclerView.LayoutManager mLayoutManager;
     private CustomAdapter mAdapter;
     private Listener mListener;
     private Cursor mCursor = null;
@@ -45,7 +46,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.shift_list);
-        mLayoutManager = recyclerView.getLayoutManager();
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START | ItemTouchHelper.END) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -74,8 +74,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onClick(View v) {
                 Date lastShiftEnd = new Date();
-                if (mCursor != null) {
-                    mCursor.moveToLast();
+                if (mCursor != null && mCursor.moveToLast()) {
                     lastShiftEnd.setTime(mCursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
                 }
                 mListener.onAddShiftClicked(lastShiftEnd);
@@ -148,60 +147,67 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, start));
             holder.startView.setText(holder.startView.getContext().getString(R.string.time_format, start));
             holder.endView.setText(holder.endView.getContext().getString(R.string.time_format_with_day, end));
-            holder.minimumRestHoursBetweenShiftsView.setVisibility(
-                    View.GONE
+//            holder.minimumRestHoursBetweenShiftsView.setVisibility(
+//                    View.GONE
 //                    shift.isCompliantWithMinimumRestHoursBetweenShifts() ?
 //                            View.GONE :
 //                            View.VISIBLE
-            );
+//            );
 //            holder.minimumRestHoursBetweenShiftsView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    mListener.showDialogNonCompliantWithMinimumRestHoursBetweenShifts(shift.nonCompliantPeriodWithMinimumRestHoursBetweenShifts());
 //                }
 //            });
-            holder.maximumHoursPerDayView.setVisibility(
-                    mCursor.getInt(ComplianceCursor.COLUMN_INDEX_MAX_HOURS) == 1 ?
-                            View.GONE :
-                            View.VISIBLE
-            );
+            long durationOverDay = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY);
+            if (durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY) {
+                holder.maximumHoursPerDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
+                holder.maximumHoursPerDayView.setVisibility(View.VISIBLE);
+            } else {
+                holder.maximumHoursPerDayView.setVisibility(View.GONE);
+            }
+//            holder.maximumHoursPerDayView.setVisibility(
+//                    mCursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY) == 1 ?
+//                            View.GONE :
+//                            View.VISIBLE
+//            );
 //            holder.maximumHoursPerDayView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    mListener.showDialogNonCompliantWithMaximumHoursPerDay(shift.nonCompliantPeriodWithMaximumHoursPerDay());
 //                }
 //            });
-            holder.maximumHoursPerWeekView.setVisibility(
-                    View.GONE
+//            holder.maximumHoursPerWeekView.setVisibility(
+//                    View.GONE
 //                    shift.isCompliantWithMaximumHoursPerWeek() ?
 //                            View.GONE :
 //                            View.VISIBLE
-            );
+//            );
 //            holder.maximumHoursPerWeekView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    mListener.showDialogNonCompliantWithMaximumHoursPerWeek(shift.nonCompliantPeriodWithMaximumHoursPerWeek());
 //                }
 //            });
-            holder.maximumHoursPerFortnightView.setVisibility(
-                    View.GONE
+//            holder.maximumHoursPerFortnightView.setVisibility(
+//                    View.GONE
 
 //                    shift.isCompliantWithMaximumHoursPerFortnight() ?
 //                            View.GONE :
 //                            View.VISIBLE
-            );
+//            );
 //            holder.maximumHoursPerFortnightView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    mListener.showDialogNonCompliantWithMaximumHoursPerFortnight(shift.nonCompliantPeriodWithMaximumHoursPerFortnight());
 //                }
 //            });
-            holder.maximumConsecutiveWeekendsView.setVisibility(
-                    View.GONE
+//            holder.maximumConsecutiveWeekendsView.setVisibility(
+//                    View.GONE
 //                    shift.isCompliantWithMaximumConsecutiveWeekends() ?
 //                            View.GONE :
 //                            View.VISIBLE
-            );
+//            );
 //            holder.maximumConsecutiveWeekendsView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {

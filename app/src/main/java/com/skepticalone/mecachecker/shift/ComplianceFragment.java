@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
-import com.skepticalone.mecachecker.Compliance;
+import com.skepticalone.mecachecker.AppConstants;
 import com.skepticalone.mecachecker.NonCompliantTimeSpan;
 import com.skepticalone.mecachecker.R;
 
@@ -61,16 +61,16 @@ public class ComplianceFragment extends DialogFragment {
         String message;
         switch (title) {
             case R.string.minimum_rest_hours_between_shifts:
-                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, Compliance.MINIMUM_REST_HOURS);
+                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, AppConstants.MINIMUM_REST_HOURS);
                 break;
             case R.string.maximum_hours_per_day:
-                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, Compliance.MAXIMUM_HOURS_PER_DAY);
+                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, AppConstants.MAXIMUM_HOURS_PER_DAY);
                 break;
             case R.string.maximum_hours_per_week:
-                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, Compliance.MAXIMUM_HOURS_PER_WEEK);
+                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, AppConstants.MAXIMUM_HOURS_PER_WEEK);
                 break;
             case R.string.maximum_hours_per_fortnight:
-                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, Compliance.MAXIMUM_HOURS_PER_FORTNIGHT);
+                message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, AppConstants.MAXIMUM_HOURS_PER_FORTNIGHT);
                 break;
             case R.string.maximum_consecutive_weekends:
                 message = getString(R.string.maximum_consecutive_weekends_detail);

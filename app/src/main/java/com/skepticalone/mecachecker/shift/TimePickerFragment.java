@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
+import com.skepticalone.mecachecker.AppConstants;
 import com.skepticalone.mecachecker.CheckedShift;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
@@ -16,7 +17,6 @@ import java.util.GregorianCalendar;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-    public static final int MINUTES_PER_STEP = 5;
     private static final String SHIFT_ID = "SHIFT_ID";
     private static final String START = "START";
     private static final String END = "END";
@@ -57,14 +57,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        minute -= minute % MINUTES_PER_STEP;
+        minute -= minute % AppConstants.MINUTES_PER_STEP;
         mStart.setTimeInMillis(getArguments().getLong(START));
         mEnd.setTimeInMillis(getArguments().getLong(END));
         CheckedShift shift = new CheckedShift(mStart, mEnd);
         shift.updateTime(getArguments().getBoolean(IS_START), hourOfDay, minute);
         ContentValues values = new ContentValues();
-        values.put(ShiftProvider.START_TIME, shift.getStart().getTime() / 1000);
-        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime() / 1000);
+        values.put(ShiftProvider.START_TIME, shift.getStart().getTime());
+        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime());
         getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
     }
 

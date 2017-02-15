@@ -1,5 +1,7 @@
 package com.skepticalone.mecachecker;
 
+import android.database.Cursor;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -7,12 +9,10 @@ import java.util.List;
 
 public final class Compliance {
 
-    public static final int MINIMUM_REST_HOURS = 8;
-    public static final int MAXIMUM_HOURS_PER_DAY = 16;
-    public static final int MAXIMUM_HOURS_PER_WEEK = 72;
-    public static final int MAXIMUM_HOURS_PER_FORTNIGHT = 144;
-    private static final int MILLIS_PER_HOUR = 1000 * 60 * 60;
-    private static final int MINIMUM_REST_IN_MILLIS = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
+//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
+//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
+//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
+
 
     public static boolean checkMinimumRestHoursBetweenShifts(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
@@ -20,7 +20,7 @@ public final class Compliance {
         for (PeriodWithComplianceData shift : shifts) {
             if (lastShift != null) {
                 long millis = shift.timeSince(lastShift);
-                if (millis < MINIMUM_REST_IN_MILLIS) {
+                if (millis < AppConstants.MINIMUM_DURATION_REST) {
                     ConcreteTimeSpan timeSpan = new ConcreteTimeSpan(lastShift.getEnd(), shift.getStart());
                     timeSpan.setHours(millis);
                     shift.markNonCompliantWithMinimumRestHoursBetweenShifts(timeSpan);
@@ -51,15 +51,15 @@ public final class Compliance {
         switch (periodToCheck) {
             case day:
                 periodInDays = 1;
-                maxMillisInPeriod = MAXIMUM_HOURS_PER_DAY * MILLIS_PER_HOUR;
+                maxMillisInPeriod = AppConstants.MAXIMUM_DURATION_OVER_DAY;
                 break;
             case week:
                 periodInDays = 7;
-                maxMillisInPeriod = MAXIMUM_HOURS_PER_WEEK * MILLIS_PER_HOUR;
+                maxMillisInPeriod = AppConstants.MAXIMUM_DURATION_OVER_WEEK;
                 break;
             case fortnight:
                 periodInDays = 14;
-                maxMillisInPeriod = MAXIMUM_HOURS_PER_FORTNIGHT * MILLIS_PER_HOUR;
+                maxMillisInPeriod = AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -99,6 +99,47 @@ public final class Compliance {
             }
         }
         return compliant;
+    }
+
+    public static long getDurationOverDay(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
+        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 1, retrospective);
+    }
+
+    public static long getDurationOverWeek(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
+        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 7, retrospective);
+    }
+
+    public static long getDurationOverFortnight(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
+        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 14, retrospective);
+    }
+
+    private static long getDurationOverPeriod(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, int periodInDays, boolean retrospective) {
+        long totalDuration = 0, periodStart, periodEnd;
+        cursor.moveToPosition(positionToCheck);
+        if (retrospective) {
+            periodEnd = cursor.getLong(endColumnIndex);
+            calendarToRecycle.setTimeInMillis(periodEnd);
+            calendarToRecycle.add(Calendar.DATE, -periodInDays);
+            periodStart = calendarToRecycle.getTimeInMillis();
+            do {
+                long end = cursor.getLong(endColumnIndex);
+                if (periodStart >= end) break;
+                long start = cursor.getLong(startColumnIndex);
+                totalDuration += end - Math.max(periodStart, start);
+            } while (cursor.moveToPrevious());
+        } else {
+            periodStart = cursor.getLong(startColumnIndex);
+            calendarToRecycle.setTimeInMillis(periodStart);
+            calendarToRecycle.add(Calendar.DATE, periodInDays);
+            periodEnd = calendarToRecycle.getTimeInMillis();
+            do {
+                long start = cursor.getLong(startColumnIndex);
+                if (periodEnd <= start) break;
+                long end = cursor.getLong(endColumnIndex);
+                totalDuration += Math.min(periodEnd, end) - start;
+            } while (cursor.moveToNext());
+        }
+        return totalDuration;
     }
 
     public static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {
@@ -147,7 +188,7 @@ public final class Compliance {
         }
 
         void setHours(long millis) {
-            hours = (float) millis / MILLIS_PER_HOUR;
+            hours = (float) millis / AppConstants.MILLIS_PER_HOUR;
         }
     }
 

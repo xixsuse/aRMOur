@@ -6,10 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.Compliance;
-import com.skepticalone.mecachecker.PeriodWithStableId;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 
 public class ComplianceCursor extends MatrixCursor {
@@ -17,7 +15,9 @@ public class ComplianceCursor extends MatrixCursor {
     public final static int COLUMN_INDEX_ID = 0;
     public final static int COLUMN_INDEX_START = 1;
     public final static int COLUMN_INDEX_END = 2;
-    public final static int COLUMN_INDEX_MAX_HOURS = 3;
+    public final static int COLUMN_INDEX_DURATION_OVER_DAY = 3;
+    public final static int COLUMN_INDEX_DURATION_OVER_WEEK = 4;
+    public final static int COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 5;
     final static String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
@@ -25,7 +25,9 @@ public class ComplianceCursor extends MatrixCursor {
     };
     private final static String[] COLUMN_NAMES;
     private final static String[] EXTRA_COLUMN_NAMES = new String[]{
-            "MAX_HOURS"
+            "DURATION_OVER_DAY",
+            "DURATION_OVER_WEEK",
+            "DURATION_OVER_FORTNIGHT"
     };
 
     static {
@@ -36,36 +38,55 @@ public class ComplianceCursor extends MatrixCursor {
 
     ComplianceCursor(@NonNull Cursor initialCursor, @Nullable Long shiftId) {
         super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
-        List<PeriodWithStableId> mShifts = new ArrayList<>();
-        mShifts.clear();
-        if (initialCursor.moveToFirst()) {
-            do {
-                PeriodWithStableId shift = new PeriodWithStableId(
-                        initialCursor.getLong(COLUMN_INDEX_START),
-                        initialCursor.getLong(COLUMN_INDEX_END),
-                        initialCursor.getLong(COLUMN_INDEX_ID)
-                );
-                mShifts.add(shift);
-            } while (initialCursor.moveToNext());
-            Compliance.checkMinimumRestHoursBetweenShifts(mShifts);
-            Compliance.checkMaximumHoursPerDay(mShifts);
-            Compliance.checkMaximumHoursPerWeek(mShifts);
-            Compliance.checkMaximumHoursPerFortnight(mShifts);
-            Compliance.checkMaximumConsecutiveWeekends(mShifts);
-            for (PeriodWithStableId shift : mShifts) {
-                if (shiftId != null && shiftId != shift.getId()) {
-                    continue;
-                }
-                newRow()
-                        .add(shift.getId())
-                        .add(shift.getStart().getTime())
-                        .add(shift.getEnd().getTime())
-                        .add(shift.isCompliantWithMaximumHoursPerDay() ? 1 : 0);
-                if (shiftId != null) {
-                    break;
-                }
+        final int size = initialCursor.getCount();
+        Calendar calendarToRecycle = Calendar.getInstance();
+        for (int i = 0; i < size; i++) {
+            initialCursor.moveToPosition(i);
+            long id = initialCursor.getLong(COLUMN_INDEX_ID);
+            if (shiftId != null && shiftId != id) {
+                continue;
             }
+            newRow()
+                    .add(id)
+                    .add(initialCursor.getLong(COLUMN_INDEX_START))
+                    .add(initialCursor.getLong(COLUMN_INDEX_END))
+                    .add(Compliance.getDurationOverDay(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
+                    .add(Compliance.getDurationOverWeek(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
+                    .add(Compliance.getDurationOverFortnight(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
+            ;
+            if (shiftId != null) {
+                break;
+            }
+
         }
+//        if (initialCursor.moveToFirst()) {
+//            do {
+//                PeriodWithStableId shift = new PeriodWithStableId(
+//                        initialCursor.getLong(COLUMN_INDEX_START),
+//                        initialCursor.getLong(COLUMN_INDEX_END),
+//                        initialCursor.getLong(COLUMN_INDEX_ID)
+//                );
+//                mShifts.add(shift);
+//            } while (initialCursor.moveToNext());
+//            Compliance.checkMinimumRestHoursBetweenShifts(mShifts);
+//            Compliance.checkMaximumHoursPerDay(mShifts);
+//            Compliance.checkMaximumHoursPerWeek(mShifts);
+//            Compliance.checkMaximumHoursPerFortnight(mShifts);
+//            Compliance.checkMaximumConsecutiveWeekends(mShifts);
+//            for (PeriodWithStableId shift : mShifts) {
+//                if (shiftId != null && shiftId != shift.getId()) {
+//                    continue;
+//                }
+//                newRow()
+//                        .add(shift.getId())
+//                        .add(shift.getStart().getTime())
+//                        .add(shift.getEnd().getTime())
+//                        .add(shift.isCompliantWithMaximumHoursPerDay() ? 1 : 0);
+//                if (shiftId != null) {
+//                    break;
+//                }
+//            }
+//        }
         initialCursor.close();
     }
 }

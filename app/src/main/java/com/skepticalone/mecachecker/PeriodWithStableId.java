@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker;
 
-public class PeriodWithStableId extends PeriodWithComplianceData {
+@SuppressWarnings("WeakerAccess")
+class PeriodWithStableId extends PeriodWithComplianceData {
     private final long mId;
 
     public PeriodWithStableId(long startSeconds, long endSeconds, long id) {

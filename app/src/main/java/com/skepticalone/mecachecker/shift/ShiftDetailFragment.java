@@ -8,11 +8,15 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.AppConstants;
+import com.skepticalone.mecachecker.DurationFormat;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -20,8 +24,10 @@ import com.skepticalone.mecachecker.data.ShiftProvider;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
-    public static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
+    @SuppressWarnings("WeakerAccess")
+    private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
+    @SuppressWarnings("WeakerAccess")
+    private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final String SHIFT_ID = "SHIFT_ID";
     private long mShiftId;
     private long mStart, mEnd;
@@ -29,7 +35,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mDateView,
             mStartTimeView,
             mEndTimeView,
-            maximumHoursPerDayView;
+            mDurationWorkedOverDayView,
+            mDurationWorkedOverWeekView,
+            mDurationWorkedOverFortnightView;
 
     static ShiftDetailFragment create(long id) {
         ShiftDetailFragment fragment = new ShiftDetailFragment();
@@ -70,7 +78,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                 TimePickerFragment.create(mShiftId, mStart, mEnd, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
             }
         });
-        maximumHoursPerDayView = (TextView) layout.findViewById(R.id.maximum_hours_per_day);
+        mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
+        mDurationWorkedOverWeekView = (TextView) layout.findViewById(R.id.duration_worked_over_week);
+        mDurationWorkedOverFortnightView = (TextView) layout.findViewById(R.id.duration_worked_over_fortnight);
         return layout;
     }
 
@@ -86,14 +96,28 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.moveToFirst()) {
-            mStart = data.getLong(ComplianceCursor.COLUMN_INDEX_START);
-            mEnd = data.getLong(ComplianceCursor.COLUMN_INDEX_END);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            mStart = cursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
+            mEnd = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
             mDateView.setText(getString(R.string.date_format, mStart));
             mStartTimeView.setText(getString(R.string.time_format, mStart));
             mEndTimeView.setText(getString(R.string.time_format_with_day, mEnd));
-            maximumHoursPerDayView.setVisibility(data.getInt(ComplianceCursor.COLUMN_INDEX_MAX_HOURS) == 1 ? View.GONE : View.VISIBLE);
+            //
+            long durationOverDay = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY);
+            mDurationWorkedOverDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
+            mDurationWorkedOverDayView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY ? R.color.colorError : R.color.colorPrimary, null));
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
+            //
+            long durationOverWeek = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_WEEK);
+            mDurationWorkedOverWeekView.setText(DurationFormat.getDurationString(getActivity(), durationOverWeek));
+            mDurationWorkedOverWeekView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK ? R.color.colorError : R.color.colorPrimary, null));
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
+            //
+            long durationOverFortnight = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
+            mDurationWorkedOverFortnightView.setText(DurationFormat.getDurationString(getActivity(), durationOverFortnight));
+            mDurationWorkedOverFortnightView.setTextColor(ResourcesCompat.getColor(getResources(), durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ? R.color.colorError : R.color.colorPrimary, null));
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ? ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null) : null, null);
         }
     }
 

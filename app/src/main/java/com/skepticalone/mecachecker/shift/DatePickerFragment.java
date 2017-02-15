@@ -50,8 +50,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         CheckedShift shift = new CheckedShift(mStart, mEnd);
         shift.updateDate(year, month, dayOfMonth);
         ContentValues values = new ContentValues();
-        values.put(ShiftProvider.START_TIME, shift.getStart().getTime() / 1000);
-        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime() / 1000);
+        values.put(ShiftProvider.START_TIME, shift.getStart().getTime());
+        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime());
         getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
     }
 }

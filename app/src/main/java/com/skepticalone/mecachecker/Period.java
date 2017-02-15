@@ -9,9 +9,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class Period implements TimeSpan {
+class Period implements TimeSpan {
 
-    private static final int MILLIS_PER_SECOND = 1000;
     private static final DateFormat sFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
     final Calendar start;
     final Calendar end;
@@ -32,7 +31,7 @@ public class Period implements TimeSpan {
 
     private static Calendar fromSeconds(long seconds) {
         Calendar calendar = new GregorianCalendar();
-        calendar.setTimeInMillis(seconds * MILLIS_PER_SECOND);
+        calendar.setTimeInMillis(seconds * AppConstants.MILLIS_PER_SECOND);
         return calendar;
     }
 
@@ -98,7 +97,7 @@ public class Period implements TimeSpan {
     }
 
     public final long getTimeInSeconds(boolean isStart) {
-        return (isStart ? start : end).getTimeInMillis() / MILLIS_PER_SECOND;
+        return (isStart ? start : end).getTimeInMillis() / AppConstants.MILLIS_PER_SECOND;
     }
 
     final boolean overlapsWith(Period period) {

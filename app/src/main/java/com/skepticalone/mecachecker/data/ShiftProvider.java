@@ -23,7 +23,7 @@ public final class ShiftProvider extends ContentProvider {
             FORMATTED_END_TIME = ShiftContract.Shift.END_AS_TIME;
     private static final String WITH_COMPLIANCE = "_with_compliance";
     private static final String TAG = "ShiftProvider";
-    private static final String SHIFT_OVERLAP_TOAST_MESSAGE = "CheckedShift overlaps!";
+    private static final String SHIFT_OVERLAP_TOAST_MESSAGE = "Shift overlaps!";
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.";
