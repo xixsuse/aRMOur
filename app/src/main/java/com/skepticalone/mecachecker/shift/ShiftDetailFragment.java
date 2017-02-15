@@ -22,6 +22,8 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
+import java.util.Calendar;
+
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -29,7 +31,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final String SHIFT_ID = "SHIFT_ID";
     private long mShiftId;
-    private long mStart, mEnd;
+    private final static Calendar sStart = Calendar.getInstance(), sEnd = Calendar.getInstance();
     private TextView
             mDateView,
             mStartTimeView,
@@ -61,21 +63,21 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         mDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragment.create(mShiftId, mStart, mEnd).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
+                DatePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis()).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
             }
         });
         mStartTimeView = (TextView) layout.findViewById(R.id.startTime);
         mStartTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment.create(mShiftId, mStart, mEnd, true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                TimePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis(), true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
             }
         });
         mEndTimeView = (TextView) layout.findViewById(R.id.endTime);
         mEndTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment.create(mShiftId, mStart, mEnd, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                TimePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis(), false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
             }
         });
         mRestBetweenShiftsView = (TextView) layout.findViewById(R.id.rest_between_shifts);
@@ -104,11 +106,11 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             int betterColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
             boolean error;
             //
-            mStart = cursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
-            mEnd = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
-            mDateView.setText(getString(R.string.date_format, mStart));
-            mStartTimeView.setText(getString(R.string.time_format, mStart));
-            mEndTimeView.setText(getString(R.string.time_format_with_day, mEnd));
+            sStart.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_START));
+            sEnd.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
+            mDateView.setText(getString(R.string.date_format, sStart));
+            mStartTimeView.setText(getString(R.string.time_format, sStart));
+            mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));
             //
             long restBetweenShifts = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OF_REST);
             boolean restBetweenShiftsApplicable = restBetweenShifts >= 0;

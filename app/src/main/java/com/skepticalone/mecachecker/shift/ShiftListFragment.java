@@ -21,6 +21,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -28,6 +29,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     private CustomAdapter mAdapter;
     private Listener mListener;
     private Cursor mCursor = null;
+    private final static Calendar sStart = Calendar.getInstance(), sEnd = Calendar.getInstance();
 
     @Override
     public void onAttach(Context context) {
@@ -142,11 +144,11 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         public void onBindViewHolder(CustomViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             final long shiftId = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_ID);
-            long start = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
-            long end = mCursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
-            holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, start));
-            holder.startView.setText(holder.startView.getContext().getString(R.string.time_format, start));
-            holder.endView.setText(holder.endView.getContext().getString(R.string.time_format_with_day, end));
+            sStart.setTimeInMillis(mCursor.getLong(ComplianceCursor.COLUMN_INDEX_START));
+            sEnd.setTimeInMillis(mCursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
+            holder.dateView.setText(holder.dateView.getContext().getString(R.string.date_format, sStart));
+            holder.startView.setText(holder.startView.getContext().getString(R.string.time_format, sStart));
+            holder.endView.setText(holder.endView.getContext().getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));
 //            holder.minimumRestHoursBetweenShiftsView.setVisibility(
 //                    View.GONE
 //                    shift.isCompliantWithMinimumRestHoursBetweenShifts() ?
