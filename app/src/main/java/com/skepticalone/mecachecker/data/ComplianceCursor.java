@@ -12,13 +12,17 @@ import java.util.Calendar;
 
 public class ComplianceCursor extends MatrixCursor {
 
-    public final static int COLUMN_INDEX_ID = 0;
-    public final static int COLUMN_INDEX_START = 1;
-    public final static int COLUMN_INDEX_END = 2;
-    public final static int COLUMN_INDEX_DURATION_OF_REST = 3;
-    public final static int COLUMN_INDEX_DURATION_OVER_DAY = 4;
-    public final static int COLUMN_INDEX_DURATION_OVER_WEEK = 5;
-    public final static int COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 6;
+    public final static int
+            COLUMN_INDEX_ID = 0,
+            COLUMN_INDEX_START = 1,
+            COLUMN_INDEX_END = 2,
+            COLUMN_INDEX_DURATION_OF_REST = 3,
+            COLUMN_INDEX_DURATION_OVER_DAY = 4,
+            COLUMN_INDEX_DURATION_OVER_WEEK = 5,
+            COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 6,
+            COLUMN_INDEX_IS_WEEKEND = 7,
+            COLUMN_INDEX_LAST_WEEKEND_WORKED_START = 8,
+            COLUMN_INDEX_LAST_WEEKEND_WORKED_END = 9;
     final static String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
@@ -29,7 +33,10 @@ public class ComplianceCursor extends MatrixCursor {
             "DURATION_OF_REST",
             "DURATION_OVER_DAY",
             "DURATION_OVER_WEEK",
-            "DURATION_OVER_FORTNIGHT"
+            "DURATION_OVER_FORTNIGHT",
+            "IS_WEEKEND",
+            "LAST_WEEKEND_WORKED_START",
+            "LAST_WEEKEND_WORKED_END"
     };
 
     static {
@@ -56,6 +63,7 @@ public class ComplianceCursor extends MatrixCursor {
                     .add(Compliance.getDurationOverDay(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverWeek(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverFortnight(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
+                    .add(Compliance.isWeekendShift(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i) ? 1 : 0)
             ;
             if (shiftId != null) {
                 break;

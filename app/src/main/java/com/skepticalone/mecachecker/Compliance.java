@@ -9,11 +9,6 @@ import java.util.List;
 
 public final class Compliance {
 
-//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
-//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
-//    public static final int MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR;
-
-
     static boolean checkMinimumRestHoursBetweenShifts(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
         Period lastShift = null;
@@ -151,6 +146,15 @@ public final class Compliance {
         } else return -1L;
     }
 
+    public static boolean isWeekendShift(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
+        cursor.moveToPosition(positionToCheck);
+        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
+        int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+        if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) return true;
+        calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
+        day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+        return day == Calendar.SUNDAY || (day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0));
+    }
 
     static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;

@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
@@ -39,8 +40,11 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mRestBetweenShiftsView,
             mDurationWorkedOverDayView,
             mDurationWorkedOverWeekView,
-            mDurationWorkedOverFortnightView;
-
+            mDurationWorkedOverFortnightView,
+            mShiftTypeView;
+    @ColorInt
+    private int mTextColor, mErrorColor;
+    private Drawable mErrorDrawable;
     static ShiftDetailFragment create(long id) {
         ShiftDetailFragment fragment = new ShiftDetailFragment();
         Bundle arguments = new Bundle();
@@ -53,6 +57,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public void onAttach(Context context) {
         super.onAttach(context);
         mShiftId = getArguments().getLong(SHIFT_ID);
+        mTextColor = ResourcesCompat.getColor(getResources(), android.R.color.primary_text_light, null);
+        mErrorColor = ResourcesCompat.getColor(getResources(), R.color.colorError, null);
+        mErrorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null);
     }
 
     @Nullable
@@ -84,6 +91,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
         mDurationWorkedOverWeekView = (TextView) layout.findViewById(R.id.duration_worked_over_week);
         mDurationWorkedOverFortnightView = (TextView) layout.findViewById(R.id.duration_worked_over_fortnight);
+        mShiftTypeView = (TextView) layout.findViewById(R.id.shift_type);
         return layout;
     }
 
@@ -101,9 +109,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
-            Drawable errorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null);
-            int errorColor = ResourcesCompat.getColor(getResources(), R.color.colorError, null);
-            int betterColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
             boolean error;
             //
             sStart.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_START));
@@ -116,26 +121,28 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             boolean restBetweenShiftsApplicable = restBetweenShifts >= 0;
             error = restBetweenShiftsApplicable && restBetweenShifts < AppConstants.MINIMUM_DURATION_REST;
             mRestBetweenShiftsView.setText(restBetweenShiftsApplicable ? DurationFormat.getDurationString(getActivity(), restBetweenShifts) : getString(R.string.not_applicable));
-            mRestBetweenShiftsView.setTextColor(error ? errorColor : betterColor);
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mRestBetweenShiftsView, null, null, error ? errorDrawable : null, null);
+            mRestBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mRestBetweenShiftsView, null, null, error ? mErrorDrawable : null, null);
             //
             long durationOverDay = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY);
             error = durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY;
             mDurationWorkedOverDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
-            mDurationWorkedOverDayView.setTextColor(error ? errorColor : betterColor);
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, error ? errorDrawable : null, null);
+            mDurationWorkedOverDayView.setTextColor(error ? mErrorColor : mTextColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, error ? mErrorDrawable : null, null);
             //
             long durationOverWeek = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_WEEK);
             error = durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK;
             mDurationWorkedOverWeekView.setText(DurationFormat.getDurationString(getActivity(), durationOverWeek));
-            mDurationWorkedOverWeekView.setTextColor(error ? errorColor : betterColor);
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, error ? errorDrawable : null, null);
+            mDurationWorkedOverWeekView.setTextColor(error ? mErrorColor : mTextColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, error ? mErrorDrawable : null, null);
             //
             long durationOverFortnight = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
             error = durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT;
             mDurationWorkedOverFortnightView.setText(DurationFormat.getDurationString(getActivity(), durationOverFortnight));
-            mDurationWorkedOverFortnightView.setTextColor(error ? errorColor : betterColor);
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? errorDrawable : null, null);
+            mDurationWorkedOverFortnightView.setTextColor(error ? mErrorColor : mTextColor);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? mErrorDrawable : null, null);
+            //
+            mShiftTypeView.setText(cursor.getInt(ComplianceCursor.COLUMN_INDEX_IS_WEEKEND) == 1 ? R.string.shift_type_weekend : R.string.shift_type_weekday);
         }
     }
 

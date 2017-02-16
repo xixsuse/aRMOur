@@ -100,4 +100,17 @@
         android:layout_height="wrap_content"
         tools:text="120 hours" />
 
+    <TextView
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shift_type" />
+
+    <TextView
+        android:id="@+id/shift_type"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Weekend" />
+
 </LinearLayout>

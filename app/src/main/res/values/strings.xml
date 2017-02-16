@@ -3,6 +3,9 @@
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
+    <string name="shift_type">Shift type</string>
+    <string name="shift_type_weekday">Weekday</string>
+    <string name="shift_type_weekend">Weekend</string>
     <string name="date_format">%1$ta %1$te/%1$tm/%1$ty</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
