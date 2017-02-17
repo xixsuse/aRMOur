@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -154,6 +155,30 @@ public final class Compliance {
         calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
         day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
         return day == Calendar.SUNDAY || (day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0));
+    }
+
+    @Nullable
+    public static ShiftWeekendInfo.Period getWeekendInfo(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
+        cursor.moveToPosition(positionToCheck);
+        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
+        int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+        if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
+            calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
+            day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+        }
+        if (!((day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0)) || day == Calendar.SUNDAY)) {
+            return null;
+        }
+        if (day == Calendar.SUNDAY) {
+            calendarToRecycle.add(Calendar.DAY_OF_MONTH, -1);
+        }
+        calendarToRecycle.set(Calendar.HOUR_OF_DAY, 0);
+        calendarToRecycle.set(Calendar.MINUTE, 0);
+        calendarToRecycle.set(Calendar.MILLISECOND, 0);
+        long start = calendarToRecycle.getTimeInMillis();
+        calendarToRecycle.add(Calendar.DAY_OF_MONTH, 2);
+        long end = calendarToRecycle.getTimeInMillis();
+        return new ShiftWeekendInfo.Period(start, end);
     }
 
     static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {

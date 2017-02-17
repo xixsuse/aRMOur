@@ -142,7 +142,11 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mDurationWorkedOverFortnightView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? mErrorDrawable : null, null);
             //
-            mShiftTypeView.setText(cursor.getInt(ComplianceCursor.COLUMN_INDEX_IS_WEEKEND) == 1 ? R.string.shift_type_weekend : R.string.shift_type_weekday);
+            if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_WEEKEND_WORKED_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_WEEKEND_WORKED_END)) {
+                mShiftTypeView.setText(R.string.shift_type_weekday);
+            } else {
+                mShiftTypeView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_WEEKEND_WORKED_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_WEEKEND_WORKED_END)));
+            }
         }
     }
 

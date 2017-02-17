@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/card_contents_margin"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:gravity="start"
                 android:textAppearance="?attr/textAppearanceListItem"
                 tools:text="Monday 27/03/2016" />
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/card_contents_margin"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:gravity="end"
                 android:textAppearance="?attr/textAppearanceListItem"
                 tools:text="4:30pm" />
         </LinearLayout>
