@@ -15,16 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
-import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
 import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.util.AppConstants;
 
 import java.util.Calendar;
 
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private CustomAdapter mAdapter;
+    private ShiftAdapter mAdapter;
     private Listener mListener;
     private ComplianceCursorWrapper mCursor = null;
 
@@ -49,7 +49,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 getActivity().getContentResolver().delete(ShiftProvider.shiftUri(viewHolder.getItemId()), null, null);
             }
         }).attachToRecyclerView(recyclerView);
-        mAdapter = new CustomAdapter();
+        mAdapter = new ShiftAdapter();
         recyclerView.setAdapter(mAdapter);
         layout.findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,9 +104,9 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         void onShiftClicked(long shiftId);
     }
 
-    class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
+    class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.CustomViewHolder> {
 
-        CustomAdapter() {
+        ShiftAdapter() {
             super();
             setHasStableIds(true);
         }
@@ -130,61 +130,12 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             holder.dateView.setText(getString(R.string.date_format, start));
             holder.startView.setText(getString(R.string.time_format, start));
             holder.endView.setText(getString(mCursor.startsAndEndsOnSameDay() ? R.string.time_format : R.string.time_format_with_day, mCursor.getEnd()));
-//            long durationOverDay = mCursor.getDurationOverDay();
-//            if (durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY) {
-//                holder.maximumHoursPerDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
-//                holder.maximumHoursPerDayView.setVisibility(View.VISIBLE);
-//            } else {
-//                holder.maximumHoursPerDayView.setVisibility(View.GONE);
-//            }
-//            holder.maximumHoursPerDayView.setVisibility(
-//                    mCursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY) == 1 ?
-//                            View.GONE :
-//                            View.VISIBLE
-//            );
-//            holder.maximumHoursPerDayView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.showDialogNonCompliantWithMaximumHoursPerDay(shift.nonCompliantPeriodWithMaximumHoursPerDay());
-//                }
-//            });
-//            holder.maximumHoursPerWeekView.setVisibility(
-//                    View.GONE
-//                    shift.isCompliantWithMaximumHoursPerWeek() ?
-//                            View.GONE :
-//                            View.VISIBLE
-//            );
-//            holder.maximumHoursPerWeekView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.showDialogNonCompliantWithMaximumHoursPerWeek(shift.nonCompliantPeriodWithMaximumHoursPerWeek());
-//                }
-//            });
-//            holder.maximumHoursPerFortnightView.setVisibility(
-//                    View.GONE
-
-//                    shift.isCompliantWithMaximumHoursPerFortnight() ?
-//                            View.GONE :
-//                            View.VISIBLE
-//            );
-//            holder.maximumHoursPerFortnightView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.showDialogNonCompliantWithMaximumHoursPerFortnight(shift.nonCompliantPeriodWithMaximumHoursPerFortnight());
-//                }
-//            });
-//            holder.maximumConsecutiveWeekendsView.setVisibility(
-//                    View.GONE
-//                    shift.isCompliantWithMaximumConsecutiveWeekends() ?
-//                            View.GONE :
-//                            View.VISIBLE
-//            );
-//            holder.maximumConsecutiveWeekendsView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.showDialogNonCompliantWithMaximumConsecutiveWeekends();
-//                }
-//            });
+            boolean error = (position > 0 && mCursor.getDurationOfRest() < AppConstants.MINIMUM_DURATION_REST) ||
+                    mCursor.getDurationOverDay() > AppConstants.MAXIMUM_DURATION_OVER_DAY ||
+                    mCursor.getDurationOverWeek() > AppConstants.MAXIMUM_DURATION_OVER_WEEK ||
+                    mCursor.getDurationOverFortnight() > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ||
+                    mCursor.consecutiveWeekendsWorked();
+            holder.mComplianceErrorView.setVisibility(error ? View.VISIBLE : View.GONE);
         }
 
         @Override
@@ -196,23 +147,15 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             final TextView
                     dateView,
                     startView,
-                    endView,
-                    minimumRestHoursBetweenShiftsView,
-                    maximumHoursPerDayView,
-                    maximumHoursPerWeekView,
-                    maximumHoursPerFortnightView,
-                    maximumConsecutiveWeekendsView;
+                    endView;
+            final View mComplianceErrorView;
 
             CustomViewHolder(View itemView) {
                 super(itemView);
                 dateView = (TextView) itemView.findViewById(R.id.date);
                 startView = (TextView) itemView.findViewById(R.id.start);
                 endView = (TextView) itemView.findViewById(R.id.end);
-                minimumRestHoursBetweenShiftsView = (TextView) itemView.findViewById(R.id.minimum_rest_hours_between_shifts);
-                maximumHoursPerDayView = (TextView) itemView.findViewById(R.id.maximum_hours_per_day);
-                maximumHoursPerWeekView = (TextView) itemView.findViewById(R.id.maximum_hours_per_week);
-                maximumHoursPerFortnightView = (TextView) itemView.findViewById(R.id.maximum_hours_per_fortnight);
-                maximumConsecutiveWeekendsView = (TextView) itemView.findViewById(R.id.maximum_consecutive_weekends);
+                mComplianceErrorView = itemView.findViewById(R.id.compliance_error);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

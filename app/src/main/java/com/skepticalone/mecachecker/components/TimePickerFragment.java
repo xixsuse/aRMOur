@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
-import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.util.AppConstants;
 
 import java.util.Calendar;
 
@@ -54,12 +54,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             start = calendar.getTimeInMillis();
+            calendar.setTimeInMillis(getArguments().getLong(END));
+            hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+            minute = calendar.get(Calendar.MINUTE);
         }
-        calendar.setTimeInMillis(getArguments().getLong(END));
-        if (!isStart){
-            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            calendar.set(Calendar.MINUTE, minute);
-        }
+        calendar.setTimeInMillis(start);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
         if (calendar.getTimeInMillis() <= start) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }

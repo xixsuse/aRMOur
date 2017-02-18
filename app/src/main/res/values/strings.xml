@@ -3,6 +3,7 @@
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
+    <string name="compliance_error">Compliance error</string>
     <string name="date_format">%1$ta %1$te/%1$tm/%1$ty</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
@@ -18,14 +19,10 @@
     <string name="hours_and_minutes">%1$s, %2$s</string>
     <string name="title_shift_list">Shifts</string>
     <string name="not_applicable">N/A</string>
-    <string name="minimum_rest_hours_between_shifts">Insufficient rest since last shift</string>
     <string name="rest_between_shifts">Rest between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
-    <string name="maximum_hours_per_day">Exceeds maximum hours per day</string>
-    <string name="maximum_hours_per_week">Exceeds maximum hours per week</string>
-    <string name="maximum_hours_per_fortnight">Exceeds maximum hours per fortnight</string>
     <string name="current_weekend">Current weekend</string>
     <string name="last_weekend_worked">Last weekend worked</string>
 </resources>
