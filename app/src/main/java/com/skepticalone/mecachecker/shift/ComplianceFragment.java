@@ -36,7 +36,7 @@ public class ComplianceFragment extends DialogFragment {
     }
 
     public static ComplianceFragment createDialogNonCompliantWithMaximumConsecutiveWeekends() {
-        return create(R.string.maximum_consecutive_weekends, null);
+        return create(R.string.last_weekend_worked, null);
     }
 
     private static ComplianceFragment create(@StringRes int title, @Nullable NonCompliantTimeSpan nonCompliantPeriod) {
@@ -72,7 +72,7 @@ public class ComplianceFragment extends DialogFragment {
             case R.string.maximum_hours_per_fortnight:
                 message = getString(R.string.time_span, startOfNonCompliantPeriod, endOfNonCompliantPeriod, hours, AppConstants.MAXIMUM_HOURS_PER_FORTNIGHT);
                 break;
-            case R.string.maximum_consecutive_weekends:
+            case R.string.last_weekend_worked:
                 message = getString(R.string.maximum_consecutive_weekends_detail);
                 break;
             default:

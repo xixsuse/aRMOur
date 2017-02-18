@@ -104,7 +104,7 @@
             android:drawableLeft="@drawable/ic_warning_24dp"
             android:drawableStart="@drawable/ic_warning_24dp"
             android:gravity="center"
-            android:text="@string/maximum_consecutive_weekends"
+            android:text="@string/last_weekend_worked"
             android:textColor="@color/colorError"
             android:visibility="gone" />
 

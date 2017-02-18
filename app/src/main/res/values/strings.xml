@@ -30,7 +30,8 @@
     <string name="maximum_hours_per_day">Exceeds maximum hours per day</string>
     <string name="maximum_hours_per_week">Exceeds maximum hours per week</string>
     <string name="maximum_hours_per_fortnight">Exceeds maximum hours per fortnight</string>
-    <string name="maximum_consecutive_weekends">Consecutive weekends</string>
+    <string name="current_weekend">Current weekend</string>
+    <string name="last_weekend_worked">Last weekend worked</string>
     <!--<string name="minimum_rest_hours_between_shifts_detail">Last shift finished at %1$tl:%1$tM %1$tp on %1$ta %1$te/%1$tm/%1$ty</string>-->
     <!--<string name="maximum_hours_per_day_detail">Day starting from %1$tl:%1$tM %1$tp on %1$ta %1$te/%1$tm/%1$ty</string>-->
     <!--<string name="maximum_hours_per_week_detail">Week starting from %1$tl:%1$tM %1$tp on %1$ta %1$te/%1$tm/%1$ty</string>-->

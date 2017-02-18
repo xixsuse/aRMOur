@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.Compliance;
-import com.skepticalone.mecachecker.ShiftWeekendInfo;
+import com.skepticalone.mecachecker.Period;
 
 import java.util.Calendar;
 
@@ -21,8 +21,11 @@ public class ComplianceCursor extends MatrixCursor {
             COLUMN_INDEX_DURATION_OVER_DAY = 4,
             COLUMN_INDEX_DURATION_OVER_WEEK = 5,
             COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 6,
-            COLUMN_INDEX_WEEKEND_WORKED_START = 7,
-            COLUMN_INDEX_WEEKEND_WORKED_END = 8;
+            COLUMN_INDEX_CURRENT_WEEKEND_START = 7,
+            COLUMN_INDEX_CURRENT_WEEKEND_END = 8,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 9,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 10,
+            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 11;
     final static String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
@@ -34,8 +37,11 @@ public class ComplianceCursor extends MatrixCursor {
             "DURATION_OVER_DAY",
             "DURATION_OVER_WEEK",
             "DURATION_OVER_FORTNIGHT",
-            "WEEKEND_WORKED_START",
-            "WEEKEND_WORKED_END"
+            "CURRENT_WEEKEND_START",
+            "CURRENT_WEEKEND_END",
+            "PREVIOUS_WEEKEND_WORKED_START",
+            "PREVIOUS_WEEKEND_WORKED_END",
+            "CONSECUTIVE_WEEKENDS_WORKED"
     };
 
     static {
@@ -54,7 +60,6 @@ public class ComplianceCursor extends MatrixCursor {
             if (shiftId != null && shiftId != id) {
                 continue;
             }
-            ShiftWeekendInfo.Period weekendInfo = Compliance.getWeekendInfo(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i);
             RowBuilder builder = newRow()
                     .add(id)
                     .add(initialCursor.getLong(COLUMN_INDEX_START))
@@ -63,10 +68,24 @@ public class ComplianceCursor extends MatrixCursor {
                     .add(Compliance.getDurationOverDay(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverWeek(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
                     .add(Compliance.getDurationOverFortnight(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true));
-            if (weekendInfo == null) {
-                builder.add(null).add(null);
-            } else {
-                builder.add(weekendInfo.start).add(weekendInfo.end);
+            Period weekend = Compliance.getWeekend(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i);
+            if (weekend != null) {
+                builder
+                        .add(weekend.start)
+                        .add(weekend.end);
+                Period previousWeekendWorked = Compliance.getLastWeekendWorked(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, weekend);
+                if (previousWeekendWorked != null) {
+                    builder
+                            .add(previousWeekendWorked.start)
+                            .add(previousWeekendWorked.end)
+                            .add(weekend.advanced(calendarToRecycle, Calendar.DAY_OF_MONTH, -7).equals(previousWeekendWorked) ? 1 : 0)
+                    ;
+                }
+//                if(Compliance.previousShiftsOverlap(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, i, weekend.previousWeekend)){
+//                    builder
+//                            .add(weekend.currentWeekend.start)
+//                            .add(weekend.currentWeekend.end);
+//                }
             }
             if (shiftId != null) {
                 break;

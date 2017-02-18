@@ -4,4 +4,5 @@
 
     <dimen name="half_card_margin">4dp</dimen>
     <dimen name="card_contents_margin">6dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

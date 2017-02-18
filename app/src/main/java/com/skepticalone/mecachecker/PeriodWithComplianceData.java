@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.util.Calendar;
 
-public class PeriodWithComplianceData extends Period {
+public class PeriodWithComplianceData extends HeavySpan {
 
     private NonCompliantTimeSpan compliantWithMinimumRestHoursBetweenShifts = null,
             compliantWithMaximumHoursPerDay = null,

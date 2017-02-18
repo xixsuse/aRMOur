@@ -113,4 +113,32 @@
         android:layout_height="wrap_content"
         tools:text="Weekend" />
 
+    <TextView
+        android:id="@+id/current_weekend_label"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/current_weekend" />
+
+    <TextView
+        android:id="@+id/current_weekend"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="18/2/17-19/2/17" />
+
+    <TextView
+        android:id="@+id/last_weekend_worked_label"
+        style="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/last_weekend_worked" />
+
+    <TextView
+        android:id="@+id/last_weekend_worked"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="11/2/17-12/2/17" />
+
 </LinearLayout>

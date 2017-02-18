@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Calendar;
@@ -12,7 +13,7 @@ public final class Compliance {
 
     static boolean checkMinimumRestHoursBetweenShifts(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
-        Period lastShift = null;
+        HeavySpan lastShift = null;
         for (PeriodWithComplianceData shift : shifts) {
             if (lastShift != null) {
                 long millis = shift.timeSince(lastShift);
@@ -158,32 +159,54 @@ public final class Compliance {
     }
 
     @Nullable
-    public static ShiftWeekendInfo.Period getWeekendInfo(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
+    public static Period getWeekend(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
         cursor.moveToPosition(positionToCheck);
-        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
-        int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
-        if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
-            calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
-            day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
-        }
-        if (!((day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0)) || day == Calendar.SUNDAY)) {
-            return null;
-        }
-        if (day == Calendar.SUNDAY) {
-            calendarToRecycle.add(Calendar.DAY_OF_MONTH, -1);
-        }
-        calendarToRecycle.set(Calendar.HOUR_OF_DAY, 0);
-        calendarToRecycle.set(Calendar.MINUTE, 0);
-        calendarToRecycle.set(Calendar.MILLISECOND, 0);
-        long start = calendarToRecycle.getTimeInMillis();
-        calendarToRecycle.add(Calendar.DAY_OF_MONTH, 2);
-        long end = calendarToRecycle.getTimeInMillis();
-        return new ShiftWeekendInfo.Period(start, end);
+        return Period.getWeekend(cursor.getLong(startColumnIndex), cursor.getLong(endColumnIndex), calendarToRecycle);
+//        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
+//        int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+//        if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
+//            calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
+//            day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
+//        }
+//        if (!((day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0)) || day == Calendar.SUNDAY)) {
+//            return null;
+//        }
+//        if (day == Calendar.SUNDAY) {
+//            calendarToRecycle.add(Calendar.DAY_OF_MONTH, -1);
+//        }
+//        calendarToRecycle.set(Calendar.HOUR_OF_DAY, 0);
+//        calendarToRecycle.set(Calendar.MINUTE, 0);
+//        calendarToRecycle.set(Calendar.MILLISECOND, 0);
+//        long start = calendarToRecycle.getTimeInMillis();
+//        calendarToRecycle.add(Calendar.DAY_OF_MONTH, 2);
+//        long end = calendarToRecycle.getTimeInMillis();
+//        return new ShiftWeekendInfo.HeavySpan(start, end);
     }
+
+    @Nullable
+    public static Period getLastWeekendWorked(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, @NonNull Period currentWeekend) {
+        for (int i = positionToCheck - 1; i >= 0; i--) {
+            Period weekend = getWeekend(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, i);
+            if (weekend != null && !weekend.equals(currentWeekend)) {
+                return weekend;
+            }
+        }
+        return null;
+    }
+
+//    public static boolean previousShiftsOverlap(Cursor cursor, int startColumnIndex, int endColumnIndex, int positionToCheck, ShiftWeekendInfo.Period periodToCheck){
+//        cursor.moveToPosition(positionToCheck);
+//        while (cursor.moveToPrevious()){
+//            if (cursor.getLong(startColumnIndex) >= periodToCheck.end) continue;
+//            if (cursor.getLong(endColumnIndex) <= periodToCheck.start) break;
+//            return true;
+//        }
+//        return false;
+//    }
 
     static boolean checkMaximumConsecutiveWeekends(Iterable<? extends PeriodWithComplianceData> shifts) {
         boolean compliant = true;
-        Period forbiddenWeekend = null;
+        HeavySpan forbiddenWeekend = null;
         for (PeriodWithComplianceData shift : shifts) {
             if (forbiddenWeekend == null || !shift.start.before(forbiddenWeekend.end)) {
                 forbiddenWeekend = shift.getForbiddenWeekend();
