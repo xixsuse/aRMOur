@@ -15,9 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
@@ -26,7 +26,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     private CustomAdapter mAdapter;
     private Listener mListener;
-    private ComplianceCursor mCursor = null;
+    private ComplianceCursorWrapper mCursor = null;
 
     @Override
     public void onAttach(Context context) {
@@ -91,7 +91,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = (ComplianceCursor) data;
+        mCursor = new ComplianceCursorWrapper(data);
         mAdapter.notifyDataSetChanged();
     }
 

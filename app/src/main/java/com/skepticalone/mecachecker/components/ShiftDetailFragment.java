@@ -17,10 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DurationFormat;
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
@@ -111,7 +111,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
-        ComplianceCursor cursor = (ComplianceCursor) c;
+        ComplianceCursorWrapper cursor = new ComplianceCursorWrapper(c);
         if (cursor.moveToFirst()) {
             boolean error;
             //

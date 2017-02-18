@@ -9,8 +9,8 @@ import com.skepticalone.mecachecker.util.Period;
 
 import java.util.Calendar;
 
-public class ComplianceCursor extends MatrixCursor {
-    private final static int
+class ComplianceCursor extends MatrixCursor {
+    final static int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
             COLUMN_INDEX_END = 2,
@@ -139,49 +139,4 @@ public class ComplianceCursor extends MatrixCursor {
         return null;
     }
 
-    public long getId(){
-        return getLong(COLUMN_INDEX_ID);
-    }
-    public long getStart(){
-        return getLong(COLUMN_INDEX_START);
-    }
-    public long getEnd(){
-        return getLong(COLUMN_INDEX_END);
-    }
-    public boolean startsAndEndsOnSameDay() {
-        return getInt(COLUMN_INDEX_STARTS_AND_ENDS_ON_SAME_DAY) == 1;
-    }
-    public long getDurationOfRest(){
-        return getLong(COLUMN_INDEX_DURATION_OF_REST);
-    }
-    public long getDurationOverDay(){
-        return getLong(COLUMN_INDEX_DURATION_OVER_DAY);
-    }
-    public long getDurationOverWeek(){
-        return getLong(COLUMN_INDEX_DURATION_OVER_WEEK);
-    }
-    public long getDurationOverFortnight(){
-        return getLong(COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
-    }
-    public boolean isWeekend(){
-        return !isNull(COLUMN_INDEX_CURRENT_WEEKEND_START) && !isNull(COLUMN_INDEX_CURRENT_WEEKEND_END);
-    }
-    public long getCurrentWeekendStart(){
-        return getLong(COLUMN_INDEX_CURRENT_WEEKEND_START);
-    }
-    public long getCurrentWeekendEnd(){
-        return getLong(COLUMN_INDEX_CURRENT_WEEKEND_END);
-    }
-    public boolean previousWeekendWorked(){
-        return !isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) && !isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END);
-    }
-    public long getPreviousWeekendWorkedStart(){
-        return getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START);
-    }
-    public long getPreviousWeekendWorkedEnd(){
-        return getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END);
-    }
-    public boolean consecutiveWeekendsWorked(){
-        return getInt(COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
-    }
 }
