@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.mecachecker.data.ComplianceCursor;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -98,70 +100,57 @@ public final class Compliance {
         return compliant;
     }
 
-    public static long getDurationOverDay(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
-        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 1, retrospective);
+    public static long getDurationOverDay(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
+        return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 1);
     }
 
-    public static long getDurationOverWeek(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
-        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 7, retrospective);
+    public static long getDurationOverWeek(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
+        return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 7);
     }
 
-    public static long getDurationOverFortnight(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, boolean retrospective) {
-        return getDurationOverPeriod(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, positionToCheck, 14, retrospective);
+    public static long getDurationOverFortnight(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
+        return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 14);
     }
 
-    private static long getDurationOverPeriod(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, int periodInDays, boolean retrospective) {
+    private static long getDurationOverPeriod(Cursor cursor, Calendar calendarToRecycle, int positionToCheck, int periodInDays) {
         long totalDuration = 0, periodStart, periodEnd;
         cursor.moveToPosition(positionToCheck);
-        if (retrospective) {
-            periodEnd = cursor.getLong(endColumnIndex);
-            calendarToRecycle.setTimeInMillis(periodEnd);
-            calendarToRecycle.add(Calendar.DATE, -periodInDays);
-            periodStart = calendarToRecycle.getTimeInMillis();
-            do {
-                long end = cursor.getLong(endColumnIndex);
-                if (periodStart >= end) break;
-                long start = cursor.getLong(startColumnIndex);
-                totalDuration += end - Math.max(periodStart, start);
-            } while (cursor.moveToPrevious());
-        } else {
-            periodStart = cursor.getLong(startColumnIndex);
-            calendarToRecycle.setTimeInMillis(periodStart);
-            calendarToRecycle.add(Calendar.DATE, periodInDays);
-            periodEnd = calendarToRecycle.getTimeInMillis();
-            do {
-                long start = cursor.getLong(startColumnIndex);
-                if (periodEnd <= start) break;
-                long end = cursor.getLong(endColumnIndex);
-                totalDuration += Math.min(periodEnd, end) - start;
-            } while (cursor.moveToNext());
-        }
+        periodEnd = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
+        calendarToRecycle.setTimeInMillis(periodEnd);
+        calendarToRecycle.add(Calendar.DATE, -periodInDays);
+        periodStart = calendarToRecycle.getTimeInMillis();
+        do {
+            long end = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
+            if (periodStart >= end) break;
+            long start = cursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
+            totalDuration += end - Math.max(periodStart, start);
+        } while (cursor.moveToPrevious());
         return totalDuration;
     }
 
-    public static long getDurationOfRest(Cursor cursor, int startColumnIndex, int endColumnIndex, int positionToCheck) {
+    public static long getDurationOfRest(Cursor cursor, int positionToCheck) {
         cursor.moveToPosition(positionToCheck);
-        long currentStart = cursor.getLong(startColumnIndex);
+        long currentStart = cursor.getLong(ComplianceCursor.COLUMN_INDEX_START);
         if (cursor.moveToPrevious()) {
-            long previousEnd = cursor.getLong(endColumnIndex);
+            long previousEnd = cursor.getLong(ComplianceCursor.COLUMN_INDEX_END);
             return currentStart - previousEnd;
         } else return -1L;
     }
 
-    public static boolean isWeekendShift(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
+    public static boolean isWeekendShift(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
         cursor.moveToPosition(positionToCheck);
-        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
+        calendarToRecycle.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_START));
         int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
         if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) return true;
-        calendarToRecycle.setTimeInMillis(cursor.getLong(endColumnIndex));
+        calendarToRecycle.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
         day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
         return day == Calendar.SUNDAY || (day == Calendar.SATURDAY && (calendarToRecycle.get(Calendar.HOUR_OF_DAY) > 0 || calendarToRecycle.get(Calendar.MINUTE) > 0));
     }
 
     @Nullable
-    public static Period getWeekend(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck) {
+    public static Period getWeekend(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
         cursor.moveToPosition(positionToCheck);
-        return Period.getWeekend(cursor.getLong(startColumnIndex), cursor.getLong(endColumnIndex), calendarToRecycle);
+        return Period.getWeekend(cursor.getLong(ComplianceCursor.COLUMN_INDEX_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_END), calendarToRecycle);
 //        calendarToRecycle.setTimeInMillis(cursor.getLong(startColumnIndex));
 //        int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
 //        if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
@@ -184,9 +173,9 @@ public final class Compliance {
     }
 
     @Nullable
-    public static Period getLastWeekendWorked(Cursor cursor, int startColumnIndex, int endColumnIndex, Calendar calendarToRecycle, int positionToCheck, @NonNull Period currentWeekend) {
+    public static Period getLastWeekendWorked(Cursor cursor, Calendar calendarToRecycle, int positionToCheck, @NonNull Period currentWeekend) {
         for (int i = positionToCheck - 1; i >= 0; i--) {
-            Period weekend = getWeekend(cursor, startColumnIndex, endColumnIndex, calendarToRecycle, i);
+            Period weekend = getWeekend(cursor, calendarToRecycle, i);
             if (weekend != null && !weekend.equals(currentWeekend)) {
                 return weekend;
             }
@@ -194,7 +183,7 @@ public final class Compliance {
         return null;
     }
 
-//    public static boolean previousShiftsOverlap(Cursor cursor, int startColumnIndex, int endColumnIndex, int positionToCheck, ShiftWeekendInfo.Period periodToCheck){
+//    public static boolean previousShiftsOverlap(Cursor cursor, int positionToCheck, ShiftWeekendInfo.Period periodToCheck){
 //        cursor.moveToPosition(positionToCheck);
 //        while (cursor.moveToPrevious()){
 //            if (cursor.getLong(startColumnIndex) >= periodToCheck.end) continue;

@@ -64,16 +64,16 @@ public class ComplianceCursor extends MatrixCursor {
                     .add(id)
                     .add(initialCursor.getLong(COLUMN_INDEX_START))
                     .add(initialCursor.getLong(COLUMN_INDEX_END))
-                    .add(Compliance.getDurationOfRest(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, i))
-                    .add(Compliance.getDurationOverDay(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
-                    .add(Compliance.getDurationOverWeek(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true))
-                    .add(Compliance.getDurationOverFortnight(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, true));
-            Period weekend = Compliance.getWeekend(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i);
+                    .add(Compliance.getDurationOfRest(initialCursor, i))
+                    .add(Compliance.getDurationOverDay(initialCursor, calendarToRecycle, i))
+                    .add(Compliance.getDurationOverWeek(initialCursor, calendarToRecycle, i))
+                    .add(Compliance.getDurationOverFortnight(initialCursor, calendarToRecycle, i));
+            Period weekend = Compliance.getWeekend(initialCursor, calendarToRecycle, i);
             if (weekend != null) {
                 builder
                         .add(weekend.start)
                         .add(weekend.end);
-                Period previousWeekendWorked = Compliance.getLastWeekendWorked(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, calendarToRecycle, i, weekend);
+                Period previousWeekendWorked = Compliance.getLastWeekendWorked(initialCursor, calendarToRecycle, i, weekend);
                 if (previousWeekendWorked != null) {
                     builder
                             .add(previousWeekendWorked.start)
@@ -81,7 +81,7 @@ public class ComplianceCursor extends MatrixCursor {
                             .add(weekend.advanced(calendarToRecycle, Calendar.DAY_OF_MONTH, -7).equals(previousWeekendWorked) ? 1 : 0)
                     ;
                 }
-//                if(Compliance.previousShiftsOverlap(initialCursor, COLUMN_INDEX_START, COLUMN_INDEX_END, i, weekend.previousWeekend)){
+//                if(Compliance.previousShiftsOverlap(initialCursor, i, weekend.previousWeekend)){
 //                    builder
 //                            .add(weekend.currentWeekend.start)
 //                            .add(weekend.currentWeekend.end);
@@ -92,6 +92,7 @@ public class ComplianceCursor extends MatrixCursor {
             }
 
         }
+
 //        if (initialCursor.moveToFirst()) {
 //            do {
 //                PeriodWithStableId shift = new PeriodWithStableId(
