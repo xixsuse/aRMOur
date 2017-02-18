@@ -159,14 +159,14 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             } else {
                 mShiftTypeView.setText(R.string.shift_type_weekend);
                 mCurrentWeekendLabelView.setVisibility(View.VISIBLE);
-                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END)));
+                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END) - 1));
                 mCurrentWeekendView.setVisibility(View.VISIBLE);
                 mLastWeekendWorkedLabelView.setVisibility(View.VISIBLE);
                 if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)) {
                     mLastWeekendWorkedView.setText(R.string.not_applicable);
                     mLastWeekendWorkedView.setCompoundDrawables(null, null, null, null);
                 } else {
-                    mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)));
+                    mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END) - 1));
                     error = cursor.getShort(ComplianceCursor.COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
                     TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mLastWeekendWorkedView, null, null, error ? mErrorDrawable : null, null);
                 }
