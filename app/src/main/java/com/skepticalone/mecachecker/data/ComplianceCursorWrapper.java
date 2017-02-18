@@ -52,5 +52,4 @@ public class ComplianceCursorWrapper extends CursorWrapper {
     public boolean consecutiveWeekendsWorked(){
         return getInt(ComplianceCursor.COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
     }
-
 }
