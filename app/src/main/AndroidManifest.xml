@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".shift.OverviewActivity"
+            android:name=".components.OverviewActivity"
             android:label="@string/title_shift_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

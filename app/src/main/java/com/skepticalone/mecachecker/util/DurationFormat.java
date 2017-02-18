@@ -1,6 +1,8 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.util;
 
 import android.content.Context;
+
+import com.skepticalone.mecachecker.R;
 
 public final class DurationFormat {
 

@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker;
+package com.skepticalone.mecachecker.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ public class Period {
     public final long end;
 
     @Nullable
-    static Period getWeekend(long start, long end, Calendar calendarToRecycle) {
+    public static Period getWeekend(long start, long end, Calendar calendarToRecycle) {
         calendarToRecycle.setTimeInMillis(start);
         int day = calendarToRecycle.get(Calendar.DAY_OF_WEEK);
         if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
@@ -32,12 +32,12 @@ public class Period {
     }
 
     @NonNull
-    public Period advanced(Calendar calendarToRecycle, int field, int amount) {
+    public Period advanceDays(Calendar calendarToRecycle, int amount) {
         calendarToRecycle.setTimeInMillis(start);
-        calendarToRecycle.add(field, amount);
+        calendarToRecycle.add(Calendar.DAY_OF_MONTH, amount);
         long startOfNewPeriod = calendarToRecycle.getTimeInMillis();
         calendarToRecycle.setTimeInMillis(end);
-        calendarToRecycle.add(field, amount);
+        calendarToRecycle.add(Calendar.DAY_OF_MONTH, amount);
         return new Period(startOfNewPeriod, calendarToRecycle.getTimeInMillis());
     }
 

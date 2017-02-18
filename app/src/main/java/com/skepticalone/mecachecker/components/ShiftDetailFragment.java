@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.shift;
+package com.skepticalone.mecachecker.components;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -17,8 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.skepticalone.mecachecker.AppConstants;
-import com.skepticalone.mecachecker.DurationFormat;
+import com.skepticalone.mecachecker.util.AppConstants;
+import com.skepticalone.mecachecker.util.DurationFormat;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -99,70 +99,71 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(OverviewActivity.LOADER_DETAIL_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftWithComplianceUri(mShiftId), null, null, null, null);
+        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        ComplianceCursor cursor = (ComplianceCursor) c;
         if (cursor.moveToFirst()) {
             boolean error;
             //
-            sStart.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_START));
-            sEnd.setTimeInMillis(cursor.getLong(ComplianceCursor.COLUMN_INDEX_END));
+            sStart.setTimeInMillis(cursor.getStart());
+            sEnd.setTimeInMillis(cursor.getEnd());
             mDateView.setText(getString(R.string.date_format, sStart));
             mStartTimeView.setText(getString(R.string.time_format, sStart));
             mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));
             //
-            long restBetweenShifts = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OF_REST);
+            long restBetweenShifts = cursor.getDurationOfRest();
             boolean restBetweenShiftsApplicable = restBetweenShifts >= 0;
             error = restBetweenShiftsApplicable && restBetweenShifts < AppConstants.MINIMUM_DURATION_REST;
             mRestBetweenShiftsView.setText(restBetweenShiftsApplicable ? DurationFormat.getDurationString(getActivity(), restBetweenShifts) : getString(R.string.not_applicable));
             mRestBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mRestBetweenShiftsView, null, null, error ? mErrorDrawable : null, null);
             //
-            long durationOverDay = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_DAY);
+            long durationOverDay = cursor.getDurationOverDay();
             error = durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY;
             mDurationWorkedOverDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
             mDurationWorkedOverDayView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, null, null, error ? mErrorDrawable : null, null);
             //
-            long durationOverWeek = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_WEEK);
+            long durationOverWeek = cursor.getDurationOverWeek();
             error = durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK;
             mDurationWorkedOverWeekView.setText(DurationFormat.getDurationString(getActivity(), durationOverWeek));
             mDurationWorkedOverWeekView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, null, null, error ? mErrorDrawable : null, null);
             //
-            long durationOverFortnight = cursor.getLong(ComplianceCursor.COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
+            long durationOverFortnight = cursor.getDurationOverFortnight();
             error = durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT;
             mDurationWorkedOverFortnightView.setText(DurationFormat.getDurationString(getActivity(), durationOverFortnight));
             mDurationWorkedOverFortnightView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? mErrorDrawable : null, null);
             //
-            if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END)) {
-                mCurrentWeekendView.setText(R.string.not_applicable);
-                mLastWeekendWorkedLabelView.setVisibility(View.GONE);
-                mLastWeekendWorkedView.setVisibility(View.GONE);
-            } else {
-                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END) - 1));
+            if (cursor.isWeekend()) {
+                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getCurrentWeekendStart(), cursor.getEnd() - 1));
                 mLastWeekendWorkedLabelView.setVisibility(View.VISIBLE);
-                if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)) {
+                if (cursor.previousWeekendWorked()){
+                    mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getPreviousWeekendWorkedStart(), cursor.getPreviousWeekendWorkedEnd() - 1));
+                    error = cursor.consecutiveWeekendsWorked();
+                    mLastWeekendWorkedView.setTextColor(error ? mErrorColor : mTextColor);
+                    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mLastWeekendWorkedView, null, null, error ? mErrorDrawable : null, null);
+                } else {
                     mLastWeekendWorkedView.setText(R.string.not_applicable);
                     mLastWeekendWorkedView.setTextColor(mTextColor);
                     mLastWeekendWorkedView.setCompoundDrawables(null, null, null, null);
-                } else {
-                    mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END) - 1));
-                    error = cursor.getShort(ComplianceCursor.COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
-                    mLastWeekendWorkedView.setTextColor(error ? mErrorColor : mTextColor);
-                    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mLastWeekendWorkedView, null, null, error ? mErrorDrawable : null, null);
                 }
                 mLastWeekendWorkedView.setVisibility(View.VISIBLE);
+            } else {
+                mCurrentWeekendView.setText(R.string.not_applicable);
+                mLastWeekendWorkedLabelView.setVisibility(View.GONE);
+                mLastWeekendWorkedView.setVisibility(View.GONE);
             }
         }
     }

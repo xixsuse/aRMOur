@@ -1,19 +1,16 @@
-package com.skepticalone.mecachecker.shift;
+package com.skepticalone.mecachecker.components;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
-import com.skepticalone.mecachecker.AppConstants;
-import com.skepticalone.mecachecker.CheckedShift;
+import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -21,8 +18,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private static final String START = "START";
     private static final String END = "END";
     private static final String IS_START = "IS_START";
-    private final Calendar mStart = new GregorianCalendar();
-    private final Calendar mEnd = new GregorianCalendar();
+    private final Calendar calendar = Calendar.getInstance();
 
     public static TimePickerFragment create(long shiftId, long start, long end, boolean isStart) {
         Bundle arguments = new Bundle();
@@ -38,19 +34,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Calendar time;
-        if (getArguments().getBoolean(IS_START)) {
-            mStart.setTimeInMillis(getArguments().getLong(START));
-            time = mStart;
-        } else {
-            mEnd.setTimeInMillis(getArguments().getLong(END));
-            time = mEnd;
-        }
+        calendar.setTimeInMillis(getArguments().getLong(getArguments().getBoolean(IS_START) ? START : END));
         return new TimePickerDialog(
                 getActivity(),
                 this,
-                time.get(Calendar.HOUR_OF_DAY),
-                time.get(Calendar.MINUTE),
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
                 false
         );
     }
@@ -58,14 +47,23 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         minute -= minute % AppConstants.MINUTES_PER_STEP;
-        mStart.setTimeInMillis(getArguments().getLong(START));
-        mEnd.setTimeInMillis(getArguments().getLong(END));
-        CheckedShift shift = new CheckedShift(mStart, mEnd);
-        shift.updateTime(getArguments().getBoolean(IS_START), hourOfDay, minute);
-        ContentValues values = new ContentValues();
-        values.put(ShiftProvider.START_TIME, shift.getStart().getTime());
-        values.put(ShiftProvider.END_TIME, shift.getEnd().getTime());
-        getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
+        boolean isStart = getArguments().getBoolean(IS_START);
+        long start = getArguments().getLong(START);
+        if (isStart){
+            calendar.setTimeInMillis(start);
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            start = calendar.getTimeInMillis();
+        }
+        calendar.setTimeInMillis(getArguments().getLong(END));
+        if (!isStart){
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+        }
+        if (calendar.getTimeInMillis() <= start) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start, calendar.getTimeInMillis()), null, null);
     }
 
 }

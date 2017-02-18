@@ -10,9 +10,6 @@ final class ShiftContract {
                 TABLE_NAME = "shifts",
                 COLUMN_NAME_START = "start",
                 COLUMN_NAME_END = "end",
-                START_AS_DATE = asDate(Shift.COLUMN_NAME_START),
-                START_AS_TIME = asTime(Shift.COLUMN_NAME_START),
-                END_AS_TIME = asTime(Shift.COLUMN_NAME_END),
                 SQL_CREATE_ENTRIES = "CREATE TABLE " +
                         TABLE_NAME +
                         " (" +
@@ -49,18 +46,6 @@ final class ShiftContract {
                     ")) THEN RAISE (ABORT, '" +
                     ERROR_MESSAGE_ON_OVERLAP +
                     "') END; END";
-        }
-        private static String asTime(String columnName) {
-            return formatTime(columnName, "%H:%M");
-        }
-
-        private static String asDate(@SuppressWarnings("SameParameterValue") String columnName) {
-            return formatTime(columnName, "%d/%m/%Y");
-        }
-
-        @SuppressWarnings("SpellCheckingInspection")
-        private static String formatTime(String columnName, String formatString) {
-            return "strftime('" + formatString + "'," + columnName + ",'unixepoch','localtime')";
         }
     }
 }
