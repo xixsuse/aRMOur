@@ -8,6 +8,29 @@
         <!--<item name="colorAccent">@color/colorAccent</item>-->
     </style>
 
+    <style name="detail_list_label" parent="TextAppearance.AppCompat.Small">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">@dimen/detail_label_padding</item>
+    </style>
+
+    <style name="detail_list_content" parent="TextAppearance.AppCompat.Large">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">@dimen/detail_content_padding</item>
+        <item name="android:paddingRight">@dimen/detail_content_padding</item>
+        <item name="android:paddingBottom">@dimen/detail_content_padding</item>
+    </style>
+
+    <style name="detail_list_content.error">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:drawableRight">@drawable/ic_warning_24dp</item>
+        <item name="android:drawableEnd">@drawable/ic_warning_24dp</item>
+    </style>
+
     <!--<style name="AppTheme.NoActionBar">-->
     <!--<item name="windowActionBar">false</item>-->
     <!--<item name="windowNoTitle">true</item>-->

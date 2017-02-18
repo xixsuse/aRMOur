@@ -25,7 +25,6 @@ import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
 
-
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
@@ -41,8 +40,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mDurationWorkedOverDayView,
             mDurationWorkedOverWeekView,
             mDurationWorkedOverFortnightView,
-            mShiftTypeView,
-            mCurrentWeekendLabelView,
             mCurrentWeekendView,
             mLastWeekendWorkedLabelView,
             mLastWeekendWorkedView;
@@ -95,8 +92,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
         mDurationWorkedOverWeekView = (TextView) layout.findViewById(R.id.duration_worked_over_week);
         mDurationWorkedOverFortnightView = (TextView) layout.findViewById(R.id.duration_worked_over_fortnight);
-        mShiftTypeView = (TextView) layout.findViewById(R.id.shift_type);
-        mCurrentWeekendLabelView = (TextView) layout.findViewById(R.id.current_weekend_label);
         mCurrentWeekendView = (TextView) layout.findViewById(R.id.current_weekend);
         mLastWeekendWorkedLabelView = (TextView) layout.findViewById(R.id.last_weekend_worked_label);
         mLastWeekendWorkedView = (TextView) layout.findViewById(R.id.last_weekend_worked);
@@ -151,23 +146,20 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? mErrorDrawable : null, null);
             //
             if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END)) {
-                mShiftTypeView.setText(R.string.shift_type_weekday);
-                mCurrentWeekendLabelView.setVisibility(View.GONE);
-                mCurrentWeekendView.setVisibility(View.GONE);
+                mCurrentWeekendView.setText(R.string.not_applicable);
                 mLastWeekendWorkedLabelView.setVisibility(View.GONE);
                 mLastWeekendWorkedView.setVisibility(View.GONE);
             } else {
-                mShiftTypeView.setText(R.string.shift_type_weekend);
-                mCurrentWeekendLabelView.setVisibility(View.VISIBLE);
                 mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_CURRENT_WEEKEND_END) - 1));
-                mCurrentWeekendView.setVisibility(View.VISIBLE);
                 mLastWeekendWorkedLabelView.setVisibility(View.VISIBLE);
                 if (cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) || cursor.isNull(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)) {
                     mLastWeekendWorkedView.setText(R.string.not_applicable);
+                    mLastWeekendWorkedView.setTextColor(mTextColor);
                     mLastWeekendWorkedView.setCompoundDrawables(null, null, null, null);
                 } else {
                     mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), cursor.getLong(ComplianceCursor.COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END) - 1));
                     error = cursor.getShort(ComplianceCursor.COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
+                    mLastWeekendWorkedView.setTextColor(error ? mErrorColor : mTextColor);
                     TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mLastWeekendWorkedView, null, null, error ? mErrorDrawable : null, null);
                 }
                 mLastWeekendWorkedView.setVisibility(View.VISIBLE);
@@ -178,13 +170,4 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
-//
-//    interface Listener {
-//        //        void onAddShiftClicked();
-////        void onShiftClicked(PeriodWithStableId shift);
-////        void onShiftSwiped(long shiftId);
-////        void onShiftLongClicked(PeriodWithStableId shift);
-////        int getShiftCount();
-//        PeriodWithStableId getShift(long id);
-//    }
 }

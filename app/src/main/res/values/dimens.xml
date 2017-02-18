@@ -5,4 +5,6 @@
     <dimen name="half_card_margin">4dp</dimen>
     <dimen name="card_contents_margin">6dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="detail_label_padding">4dp</dimen>
+    <dimen name="detail_content_padding">8dp</dimen>
 </resources>
