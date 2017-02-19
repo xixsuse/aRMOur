@@ -24,6 +24,7 @@ import java.util.Calendar;
 
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int LOADER_LIST_ID = 0;
     private ShiftAdapter mAdapter;
     private Listener mListener;
     private ComplianceCursorWrapper mCursor = null;
@@ -51,7 +52,13 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }).attachToRecyclerView(recyclerView);
         mAdapter = new ShiftAdapter();
         recyclerView.setAdapter(mAdapter);
-        layout.findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
+        return layout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
@@ -75,13 +82,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(start, calendar.getTimeInMillis()));
             }
         });
-        return layout;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(OverviewActivity.LOADER_LIST_ID, null, this);
+        getLoaderManager().initLoader(LOADER_LIST_ID, null, this);
     }
 
     @Override

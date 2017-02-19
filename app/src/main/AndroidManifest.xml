@@ -11,18 +11,39 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <!--<activity-->
+        <!--android:name=".components.OverviewActivity"-->
+        <!--android:label="@string/title_shift_list">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <provider
+            android:name=".data.ShiftProvider"
+            android:authorities="com.skepticalone.mecachecker.provider"
+            android:exported="false" />
+
         <activity
-            android:name=".components.OverviewActivity"
-            android:label="@string/title_shift_list">
+            android:name=".components.ShiftListActivity"
+            android:label="@string/title_item_list"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider
-            android:name=".data.ShiftProvider"
-            android:authorities="com.skepticalone.mecachecker.provider"
-            android:exported="false" />
+        <activity
+            android:name=".components.ShiftDetailActivity"
+            android:label="@string/title_item_detail"
+            android:parentActivityName=".components.ShiftListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.skepticalone.mecachecker.components.ShiftListActivity" />
+        </activity>
     </application>
 
 </manifest>

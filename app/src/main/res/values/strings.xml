@@ -25,4 +25,6 @@
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
     <string name="current_weekend">Current weekend</string>
     <string name="last_weekend_worked">Last weekend worked</string>
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">Item Detail</string>
 </resources>

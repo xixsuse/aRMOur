@@ -1,15 +1,14 @@
 package com.skepticalone.mecachecker.components;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.view.LayoutInflater;
@@ -17,21 +16,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DurationFormat;
-import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Calendar;
 
-public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ShiftDetailFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final long NO_ID = -1L;
+    static final String SHIFT_ID = "SHIFT_ID";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
-    private static final String SHIFT_ID = "SHIFT_ID";
-    private long mShiftId;
+    private static final int LOADER_DETAIL_ID = 1;
     private final static Calendar sStart = Calendar.getInstance(), sEnd = Calendar.getInstance();
+    private long mShiftId;
     private TextView
             mDateView,
             mStartTimeView,
@@ -43,6 +44,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             mCurrentWeekendView,
             mLastWeekendWorkedLabelView,
             mLastWeekendWorkedView;
+    @Nullable
+    private CollapsingToolbarLayout mAppBar;
+
     @ColorInt
     private int mTextColor, mErrorColor;
     private Drawable mErrorDrawable;
@@ -55,12 +59,14 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mShiftId = getArguments().getLong(SHIFT_ID);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mShiftId = getArguments().getLong(SHIFT_ID, NO_ID);
         mTextColor = ResourcesCompat.getColor(getResources(), android.R.color.primary_text_light, null);
         mErrorColor = ResourcesCompat.getColor(getResources(), R.color.colorError, null);
         mErrorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null);
+        mAppBar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
+
     }
 
     @Nullable
@@ -101,13 +107,17 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(OverviewActivity.LOADER_DETAIL_ID, null, this);
+        getLoaderManager().initLoader(LOADER_DETAIL_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
     }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
+//    }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
@@ -117,6 +127,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             //
             sStart.setTimeInMillis(cursor.getStart());
             sEnd.setTimeInMillis(cursor.getEnd());
+            if (mAppBar != null) {
+                mAppBar.setTitle(getString(R.string.date_format, sStart));
+            }
             mDateView.setText(getString(R.string.date_format, sStart));
             mStartTimeView.setText(getString(R.string.time_format, sStart));
             mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));

@@ -1,10 +1,10 @@
 package com.skepticalone.mecachecker.components;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
 
 import com.skepticalone.mecachecker.data.ShiftProvider;
