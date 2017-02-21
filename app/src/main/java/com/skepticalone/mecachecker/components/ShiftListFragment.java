@@ -1,13 +1,12 @@
 package com.skepticalone.mecachecker.components;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -19,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursorWrapper;
+import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
@@ -30,7 +29,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     private static final int LOADER_LIST_ID = 0;
     private ShiftAdapter mAdapter;
     private Listener mListener;
-    private ComplianceCursorWrapper mCursor = null;
+    private ComplianceCursor mCursor = null;
 
     @Override
     public void onAttach(Context context) {
@@ -73,12 +72,12 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
+        return ComplianceCursor.getLoader(getActivity());
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = new ComplianceCursorWrapper(data);
+        mCursor = ComplianceCursor.from(data, null);
         mAdapter.notifyDataSetChanged();
     }
 

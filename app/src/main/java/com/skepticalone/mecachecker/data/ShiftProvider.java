@@ -36,6 +36,13 @@ public final class ShiftProvider extends ContentProvider {
         return Uri.withAppendedPath(shiftsUri, Long.toString(shiftId));
     }
 
+    public static ContentValues getContentValues(long start, long end) {
+        ContentValues values = new ContentValues();
+        values.put(ShiftContract.Shift.COLUMN_NAME_START, start);
+        values.put(ShiftContract.Shift.COLUMN_NAME_END, end);
+        return values;
+    }
+
     @Override
     public boolean onCreate() {
         mDbHelper = new ShiftDbHelper(getContext());
@@ -45,21 +52,25 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        int match = sUriMatcher.match(uri);
-        if (match != SHIFTS && match != SHIFT_ID){
-            throw new IllegalArgumentException("Invalid Uri: " + uri);
+        switch (sUriMatcher.match(uri)) {
+            case SHIFT_ID:
+                // intentional fall-through
+                selection = ShiftContract.Shift._ID + "=" + uri.getLastPathSegment();
+                selectionArgs = null;
+            case SHIFTS:
+                sortOrder = ShiftContract.Shift.COLUMN_NAME_START;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        Cursor cursor = new ComplianceCursor(
-                mDbHelper.getReadableDatabase().query(
-                        ShiftContract.Shift.TABLE_NAME,
-                        ComplianceCursor.PROJECTION,
-                        null,
-                        null,
-                        null,
-                        null,
-                        ShiftContract.Shift.COLUMN_NAME_START
-                ),
-                match == SHIFT_ID ? Long.valueOf(uri.getLastPathSegment()) : null
+        Cursor cursor = mDbHelper.getReadableDatabase().query(
+                ShiftContract.Shift.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
         );
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -131,12 +142,5 @@ public final class ShiftProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-    }
-
-    public static ContentValues getContentValues(long start, long end){
-        ContentValues values = new ContentValues();
-        values.put(ShiftContract.Shift.COLUMN_NAME_START, start);
-        values.put(ShiftContract.Shift.COLUMN_NAME_END, end);
-        return values;
     }
 }
