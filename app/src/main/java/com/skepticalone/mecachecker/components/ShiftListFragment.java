@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -33,6 +36,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (Listener) context;
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -56,11 +60,37 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.shift_list_menu, menu);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().findViewById(R.id.add_shift).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        getLoaderManager().initLoader(LOADER_LIST_ID, null, this);
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursor = new ComplianceCursorWrapper(data);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursor = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_shift:
                 Calendar calendar = Calendar.getInstance();
                 if (mCursor != null && mCursor.moveToLast()) {
                     calendar.setTimeInMillis(mCursor.getEnd());
@@ -80,25 +110,10 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(start, calendar.getTimeInMillis()));
-            }
-        });
-        getLoaderManager().initLoader(LOADER_LIST_ID, null, this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = new ComplianceCursorWrapper(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursor = null;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     interface Listener {

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -44,12 +43,11 @@ public class ShiftDetailFragment extends Fragment implements android.support.v4.
             mCurrentWeekendView,
             mLastWeekendWorkedLabelView,
             mLastWeekendWorkedView;
-    @Nullable
-    private CollapsingToolbarLayout mAppBar;
 
     @ColorInt
     private int mTextColor, mErrorColor;
     private Drawable mErrorDrawable;
+
     static ShiftDetailFragment create(long id) {
         ShiftDetailFragment fragment = new ShiftDetailFragment();
         Bundle arguments = new Bundle();
@@ -65,8 +63,6 @@ public class ShiftDetailFragment extends Fragment implements android.support.v4.
         mTextColor = ResourcesCompat.getColor(getResources(), android.R.color.primary_text_light, null);
         mErrorColor = ResourcesCompat.getColor(getResources(), R.color.colorError, null);
         mErrorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_warning_24dp, null);
-        mAppBar = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
-
     }
 
     @Nullable
@@ -114,10 +110,6 @@ public class ShiftDetailFragment extends Fragment implements android.support.v4.
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
     }
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
-//    }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
@@ -127,9 +119,6 @@ public class ShiftDetailFragment extends Fragment implements android.support.v4.
             //
             sStart.setTimeInMillis(cursor.getStart());
             sEnd.setTimeInMillis(cursor.getEnd());
-            if (mAppBar != null) {
-                mAppBar.setTitle(getString(R.string.date_format, sStart));
-            }
             mDateView.setText(getString(R.string.date_format, sStart));
             mStartTimeView.setText(getString(R.string.time_format, sStart));
             mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));

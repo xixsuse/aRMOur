@@ -18,13 +18,13 @@
     </plurals>
     <string name="hours_and_minutes">%1$s, %2$s</string>
     <string name="title_shift_list">Shifts</string>
+    <string name="title_shift_detail">Shift Detail</string>
     <string name="not_applicable">N/A</string>
     <string name="rest_between_shifts">Rest between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
     <string name="current_weekend">Current weekend</string>
+    <string name="add_shift">Add shift</string>
     <string name="last_weekend_worked">Last weekend worked</string>
-    <string name="title_item_list">Items</string>
-    <string name="title_item_detail">Item Detail</string>
 </resources>

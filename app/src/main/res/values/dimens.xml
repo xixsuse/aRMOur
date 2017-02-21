@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="half_card_margin">4dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="detail_label_padding">4dp</dimen>
     <dimen name="detail_content_padding">8dp</dimen>
-    <dimen name="app_bar_height">200dp</dimen>
-    <dimen name="item_width">400dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
 </resources>
