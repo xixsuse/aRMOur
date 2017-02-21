@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DurationFormat;
 
@@ -106,12 +108,12 @@ public class ShiftDetailFragment extends Fragment implements android.support.v4.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return ComplianceCursor.getLoader(getActivity());
+        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
-        ComplianceCursor cursor = ComplianceCursor.from(c, mShiftId);
+        ComplianceCursor cursor = new ComplianceCursor(c);
         if (cursor.moveToFirst()) {
             boolean error;
             //

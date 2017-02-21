@@ -52,26 +52,26 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Long shiftId;
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
-                // intentional fall-through
-                selection = ShiftContract.Shift._ID + "=" + uri.getLastPathSegment();
-                selectionArgs = null;
+                shiftId = Long.valueOf(uri.getLastPathSegment());
+                break;
             case SHIFTS:
-                sortOrder = ShiftContract.Shift.COLUMN_NAME_START;
+                shiftId = null;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
-        Cursor cursor = mDbHelper.getReadableDatabase().query(
+        Cursor cursor = new ComplianceCursor.ComplianceMatrixCursor(mDbHelper.getReadableDatabase().query(
                 ShiftContract.Shift.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
+                ComplianceCursor.PROJECTION,
                 null,
                 null,
-                sortOrder
-        );
+                null,
+                null,
+                ShiftContract.Shift.COLUMN_NAME_START
+        ), shiftId);
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;

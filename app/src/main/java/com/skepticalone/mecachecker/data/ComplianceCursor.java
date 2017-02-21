@@ -1,25 +1,24 @@
 package com.skepticalone.mecachecker.data;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.MatrixCursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.CursorLoader;
+import android.util.Log;
 
 import com.skepticalone.mecachecker.util.Period;
 
 import java.util.Calendar;
 
 public class ComplianceCursor extends CursorWrapper {
+    final static String[] PROJECTION = new String[]{
+            ShiftContract.Shift._ID,
+            ShiftContract.Shift.COLUMN_NAME_START,
+            ShiftContract.Shift.COLUMN_NAME_END
+    };
     private final static String[]
             COLUMN_NAMES,
-            PROJECTION = new String[]{
-                    ShiftContract.Shift._ID,
-                    ShiftContract.Shift.COLUMN_NAME_START,
-                    ShiftContract.Shift.COLUMN_NAME_END
-            },
             EXTRA_COLUMN_NAMES = new String[]{
             "STARTS_AND_ENDS_ON_SAME_DAY",
             "DURATION_OF_REST",
@@ -52,16 +51,8 @@ public class ComplianceCursor extends CursorWrapper {
         System.arraycopy(EXTRA_COLUMN_NAMES, 0, COLUMN_NAMES, PROJECTION.length, EXTRA_COLUMN_NAMES.length);
     }
 
-    private ComplianceCursor(Cursor cursor) {
+    public ComplianceCursor(Cursor cursor) {
         super(cursor);
-    }
-
-    public static ComplianceCursor from(Cursor c, @Nullable Long shiftId) {
-        return new ComplianceCursor(new ComplianceMatrixCursor(c, shiftId == null ? c.getCount() : 1, shiftId));
-    }
-
-    public static CursorLoader getLoader(Context context) {
-        return new CursorLoader(context, ShiftProvider.shiftsUri, PROJECTION, null, null, null);
     }
 
     public long getId() {
@@ -75,7 +66,6 @@ public class ComplianceCursor extends CursorWrapper {
     public long getEnd() {
         return getLong(COLUMN_INDEX_END);
     }
-
     public boolean startsAndEndsOnSameDay() {
         return getInt(COLUMN_INDEX_STARTS_AND_ENDS_ON_SAME_DAY) == 1;
     }
@@ -124,10 +114,11 @@ public class ComplianceCursor extends CursorWrapper {
         return getInt(COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
     }
 
-    private static class ComplianceMatrixCursor extends MatrixCursor {
+    static class ComplianceMatrixCursor extends MatrixCursor {
 
-        ComplianceMatrixCursor(@NonNull Cursor initialCursor, int initialCapacity, @Nullable Long shiftId) {
-            super(COLUMN_NAMES, initialCapacity);
+        ComplianceMatrixCursor(@NonNull Cursor initialCursor, @Nullable Long shiftId) {
+            super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
+            Log.d("MatrixCursor", "ComplianceMatrixCursor() called with: initialCursor = [" + initialCursor + "], shiftId = [" + shiftId + "]");
             Calendar calendarToRecycle = Calendar.getInstance();
             for (int i = 0, size = initialCursor.getCount(); i < size; i++) {
                 initialCursor.moveToPosition(i);
@@ -162,6 +153,7 @@ public class ComplianceCursor extends CursorWrapper {
                 }
                 if (shiftId != null) break;
             }
+            initialCursor.close();
         }
 
         private static long getDurationOverDay(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
