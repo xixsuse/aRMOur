@@ -1,10 +1,10 @@
 package com.skepticalone.mecachecker.components;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
 
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -45,22 +45,22 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        minute -= minute % AppConstants.MINUTES_PER_STEP;
+    public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
+        minutes = AppConstants.getSteppedMinutes(minutes);
         boolean isStart = getArguments().getBoolean(IS_START);
         long start = getArguments().getLong(START);
         if (isStart){
             calendar.setTimeInMillis(start);
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.MINUTE, minutes);
             start = calendar.getTimeInMillis();
             calendar.setTimeInMillis(getArguments().getLong(END));
             hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-            minute = calendar.get(Calendar.MINUTE);
+            minutes = calendar.get(Calendar.MINUTE);
         }
         calendar.setTimeInMillis(start);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.MINUTE, minutes);
         if (calendar.getTimeInMillis() <= start) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }

@@ -22,7 +22,10 @@
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
             android:parentActivityName=".components.ShiftListActivity" />
-
+        <activity
+            android:name=".components.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName=".components.ShiftListActivity" />
         <provider
             android:name=".data.ShiftProvider"
             android:authorities="com.skepticalone.mecachecker.provider"

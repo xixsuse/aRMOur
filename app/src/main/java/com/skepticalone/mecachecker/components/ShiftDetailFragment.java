@@ -1,13 +1,14 @@
 package com.skepticalone.mecachecker.components;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.view.LayoutInflater;
@@ -23,7 +24,7 @@ import com.skepticalone.mecachecker.util.DurationFormat;
 
 import java.util.Calendar;
 
-public class ShiftDetailFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final long NO_ID = -1L;
     static final String SHIFT_ID = "SHIFT_ID";

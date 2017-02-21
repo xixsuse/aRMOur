@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_start_normal_day">key_start_normal_day</string>
+    <string name="key_end_normal_day">key_end_normal_day</string>
+    <string name="key_start_long_day">key_start_long_day</string>
+    <string name="key_end_long_day">key_end_long_day</string>
+    <string name="key_start_night_shift">key_start_night_shift</string>
+    <string name="key_end_night_shift">key_end_night_shift</string>
+    <integer name="default_start_normal_day">450</integer>
+    <integer name="default_end_normal_day">990</integer>
+    <integer name="default_start_long_day">480</integer>
+    <integer name="default_end_long_day">1350</integer>
+    <integer name="default_start_night_shift">1320</integer>
+    <integer name="default_end_night_shift">480</integer>
+</resources>

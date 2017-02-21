@@ -1,13 +1,16 @@
 package com.skepticalone.mecachecker.components;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -89,8 +92,31 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_shift:
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case R.id.add_normal_day:
+            case R.id.add_long_day:
+            case R.id.add_night_shift:
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                int startKey, defaultStartId, endKey, defaultEndId;
+                if (itemId == R.id.add_normal_day) {
+                    startKey = R.string.key_start_normal_day;
+                    defaultStartId = R.integer.default_start_normal_day;
+                    endKey = R.string.key_end_normal_day;
+                    defaultEndId = R.integer.default_end_normal_day;
+                } else if (itemId == R.id.add_long_day) {
+                    startKey = R.string.key_start_long_day;
+                    defaultStartId = R.integer.default_start_long_day;
+                    endKey = R.string.key_end_long_day;
+                    defaultEndId = R.integer.default_end_long_day;
+                } else {
+                    startKey = R.string.key_start_night_shift;
+                    defaultStartId = R.integer.default_start_night_shift;
+                    endKey = R.string.key_end_night_shift;
+                    defaultEndId = R.integer.default_end_night_shift;
+                }
+                int startTotalMinutes = preferences.getInt(getString(startKey), getResources().getInteger(defaultStartId));
+                int endTotalMinutes = preferences.getInt(getString(endKey), getResources().getInteger(defaultEndId));
                 Calendar calendar = Calendar.getInstance();
                 if (mCursor != null && mCursor.moveToLast()) {
                     calendar.setTimeInMillis(mCursor.getEnd());
@@ -98,18 +124,21 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 long start = calendar.getTimeInMillis();
                 calendar.set(Calendar.MILLISECOND, 0);
                 calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MINUTE, AppConstants.DEFAULT_START_MINUTE);
-                calendar.set(Calendar.HOUR_OF_DAY, AppConstants.DEFAULT_START_HOUR_OF_DAY);
+                calendar.set(Calendar.MINUTE, TimePreference.calculateMinutes(startTotalMinutes));
+                calendar.set(Calendar.HOUR_OF_DAY, TimePreference.calculateHours(startTotalMinutes));
                 if (calendar.getTimeInMillis() < start) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 start = calendar.getTimeInMillis();
-                calendar.set(Calendar.MINUTE, AppConstants.DEFAULT_END_MINUTE);
-                calendar.set(Calendar.HOUR_OF_DAY, AppConstants.DEFAULT_END_HOUR_OF_DAY);
+                calendar.set(Calendar.MINUTE, TimePreference.calculateMinutes(endTotalMinutes));
+                calendar.set(Calendar.HOUR_OF_DAY, TimePreference.calculateHours(endTotalMinutes));
                 if (calendar.getTimeInMillis() < start) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(start, calendar.getTimeInMillis()));
+                return true;
+            case R.id.settings:
+                getActivity().startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
