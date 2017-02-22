@@ -14,12 +14,11 @@ import com.skepticalone.mecachecker.util.AppConstants;
 
 import java.util.Calendar;
 
-
 @SuppressWarnings("WeakerAccess")
 public class TimePreference extends DialogPreference {
 
     private final Calendar calendar = Calendar.getInstance();
-    private int mHours, mMinutes;
+    private int mTotalMinutes;
     @Nullable
     private TimePicker mTimePicker;
 
@@ -62,14 +61,16 @@ public class TimePreference extends DialogPreference {
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         if (mTimePicker != null) {
+            int hours = calculateHours(mTotalMinutes);
+            int minutes = calculateMinutes(mTotalMinutes);
             if (Build.VERSION.SDK_INT >= 23) {
-                mTimePicker.setHour(mHours);
-                mTimePicker.setMinute(mMinutes);
+                mTimePicker.setHour(hours);
+                mTimePicker.setMinute(minutes);
             } else {
                 //noinspection deprecation
-                mTimePicker.setCurrentHour(mHours);
+                mTimePicker.setCurrentHour(hours);
                 //noinspection deprecation
-                mTimePicker.setCurrentMinute(mMinutes);
+                mTimePicker.setCurrentMinute(minutes);
             }
         }
     }
@@ -81,42 +82,40 @@ public class TimePreference extends DialogPreference {
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        int totalMinutes = defaultValue == null ? 0 : (int) defaultValue;
+        mTotalMinutes = defaultValue == null ? 0 : (int) defaultValue;
         if (restorePersistedValue) {
-            totalMinutes = getPersistedInt(totalMinutes);
+            mTotalMinutes = getPersistedInt(mTotalMinutes);
         }
-        mHours = calculateHours(totalMinutes);
-        mMinutes = calculateMinutes(totalMinutes);
         setSummary(getSummary());
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult && mTimePicker != null) {
+            int hours, minutes;
             if (Build.VERSION.SDK_INT >= 23) {
-                mHours = mTimePicker.getHour();
-                mMinutes = mTimePicker.getMinute();
+                hours = mTimePicker.getHour();
+                minutes = mTimePicker.getMinute();
             } else {
                 //noinspection deprecation
-                mHours = mTimePicker.getCurrentHour();
+                hours = mTimePicker.getCurrentHour();
                 //noinspection deprecation
-                mMinutes = mTimePicker.getCurrentMinute();
+                minutes = mTimePicker.getCurrentMinute();
             }
-            mMinutes = AppConstants.getSteppedMinutes(mMinutes);
+            minutes = AppConstants.getSteppedMinutes(minutes);
+            mTotalMinutes = calculateTotalMinutes(hours, minutes);
             setSummary(getSummary());
-            int totalMinutes = calculateTotalMinutes(mHours, mMinutes);
-            if (callChangeListener(totalMinutes)) {
-                persistInt(totalMinutes);
+            if (callChangeListener(mTotalMinutes)) {
+                persistInt(mTotalMinutes);
                 notifyChanged();
             }
         }
-
     }
 
     @Override
     public CharSequence getSummary() {
-        calendar.set(Calendar.HOUR_OF_DAY, mHours);
-        calendar.set(Calendar.MINUTE, mMinutes);
+        calendar.set(Calendar.HOUR_OF_DAY, calculateHours(mTotalMinutes));
+        calendar.set(Calendar.MINUTE, calculateMinutes(mTotalMinutes));
         return getContext().getString(R.string.time_format, calendar);
     }
 
