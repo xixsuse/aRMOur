@@ -6,4 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
+    app:reverseLayout="true"
+    app:stackFromEnd="true"
     tools:listitem="@layout/shift_list_content" />

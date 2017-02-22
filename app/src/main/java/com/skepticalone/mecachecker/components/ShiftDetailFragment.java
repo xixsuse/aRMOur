@@ -150,7 +150,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, null, null, error ? mErrorDrawable : null, null);
             //
             if (cursor.isWeekend()) {
-                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getCurrentWeekendStart(), cursor.getEnd() - 1));
+                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getCurrentWeekendStart(), cursor.getCurrentWeekendEnd() - 1));
                 mLastWeekendWorkedLabelView.setVisibility(View.VISIBLE);
                 if (cursor.previousWeekendWorked()){
                     mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getPreviousWeekendWorkedStart(), cursor.getPreviousWeekendWorkedEnd() - 1));
