@@ -42,11 +42,11 @@ public class TimePreference extends DialogPreference {
         return hours * AppConstants.MINUTES_PER_HOUR + minutes;
     }
 
-    static int calculateHours(int totalMinutes) {
+    public static int calculateHours(int totalMinutes) {
         return totalMinutes / AppConstants.MINUTES_PER_HOUR;
     }
 
-    static int calculateMinutes(int totalMinutes) {
+    public static int calculateMinutes(int totalMinutes) {
         return totalMinutes % AppConstants.MINUTES_PER_HOUR;
     }
 

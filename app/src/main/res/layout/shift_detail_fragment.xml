@@ -23,7 +23,7 @@
             android:text="@string/start" />
 
         <TextView
-            android:id="@+id/startTime"
+            android:id="@+id/start_time"
             style="@style/detail_list_content"
             tools:text="08:00" />
 
@@ -32,9 +32,19 @@
             android:text="@string/end" />
 
         <TextView
-            android:id="@+id/endTime"
+            android:id="@+id/end_time"
             style="@style/detail_list_content"
             tools:text="16:00" />
+
+        <TextView
+            style="@style/detail_list_label"
+            android:text="@string/shift_type" />
+
+        <TextView
+            android:id="@+id/shift_type"
+            style="@style/detail_list_content"
+            tools:drawableEnd="@drawable/ic_night_shift_black_24dp"
+            tools:text="Weekend" />
 
         <TextView
             style="@style/detail_list_label"
@@ -52,8 +62,7 @@
         <TextView
             android:id="@+id/duration_worked_over_day"
             style="@style/detail_list_content"
-            tools:drawableEnd="@drawable/ic_warning_24dp"
-            tools:drawableRight="@drawable/ic_warning_24dp"
+            tools:drawableEnd="@drawable/ic_warning_red_24dp"
             tools:text="8 hours, 30 minutes"
             tools:textColor="@color/colorError" />
 
@@ -73,6 +82,7 @@
         <TextView
             android:id="@+id/duration_worked_over_fortnight"
             style="@style/detail_list_content"
+            tools:drawableEnd="@drawable/ic_check_black_24dp"
             tools:text="120 hours" />
 
         <TextView

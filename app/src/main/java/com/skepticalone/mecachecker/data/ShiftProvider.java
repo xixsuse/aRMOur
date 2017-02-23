@@ -3,13 +3,19 @@ package com.skepticalone.mecachecker.data;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
+
+import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.components.TimePreference;
 
 public final class ShiftProvider extends ContentProvider {
 
@@ -30,6 +36,20 @@ public final class ShiftProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/#", SHIFT_ID);
     }
 
+    private String
+            normalDayStartKey,
+            normalDayEndKey,
+            longDayStartKey,
+            longDayEndKey,
+            nightShiftStartKey,
+            nightShiftEndKey;
+    private int
+            normalDayStartDefault,
+            normalDayEndDefault,
+            longDayStartDefault,
+            longDayEndDefault,
+            nightShiftStartDefault,
+            nightShiftEndDefault;
     private ShiftDbHelper mDbHelper;
 
     public static Uri shiftUri(long shiftId) {
@@ -46,6 +66,20 @@ public final class ShiftProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mDbHelper = new ShiftDbHelper(getContext());
+        //noinspection ConstantConditions
+        Resources resources = getContext().getResources();
+        normalDayStartKey = resources.getString(R.string.key_start_normal_day);
+        normalDayEndKey = resources.getString(R.string.key_end_normal_day);
+        longDayStartKey = resources.getString(R.string.key_start_long_day);
+        longDayEndKey = resources.getString(R.string.key_end_long_day);
+        nightShiftStartKey = resources.getString(R.string.key_start_night_shift);
+        nightShiftEndKey = resources.getString(R.string.key_end_night_shift);
+        normalDayStartDefault = resources.getInteger(R.integer.default_start_normal_day);
+        normalDayEndDefault = resources.getInteger(R.integer.default_end_normal_day);
+        longDayStartDefault = resources.getInteger(R.integer.default_start_long_day);
+        longDayEndDefault = resources.getInteger(R.integer.default_end_long_day);
+        nightShiftStartDefault = resources.getInteger(R.integer.default_start_night_shift);
+        nightShiftEndDefault = resources.getInteger(R.integer.default_end_night_shift);
         return true;
     }
 
@@ -63,6 +97,27 @@ public final class ShiftProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int
+                normalDayStart = preferences.getInt(normalDayStartKey, normalDayStartDefault),
+                normalDayEnd = preferences.getInt(normalDayEndKey, normalDayEndDefault),
+                longDayStart = preferences.getInt(longDayStartKey, longDayStartDefault),
+                longDayEnd = preferences.getInt(longDayEndKey, longDayEndDefault),
+                nightShiftStart = preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
+                nightShiftEnd = preferences.getInt(nightShiftEndKey, nightShiftEndDefault);
+//        int normalDayStartHour,
+//        normalDayStartMinute,
+//        normalDayEndHour,
+//        normalDayEndMinute,
+//        longDayStartHour,
+//        longDayStartMinute,
+//        longDayEndHour,
+//        longDayEndMinute,
+//        nightShiftStartHour,
+//        nightShiftStartMinute,
+//        nightShiftEndHour,
+//        nightShiftEndMinute;
+
         Cursor cursor = new ComplianceCursor.ComplianceMatrixCursor(mDbHelper.getReadableDatabase().query(
                 ShiftContract.Shift.TABLE_NAME,
                 ComplianceCursor.PROJECTION,
@@ -71,7 +126,21 @@ public final class ShiftProvider extends ContentProvider {
                 null,
                 null,
                 ShiftContract.Shift.COLUMN_NAME_START
-        ), shiftId);
+        ),
+                shiftId,
+                TimePreference.calculateHours(normalDayStart),
+                TimePreference.calculateMinutes(normalDayStart),
+                TimePreference.calculateHours(normalDayEnd),
+                TimePreference.calculateMinutes(normalDayEnd),
+                TimePreference.calculateHours(longDayStart),
+                TimePreference.calculateMinutes(longDayStart),
+                TimePreference.calculateHours(longDayEnd),
+                TimePreference.calculateMinutes(longDayEnd),
+                TimePreference.calculateHours(nightShiftStart),
+                TimePreference.calculateMinutes(nightShiftStart),
+                TimePreference.calculateHours(nightShiftEnd),
+                TimePreference.calculateMinutes(nightShiftEnd)
+        );
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;

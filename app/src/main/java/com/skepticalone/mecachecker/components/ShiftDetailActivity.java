@@ -1,9 +1,9 @@
 package com.skepticalone.mecachecker.components;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class ShiftDetailActivity extends Activity {
+public class ShiftDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

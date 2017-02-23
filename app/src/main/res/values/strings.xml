@@ -7,10 +7,12 @@
     <string name="normal_day">Normal day</string>
     <string name="long_day">Long day</string>
     <string name="night_shift">Night shift</string>
+    <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
-    <string name="compliance_error">Compliance error</string>
-    <string name="date_format">%1$ta %1$te/%1$tm/%1$ty</string>
+    <string name="shift_type">Shift type</string>
+    <string name="day_format">%tA</string>
+    <string name="date_format">%1$te/%1$tm/%1$ty</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
     <string name="period_format">%1$te/%1$tm/%1$ty - %2$te/%2$tm/%2$ty</string>

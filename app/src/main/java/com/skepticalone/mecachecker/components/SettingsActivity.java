@@ -7,12 +7,6 @@ import com.skepticalone.mecachecker.R;
 import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity {
-//    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-//    }
-
 
     @Override
     public void onBuildHeaders(List<Header> target) {

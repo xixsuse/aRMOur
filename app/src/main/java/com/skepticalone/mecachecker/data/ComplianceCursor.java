@@ -5,13 +5,16 @@ import android.database.CursorWrapper;
 import android.database.MatrixCursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.skepticalone.mecachecker.util.Period;
 
 import java.util.Calendar;
 
 public class ComplianceCursor extends CursorWrapper {
+    public final static int
+            SHIFT_TYPE_NORMAL_DAY = 0,
+            SHIFT_TYPE_LONG_DAY = 1,
+            SHIFT_TYPE_NIGHT_SHIFT = 2;
     final static String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
@@ -20,7 +23,7 @@ public class ComplianceCursor extends CursorWrapper {
     private final static String[]
             COLUMN_NAMES,
             EXTRA_COLUMN_NAMES = new String[]{
-            "STARTS_AND_ENDS_ON_SAME_DAY",
+                    "SHIFT_TYPE",
             "DURATION_OF_REST",
             "DURATION_OVER_DAY",
             "DURATION_OVER_WEEK",
@@ -35,7 +38,7 @@ public class ComplianceCursor extends CursorWrapper {
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
             COLUMN_INDEX_END = 2,
-            COLUMN_INDEX_STARTS_AND_ENDS_ON_SAME_DAY = 3,
+            COLUMN_INDEX_SHIFT_TYPE = 3,
             COLUMN_INDEX_DURATION_OF_REST = 4,
             COLUMN_INDEX_DURATION_OVER_DAY = 5,
             COLUMN_INDEX_DURATION_OVER_WEEK = 6,
@@ -45,6 +48,8 @@ public class ComplianceCursor extends CursorWrapper {
             COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 10,
             COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 11,
             COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 12;
+    private final static int
+            SHIFT_TYPE_OTHER = 3;
     static {
         COLUMN_NAMES = new String[PROJECTION.length + EXTRA_COLUMN_NAMES.length];
         System.arraycopy(PROJECTION, 0, COLUMN_NAMES, 0, PROJECTION.length);
@@ -66,8 +71,9 @@ public class ComplianceCursor extends CursorWrapper {
     public long getEnd() {
         return getLong(COLUMN_INDEX_END);
     }
-    public boolean startsAndEndsOnSameDay() {
-        return getInt(COLUMN_INDEX_STARTS_AND_ENDS_ON_SAME_DAY) == 1;
+
+    public int getShiftType() {
+        return getInt(COLUMN_INDEX_SHIFT_TYPE);
     }
 
     public long getDurationOfRest() {
@@ -116,9 +122,24 @@ public class ComplianceCursor extends CursorWrapper {
 
     static class ComplianceMatrixCursor extends MatrixCursor {
 
-        ComplianceMatrixCursor(@NonNull Cursor initialCursor, @Nullable Long shiftId) {
+        @SuppressWarnings("ConstantConditions")
+        ComplianceMatrixCursor(
+                @NonNull Cursor initialCursor,
+                @Nullable Long shiftId,
+                int normalDayStartHour,
+                int normalDayStartMinute,
+                int normalDayEndHour,
+                int normalDayEndMinute,
+                int longDayStartHour,
+                int longDayStartMinute,
+                int longDayEndHour,
+                int longDayEndMinute,
+                int nightShiftStartHour,
+                int nightShiftStartMinute,
+                int nightShiftEndHour,
+                int nightShiftEndMinute
+        ) {
             super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
-            Log.d("MatrixCursor", "ComplianceMatrixCursor() called with: initialCursor = [" + initialCursor + "], shiftId = [" + shiftId + "]");
             Calendar calendarToRecycle = Calendar.getInstance();
             for (int i = 0, size = initialCursor.getCount(); i < size; i++) {
                 initialCursor.moveToPosition(i);
@@ -126,14 +147,23 @@ public class ComplianceCursor extends CursorWrapper {
                 if (shiftId != null && shiftId != id) continue;
                 long start = initialCursor.getLong(COLUMN_INDEX_START), end = initialCursor.getLong(COLUMN_INDEX_END);
                 calendarToRecycle.setTimeInMillis(start);
-                int startDayOfMonth = calendarToRecycle.get(Calendar.DAY_OF_MONTH);
+                int startHour = calendarToRecycle.get(Calendar.HOUR_OF_DAY);
+                int startMinute = calendarToRecycle.get(Calendar.MINUTE);
                 calendarToRecycle.setTimeInMillis(end);
-                boolean startsAndEndsOnSameDay = startDayOfMonth == calendarToRecycle.get(Calendar.DAY_OF_MONTH);
+                int endHour = calendarToRecycle.get(Calendar.HOUR_OF_DAY);
+                int endMinute = calendarToRecycle.get(Calendar.MINUTE);
+                int shiftType =
+                        (startHour == normalDayStartHour && startMinute == normalDayStartMinute && endHour == normalDayEndHour && endMinute == normalDayEndMinute) ? SHIFT_TYPE_NORMAL_DAY :
+                                (startHour == longDayStartHour && startMinute == longDayStartMinute && endHour == longDayEndHour && endMinute == longDayEndMinute) ? SHIFT_TYPE_LONG_DAY :
+                                        (startHour == nightShiftStartHour && startMinute == nightShiftStartMinute && endHour == nightShiftEndHour && endMinute == nightShiftEndMinute) ? SHIFT_TYPE_NIGHT_SHIFT :
+                                                SHIFT_TYPE_OTHER;
+//                boolean startsAndEndsOnSameDay = startDayOfMonth == calendarToRecycle.get(Calendar.DAY_OF_MONTH);
                 MatrixCursor.RowBuilder builder = newRow()
                         .add(id)
                         .add(start)
                         .add(end)
-                        .add(startsAndEndsOnSameDay ? 1 : 0)
+                        .add(shiftType)
+//                        .add(startsAndEndsOnSameDay ? 1 : 0)
                         .add(getDurationOfRest(initialCursor, i))
                         .add(getDurationOverDay(initialCursor, calendarToRecycle, i))
                         .add(getDurationOverWeek(initialCursor, calendarToRecycle, i))
@@ -206,5 +236,6 @@ public class ComplianceCursor extends CursorWrapper {
             }
             return null;
         }
+
     }
 }

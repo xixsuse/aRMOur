@@ -14,7 +14,7 @@ public class ShiftListActivity extends AppCompatActivity implements ShiftListFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, true);
         setContentView(R.layout.shift_list_activity);
         mTwoPane = findViewById(R.id.shift_detail_fragment_container) != null;
     }

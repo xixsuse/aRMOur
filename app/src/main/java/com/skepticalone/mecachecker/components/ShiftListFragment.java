@@ -11,14 +11,17 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
@@ -34,6 +37,9 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     private ShiftAdapter mAdapter;
     private Listener mListener;
     private ComplianceCursor mCursor = null;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private boolean mAddButtonJustClicked = false;
+
 
     @Override
     public void onAttach(Context context) {
@@ -47,6 +53,8 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.shift_list);
+        mLayoutManager = recyclerView.getLayoutManager();
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -83,6 +91,10 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursor = new ComplianceCursor(data);
         mAdapter.notifyDataSetChanged();
+        if (mAddButtonJustClicked) {
+            mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
+            mAddButtonJustClicked = false;
+        }
     }
 
     @Override
@@ -98,6 +110,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             case R.id.add_long_day:
             case R.id.add_night_shift:
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                Log.d("PREFERENCES LIST", "size: " + preferences.getAll().size());
                 int startKey, defaultStartId, endKey, defaultEndId;
                 if (itemId == R.id.add_normal_day) {
                     startKey = R.string.key_start_normal_day;
@@ -136,6 +149,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(start, calendar.getTimeInMillis()));
+                mAddButtonJustClicked = true;
                 return true;
             case R.id.settings:
                 getActivity().startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -171,16 +185,33 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         @Override
         public void onBindViewHolder(CustomViewHolder holder, int position) {
             mCursor.moveToPosition(position);
-            long start = mCursor.getStart();
+            int shiftTypeDrawableId;
+            switch (mCursor.getShiftType()) {
+                case ComplianceCursor.SHIFT_TYPE_NORMAL_DAY:
+                    shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
+                    break;
+                case ComplianceCursor.SHIFT_TYPE_LONG_DAY:
+                    shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
+                    break;
+                case ComplianceCursor.SHIFT_TYPE_NIGHT_SHIFT:
+                    shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
+                    break;
+                default:
+                    shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
+                    break;
+            }
+            holder.shiftIconView.setImageResource(shiftTypeDrawableId);
+            long start = mCursor.getStart(), end = mCursor.getEnd();
+            holder.dayView.setText(getString(R.string.day_format, start));
             holder.dateView.setText(getString(R.string.date_format, start));
             holder.startView.setText(getString(R.string.time_format, start));
-            holder.endView.setText(getString(mCursor.startsAndEndsOnSameDay() ? R.string.time_format : R.string.time_format_with_day, mCursor.getEnd()));
+            holder.endView.setText(getString(R.string.time_format, end));
             boolean error = (position > 0 && mCursor.getDurationOfRest() < AppConstants.MINIMUM_DURATION_REST) ||
                     mCursor.getDurationOverDay() > AppConstants.MAXIMUM_DURATION_OVER_DAY ||
                     mCursor.getDurationOverWeek() > AppConstants.MAXIMUM_DURATION_OVER_WEEK ||
                     mCursor.getDurationOverFortnight() > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ||
                     mCursor.consecutiveWeekendsWorked();
-            holder.mComplianceErrorView.setVisibility(error ? View.VISIBLE : View.GONE);
+            holder.itemView.setBackgroundResource(error ? R.color.colorBackgroundError : android.R.color.background_light);
         }
 
         @Override
@@ -190,17 +221,19 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
         class CustomViewHolder extends RecyclerView.ViewHolder {
             final TextView
+                    dayView,
                     dateView,
                     startView,
                     endView;
-            final View mComplianceErrorView;
+            final ImageView shiftIconView;
 
             CustomViewHolder(View itemView) {
                 super(itemView);
+                dayView = (TextView) itemView.findViewById(R.id.day);
                 dateView = (TextView) itemView.findViewById(R.id.date);
                 startView = (TextView) itemView.findViewById(R.id.start);
                 endView = (TextView) itemView.findViewById(R.id.end);
-                mComplianceErrorView = itemView.findViewById(R.id.compliance_error);
+                shiftIconView = (ImageView) itemView.findViewById(R.id.shift_icon);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
