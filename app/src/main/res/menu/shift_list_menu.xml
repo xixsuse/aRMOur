@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group>
+    <group android:id="@+id/add_shift_group">
         <item
             android:id="@+id/add_normal_day"
             android:icon="@drawable/ic_normal_day_white_24dp"
-            android:title="@string/normal_day"
+            android:title="@string/add_normal_day"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/add_long_day"
             android:icon="@drawable/ic_long_day_white_24dp"
-            android:title="@string/long_day"
+            android:title="@string/add_long_day"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/add_night_shift"
             android:icon="@drawable/ic_night_shift_white_24dp"
-            android:title="@string/night_shift"
+            android:title="@string/add_night_shift"
             app:showAsAction="ifRoom" />
     </group>
     <item
         android:id="@+id/settings"
-        android:icon="@drawable/ic_settings_white_24dp"
         android:title="@string/settings"
         app:showAsAction="never" />
-
 </menu>
