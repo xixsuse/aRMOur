@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.skepticalone.mecachecker">
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -15,20 +16,25 @@
             android:label="@string/title_shift_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".components.ShiftListActivity" />
+            android:parentActivityName=".components.ShiftListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".components.ShiftListActivity" />
+
         <provider
             android:name=".data.ShiftProvider"
             android:authorities="com.skepticalone.mecachecker.provider"
             android:exported="false" />
+
     </application>
+
 </manifest>
