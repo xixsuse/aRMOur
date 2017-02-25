@@ -119,7 +119,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             //
             sStart.setTimeInMillis(cursor.getStart());
             sEnd.setTimeInMillis(cursor.getEnd());
-            mDateView.setText(getString(R.string.date_format, sStart));
+            mDateView.setText(getString(R.string.day_date_format, sStart));
             mStartTimeView.setText(getString(R.string.time_format, sStart));
             mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));
             //
