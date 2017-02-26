@@ -6,6 +6,7 @@ import android.database.MatrixCursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.mecachecker.components.TimePreference;
 import com.skepticalone.mecachecker.util.Period;
 
 import java.util.Calendar;
@@ -122,22 +123,15 @@ public class ComplianceCursor extends CursorWrapper {
 
     static class ComplianceMatrixCursor extends MatrixCursor {
 
-        @SuppressWarnings("ConstantConditions")
         ComplianceMatrixCursor(
                 @NonNull Cursor initialCursor,
                 @Nullable Long shiftId,
-                int normalDayStartHour,
-                int normalDayStartMinute,
-                int normalDayEndHour,
-                int normalDayEndMinute,
-                int longDayStartHour,
-                int longDayStartMinute,
-                int longDayEndHour,
-                int longDayEndMinute,
-                int nightShiftStartHour,
-                int nightShiftStartMinute,
-                int nightShiftEndHour,
-                int nightShiftEndMinute
+                int normalDayStartTotalMinutes,
+                int normalDayEndTotalMinutes,
+                int longDayStartTotalMinutes,
+                int longDayEndTotalMinutes,
+                int nightShiftStartTotalMinutes,
+                int nightShiftEndTotalMinutes
         ) {
             super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
             Calendar calendarToRecycle = Calendar.getInstance();
@@ -147,23 +141,24 @@ public class ComplianceCursor extends CursorWrapper {
                 if (shiftId != null && shiftId != id) continue;
                 long start = initialCursor.getLong(COLUMN_INDEX_START), end = initialCursor.getLong(COLUMN_INDEX_END);
                 calendarToRecycle.setTimeInMillis(start);
-                int startHour = calendarToRecycle.get(Calendar.HOUR_OF_DAY);
-                int startMinute = calendarToRecycle.get(Calendar.MINUTE);
+                int startTotalMinutes = TimePreference.calculateTotalMinutes(calendarToRecycle.get(Calendar.HOUR_OF_DAY), calendarToRecycle.get(Calendar.MINUTE));
                 calendarToRecycle.setTimeInMillis(end);
-                int endHour = calendarToRecycle.get(Calendar.HOUR_OF_DAY);
-                int endMinute = calendarToRecycle.get(Calendar.MINUTE);
-                int shiftType =
-                        (startHour == normalDayStartHour && startMinute == normalDayStartMinute && endHour == normalDayEndHour && endMinute == normalDayEndMinute) ? SHIFT_TYPE_NORMAL_DAY :
-                                (startHour == longDayStartHour && startMinute == longDayStartMinute && endHour == longDayEndHour && endMinute == longDayEndMinute) ? SHIFT_TYPE_LONG_DAY :
-                                        (startHour == nightShiftStartHour && startMinute == nightShiftStartMinute && endHour == nightShiftEndHour && endMinute == nightShiftEndMinute) ? SHIFT_TYPE_NIGHT_SHIFT :
-                                                SHIFT_TYPE_OTHER;
-//                boolean startsAndEndsOnSameDay = startDayOfMonth == calendarToRecycle.get(Calendar.DAY_OF_MONTH);
+                int endTotalMinutes = TimePreference.calculateTotalMinutes(calendarToRecycle.get(Calendar.HOUR_OF_DAY), calendarToRecycle.get(Calendar.MINUTE));
+                int shiftType;
+                if (startTotalMinutes == normalDayStartTotalMinutes && endTotalMinutes == normalDayEndTotalMinutes) {
+                    shiftType = SHIFT_TYPE_NORMAL_DAY;
+                } else if (startTotalMinutes == longDayStartTotalMinutes && endTotalMinutes == longDayEndTotalMinutes) {
+                    shiftType = SHIFT_TYPE_LONG_DAY;
+                } else if (startTotalMinutes == nightShiftStartTotalMinutes && endTotalMinutes == nightShiftEndTotalMinutes) {
+                    shiftType = SHIFT_TYPE_NIGHT_SHIFT;
+                } else {
+                    shiftType = SHIFT_TYPE_OTHER;
+                }
                 MatrixCursor.RowBuilder builder = newRow()
                         .add(id)
                         .add(start)
                         .add(end)
                         .add(shiftType)
-//                        .add(startsAndEndsOnSameDay ? 1 : 0)
                         .add(getDurationOfRest(initialCursor, i))
                         .add(getDurationOverDay(initialCursor, calendarToRecycle, i))
                         .add(getDurationOverWeek(initialCursor, calendarToRecycle, i))

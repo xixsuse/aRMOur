@@ -38,7 +38,7 @@ public class TimePreference extends DialogPreference {
         setNegativeButtonText(R.string.cancel);
     }
 
-    private static int calculateTotalMinutes(int hours, int minutes) {
+    public static int calculateTotalMinutes(int hours, int minutes) {
         return hours * AppConstants.MINUTES_PER_HOUR + minutes;
     }
 

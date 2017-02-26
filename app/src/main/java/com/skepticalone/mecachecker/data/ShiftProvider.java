@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.TimePreference;
 
 public final class ShiftProvider extends ContentProvider {
 
@@ -98,13 +97,13 @@ public final class ShiftProvider extends ContentProvider {
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int
-                normalDayStart = preferences.getInt(normalDayStartKey, normalDayStartDefault),
-                normalDayEnd = preferences.getInt(normalDayEndKey, normalDayEndDefault),
-                longDayStart = preferences.getInt(longDayStartKey, longDayStartDefault),
-                longDayEnd = preferences.getInt(longDayEndKey, longDayEndDefault),
-                nightShiftStart = preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
-                nightShiftEnd = preferences.getInt(nightShiftEndKey, nightShiftEndDefault);
+//        int
+//                normalDayStart = preferences.getInt(normalDayStartKey, normalDayStartDefault),
+//                normalDayEnd = preferences.getInt(normalDayEndKey, normalDayEndDefault),
+//                longDayStart = preferences.getInt(longDayStartKey, longDayStartDefault),
+//                longDayEnd = preferences.getInt(longDayEndKey, longDayEndDefault),
+//                nightShiftStart = preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
+//                nightShiftEnd = preferences.getInt(nightShiftEndKey, nightShiftEndDefault);
 //        int normalDayStartHour,
 //        normalDayStartMinute,
 //        normalDayEndHour,
@@ -117,29 +116,23 @@ public final class ShiftProvider extends ContentProvider {
 //        nightShiftStartMinute,
 //        nightShiftEndHour,
 //        nightShiftEndMinute;
-
-        Cursor cursor = new ComplianceCursor.ComplianceMatrixCursor(mDbHelper.getReadableDatabase().query(
-                ShiftContract.Shift.TABLE_NAME,
-                ComplianceCursor.PROJECTION,
-                null,
-                null,
-                null,
-                null,
-                ShiftContract.Shift.COLUMN_NAME_START
-        ),
+        Cursor cursor = new ComplianceCursor.ComplianceMatrixCursor(
+                mDbHelper.getReadableDatabase().query(
+                        ShiftContract.Shift.TABLE_NAME,
+                        ComplianceCursor.PROJECTION,
+                        null,
+                        null,
+                        null,
+                        null,
+                        ShiftContract.Shift.COLUMN_NAME_START
+                ),
                 shiftId,
-                TimePreference.calculateHours(normalDayStart),
-                TimePreference.calculateMinutes(normalDayStart),
-                TimePreference.calculateHours(normalDayEnd),
-                TimePreference.calculateMinutes(normalDayEnd),
-                TimePreference.calculateHours(longDayStart),
-                TimePreference.calculateMinutes(longDayStart),
-                TimePreference.calculateHours(longDayEnd),
-                TimePreference.calculateMinutes(longDayEnd),
-                TimePreference.calculateHours(nightShiftStart),
-                TimePreference.calculateMinutes(nightShiftStart),
-                TimePreference.calculateHours(nightShiftEnd),
-                TimePreference.calculateMinutes(nightShiftEnd)
+                preferences.getInt(normalDayStartKey, normalDayStartDefault),
+                preferences.getInt(normalDayEndKey, normalDayEndDefault),
+                preferences.getInt(longDayStartKey, longDayStartDefault),
+                preferences.getInt(longDayEndKey, longDayEndDefault),
+                preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
+                preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
         );
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
