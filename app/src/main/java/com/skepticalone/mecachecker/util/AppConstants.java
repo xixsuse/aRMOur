@@ -3,12 +3,12 @@ package com.skepticalone.mecachecker.util;
 public final class AppConstants {
 
     public static final int
+            MINIMUM_REST_HOURS = 8,
             MINUTES_PER_HOUR = 60;
     private static final int
             MINUTES_PER_STEP = 5,
             MILLIS_PER_SECOND = 1000,
             SECONDS_PER_MINUTE = 60,
-            MINIMUM_REST_HOURS = 8,
             MAXIMUM_HOURS_PER_DAY = 16,
             MAXIMUM_HOURS_PER_WEEK = 72,
             MAXIMUM_HOURS_PER_FORTNIGHT = 144;

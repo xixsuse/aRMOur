@@ -132,6 +132,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 Calendar calendar = Calendar.getInstance();
                 if (mCursor != null && mCursor.moveToLast()) {
                     calendar.setTimeInMillis(mCursor.getEnd());
+                    calendar.add(Calendar.HOUR, AppConstants.MINIMUM_REST_HOURS);
                 }
                 long start = calendar.getTimeInMillis();
                 calendar.set(Calendar.MILLISECOND, 0);
