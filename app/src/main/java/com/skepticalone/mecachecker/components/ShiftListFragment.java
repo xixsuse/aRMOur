@@ -110,25 +110,31 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             case R.id.add_night_shift:
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 Log.d("PREFERENCES LIST", "size: " + preferences.getAll().size());
-                int startKey, defaultStartId, endKey, defaultEndId;
+                int startKeyId, defaultStartId, endKeyId, defaultEndId, skipWeekendsKeyId, defaultSkipWeekendsId;
                 if (itemId == R.id.add_normal_day) {
-                    startKey = R.string.key_start_normal_day;
+                    startKeyId = R.string.key_start_normal_day;
                     defaultStartId = R.integer.default_start_normal_day;
-                    endKey = R.string.key_end_normal_day;
+                    endKeyId = R.string.key_end_normal_day;
                     defaultEndId = R.integer.default_end_normal_day;
+                    skipWeekendsKeyId = R.string.key_skip_weekend_normal_day;
+                    defaultSkipWeekendsId = R.bool.default_skip_weekend_normal_day;
                 } else if (itemId == R.id.add_long_day) {
-                    startKey = R.string.key_start_long_day;
+                    startKeyId = R.string.key_start_long_day;
                     defaultStartId = R.integer.default_start_long_day;
-                    endKey = R.string.key_end_long_day;
+                    endKeyId = R.string.key_end_long_day;
                     defaultEndId = R.integer.default_end_long_day;
+                    skipWeekendsKeyId = R.string.key_skip_weekend_long_day;
+                    defaultSkipWeekendsId = R.bool.default_skip_weekend_long_day;
                 } else {
-                    startKey = R.string.key_start_night_shift;
+                    startKeyId = R.string.key_start_night_shift;
                     defaultStartId = R.integer.default_start_night_shift;
-                    endKey = R.string.key_end_night_shift;
+                    endKeyId = R.string.key_end_night_shift;
                     defaultEndId = R.integer.default_end_night_shift;
+                    skipWeekendsKeyId = R.string.key_skip_weekend_night_shift;
+                    defaultSkipWeekendsId = R.bool.default_skip_weekend_night_shift;
                 }
-                int startTotalMinutes = preferences.getInt(getString(startKey), getResources().getInteger(defaultStartId));
-                int endTotalMinutes = preferences.getInt(getString(endKey), getResources().getInteger(defaultEndId));
+                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
+                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
                 Calendar calendar = Calendar.getInstance();
                 if (mCursor != null && mCursor.moveToLast()) {
                     calendar.setTimeInMillis(mCursor.getEnd());
@@ -139,7 +145,10 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 calendar.set(Calendar.SECOND, 0);
                 calendar.set(Calendar.MINUTE, TimePreference.calculateMinutes(startTotalMinutes));
                 calendar.set(Calendar.HOUR_OF_DAY, TimePreference.calculateHours(startTotalMinutes));
-                if (calendar.getTimeInMillis() < start) {
+                boolean skipWeekends = preferences.getBoolean(getString(skipWeekendsKeyId), getResources().getBoolean(defaultSkipWeekendsId));
+                while (calendar.getTimeInMillis() < start || (
+                        skipWeekends && (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                )) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 start = calendar.getTimeInMillis();
@@ -211,7 +220,8 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     mCursor.getDurationOverWeek() > AppConstants.MAXIMUM_DURATION_OVER_WEEK ||
                     mCursor.getDurationOverFortnight() > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ||
                     mCursor.consecutiveWeekendsWorked();
-            holder.itemView.setBackgroundResource(error ? R.color.colorBackgroundError : android.R.color.background_light);
+            holder.complianceIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+//            holder.itemView.setBackgroundResource(error ? R.color.colorBackgroundError : android.R.color.background_light);
         }
 
         @Override
@@ -225,7 +235,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     dateView,
                     startView,
                     endView;
-            final ImageView shiftIconView;
+            final ImageView shiftIconView, complianceIconView;
 
             CustomViewHolder(View itemView) {
                 super(itemView);
@@ -234,6 +244,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 startView = (TextView) itemView.findViewById(R.id.start);
                 endView = (TextView) itemView.findViewById(R.id.end);
                 shiftIconView = (ImageView) itemView.findViewById(R.id.shift_icon);
+                complianceIconView = (ImageView) itemView.findViewById(R.id.compliance_icon);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

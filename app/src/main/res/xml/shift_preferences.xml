@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Adjust default shift times">
+    <PreferenceCategory android:title="@string/category_new_shifts_title">
         <PreferenceScreen
             android:icon="@drawable/ic_normal_day_black_24dp"
             android:title="@string/normal_day">
@@ -13,6 +13,12 @@
                     android:defaultValue="@integer/default_end_normal_day"
                     android:key="@string/key_end_normal_day"
                     android:title="@string/end" />
+                <SwitchPreference
+                    android:defaultValue="@bool/default_skip_weekend_normal_day"
+                    android:key="@string/key_skip_weekend_normal_day"
+                    android:summaryOff="@string/skip_weekend_summary_off"
+                    android:summaryOn="@string/skip_weekend_summary_on"
+                    android:title="@string/skip_weekend_title" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -27,6 +33,12 @@
                     android:defaultValue="@integer/default_end_long_day"
                     android:key="@string/key_end_long_day"
                     android:title="@string/end" />
+                <SwitchPreference
+                    android:defaultValue="@bool/default_skip_weekend_long_day"
+                    android:key="@string/key_skip_weekend_long_day"
+                    android:summaryOff="@string/skip_weekend_summary_off"
+                    android:summaryOn="@string/skip_weekend_summary_on"
+                    android:title="@string/skip_weekend_title" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
@@ -41,6 +53,12 @@
                     android:defaultValue="@integer/default_end_night_shift"
                     android:key="@string/key_end_night_shift"
                     android:title="@string/end" />
+                <SwitchPreference
+                    android:defaultValue="@bool/default_skip_weekend_night_shift"
+                    android:key="@string/key_skip_weekend_night_shift"
+                    android:summaryOff="@string/skip_weekend_summary_off"
+                    android:summaryOn="@string/skip_weekend_summary_on"
+                    android:title="@string/skip_weekend_title" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>

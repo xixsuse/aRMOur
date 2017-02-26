@@ -53,7 +53,7 @@
         android:layout_marginRight="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/date"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/compliance_icon"
         tools:text="2:30 am (Tue)" />
 
     <TextView
@@ -64,7 +64,21 @@
         android:layout_marginRight="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/day"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/compliance_icon"
         tools:text="8:00 am" />
+
+    <ImageView
+        android:id="@+id/compliance_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:contentDescription="@string/compliance"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_warning_red_24dp" />
+
 
 </android.support.constraint.ConstraintLayout>

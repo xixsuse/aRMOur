@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="category_new_shifts_title">New shifts</string>
     <string name="key_start_normal_day">key_start_normal_day</string>
     <string name="key_end_normal_day">key_end_normal_day</string>
+    <string name="key_skip_weekend_normal_day">key_skip_weekend_normal_day</string>
     <string name="key_start_long_day">key_start_long_day</string>
     <string name="key_end_long_day">key_end_long_day</string>
+    <string name="key_skip_weekend_long_day">key_skip_weekend_long_day</string>
     <string name="key_start_night_shift">key_start_night_shift</string>
     <string name="key_end_night_shift">key_end_night_shift</string>
+    <string name="key_skip_weekend_night_shift">key_skip_weekend_night_shift</string>
     <integer name="default_start_normal_day">480</integer>
     <integer name="default_end_normal_day">960</integer>
+    <bool name="default_skip_weekend_normal_day">true</bool>
     <integer name="default_start_long_day">480</integer>
     <integer name="default_end_long_day">1350</integer>
+    <bool name="default_skip_weekend_long_day">true</bool>
     <integer name="default_start_night_shift">1320</integer>
     <integer name="default_end_night_shift">480</integer>
+    <bool name="default_skip_weekend_night_shift">false</bool>
+    <string name="skip_weekend_title">Skip weekends</string>
+    <string name="skip_weekend_summary_on">New shifts will always begin on weekdays</string>
+    <string name="skip_weekend_summary_off">New shifts may begin on weekends</string>
 </resources>
