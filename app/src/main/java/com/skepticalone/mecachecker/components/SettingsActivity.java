@@ -1,20 +1,15 @@
 package com.skepticalone.mecachecker.components;
 
-import android.preference.PreferenceActivity;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.skepticalone.mecachecker.R;
-
-import java.util.List;
-
-public class SettingsActivity extends PreferenceActivity {
-
+public class SettingsActivity extends AppCompatActivity {
     @Override
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.preference_headers, target);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
     }
 
-    @Override
-    protected boolean isValidFragment(String fragmentName) {
-        return fragmentName.equals(SettingsFragment.class.getName()) || super.isValidFragment(fragmentName);
-    }
 }

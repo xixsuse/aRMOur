@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/normal_day">
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_start_normal_day"
+    <PreferenceCategory android:title="Adjust default shift times">
+        <PreferenceScreen
             android:icon="@drawable/ic_normal_day_black_24dp"
-            android:key="@string/key_start_normal_day"
-            android:title="@string/start" />
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_end_normal_day"
-            android:icon="@drawable/ic_normal_day_black_24dp"
-            android:key="@string/key_end_normal_day"
-            android:title="@string/end" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/long_day">
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_start_long_day"
+            android:title="@string/normal_day">
+            <PreferenceCategory android:title="@string/normal_day">
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_start_normal_day"
+                    android:key="@string/key_start_normal_day"
+                    android:title="@string/start" />
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_end_normal_day"
+                    android:key="@string/key_end_normal_day"
+                    android:title="@string/end" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
             android:icon="@drawable/ic_long_day_black_24dp"
-            android:key="@string/key_start_long_day"
-            android:title="@string/start" />
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_end_long_day"
-            android:icon="@drawable/ic_long_day_black_24dp"
-            android:key="@string/key_end_long_day"
-            android:title="@string/end" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/night_shift">
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_start_night_shift"
+            android:title="@string/long_day">
+            <PreferenceCategory android:title="@string/long_day">
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_start_long_day"
+                    android:key="@string/key_start_long_day"
+                    android:title="@string/start" />
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_end_long_day"
+                    android:key="@string/key_end_long_day"
+                    android:title="@string/end" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
             android:icon="@drawable/ic_night_shift_black_24dp"
-            android:key="@string/key_start_night_shift"
-            android:title="@string/start" />
-        <com.skepticalone.mecachecker.components.TimePreference
-            android:defaultValue="@integer/default_end_night_shift"
-            android:icon="@drawable/ic_night_shift_black_24dp"
-            android:key="@string/key_end_night_shift"
-            android:title="@string/end" />
+            android:title="@string/night_shift">
+            <PreferenceCategory android:title="@string/night_shift">
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_start_night_shift"
+                    android:key="@string/key_start_night_shift"
+                    android:title="@string/start" />
+                <com.skepticalone.mecachecker.components.TimePreference
+                    android:defaultValue="@integer/default_end_night_shift"
+                    android:key="@string/key_end_night_shift"
+                    android:title="@string/end" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
