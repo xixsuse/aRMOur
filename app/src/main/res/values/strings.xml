@@ -15,9 +15,8 @@
     <string name="cancel">Cancel</string>
     <string name="shift_type">Shift type</string>
     <string name="compliance">Compliance</string>
-    <string name="day_format">%tA</string>
     <string name="day_date_format">%1$tA %1$te/%1$tm/%1$ty</string>
-    <string name="date_format">%1$te/%1$tm/%1$ty</string>
+    <string name="time_span_format">%1$tl:%1$tM %1$tp - %2$tl:%2$tM %2$tp</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
     <string name="period_format">%1$te/%1$tm/%1$ty - %2$te/%2$tm/%2$ty</string>

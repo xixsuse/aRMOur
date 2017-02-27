@@ -53,7 +53,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.shift_list);
         mLayoutManager = recyclerView.getLayoutManager();
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -211,17 +210,14 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             }
             holder.shiftIconView.setImageResource(shiftTypeDrawableId);
             long start = mCursor.getStart(), end = mCursor.getEnd();
-            holder.dayView.setText(getString(R.string.day_format, start));
-            holder.dateView.setText(getString(R.string.date_format, start));
-            holder.startView.setText(getString(R.string.time_format, start));
-            holder.endView.setText(getString(R.string.time_format, end));
+            holder.dateView.setText(getString(R.string.day_date_format, start));
+            holder.timeSpanView.setText(getString(R.string.time_span_format, start, end));
             boolean error = (position > 0 && mCursor.getDurationOfRest() < AppConstants.MINIMUM_DURATION_REST) ||
                     mCursor.getDurationOverDay() > AppConstants.MAXIMUM_DURATION_OVER_DAY ||
                     mCursor.getDurationOverWeek() > AppConstants.MAXIMUM_DURATION_OVER_WEEK ||
                     mCursor.getDurationOverFortnight() > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ||
                     mCursor.consecutiveWeekendsWorked();
             holder.complianceIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
-//            holder.itemView.setBackgroundResource(error ? R.color.colorBackgroundError : android.R.color.background_light);
         }
 
         @Override
@@ -230,19 +226,13 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         class CustomViewHolder extends RecyclerView.ViewHolder {
-            final TextView
-                    dayView,
-                    dateView,
-                    startView,
-                    endView;
+            final TextView dateView, timeSpanView;
             final ImageView shiftIconView, complianceIconView;
 
             CustomViewHolder(View itemView) {
                 super(itemView);
-                dayView = (TextView) itemView.findViewById(R.id.day);
                 dateView = (TextView) itemView.findViewById(R.id.date);
-                startView = (TextView) itemView.findViewById(R.id.start);
-                endView = (TextView) itemView.findViewById(R.id.end);
+                timeSpanView = (TextView) itemView.findViewById(R.id.time_span);
                 shiftIconView = (ImageView) itemView.findViewById(R.id.shift_icon);
                 complianceIconView = (ImageView) itemView.findViewById(R.id.compliance_icon);
                 itemView.setOnClickListener(new View.OnClickListener() {
