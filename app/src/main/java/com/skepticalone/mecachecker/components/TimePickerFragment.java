@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.components;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
@@ -19,6 +20,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private static final String END = "END";
     private static final String IS_START = "IS_START";
     private final Calendar calendar = Calendar.getInstance();
+    private ShiftOverlapListener mListener;
 
     public static TimePickerFragment create(long shiftId, long start, long end, boolean isStart) {
         Bundle arguments = new Bundle();
@@ -29,6 +31,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         TimePickerFragment fragment = new TimePickerFragment();
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (ShiftOverlapListener) context;
     }
 
     @NonNull
@@ -64,7 +72,9 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         if (calendar.getTimeInMillis() <= start) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start, calendar.getTimeInMillis()), null, null);
+        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start, calendar.getTimeInMillis()), null, null) == 0) {
+            mListener.onShiftOverlap();
+        }
     }
 
 }

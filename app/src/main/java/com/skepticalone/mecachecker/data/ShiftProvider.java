@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.skepticalone.mecachecker.R;
 
@@ -22,8 +21,7 @@ public final class ShiftProvider extends ContentProvider {
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
             SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
-            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
-            SHIFT_OVERLAP_TOAST_MESSAGE = "Shift overlaps!";
+            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME).build();
     private static final int SHIFTS = 1;
@@ -97,25 +95,6 @@ public final class ShiftProvider extends ContentProvider {
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        int
-//                normalDayStart = preferences.getInt(normalDayStartKey, normalDayStartDefault),
-//                normalDayEnd = preferences.getInt(normalDayEndKey, normalDayEndDefault),
-//                longDayStart = preferences.getInt(longDayStartKey, longDayStartDefault),
-//                longDayEnd = preferences.getInt(longDayEndKey, longDayEndDefault),
-//                nightShiftStart = preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
-//                nightShiftEnd = preferences.getInt(nightShiftEndKey, nightShiftEndDefault);
-//        int normalDayStartHour,
-//        normalDayStartMinute,
-//        normalDayEndHour,
-//        normalDayEndMinute,
-//        longDayStartHour,
-//        longDayStartMinute,
-//        longDayEndHour,
-//        longDayEndMinute,
-//        nightShiftStartHour,
-//        nightShiftStartMinute,
-//        nightShiftEndHour,
-//        nightShiftEndMinute;
         Cursor cursor = new ComplianceCursor.ComplianceMatrixCursor(
                 mDbHelper.getReadableDatabase().query(
                         ShiftContract.Shift.TABLE_NAME,
@@ -157,15 +136,10 @@ public final class ShiftProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
-                try {
-                    long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
-                    //noinspection ConstantConditions
-                    getContext().getContentResolver().notifyChange(uri, null);
-                    return shiftUri(shiftId);
-                } catch (SQLiteConstraintException e) {
-                    Toast.makeText(getContext(), SHIFT_OVERLAP_TOAST_MESSAGE, Toast.LENGTH_SHORT).show();
-                    return null;
-                }
+                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
+                //noinspection ConstantConditions
+                getContext().getContentResolver().notifyChange(uri, null);
+                return shiftUri(shiftId);
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -198,7 +172,6 @@ public final class ShiftProvider extends ContentProvider {
                     }
                     return updated;
                 } catch (SQLiteConstraintException e) {
-                    Toast.makeText(getContext(), SHIFT_OVERLAP_TOAST_MESSAGE, Toast.LENGTH_SHORT).show();
                     return 0;
                 }
             default:

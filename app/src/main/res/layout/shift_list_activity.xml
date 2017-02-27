@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/shift_list_fragment"
-    android:name="com.skepticalone.mecachecker.components.ShiftListFragment"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/shift_list_fragment" />
+    android:fitsSystemWindows="true"
+    tools:context="com.skepticalone.mecachecker.components.ShiftListActivity">
+
+    <include layout="@layout/shift_list_activity_fragments" />
+
+</android.support.design.widget.CoordinatorLayout>
