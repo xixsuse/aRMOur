@@ -23,8 +23,7 @@
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".components.ShiftListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".components.ShiftListActivity" />
         <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"

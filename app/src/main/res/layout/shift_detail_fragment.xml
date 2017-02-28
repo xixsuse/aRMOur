@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/date"
+            android:id="@+id/primary_text"
             style="@style/ShiftDetailButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/date"
+            app:layout_constraintTop_toBottomOf="@+id/primary_text"
             tools:text="9:00 am" />
 
         <Button
@@ -60,7 +60,7 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date"
+            app:layout_constraintTop_toBottomOf="@+id/primary_text"
             tools:text="4:00 pm" />
 
         <android.support.constraint.Guideline
@@ -72,72 +72,82 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/shift_type" />
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/shift_list_content" />
 
-    <TextView
-        android:id="@+id/shift_type"
-        style="@style/detail_list_content"
-        tools:drawableEnd="@drawable/ic_night_shift_black_24dp"
-        tools:text="Weekend" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/shift_type" />-->
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/time_between_shifts" />
+    <!--<TextView-->
+    <!--android:id="@+id/shift_type"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:drawableEnd="@drawable/ic_night_shift_black_24dp"-->
+    <!--tools:text="Weekend" />-->
 
-    <TextView
-        android:id="@+id/time_between_shifts"
-        style="@style/detail_list_content"
-        tools:text="15 hours, 30 minutes" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/time_between_shifts" />-->
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/duration_worked_over_day" />
+    <!--<TextView-->
+    <!--android:id="@+id/time_between_shifts"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:text="15 hours, 30 minutes" />-->
 
-    <TextView
-        android:id="@+id/duration_worked_over_day"
-        style="@style/detail_list_content"
-        tools:drawableEnd="@drawable/ic_warning_red_24dp"
-        tools:text="8 hours, 30 minutes"
-        tools:textColor="@color/colorError" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/duration_worked_over_day" />-->
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/duration_worked_over_week" />
+    <!--<TextView-->
+    <!--android:id="@+id/duration_worked_over_day"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:drawableEnd="@drawable/ic_warning_red_24dp"-->
+    <!--tools:text="8 hours, 30 minutes"-->
+    <!--tools:textColor="@color/colorError" />-->
 
-    <TextView
-        android:id="@+id/duration_worked_over_week"
-        style="@style/detail_list_content"
-        tools:text="80 hours, 30 minutes" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/duration_worked_over_week" />-->
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/duration_worked_over_fortnight" />
+    <!--<TextView-->
+    <!--android:id="@+id/duration_worked_over_week"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:text="80 hours, 30 minutes" />-->
 
-    <TextView
-        android:id="@+id/duration_worked_over_fortnight"
-        style="@style/detail_list_content"
-        tools:drawableEnd="@drawable/ic_check_black_24dp"
-        tools:text="120 hours" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/duration_worked_over_fortnight" />-->
 
-    <TextView
-        style="@style/detail_list_label"
-        android:text="@string/current_weekend" />
+    <!--<TextView-->
+    <!--android:id="@+id/duration_worked_over_fortnight"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:drawableEnd="@drawable/ic_check_black_24dp"-->
+    <!--tools:text="120 hours" />-->
 
-    <TextView
-        android:id="@+id/current_weekend"
-        style="@style/detail_list_content"
-        tools:text="18/2/17-19/2/17" />
+    <!--<TextView-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/current_weekend" />-->
 
-    <TextView
-        android:id="@+id/last_weekend_worked_label"
-        style="@style/detail_list_label"
-        android:text="@string/last_weekend_worked" />
+    <!--<TextView-->
+    <!--android:id="@+id/current_weekend"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:text="18/2/17-19/2/17" />-->
 
-    <TextView
-        android:id="@+id/last_weekend_worked"
-        style="@style/detail_list_content"
-        tools:text="11/2/17-12/2/17" />
+    <!--<TextView-->
+    <!--android:id="@+id/last_weekend_worked_label"-->
+    <!--style="@style/detail_list_label"-->
+    <!--android:text="@string/last_weekend_worked" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/last_weekend_worked"-->
+    <!--style="@style/detail_list_content"-->
+    <!--tools:text="11/2/17-12/2/17" />-->
 
 </LinearLayout>

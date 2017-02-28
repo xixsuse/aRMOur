@@ -10,7 +10,10 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.R;
 
 
-abstract class AbstractTwoLineRecyclerView extends RecyclerView.Adapter<AbstractTwoLineRecyclerView.CustomViewHolder> {
+abstract class AbstractTwoLineAdapter extends RecyclerView.Adapter<AbstractTwoLineAdapter.CustomViewHolder> {
+    AbstractTwoLineAdapter() {
+        super();
+    }
 
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -19,15 +22,15 @@ abstract class AbstractTwoLineRecyclerView extends RecyclerView.Adapter<Abstract
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        final TextView dateView, timeSpanView;
-        final ImageView shiftIconView, complianceIconView;
+        final TextView primaryTextView, secondaryTextView;
+        final ImageView primaryIconView, secondaryIconView;
 
         CustomViewHolder(View itemView) {
             super(itemView);
-            dateView = (TextView) itemView.findViewById(R.id.date);
-            timeSpanView = (TextView) itemView.findViewById(R.id.time_span);
-            shiftIconView = (ImageView) itemView.findViewById(R.id.shift_icon);
-            complianceIconView = (ImageView) itemView.findViewById(R.id.compliance_icon);
+            primaryTextView = (TextView) itemView.findViewById(R.id.primary_text);
+            secondaryTextView = (TextView) itemView.findViewById(R.id.secondary_text);
+            primaryIconView = (ImageView) itemView.findViewById(R.id.primary_icon);
+            secondaryIconView = (ImageView) itemView.findViewById(R.id.secondary_icon);
         }
     }
 

@@ -50,7 +50,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
-        RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.shift_list);
+        RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mLayoutManager = recyclerView.getLayoutManager();
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START) {
             @Override
@@ -163,7 +163,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         void onShiftClicked(long shiftId);
     }
 
-    class ShiftAdapter extends AbstractTwoLineRecyclerView {
+    class ShiftAdapter extends AbstractTwoLineAdapter {
 
         ShiftAdapter() {
             super();
@@ -189,7 +189,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         @Override
-        public void onBindViewHolder(final AbstractTwoLineRecyclerView.CustomViewHolder holder, int position) {
+        public void onBindViewHolder(final CustomViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             int shiftTypeDrawableId;
             switch (mCursor.getShiftType()) {
@@ -206,16 +206,16 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
                     break;
             }
-            holder.shiftIconView.setImageResource(shiftTypeDrawableId);
+            holder.primaryIconView.setImageResource(shiftTypeDrawableId);
             Interval shift = mCursor.getShift();
-            holder.dateView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
-            holder.timeSpanView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
+            holder.primaryTextView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
+            holder.secondaryTextView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
             boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||
                     AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
                     AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
                     AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
                     mCursor.consecutiveWeekendsWorked();
-            holder.complianceIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+            holder.secondaryIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
         }
 
         @Override
