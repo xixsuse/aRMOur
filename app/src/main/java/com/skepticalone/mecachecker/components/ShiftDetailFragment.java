@@ -90,7 +90,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_detail_fragment, container, false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
-        mDateView = (TextView) layout.findViewById(R.id.primary_text);
+        mDateView = (TextView) layout.findViewById(R.id.date);
         mStartTimeView = (TextView) layout.findViewById(R.id.start_time);
         mEndTimeView = (TextView) layout.findViewById(R.id.end_time);
 //        mShiftTypeView = (TextView) layout.findViewById(R.id.shift_type);
