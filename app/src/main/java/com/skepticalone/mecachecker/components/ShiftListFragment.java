@@ -20,8 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
@@ -165,7 +163,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         void onShiftClicked(long shiftId);
     }
 
-    class ShiftAdapter extends RecyclerView.Adapter<ShiftAdapter.CustomViewHolder> {
+    class ShiftAdapter extends AbstractTwoLineRecyclerView {
 
         ShiftAdapter() {
             super();
@@ -180,12 +178,18 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CustomViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.shift_list_content, parent, false));
+            final CustomViewHolder holder = super.onCreateViewHolder(parent, viewType);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onShiftClicked(holder.getItemId());
+                }
+            });
+            return holder;
         }
 
         @Override
-        public void onBindViewHolder(CustomViewHolder holder, int position) {
+        public void onBindViewHolder(final AbstractTwoLineRecyclerView.CustomViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             int shiftTypeDrawableId;
             switch (mCursor.getShiftType()) {
@@ -219,23 +223,5 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             return mCursor == null ? 0 : mCursor.getCount();
         }
 
-        class CustomViewHolder extends RecyclerView.ViewHolder {
-            final TextView dateView, timeSpanView;
-            final ImageView shiftIconView, complianceIconView;
-
-            CustomViewHolder(View itemView) {
-                super(itemView);
-                dateView = (TextView) itemView.findViewById(R.id.date);
-                timeSpanView = (TextView) itemView.findViewById(R.id.time_span);
-                shiftIconView = (ImageView) itemView.findViewById(R.id.shift_icon);
-                complianceIconView = (ImageView) itemView.findViewById(R.id.compliance_icon);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.onShiftClicked(getItemId());
-                    }
-                });
-            }
-        }
     }
 }

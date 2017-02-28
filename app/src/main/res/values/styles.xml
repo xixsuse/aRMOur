@@ -4,29 +4,31 @@
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
+        <!--<item name="colorButtonNormal"></item>-->
     </style>
 
-    <style name="detail_list_label" parent="TextAppearance.AppCompat.Small">
+    <style name="detail_list_label" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
         <item name="android:layout_margin">0dp</item>
-        <item name="android:padding">@dimen/detail_label_padding</item>
+        <item name="android:paddingLeft">@dimen/standard_padding</item>
+        <item name="android:paddingRight">@dimen/standard_padding</item>
     </style>
 
-    <style name="detail_list_content" parent="TextAppearance.AppCompat.Large">
+    <style name="detail_list_content" parent="TextAppearance.AppCompat.Body1">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
         <item name="android:layout_margin">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingLeft">@dimen/detail_content_padding</item>
-        <item name="android:paddingRight">@dimen/detail_content_padding</item>
-        <item name="android:paddingBottom">@dimen/detail_content_padding</item>
+        <item name="android:paddingLeft">@dimen/standard_padding</item>
+        <item name="android:paddingRight">@dimen/standard_padding</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="ShiftDetailButton" parent="Widget.AppCompat.Button.Colored" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
