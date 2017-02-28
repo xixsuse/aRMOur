@@ -1,29 +1,36 @@
 package com.skepticalone.mecachecker.util;
 
+import android.support.annotation.Nullable;
+
+import org.joda.time.Duration;
+
 public final class AppConstants {
 
-    public static final int
-            MINIMUM_REST_HOURS = 8,
-            MINUTES_PER_HOUR = 60;
-    private static final int
-            MINUTES_PER_STEP = 5,
-            MILLIS_PER_SECOND = 1000,
-            SECONDS_PER_MINUTE = 60,
-            MAXIMUM_HOURS_PER_DAY = 16,
-            MAXIMUM_HOURS_PER_WEEK = 72,
-            MAXIMUM_HOURS_PER_FORTNIGHT = 144;
-    static final int
-            MILLIS_PER_MINUTE = MILLIS_PER_SECOND * SECONDS_PER_MINUTE,
-            MILLIS_PER_HOUR = MILLIS_PER_MINUTE * MINUTES_PER_HOUR,
-            MILLIS_PER_STEP = MILLIS_PER_MINUTE * MINUTES_PER_STEP,
-            STEPS_PER_HOUR = MINUTES_PER_HOUR / MINUTES_PER_STEP;
-    public static final long
-            MINIMUM_DURATION_REST = MINIMUM_REST_HOURS * MILLIS_PER_HOUR,
-            MAXIMUM_DURATION_OVER_DAY = MAXIMUM_HOURS_PER_DAY * MILLIS_PER_HOUR,
-            MAXIMUM_DURATION_OVER_WEEK = MAXIMUM_HOURS_PER_WEEK * MILLIS_PER_HOUR,
-            MAXIMUM_DURATION_OVER_FORTNIGHT = MAXIMUM_HOURS_PER_FORTNIGHT * MILLIS_PER_HOUR;
+    public static final Duration MINIMUM_TIME_BETWEEN_SHIFTS = Duration.standardHours(8);
+    private static final Duration MAXIMUM_DURATION_OVER_DAY = Duration.standardHours(16);
+    private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(72);
+    private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(144);
+    private static final int MINUTES_PER_STEP = 5;
 
     public static int getSteppedMinutes(int minutes) {
-        return minutes - minutes % AppConstants.MINUTES_PER_STEP;
+        return minutes - minutes % MINUTES_PER_STEP;
     }
+
+    public static boolean hasInsufficientTimeBetweenShifts(@Nullable Duration duration) {
+        return duration != null && duration.isShorterThan(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+    }
+
+    public static boolean exceedsDurationOverDay(Duration duration) {
+        return duration.isLongerThan(MAXIMUM_DURATION_OVER_DAY);
+    }
+
+    public static boolean exceedsDurationOverWeek(Duration duration) {
+        return duration.isLongerThan(MAXIMUM_DURATION_OVER_WEEK);
+    }
+
+    public static boolean exceedsDurationOverFortnight(Duration duration) {
+        return duration.isLongerThan(MAXIMUM_DURATION_OVER_FORTNIGHT);
+    }
+
+
 }

@@ -11,7 +11,8 @@ import android.widget.TimePicker;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
@@ -19,35 +20,39 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private static final String START = "START";
     private static final String END = "END";
     private static final String IS_START = "IS_START";
-    private final Calendar calendar = Calendar.getInstance();
     private ShiftOverlapListener mListener;
+    private Interval oldShift;
+    private boolean mIsStart;
 
-    public static TimePickerFragment create(long shiftId, long start, long end, boolean isStart) {
+    public static TimePickerFragment create(long shiftId, Interval shift, boolean isStart) {
         Bundle arguments = new Bundle();
         arguments.putLong(SHIFT_ID, shiftId);
-        arguments.putLong(START, start);
-        arguments.putLong(END, end);
+        arguments.putLong(START, shift.getStartMillis());
+        arguments.putLong(END, shift.getEndMillis());
         arguments.putBoolean(IS_START, isStart);
         TimePickerFragment fragment = new TimePickerFragment();
         fragment.setArguments(arguments);
         return fragment;
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (ShiftOverlapListener) context;
+        oldShift = new Interval(getArguments().getLong(START), getArguments().getLong(END));
+        mIsStart = getArguments().getBoolean(IS_START);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        calendar.setTimeInMillis(getArguments().getLong(getArguments().getBoolean(IS_START) ? START : END));
+        DateTime dateTime = mIsStart ? oldShift.getStart() : oldShift.getEnd();
         return new TimePickerDialog(
                 getActivity(),
                 this,
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
+                dateTime.getHourOfDay(),
+                dateTime.getMinuteOfHour(),
                 false
         );
     }
@@ -55,24 +60,18 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
         minutes = AppConstants.getSteppedMinutes(minutes);
-        boolean isStart = getArguments().getBoolean(IS_START);
-        long start = getArguments().getLong(START);
-        if (isStart){
-            calendar.setTimeInMillis(start);
-            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            calendar.set(Calendar.MINUTE, minutes);
-            start = calendar.getTimeInMillis();
-            calendar.setTimeInMillis(getArguments().getLong(END));
-            hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-            minutes = calendar.get(Calendar.MINUTE);
+        DateTime start, end;
+        if (mIsStart) {
+            start = oldShift.getStart().withTime(hourOfDay, minutes, 0, 0);
+            end = start.withTime(oldShift.getEnd().toLocalTime());
+        } else {
+            start = oldShift.getStart();
+            end = start.withTime(hourOfDay, minutes, 0, 0);
         }
-        calendar.setTimeInMillis(start);
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minutes);
-        if (calendar.getTimeInMillis() <= start) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        if (!end.isAfter(start)) {
+            end = end.plusDays(1);
         }
-        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start, calendar.getTimeInMillis()), null, null) == 0) {
+        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start.getMillis(), end.getMillis()), null, null) == 0) {
             mListener.onShiftOverlap();
         }
     }

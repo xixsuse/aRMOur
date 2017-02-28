@@ -6,10 +6,11 @@ import android.database.MatrixCursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.components.TimePreference;
-import com.skepticalone.mecachecker.util.Period;
-
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 public class ComplianceCursor extends CursorWrapper {
     public final static int
@@ -25,7 +26,7 @@ public class ComplianceCursor extends CursorWrapper {
             COLUMN_NAMES,
             EXTRA_COLUMN_NAMES = new String[]{
                     "SHIFT_TYPE",
-            "DURATION_OF_REST",
+                    "TIME_BETWEEN_SHIFTS",
             "DURATION_OVER_DAY",
             "DURATION_OVER_WEEK",
             "DURATION_OVER_FORTNIGHT",
@@ -40,7 +41,7 @@ public class ComplianceCursor extends CursorWrapper {
             COLUMN_INDEX_START = 1,
             COLUMN_INDEX_END = 2,
             COLUMN_INDEX_SHIFT_TYPE = 3,
-            COLUMN_INDEX_DURATION_OF_REST = 4,
+            COLUMN_INDEX_TIME_BETWEEN_SHIFTS = 4,
             COLUMN_INDEX_DURATION_OVER_DAY = 5,
             COLUMN_INDEX_DURATION_OVER_WEEK = 6,
             COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 7,
@@ -65,56 +66,49 @@ public class ComplianceCursor extends CursorWrapper {
         return getLong(COLUMN_INDEX_ID);
     }
 
-    public long getStart() {
-        return getLong(COLUMN_INDEX_START);
-    }
-
-    public long getEnd() {
-        return getLong(COLUMN_INDEX_END);
+    @NonNull
+    public Interval getShift() {
+        return new Interval(getLong(COLUMN_INDEX_START), getLong(COLUMN_INDEX_END));
     }
 
     public int getShiftType() {
         return getInt(COLUMN_INDEX_SHIFT_TYPE);
     }
 
-    public long getDurationOfRest() {
-        return getLong(COLUMN_INDEX_DURATION_OF_REST);
+    @Nullable
+    public Duration getTimeBetweenShifts() {
+        return isNull(COLUMN_INDEX_TIME_BETWEEN_SHIFTS) ? null : new Duration(getLong(COLUMN_INDEX_TIME_BETWEEN_SHIFTS));
     }
 
-    public long getDurationOverDay() {
-        return getLong(COLUMN_INDEX_DURATION_OVER_DAY);
+    @NonNull
+    public Duration getDurationOverDay() {
+        return new Duration(getLong(COLUMN_INDEX_DURATION_OVER_DAY));
     }
 
-    public long getDurationOverWeek() {
-        return getLong(COLUMN_INDEX_DURATION_OVER_WEEK);
+    @NonNull
+    public Duration getDurationOverWeek() {
+        return new Duration(getLong(COLUMN_INDEX_DURATION_OVER_WEEK));
     }
 
-    public long getDurationOverFortnight() {
-        return getLong(COLUMN_INDEX_DURATION_OVER_FORTNIGHT);
+    @NonNull
+    public Duration getDurationOverFortnight() {
+        return new Duration(getLong(COLUMN_INDEX_DURATION_OVER_FORTNIGHT));
     }
 
-    public boolean isWeekend() {
-        return !isNull(COLUMN_INDEX_CURRENT_WEEKEND_START) && !isNull(COLUMN_INDEX_CURRENT_WEEKEND_END);
+    @Nullable
+    public Interval getCurrentWeekend() {
+        if (isNull(COLUMN_INDEX_CURRENT_WEEKEND_START) || isNull(COLUMN_INDEX_CURRENT_WEEKEND_END)) {
+            return null;
+        }
+        return new Interval(getLong(COLUMN_INDEX_CURRENT_WEEKEND_START), getLong(COLUMN_INDEX_CURRENT_WEEKEND_END));
     }
 
-    public long getCurrentWeekendStart() {
-        return getLong(COLUMN_INDEX_CURRENT_WEEKEND_START);
-    }
-
-    public long getCurrentWeekendEnd() {
-        return getLong(COLUMN_INDEX_CURRENT_WEEKEND_END);
-    }
-
-    public boolean previousWeekendWorked() {
-        return !isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) && !isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END);
-    }
-
-    public long getPreviousWeekendWorkedStart() {
-        return getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START);
-    }
-
-    public long getPreviousWeekendWorkedEnd() {
-        return getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END);
+    @Nullable
+    public Interval getPreviousWeekend() {
+        if (isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) || isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)) {
+            return null;
+        }
+        return new Interval(getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END));
     }
 
     public boolean consecutiveWeekendsWorked() {
@@ -134,46 +128,50 @@ public class ComplianceCursor extends CursorWrapper {
                 int nightShiftEndTotalMinutes
         ) {
             super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
-            Calendar calendarToRecycle = Calendar.getInstance();
             for (int i = 0, size = initialCursor.getCount(); i < size; i++) {
                 initialCursor.moveToPosition(i);
                 long id = initialCursor.getLong(COLUMN_INDEX_ID);
                 if (shiftId != null && shiftId != id) continue;
-                long start = initialCursor.getLong(COLUMN_INDEX_START), end = initialCursor.getLong(COLUMN_INDEX_END);
-                calendarToRecycle.setTimeInMillis(start);
-                int startTotalMinutes = TimePreference.calculateTotalMinutes(calendarToRecycle.get(Calendar.HOUR_OF_DAY), calendarToRecycle.get(Calendar.MINUTE));
-                calendarToRecycle.setTimeInMillis(end);
-                int endTotalMinutes = TimePreference.calculateTotalMinutes(calendarToRecycle.get(Calendar.HOUR_OF_DAY), calendarToRecycle.get(Calendar.MINUTE));
-                int shiftType;
-                if (startTotalMinutes == normalDayStartTotalMinutes && endTotalMinutes == normalDayEndTotalMinutes) {
-                    shiftType = SHIFT_TYPE_NORMAL_DAY;
-                } else if (startTotalMinutes == longDayStartTotalMinutes && endTotalMinutes == longDayEndTotalMinutes) {
-                    shiftType = SHIFT_TYPE_LONG_DAY;
-                } else if (startTotalMinutes == nightShiftStartTotalMinutes && endTotalMinutes == nightShiftEndTotalMinutes) {
-                    shiftType = SHIFT_TYPE_NIGHT_SHIFT;
-                } else {
-                    shiftType = SHIFT_TYPE_OTHER;
-                }
+                Interval currentShift = new Interval(initialCursor.getLong(COLUMN_INDEX_START), initialCursor.getLong(COLUMN_INDEX_END));
                 MatrixCursor.RowBuilder builder = newRow()
                         .add(id)
-                        .add(start)
-                        .add(end)
-                        .add(shiftType)
-                        .add(getDurationOfRest(initialCursor, i))
-                        .add(getDurationOverDay(initialCursor, calendarToRecycle, i))
-                        .add(getDurationOverWeek(initialCursor, calendarToRecycle, i))
-                        .add(getDurationOverFortnight(initialCursor, calendarToRecycle, i));
-                Period weekend = getWeekend(initialCursor, calendarToRecycle, i);
-                if (weekend != null) {
+                        .add(currentShift.getStartMillis())
+                        .add(currentShift.getEndMillis());
+                int startTotalMinutes = currentShift.getStart().getMinuteOfDay();
+                int endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
+                if (startTotalMinutes == normalDayStartTotalMinutes && endTotalMinutes == normalDayEndTotalMinutes) {
+                    builder.add(SHIFT_TYPE_NORMAL_DAY);
+                } else if (startTotalMinutes == longDayStartTotalMinutes && endTotalMinutes == longDayEndTotalMinutes) {
+                    builder.add(SHIFT_TYPE_LONG_DAY);
+                } else if (startTotalMinutes == nightShiftStartTotalMinutes && endTotalMinutes == nightShiftEndTotalMinutes) {
+                    builder.add(SHIFT_TYPE_NIGHT_SHIFT);
+                } else {
+                    builder.add(SHIFT_TYPE_OTHER);
+                }
+                if (initialCursor.moveToPrevious()) {
+                    builder.add(currentShift.getStartMillis() - initialCursor.getLong(COLUMN_INDEX_END));
+                } else {
+                    builder.add(null);
+                }
+                builder
+                        .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusDays(1).toInstant()).getMillis())
+                        .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(1).toInstant()).getMillis())
+                        .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis());
+                Interval currentWeekend = getWeekend(currentShift);
+                if (currentWeekend != null) {
                     builder
-                            .add(weekend.start)
-                            .add(weekend.end);
-                    Period previousWeekendWorked = getLastWeekendWorked(initialCursor, calendarToRecycle, i, weekend);
-                    if (previousWeekendWorked != null) {
-                        builder
-                                .add(previousWeekendWorked.start)
-                                .add(previousWeekendWorked.end)
-                                .add(weekend.advanceDays(calendarToRecycle, -7).equals(previousWeekendWorked) ? 1 : 0);
+                            .add(currentWeekend.getStartMillis())
+                            .add(currentWeekend.getEndMillis());
+                    initialCursor.moveToPosition(i);
+                    while (initialCursor.moveToPrevious()) {
+                        Interval weekend = getWeekend(new Interval(initialCursor.getLong(COLUMN_INDEX_START), initialCursor.getLong(COLUMN_INDEX_END)));
+                        if (weekend != null && !currentWeekend.equals(weekend)) {
+                            builder
+                                    .add(weekend.getStartMillis())
+                                    .add(weekend.getEndMillis())
+                                    .add(weekend.getStart().isEqual(currentWeekend.getStart().minusWeeks(1)) && weekend.getEnd().isEqual(currentWeekend.getEnd().minusWeeks(1)) ? 1 : 0);
+                            break;
+                        }
                     }
                 }
                 if (shiftId != null) break;
@@ -181,56 +179,24 @@ public class ComplianceCursor extends CursorWrapper {
             initialCursor.close();
         }
 
-        private static long getDurationOverDay(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
-            return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 1);
-        }
-
-        private static long getDurationOverWeek(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
-            return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 7);
-        }
-
-        private static long getDurationOverFortnight(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
-            return getDurationOverPeriod(cursor, calendarToRecycle, positionToCheck, 14);
-        }
-
-        private static long getDurationOverPeriod(Cursor cursor, Calendar calendarToRecycle, int positionToCheck, int periodInDays) {
+        @NonNull
+        private static Duration getDurationSince(Cursor cursor, int positionToCheck, Instant cutOff) {
+            Duration totalDuration = Duration.ZERO;
             cursor.moveToPosition(positionToCheck);
-            calendarToRecycle.setTimeInMillis(cursor.getLong(COLUMN_INDEX_END));
-            calendarToRecycle.add(Calendar.DATE, -periodInDays);
-            long periodStart = calendarToRecycle.getTimeInMillis(), totalDuration = 0;
             do {
-                long end = cursor.getLong(COLUMN_INDEX_END);
-                if (periodStart >= end) break;
-                totalDuration += end - Math.max(periodStart, cursor.getLong(COLUMN_INDEX_START));
+                Instant end = new Instant(cursor.getLong(COLUMN_INDEX_END));
+                if (!end.isAfter(cutOff)) break;
+                Instant start = new Instant(cursor.getLong(COLUMN_INDEX_START));
+                totalDuration = totalDuration.plus(new Duration(cutOff.isAfter(start) ? cutOff : start, end));
             } while (cursor.moveToPrevious());
             return totalDuration;
         }
 
-        private static long getDurationOfRest(Cursor cursor, int positionToCheck) {
-            cursor.moveToPosition(positionToCheck);
-            long currentStart = cursor.getLong(COLUMN_INDEX_START);
-            if (cursor.moveToPrevious()) {
-                long previousEnd = cursor.getLong(COLUMN_INDEX_END);
-                return currentStart - previousEnd;
-            } else return -1L;
-        }
-
         @Nullable
-        private static Period getWeekend(Cursor cursor, Calendar calendarToRecycle, int positionToCheck) {
-            cursor.moveToPosition(positionToCheck);
-            return Period.getWeekend(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END), calendarToRecycle);
+        private static Interval getWeekend(Interval shift) {
+            DateTime weekendStart = shift.getStart().withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
+            Interval weekend = new Interval(weekendStart, weekendStart.plusDays(2));
+            return shift.overlaps(weekend) ? weekend : null;
         }
-
-        @Nullable
-        private static Period getLastWeekendWorked(Cursor cursor, Calendar calendarToRecycle, int positionToCheck, @NonNull Period currentWeekend) {
-            for (int i = positionToCheck - 1; i >= 0; i--) {
-                Period weekend = getWeekend(cursor, calendarToRecycle, i);
-                if (weekend != null && !weekend.equals(currentWeekend)) {
-                    return weekend;
-                }
-            }
-            return null;
-        }
-
     }
 }

@@ -28,7 +28,9 @@ import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Interval;
 
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -38,7 +40,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
     private ComplianceCursor mCursor = null;
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean mAddButtonJustClicked = false;
-
 
     @Override
     public void onAttach(Context context) {
@@ -132,31 +133,24 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     skipWeekendsKeyId = R.string.key_skip_weekend_night_shift;
                     defaultSkipWeekendsId = R.bool.default_skip_weekend_night_shift;
                 }
-                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
-                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
-                Calendar calendar = Calendar.getInstance();
+                DateTime minStart;
                 if (mCursor != null && mCursor.moveToLast()) {
-                    calendar.setTimeInMillis(mCursor.getEnd());
-                    calendar.add(Calendar.HOUR, AppConstants.MINIMUM_REST_HOURS);
+                    minStart = mCursor.getShift().getEnd().plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+                } else {
+                    minStart = new DateTime().withTimeAtStartOfDay();
                 }
-                long start = calendar.getTimeInMillis();
-                calendar.set(Calendar.MILLISECOND, 0);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MINUTE, TimePreference.calculateMinutes(startTotalMinutes));
-                calendar.set(Calendar.HOUR_OF_DAY, TimePreference.calculateHours(startTotalMinutes));
+                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
+                DateTime newStart = minStart.withTime(TimePreference.calculateHours(startTotalMinutes), TimePreference.calculateMinutes(startTotalMinutes), 0, 0);
                 boolean skipWeekends = preferences.getBoolean(getString(skipWeekendsKeyId), getResources().getBoolean(defaultSkipWeekendsId));
-                while (calendar.getTimeInMillis() < start || (
-                        skipWeekends && (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                )) {
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                while (newStart.isBefore(minStart) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
+                    newStart = newStart.plusDays(1);
                 }
-                start = calendar.getTimeInMillis();
-                calendar.set(Calendar.MINUTE, TimePreference.calculateMinutes(endTotalMinutes));
-                calendar.set(Calendar.HOUR_OF_DAY, TimePreference.calculateHours(endTotalMinutes));
-                if (calendar.getTimeInMillis() < start) {
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
+                DateTime newEnd = newStart.withTime(TimePreference.calculateHours(endTotalMinutes), TimePreference.calculateMinutes(endTotalMinutes), 0, 0);
+                if (!newEnd.isAfter(newStart)) {
+                    newEnd = newEnd.plusDays(1);
                 }
-                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(start, calendar.getTimeInMillis()));
+                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
                 mAddButtonJustClicked = true;
                 return true;
             case R.id.settings:
@@ -209,13 +203,13 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     break;
             }
             holder.shiftIconView.setImageResource(shiftTypeDrawableId);
-            long start = mCursor.getStart(), end = mCursor.getEnd();
-            holder.dateView.setText(getString(R.string.day_date_format, start));
-            holder.timeSpanView.setText(getString(R.string.time_span_format, start, end));
-            boolean error = (position > 0 && mCursor.getDurationOfRest() < AppConstants.MINIMUM_DURATION_REST) ||
-                    mCursor.getDurationOverDay() > AppConstants.MAXIMUM_DURATION_OVER_DAY ||
-                    mCursor.getDurationOverWeek() > AppConstants.MAXIMUM_DURATION_OVER_WEEK ||
-                    mCursor.getDurationOverFortnight() > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT ||
+            Interval shift = mCursor.getShift();
+            holder.dateView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
+            holder.timeSpanView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
+            boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||
+                    AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
+                    AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
+                    AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
                     mCursor.consecutiveWeekendsWorked();
             holder.complianceIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
         }

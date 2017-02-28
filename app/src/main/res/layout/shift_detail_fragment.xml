@@ -44,10 +44,10 @@
 
     <TextView
         style="@style/detail_list_label"
-        android:text="@string/rest_between_shifts" />
+        android:text="@string/time_between_shifts" />
 
     <TextView
-        android:id="@+id/rest_between_shifts"
+        android:id="@+id/time_between_shifts"
         style="@style/detail_list_content"
         tools:text="15 hours, 30 minutes" />
 

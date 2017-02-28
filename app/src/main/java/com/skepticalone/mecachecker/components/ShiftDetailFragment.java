@@ -19,9 +19,11 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
-import com.skepticalone.mecachecker.util.DurationFormat;
 
-import java.util.Calendar;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -30,21 +32,38 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final int LOADER_DETAIL_ID = 1;
-    private final static Calendar sStart = Calendar.getInstance(), sEnd = Calendar.getInstance();
+    private final static PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
+            .appendYears()
+            .appendSuffix(" year", " years")
+            .appendSeparator(", ")
+            .appendMonths()
+            .appendSuffix(" month", " months")
+            .appendSeparator(", ")
+            .appendWeeks()
+            .appendSuffix(" week", " weeks")
+            .appendSeparator(", ")
+            .appendDays()
+            .appendSuffix(" day", " days")
+            .appendSeparator(", ")
+            .appendHours()
+            .appendSuffix(" hour", " hours")
+            .appendSeparator(", ")
+            .appendMinutes()
+            .appendSuffix(" minute", " minutes")
+            .toFormatter();
     private long mShiftId;
     private TextView
             mDateView,
             mStartTimeView,
             mEndTimeView,
             mShiftTypeView,
-            mRestBetweenShiftsView,
+            mTimeBetweenShiftsView,
             mDurationWorkedOverDayView,
             mDurationWorkedOverWeekView,
             mDurationWorkedOverFortnightView,
             mCurrentWeekendView,
             mLastWeekendWorkedLabelView,
             mLastWeekendWorkedView;
-
     @ColorInt
     private int mTextColor, mErrorColor;
 
@@ -69,28 +88,10 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.shift_detail_fragment, container, false);
         mDateView = (TextView) layout.findViewById(R.id.date);
-        mDateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis()).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
-            }
-        });
         mStartTimeView = (TextView) layout.findViewById(R.id.start_time);
-        mStartTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis(), true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
-            }
-        });
         mEndTimeView = (TextView) layout.findViewById(R.id.end_time);
-        mEndTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerFragment.create(mShiftId, sStart.getTimeInMillis(), sEnd.getTimeInMillis(), false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
-            }
-        });
         mShiftTypeView = (TextView) layout.findViewById(R.id.shift_type);
-        mRestBetweenShiftsView = (TextView) layout.findViewById(R.id.rest_between_shifts);
+        mTimeBetweenShiftsView = (TextView) layout.findViewById(R.id.time_between_shifts);
         mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
         mDurationWorkedOverWeekView = (TextView) layout.findViewById(R.id.duration_worked_over_week);
         mDurationWorkedOverFortnightView = (TextView) layout.findViewById(R.id.duration_worked_over_fortnight);
@@ -116,13 +117,28 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         ComplianceCursor cursor = new ComplianceCursor(c);
         if (cursor.moveToFirst()) {
             boolean error;
-            //
-            sStart.setTimeInMillis(cursor.getStart());
-            sEnd.setTimeInMillis(cursor.getEnd());
-            mDateView.setText(getString(R.string.day_date_format, sStart));
-            mStartTimeView.setText(getString(R.string.time_format, sStart));
-            mEndTimeView.setText(getString(sStart.get(Calendar.DAY_OF_MONTH) == sEnd.get(Calendar.DAY_OF_MONTH) ? R.string.time_format : R.string.time_format_with_day, sEnd));
-            //
+            final Interval shift = cursor.getShift();
+            mDateView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
+            mDateView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatePickerFragment.create(mShiftId, shift).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
+                }
+            });
+            mStartTimeView.setText(getString(R.string.time_format, shift.getStartMillis()));
+            mStartTimeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TimePickerFragment.create(mShiftId, shift, true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                }
+            });
+            mEndTimeView.setText(getString(shift.getStart().getDayOfMonth() == shift.getEnd().getDayOfMonth() ? R.string.time_format : R.string.time_format_with_day, shift.getEndMillis()));
+            mEndTimeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TimePickerFragment.create(mShiftId, shift, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                }
+            });
             int shiftTypeDrawableId, shiftTypeStringId;
             switch (cursor.getShiftType()) {
                 case ComplianceCursor.SHIFT_TYPE_NORMAL_DAY:
@@ -144,37 +160,39 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             }
             mShiftTypeView.setText(shiftTypeStringId);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mShiftTypeView, 0, 0, shiftTypeDrawableId, 0);
-            //
-            long restBetweenShifts = cursor.getDurationOfRest();
-            boolean restBetweenShiftsApplicable = restBetweenShifts >= 0;
-            error = restBetweenShiftsApplicable && restBetweenShifts < AppConstants.MINIMUM_DURATION_REST;
-            mRestBetweenShiftsView.setText(restBetweenShiftsApplicable ? DurationFormat.getDurationString(getActivity(), restBetweenShifts) : getString(R.string.not_applicable));
-            mRestBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mRestBetweenShiftsView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
-            //
-            long durationOverDay = cursor.getDurationOverDay();
-            error = durationOverDay > AppConstants.MAXIMUM_DURATION_OVER_DAY;
-            mDurationWorkedOverDayView.setText(DurationFormat.getDurationString(getActivity(), durationOverDay));
+            Duration duration = cursor.getTimeBetweenShifts();
+            if (duration == null) {
+                mTimeBetweenShiftsView.setText(R.string.not_applicable);
+                mTimeBetweenShiftsView.setTextColor(mTextColor);
+                mTimeBetweenShiftsView.setCompoundDrawables(null, null, null, null);
+            } else {
+                mTimeBetweenShiftsView.setText(periodFormatter.print(duration.toPeriodTo(shift.getStart())));
+                error = AppConstants.hasInsufficientTimeBetweenShifts(duration);
+                mTimeBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
+                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mTimeBetweenShiftsView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
+            }
+            duration = cursor.getDurationOverDay();
+            mDurationWorkedOverDayView.setText(periodFormatter.print(duration.toPeriod()));
+            error = AppConstants.exceedsDurationOverDay(duration);
             mDurationWorkedOverDayView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverDayView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
-            //
-            long durationOverWeek = cursor.getDurationOverWeek();
-            error = durationOverWeek > AppConstants.MAXIMUM_DURATION_OVER_WEEK;
-            mDurationWorkedOverWeekView.setText(DurationFormat.getDurationString(getActivity(), durationOverWeek));
+            duration = cursor.getDurationOverWeek();
+            mDurationWorkedOverWeekView.setText(periodFormatter.print(duration.toPeriod()));
+            error = AppConstants.exceedsDurationOverWeek(duration);
             mDurationWorkedOverWeekView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverWeekView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
-            //
-            long durationOverFortnight = cursor.getDurationOverFortnight();
-            error = durationOverFortnight > AppConstants.MAXIMUM_DURATION_OVER_FORTNIGHT;
-            mDurationWorkedOverFortnightView.setText(DurationFormat.getDurationString(getActivity(), durationOverFortnight));
+            duration = cursor.getDurationOverFortnight();
+            mDurationWorkedOverFortnightView.setText(periodFormatter.print(duration.toPeriod()));
+            error = AppConstants.exceedsDurationOverFortnight(duration);
             mDurationWorkedOverFortnightView.setTextColor(error ? mErrorColor : mTextColor);
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mDurationWorkedOverFortnightView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
-            //
-            if (cursor.isWeekend()) {
-                mCurrentWeekendView.setText(getString(R.string.period_format, cursor.getCurrentWeekendStart(), cursor.getCurrentWeekendEnd() - 1));
+            Interval currentWeekend = cursor.getCurrentWeekend();
+            if (currentWeekend != null) {
+                mCurrentWeekendView.setText(getString(R.string.period_format, currentWeekend.getStartMillis(), currentWeekend.getEndMillis() - 1));
                 mLastWeekendWorkedLabelView.setVisibility(View.VISIBLE);
-                if (cursor.previousWeekendWorked()){
-                    mLastWeekendWorkedView.setText(getString(R.string.period_format, cursor.getPreviousWeekendWorkedStart(), cursor.getPreviousWeekendWorkedEnd() - 1));
+                Interval previousWeekend = cursor.getPreviousWeekend();
+                if (previousWeekend != null) {
+                    mLastWeekendWorkedView.setText(getString(R.string.period_format, previousWeekend.getStartMillis(), previousWeekend.getEndMillis() - 1));
                     error = cursor.consecutiveWeekendsWorked();
                     mLastWeekendWorkedView.setTextColor(error ? mErrorColor : mTextColor);
                     TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mLastWeekendWorkedView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);

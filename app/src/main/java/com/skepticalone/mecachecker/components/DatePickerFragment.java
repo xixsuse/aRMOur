@@ -10,21 +10,22 @@ import android.widget.DatePicker;
 
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String SHIFT_ID = "SHIFT_ID";
     private static final String START = "START";
     private static final String END = "END";
-    private final Calendar calendar = Calendar.getInstance();
     private ShiftOverlapListener mListener;
+    private Interval oldShift;
 
-    public static DatePickerFragment create(long shiftId, long start, long end) {
+    public static DatePickerFragment create(long shiftId, Interval shift) {
         Bundle arguments = new Bundle();
         arguments.putLong(SHIFT_ID, shiftId);
-        arguments.putLong(START, start);
-        arguments.putLong(END, end);
+        arguments.putLong(START, shift.getStartMillis());
+        arguments.putLong(END, shift.getEndMillis());
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -34,30 +35,29 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (ShiftOverlapListener) context;
+        oldShift = new Interval(getArguments().getLong(START), getArguments().getLong(END));
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        calendar.setTimeInMillis(getArguments().getLong(START));
+        DateTime dateTime = oldShift.getStart();
         return new DatePickerDialog(getActivity(), this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                dateTime.getYear(),
+                dateTime.getMonthOfYear() - 1,
+                dateTime.getDayOfMonth()
         );
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        calendar.setTimeInMillis(getArguments().getLong(START));
-        calendar.set(year, month, dayOfMonth);
-        long start = calendar.getTimeInMillis();
-        calendar.setTimeInMillis(getArguments().getLong(END));
-        calendar.set(year, month, dayOfMonth);
-        if (calendar.getTimeInMillis() <= start) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        DateTime
+                start = oldShift.getStart().withDate(year, month + 1, dayOfMonth),
+                end = oldShift.getEnd().withDate(year, month + 1, dayOfMonth);
+        if (!end.isAfter(start)) {
+            end = end.plusDays(1);
         }
-        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start, calendar.getTimeInMillis()), null, null) == 0) {
+        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), ShiftProvider.getContentValues(start.getMillis(), end.getMillis()), null, null) == 0) {
             mListener.onShiftOverlap();
         }
     }

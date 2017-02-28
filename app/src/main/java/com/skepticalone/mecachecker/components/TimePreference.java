@@ -12,12 +12,13 @@ import android.widget.TimePicker;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.AppConstants;
 
-import java.util.Calendar;
+import org.joda.time.LocalTime;
+
+import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 @SuppressWarnings("WeakerAccess")
 public class TimePreference extends DialogPreference {
 
-    private final Calendar calendar = Calendar.getInstance();
     private int mTotalMinutes;
     @Nullable
     private TimePicker mTimePicker;
@@ -38,16 +39,16 @@ public class TimePreference extends DialogPreference {
         setNegativeButtonText(R.string.cancel);
     }
 
-    public static int calculateTotalMinutes(int hours, int minutes) {
-        return hours * AppConstants.MINUTES_PER_HOUR + minutes;
+    private static int calculateTotalMinutes(int hours, int minutes) {
+        return hours * MINUTES_PER_HOUR + minutes;
     }
 
     public static int calculateHours(int totalMinutes) {
-        return totalMinutes / AppConstants.MINUTES_PER_HOUR;
+        return totalMinutes / MINUTES_PER_HOUR;
     }
 
     public static int calculateMinutes(int totalMinutes) {
-        return totalMinutes % AppConstants.MINUTES_PER_HOUR;
+        return totalMinutes % MINUTES_PER_HOUR;
     }
 
     @Override
@@ -114,9 +115,7 @@ public class TimePreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        calendar.set(Calendar.HOUR_OF_DAY, calculateHours(mTotalMinutes));
-        calendar.set(Calendar.MINUTE, calculateMinutes(mTotalMinutes));
-        return getContext().getString(R.string.time_format, calendar);
+        return getContext().getString(R.string.time_format, new LocalTime(calculateHours(mTotalMinutes), calculateMinutes(mTotalMinutes)).toDateTimeToday().getMillis());
     }
 
 }
