@@ -7,22 +7,22 @@
     android:orientation="vertical"
     tools:context=".components.ShiftDetailActivity">
 
-    <Button
-        android:id="@+id/date"
-        style="@style/ShiftDetailButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        tools:text="Friday 27/01/2017" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_margin="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/date"
+            style="@style/ShiftDetailButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            tools:text="Friday 27/01/2017" />
 
         <Button
             android:id="@+id/start_time"
@@ -30,7 +30,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             tools:text="9:00 am" />
 
