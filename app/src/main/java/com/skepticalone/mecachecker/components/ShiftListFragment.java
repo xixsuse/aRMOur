@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -139,9 +138,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 }
                 getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
                 mAddButtonJustClicked = true;
-                return true;
-            case R.id.settings:
-                getActivity().startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

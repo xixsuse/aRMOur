@@ -11,24 +11,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
-            android:name=".components.ShiftListActivity"
-            android:label="@string/title_shift_list">
+            android:name=".components.MainActivity"
+            android:label="@string/title_shift_list"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".components.ShiftListActivity"
+            android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".components.ShiftListActivity" />
+            android:parentActivityName=".components.MainActivity" />
 
         <provider
             android:name=".data.ShiftProvider"

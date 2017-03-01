@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_fragment"
+    android:name="com.skepticalone.mecachecker.components.ShiftListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.skepticalone.mecachecker.components.MainActivity"
+    tools:layout="@layout/shift_list_fragment"
+    tools:showIn="@layout/app_bar_main" />
