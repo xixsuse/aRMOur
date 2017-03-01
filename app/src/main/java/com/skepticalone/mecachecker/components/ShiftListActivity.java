@@ -23,7 +23,7 @@ public class ShiftListActivity extends AppCompatActivity implements ShiftListFra
         mCoordinatorView = findViewById(R.id.coordinator_layout);
         mTwoPane = findViewById(R.id.shift_detail_fragment_container) != null;
         ((ViewPager) findViewById(R.id.pager))
-                .setAdapter(new ListPagerAdapter(getSupportFragmentManager()));
+                .setAdapter(new ShiftListPagerAdapter(getSupportFragmentManager(), this));
     }
 
     @Override
@@ -43,4 +43,6 @@ public class ShiftListActivity extends AppCompatActivity implements ShiftListFra
     public void onShiftOverlap() {
         Snackbar.make(mCoordinatorView, R.string.overlapping_shifts, Snackbar.LENGTH_LONG).show();
     }
+
+
 }
