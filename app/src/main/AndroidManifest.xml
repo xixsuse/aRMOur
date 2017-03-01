@@ -9,13 +9,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".components.MainActivity"
-            android:label="@string/title_shift_list"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".components.ShiftListActivity"
+            android:label="@string/title_shift_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,12 +24,12 @@
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".components.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".components.ShiftListActivity" />
         <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".components.MainActivity" />
+            android:parentActivityName=".components.ShiftListActivity"
+            android:theme="@style/AppTheme" />
 
         <provider
             android:name=".data.ShiftProvider"

@@ -3,46 +3,78 @@ package com.skepticalone.mecachecker.components;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewPager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 
-public class ShiftListActivity extends AppCompatActivity implements ShiftListFragment.Listener, ShiftOverlapListener {
+public class ShiftListActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        ShiftListFragment.Listener {
 
-    private View mCoordinatorView;
-    private boolean mTwoPane;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, true);
         setContentView(R.layout.shift_list_activity);
-        mCoordinatorView = findViewById(R.id.coordinator_layout);
-        mTwoPane = findViewById(R.id.shift_detail_fragment_container) != null;
-        ((ViewPager) findViewById(R.id.pager))
-                .setAdapter(new ShiftListPagerAdapter(getSupportFragmentManager(), this));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(mDrawerToggle);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
-    public void onShiftClicked(long shiftId) {
-        if (mTwoPane) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.shift_detail_fragment_container, ShiftDetailFragment.create(shiftId))
-                    .commit();
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         } else {
-            Intent intent = new Intent(this, ShiftDetailActivity.class);
-            intent.putExtra(ShiftDetailFragment.SHIFT_ID, shiftId);
-            startActivity(intent);
+            super.onBackPressed();
         }
     }
 
     @Override
-    public void onShiftOverlap() {
-        Snackbar.make(mCoordinatorView, R.string.overlapping_shifts, Snackbar.LENGTH_LONG).show();
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.compliance) {
+            Log.i(getLocalClassName(), "onNavigationItemSelected: compliance");
+        } else if (id == R.id.settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
+    @Override
+    public void onShiftClicked(long shiftId) {
+        Intent intent = new Intent(this, ShiftDetailActivity.class);
+        intent.putExtra(ShiftDetailFragment.SHIFT_ID, shiftId);
+        startActivity(intent);
+    }
 
 }

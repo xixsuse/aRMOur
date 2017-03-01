@@ -8,4 +8,4 @@
     app:layoutManager="LinearLayoutManager"
     app:reverseLayout="false"
     app:stackFromEnd="true"
-    tools:listitem="@layout/shift_list_content" />
+    tools:listitem="@layout/shift_list_item" />

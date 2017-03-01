@@ -18,7 +18,7 @@ abstract class AbstractTwoLineAdapter extends RecyclerView.Adapter<AbstractTwoLi
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new CustomViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.shift_list_content, parent, false));
+                .inflate(R.layout.shift_list_item, parent, false));
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {

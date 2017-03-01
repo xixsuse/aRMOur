@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Shift categories">
+    <item android:title="@string/shift_categories">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/compliance"
                     android:icon="@drawable/ic_check_black_24dp"
                     android:title="@string/compliance" />
-                <item
-                    android:icon="@drawable/ic_menu_gallery"
-                    android:title="Gallery" />
-                <item
-                    android:icon="@drawable/ic_menu_slideshow"
-                    android:title="Slideshow" />
-                <item
-                    android:icon="@drawable/ic_menu_manage"
-                    android:title="Tools" />
             </group>
         </menu>
     </item>
@@ -23,5 +14,4 @@
         android:id="@+id/settings"
         android:icon="@drawable/ic_menu_settings"
         android:title="@string/settings" />
-
 </menu>

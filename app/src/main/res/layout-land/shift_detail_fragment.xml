@@ -54,6 +54,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/shift_list_content" />
+        tools:listitem="@layout/shift_list_item" />
 
 </LinearLayout>
