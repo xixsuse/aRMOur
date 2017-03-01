@@ -17,7 +17,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
         setContentView(R.layout.shift_detail_activity);
         mCoordinatorView = findViewById(R.id.coordinator_layout);
         if (savedInstanceState == null) {
-            getFragmentManager()
+            getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.coordinator_layout, ShiftDetailFragment.create(getIntent().getLongExtra(ShiftDetailFragment.SHIFT_ID, ShiftDetailFragment.NO_ID)))
                     .commit();

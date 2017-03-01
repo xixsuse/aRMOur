@@ -8,13 +8,11 @@
     android:showDividers="middle"
     tools:context="com.skepticalone.mecachecker.components.ShiftListActivity">
 
-    <fragment
-        android:id="@+id/shift_list_fragment"
-        android:name="com.skepticalone.mecachecker.components.ShiftListFragment"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/shift_list_fragment" />
+        android:layout_weight="1" />
 
     <FrameLayout
         android:id="@+id/shift_detail_fragment_container"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -21,12 +22,14 @@ public class ShiftListActivity extends AppCompatActivity implements ShiftListFra
         setContentView(R.layout.shift_list_activity);
         mCoordinatorView = findViewById(R.id.coordinator_layout);
         mTwoPane = findViewById(R.id.shift_detail_fragment_container) != null;
+        ((ViewPager) findViewById(R.id.pager))
+                .setAdapter(new ListPagerAdapter(getSupportFragmentManager()));
     }
 
     @Override
     public void onShiftClicked(long shiftId) {
         if (mTwoPane) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.shift_detail_fragment_container, ShiftDetailFragment.create(shiftId))
                     .commit();
         } else {

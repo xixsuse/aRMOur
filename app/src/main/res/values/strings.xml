@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">MECA checker</string>
     <string name="settings">Settings</string>
-    <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
     <string name="normal_day">Normal day</string>
@@ -20,15 +19,6 @@
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
     <string name="period_format">%1$te/%1$tm/%1$ty - %2$te/%2$tm/%2$ty</string>
-    <!--<plurals name="minutes">-->
-    <!--<item quantity="one">%d minute</item>-->
-    <!--<item quantity="other">%d minutes</item>-->
-    <!--</plurals>-->
-    <!--<plurals name="hours">-->
-    <!--<item quantity="one">%d hour</item>-->
-    <!--<item quantity="other">%d hours</item>-->
-    <!--</plurals>-->
-    <!--<string name="hours_and_minutes">%1$s, %2$s</string>-->
     <string name="title_shift_list">Shifts</string>
     <string name="title_shift_detail">Shift Detail</string>
     <string name="not_applicable">N/A</string>
@@ -36,7 +26,6 @@
     <string name="duration_worked_over_day">Duration worked over day</string>
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
-    <string name="current_weekend">Current weekend</string>
     <string name="last_weekend_worked">Last weekend worked</string>
     <string name="overlapping_shifts">Overlapping shifts!</string>
 </resources>

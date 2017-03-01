@@ -1,14 +1,12 @@
 package com.skepticalone.mecachecker.components;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,8 +63,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 //            mCurrentWeekendView,
 //            mLastWeekendWorkedLabelView,
 //            mLastWeekendWorkedView;
-    @ColorInt
-    private int mTextColor, mErrorColor;
     private RecyclerView mRecyclerView;
 
     static ShiftDetailFragment create(long id) {
@@ -81,8 +77,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mShiftId = getArguments().getLong(SHIFT_ID, NO_ID);
-        mTextColor = ContextCompat.getColor(getActivity(), android.R.color.primary_text_light);
-        mErrorColor = ContextCompat.getColor(getActivity(), R.color.colorError);
     }
 
     @Nullable
@@ -119,7 +113,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         ComplianceCursor cursor = new ComplianceCursor(c);
         if (cursor.moveToFirst()) {
-            boolean error;
             final Interval shift = cursor.getShift();
             mDateView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
             mDateView.setOnClickListener(new View.OnClickListener() {
@@ -220,7 +213,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     class ShiftDetailAdapter extends AbstractTwoLineAdapter {
 
-        private ComplianceCursor mCursor;
+        private final ComplianceCursor mCursor;
 
         ShiftDetailAdapter(ComplianceCursor c) {
             super();
@@ -295,6 +288,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                 case 5:
                     holder.primaryTextView.setText(R.string.last_weekend_worked);
                     Interval previousWeekend = mCursor.getPreviousWeekend();
+                    //noinspection ConstantConditions
                     holder.secondaryTextView.setText(getString(R.string.period_format, previousWeekend.getStartMillis(), previousWeekend.getEndMillis() - 1));
                     holder.primaryIconView.setImageResource(mCursor.consecutiveWeekendsWorked() ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //
