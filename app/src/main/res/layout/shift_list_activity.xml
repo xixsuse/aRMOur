@@ -28,12 +28,10 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <fragment
-            android:id="@+id/list_fragment"
-            android:name="com.skepticalone.mecachecker.components.ShiftListFragment"
+        <FrameLayout
+            android:id="@+id/list_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/shift_list_fragment" />
+            android:layout_height="match_parent" />
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -43,7 +41,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/navigation_headers"
         app:menu="@menu/navigation_menu" />
 
 </android.support.v4.widget.DrawerLayout>

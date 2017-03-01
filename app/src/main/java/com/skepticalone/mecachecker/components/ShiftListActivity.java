@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
@@ -19,6 +18,8 @@ import com.skepticalone.mecachecker.R;
 public class ShiftListActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         ShiftListFragment.Listener {
+
+    private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -29,14 +30,18 @@ public class ShiftListActivity extends AppCompatActivity implements
         setContentView(R.layout.shift_list_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(mDrawerToggle);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (savedInstanceState == null) {
+            navigationView.setCheckedItem(R.id.compliance);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
+                    .commit();
+        }
     }
 
     @Override
@@ -60,7 +65,9 @@ public class ShiftListActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.compliance) {
-            Log.i(getLocalClassName(), "onNavigationItemSelected: compliance");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
+                    .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
