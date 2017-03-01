@@ -2,6 +2,8 @@ package com.skepticalone.mecachecker.util;
 
 import android.support.annotation.Nullable;
 
+import com.skepticalone.mecachecker.data.ShiftCategory;
+
 import org.joda.time.Duration;
 
 public final class AppConstants {
@@ -11,6 +13,7 @@ public final class AppConstants {
     private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(72);
     private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(144);
     private static final int MINUTES_PER_STEP = 5;
+    private static final int SHIFT_TYPE_ROSTERED = 1, SHIFT_TYPE_ADDITIONAL = 2;
 
     public static int getSteppedMinutes(int minutes) {
         return minutes - minutes % MINUTES_PER_STEP;
@@ -32,5 +35,15 @@ public final class AppConstants {
         return duration.isLongerThan(MAXIMUM_DURATION_OVER_FORTNIGHT);
     }
 
+    public static int getShiftCategory(ShiftCategory category) {
+        switch (category) {
+            case ROSTERED:
+                return SHIFT_TYPE_ROSTERED;
+            case ADDITIONAL:
+                return SHIFT_TYPE_ADDITIONAL;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
 
 }

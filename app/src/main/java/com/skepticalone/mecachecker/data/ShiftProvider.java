@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.util.AppConstants;
 
 public final class ShiftProvider extends ContentProvider {
 
@@ -57,6 +58,12 @@ public final class ShiftProvider extends ContentProvider {
         ContentValues values = new ContentValues();
         values.put(ShiftContract.Shift.COLUMN_NAME_START, start);
         values.put(ShiftContract.Shift.COLUMN_NAME_END, end);
+        return values;
+    }
+
+    public static ContentValues getContentValues(long start, long end, ShiftCategory category) {
+        ContentValues values = getContentValues(start, end);
+        values.put(ShiftContract.Shift.COLUMN_NAME_CATEGORY, AppConstants.getShiftCategory(category));
         return values;
     }
 

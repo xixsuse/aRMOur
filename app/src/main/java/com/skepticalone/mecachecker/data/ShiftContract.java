@@ -10,42 +10,46 @@ final class ShiftContract {
                 TABLE_NAME = "shifts",
                 COLUMN_NAME_START = "start",
                 COLUMN_NAME_END = "end",
+                COLUMN_NAME_CATEGORY = "category",
                 SQL_CREATE_ENTRIES = "CREATE TABLE " +
                         TABLE_NAME +
                         " (" +
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_NAME_START + " INTEGER NOT NULL, " +
                         COLUMN_NAME_END + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_CATEGORY + " INTEGER NOT NULL, " +
                         "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + ")" +
                         ")",
-                SQL_CREATE_TRIGGER_BEFORE_INSERT = getTriggerProgram(true),
-                SQL_CREATE_TRIGGER_BEFORE_UPDATE = getTriggerProgram(false),
+                SQL_CREATE_START_INDEX = createIndex(COLUMN_NAME_START),
+                SQL_CREATE_CATEGORY_INDEX = createIndex(COLUMN_NAME_CATEGORY),
+                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
+                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
                 SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
         private final static String ERROR_MESSAGE_ON_OVERLAP = "Overlapping shifts";
-        private static String getTriggerProgram(boolean insert) {
-            return "CREATE TRIGGER " +
-                    (insert ? "insert" : "update") +
-                    "_trigger BEFORE " +
-                    (insert ? "INSERT" : "UPDATE") +
+
+        private static String createIndex(String columnName) {
+            return "CREATE INDEX " +
+                    columnName +
+                    "_index" +
                     " ON " +
                     TABLE_NAME +
-                    " BEGIN SELECT CASE WHEN EXISTS (SELECT " +
-                    _ID +
-                    " FROM " +
-                    TABLE_NAME +
-                    " WHERE " +
+                    " (" +
+                    columnName +
+                    ")";
+        }
+
+        private static String createTrigger(boolean insert) {
+            return "CREATE TRIGGER " + (insert ? "insert" : "update") + "_trigger " +
+                    "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
+                    "SELECT CASE WHEN EXISTS (" +
+                    "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
+                    COLUMN_NAME_CATEGORY + " == NEW." + COLUMN_NAME_CATEGORY + " AND " +
                     (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
-                    "NOT (" +
-                    COLUMN_NAME_END +
-                    " <= NEW." +
-                    COLUMN_NAME_START +
-                    " OR " +
-                    COLUMN_NAME_START +
-                    " >= NEW." +
-                    COLUMN_NAME_END +
-                    ")) THEN RAISE (ABORT, '" +
-                    ERROR_MESSAGE_ON_OVERLAP +
-                    "') END; END";
+                    COLUMN_NAME_START + " < NEW." + COLUMN_NAME_END + " AND " +
+                    "NEW." + COLUMN_NAME_START + " < " + COLUMN_NAME_END +
+                    ") " +
+                    "THEN RAISE (ABORT, '" + ERROR_MESSAGE_ON_OVERLAP + "') END; " +
+                    "END";
         }
     }
 }

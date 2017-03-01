@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftCategory;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
@@ -136,7 +137,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 if (!newEnd.isAfter(newStart)) {
                     newEnd = newEnd.plusDays(1);
                 }
-                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
+                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis(), ShiftCategory.ROSTERED));
                 mAddButtonJustClicked = true;
                 return true;
             default:
