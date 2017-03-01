@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,16 +51,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mLayoutManager = recyclerView.getLayoutManager();
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START | ItemTouchHelper.END) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                getActivity().getContentResolver().delete(ShiftProvider.shiftUri(viewHolder.getItemId()), null, null);
-            }
-        }).attachToRecyclerView(recyclerView);
         mAdapter = new ShiftAdapter();
         recyclerView.setAdapter(mAdapter);
         return layout;
@@ -183,6 +172,12 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 @Override
                 public void onClick(View v) {
                     mListener.onShiftClicked(holder.getItemId());
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return getActivity().getContentResolver().delete(ShiftProvider.shiftUri(holder.getItemId()), null, null) == 1;
                 }
             });
             return holder;
