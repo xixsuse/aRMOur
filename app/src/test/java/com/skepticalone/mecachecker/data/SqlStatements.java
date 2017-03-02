@@ -6,34 +6,34 @@ import static org.junit.Assert.assertEquals;
 public class SqlStatements {
 
     @Test
-    public void createEntries() {
+    public void createTable() {
         assertEquals(
-                "CREATE TABLE shifts (_id INTEGER PRIMARY KEY, start INTEGER NOT NULL, end INTEGER NOT NULL, type INTEGER NOT NULL, CHECK (start < end))",
-                ShiftContract.Shift.SQL_CREATE_ENTRIES
+                "CREATE TABLE rostered_shifts (_id INTEGER PRIMARY KEY, scheduled_start INTEGER NOT NULL, scheduled_end INTEGER NOT NULL, logged_start INTEGER DEFAULT NULL, logged_end INTEGER DEFAULT NULL, CHECK (scheduled_start < scheduled_end), CHECK ((logged_start IS NULL AND logged_end IS NULL) OR (logged_start < logged_end)))",
+                ShiftContract.RosteredShift.SQL_CREATE_TABLE
         );
     }
 
     @Test
-    public void triggerBeforeInsert() {
+    public void createTriggerBeforeInsert() {
         assertEquals(
-                "CREATE TRIGGER insert_trigger BEFORE INSERT ON shifts BEGIN SELECT CASE WHEN EXISTS (SELECT _id FROM shifts WHERE type == NEW.type AND start < NEW.end AND NEW.start < end) THEN RAISE (ABORT, 'Overlapping shifts') END; END",
-                ShiftContract.Shift.SQL_CREATE_TRIGGER_BEFORE_INSERT
+                "CREATE TRIGGER insert_trigger BEFORE INSERT ON rostered_shifts BEGIN SELECT CASE WHEN EXISTS (SELECT _id FROM rostered_shifts WHERE ((scheduled_start < NEW.scheduled_end AND NEW.scheduled_start < scheduled_end) OR (logged_start < NEW.logged_end AND NEW.logged_start < logged_end))) THEN RAISE (ABORT, 'Overlapping shifts') END; END",
+                ShiftContract.RosteredShift.SQL_CREATE_TRIGGER_BEFORE_INSERT
         );
     }
 
     @Test
-    public void triggerBeforeUpdate() {
+    public void createTriggerBeforeUpdate() {
         assertEquals(
-                "CREATE TRIGGER update_trigger BEFORE UPDATE ON shifts BEGIN SELECT CASE WHEN EXISTS (SELECT _id FROM shifts WHERE type == NEW.type AND _id != OLD._id AND start < NEW.end AND NEW.start < end) THEN RAISE (ABORT, 'Overlapping shifts') END; END",
-                ShiftContract.Shift.SQL_CREATE_TRIGGER_BEFORE_UPDATE
+                "CREATE TRIGGER update_trigger BEFORE UPDATE ON rostered_shifts BEGIN SELECT CASE WHEN EXISTS (SELECT _id FROM rostered_shifts WHERE _id != OLD._id AND ((scheduled_start < NEW.scheduled_end AND NEW.scheduled_start < scheduled_end) OR (logged_start < NEW.logged_end AND NEW.logged_start < logged_end))) THEN RAISE (ABORT, 'Overlapping shifts') END; END",
+                ShiftContract.RosteredShift.SQL_CREATE_TRIGGER_BEFORE_UPDATE
         );
     }
 
     @Test
-    public void deleteEntries() {
+    public void dropTable() {
         assertEquals(
-                "DROP TABLE IF EXISTS shifts",
-                ShiftContract.Shift.SQL_DELETE_ENTRIES
+                "DROP TABLE IF EXISTS rostered_shifts",
+                ShiftContract.RosteredShift.SQL_DROP_TABLE
         );
     }
 

@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 class ShiftDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 7;
-    private static final String DATABASE_NAME = "Shifts.db";
+    private static final int DATABASE_VERSION = 11;
+    private static final String DATABASE_NAME = "shifts.db";
 
     ShiftDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -16,16 +16,15 @@ class ShiftDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(ShiftContract.Shift.SQL_CREATE_ENTRIES);
-        db.execSQL(ShiftContract.Shift.SQL_CREATE_START_INDEX);
-        db.execSQL(ShiftContract.Shift.SQL_CREATE_CATEGORY_INDEX);
-        db.execSQL(ShiftContract.Shift.SQL_CREATE_TRIGGER_BEFORE_INSERT);
-        db.execSQL(ShiftContract.Shift.SQL_CREATE_TRIGGER_BEFORE_UPDATE);
+        db.execSQL(ShiftContract.RosteredShift.SQL_CREATE_TABLE);
+        db.execSQL(ShiftContract.RosteredShift.SQL_CREATE_INDEX_START);
+        db.execSQL(ShiftContract.RosteredShift.SQL_CREATE_TRIGGER_BEFORE_INSERT);
+        db.execSQL(ShiftContract.RosteredShift.SQL_CREATE_TRIGGER_BEFORE_UPDATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(ShiftContract.Shift.SQL_DELETE_ENTRIES);
+        db.execSQL(ShiftContract.RosteredShift.SQL_DROP_TABLE);
         onCreate(db);
     }
 }

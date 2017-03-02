@@ -16,7 +16,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -30,17 +29,17 @@ public final class ShiftProvider extends ContentProvider {
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
-            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME,
-            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.Shift.TABLE_NAME;
+            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME,
+            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
-    public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.Shift.TABLE_NAME).build();
+    public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShift.TABLE_NAME).build();
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME, SHIFTS);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.Shift.TABLE_NAME + "/#", SHIFT_ID);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME, SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + "/#", SHIFT_ID);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -64,16 +63,16 @@ public final class ShiftProvider extends ContentProvider {
 
     public static ContentValues getContentValues(long start, long end) {
         ContentValues values = new ContentValues();
-        values.put(ShiftContract.Shift.COLUMN_NAME_START, start);
-        values.put(ShiftContract.Shift.COLUMN_NAME_END, end);
+        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START, start);
+        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END, end);
         return values;
     }
 
-    public static ContentValues getContentValues(long start, long end, ShiftCategory category) {
-        ContentValues values = getContentValues(start, end);
-        values.put(ShiftContract.Shift.COLUMN_NAME_CATEGORY, AppConstants.getShiftCategory(category));
-        return values;
-    }
+//    public static ContentValues getContentValues(long start, long end, ShiftCategory category) {
+//        ContentValues values = getContentValues(start, end);
+//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_CATEGORY, AppConstants.getShiftCategory(category));
+//        return values;
+//    }
 
     @NonNull
     private static Duration getDurationSince(Cursor cursor, int positionToCheck, Instant cutOff) {
@@ -147,7 +146,7 @@ public final class ShiftProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
-                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.Shift.TABLE_NAME, null, values);
+                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.RosteredShift.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
                 return shiftUri(shiftId);
@@ -160,7 +159,7 @@ public final class ShiftProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
-                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.Shift.TABLE_NAME, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
+                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.RosteredShift.TABLE_NAME, ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment(), null);
                 if (deleted > 0) {
                     //noinspection ConstantConditions
                     getContext().getContentResolver().notifyChange(uri, null);
@@ -176,7 +175,7 @@ public final class ShiftProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
                 try {
-                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.Shift.TABLE_NAME, values, ShiftContract.Shift._ID + "=" + uri.getLastPathSegment(), null);
+                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.RosteredShift.TABLE_NAME, values, ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment(), null);
                     if (updated > 0) {
                         //noinspection ConstantConditions
                         getContext().getContentResolver().notifyChange(uri, null);
@@ -193,13 +192,13 @@ public final class ShiftProvider extends ContentProvider {
     @NonNull
     private Cursor getComplianceCursor(@Nullable Long shiftId) {
         Cursor initialCursor = mDbHelper.getReadableDatabase().query(
-                ShiftContract.Shift.TABLE_NAME,
+                ShiftContract.RosteredShift.TABLE_NAME,
                 ShiftContract.Compliance.PROJECTION,
                 null,
                 null,
                 null,
                 null,
-                ShiftContract.Shift.COLUMN_NAME_START
+                ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START
         );
         int initialCursorCount = initialCursor.getCount();
         MatrixCursor newCursor = new MatrixCursor(ShiftContract.Compliance.COLUMN_NAMES, shiftId == null ? initialCursorCount : 1);
