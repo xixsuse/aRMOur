@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
-import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.Duration;
@@ -106,7 +104,8 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
+        return new ComplianceCursor.Loader(getActivity(), mShiftId);
+//        return new CursorLoader(getActivity(), ShiftProvider.shiftUri(mShiftId), null, null, null, null);
     }
 
     @Override
@@ -137,7 +136,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             });
             mRecyclerView.setAdapter(new ShiftDetailAdapter(cursor));
 //            int shiftTypeDrawableId, shiftTypeStringId;
-//            switch (cursor.getShiftType()) {
+//            switch (cursor.getShiftCategory()) {
 //                case ComplianceCursor.SHIFT_TYPE_NORMAL_DAY:
 //                    shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
 //                    shiftTypeStringId = R.string.normal_day;
@@ -230,22 +229,24 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                     holder.primaryTextView.setText(R.string.shift_type);
                     int shiftTypeDrawableId, shiftTypeStringId;
                     switch (mCursor.getShiftType()) {
-                        case ComplianceCursor.SHIFT_TYPE_NORMAL_DAY:
+                        case NORMAL_DAY:
                             shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
                             shiftTypeStringId = R.string.normal_day;
                             break;
-                        case ComplianceCursor.SHIFT_TYPE_LONG_DAY:
+                        case LONG_DAY:
                             shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
                             shiftTypeStringId = R.string.long_day;
                             break;
-                        case ComplianceCursor.SHIFT_TYPE_NIGHT_SHIFT:
+                        case NIGHT_SHIFT:
                             shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
                             shiftTypeStringId = R.string.night_shift;
                             break;
-                        default:
+                        case OTHER:
                             shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
                             shiftTypeStringId = R.string.custom;
                             break;
+                        default:
+                            throw new IllegalArgumentException();
                     }
                     holder.secondaryTextView.setText(shiftTypeStringId);
                     holder.primaryIconView.setImageResource(shiftTypeDrawableId);

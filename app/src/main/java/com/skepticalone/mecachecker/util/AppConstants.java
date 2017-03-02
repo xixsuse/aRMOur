@@ -46,4 +46,16 @@ public final class AppConstants {
         }
     }
 
+    public static ShiftCategory getShiftCategory(int category) {
+        switch (category) {
+            case SHIFT_TYPE_ROSTERED:
+                return ShiftCategory.ROSTERED;
+            case SHIFT_TYPE_ADDITIONAL:
+                return ShiftCategory.ADDITIONAL;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+
 }

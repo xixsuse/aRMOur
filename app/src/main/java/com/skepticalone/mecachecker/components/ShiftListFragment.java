@@ -8,11 +8,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,7 +70,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
+        return new ComplianceCursor.Loader(getActivity(), null);
     }
 
     @Override
@@ -98,7 +96,6 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             case R.id.add_long_day:
             case R.id.add_night_shift:
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                Log.d("PREFERENCES LIST", "size: " + preferences.getAll().size());
                 int startKeyId, defaultStartId, endKeyId, defaultEndId, skipWeekendsKeyId, defaultSkipWeekendsId;
                 if (itemId == R.id.add_normal_day) {
                     startKeyId = R.string.key_start_normal_day;
@@ -187,18 +184,20 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             mCursor.moveToPosition(position);
             int shiftTypeDrawableId;
             switch (mCursor.getShiftType()) {
-                case ComplianceCursor.SHIFT_TYPE_NORMAL_DAY:
+                case NORMAL_DAY:
                     shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
                     break;
-                case ComplianceCursor.SHIFT_TYPE_LONG_DAY:
+                case LONG_DAY:
                     shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
                     break;
-                case ComplianceCursor.SHIFT_TYPE_NIGHT_SHIFT:
+                case NIGHT_SHIFT:
                     shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
                     break;
-                default:
+                case OTHER:
                     shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
                     break;
+                default:
+                    throw new IllegalArgumentException();
             }
             holder.primaryIconView.setImageResource(shiftTypeDrawableId);
             Interval shift = mCursor.getShift();

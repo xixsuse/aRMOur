@@ -1,10 +1,18 @@
 package com.skepticalone.mecachecker.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.MatrixCursor;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
+import android.util.Log;
+
+import com.skepticalone.mecachecker.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -13,11 +21,9 @@ import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class ComplianceCursor extends CursorWrapper {
-    public final static int
-            SHIFT_TYPE_NORMAL_DAY = 0,
-            SHIFT_TYPE_LONG_DAY = 1,
-            SHIFT_TYPE_NIGHT_SHIFT = 2;
-    final static String[] PROJECTION = new String[]{
+    private static final String TAG = "ComplianceCursor";
+
+    private static final String[] PROJECTION = new String[]{
             ShiftContract.Shift._ID,
             ShiftContract.Shift.COLUMN_NAME_START,
             ShiftContract.Shift.COLUMN_NAME_END
@@ -27,15 +33,15 @@ public class ComplianceCursor extends CursorWrapper {
             EXTRA_COLUMN_NAMES = new String[]{
                     "SHIFT_TYPE",
                     "TIME_BETWEEN_SHIFTS",
-            "DURATION_OVER_DAY",
-            "DURATION_OVER_WEEK",
-            "DURATION_OVER_FORTNIGHT",
-            "CURRENT_WEEKEND_START",
-            "CURRENT_WEEKEND_END",
-            "PREVIOUS_WEEKEND_WORKED_START",
-            "PREVIOUS_WEEKEND_WORKED_END",
-            "CONSECUTIVE_WEEKENDS_WORKED"
-    };
+                    "DURATION_OVER_DAY",
+                    "DURATION_OVER_WEEK",
+                    "DURATION_OVER_FORTNIGHT",
+                    "CURRENT_WEEKEND_START",
+                    "CURRENT_WEEKEND_END",
+                    "PREVIOUS_WEEKEND_WORKED_START",
+                    "PREVIOUS_WEEKEND_WORKED_END",
+                    "CONSECUTIVE_WEEKENDS_WORKED"
+            };
     private final static int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
@@ -51,7 +57,11 @@ public class ComplianceCursor extends CursorWrapper {
             COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 11,
             COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 12;
     private final static int
-            SHIFT_TYPE_OTHER = 3;
+            SHIFT_TYPE_NORMAL_DAY = 1,
+            SHIFT_TYPE_LONG_DAY = 2,
+            SHIFT_TYPE_NIGHT_SHIFT = 3,
+            SHIFT_TYPE_OTHER = 4;
+
     static {
         COLUMN_NAMES = new String[PROJECTION.length + EXTRA_COLUMN_NAMES.length];
         System.arraycopy(PROJECTION, 0, COLUMN_NAMES, 0, PROJECTION.length);
@@ -60,6 +70,7 @@ public class ComplianceCursor extends CursorWrapper {
 
     public ComplianceCursor(Cursor cursor) {
         super(cursor);
+        Log.d(TAG, "ComplianceCursor() called with: cursor = [" + cursor + "]");
     }
 
     public long getId() {
@@ -71,8 +82,19 @@ public class ComplianceCursor extends CursorWrapper {
         return new Interval(getLong(COLUMN_INDEX_START), getLong(COLUMN_INDEX_END));
     }
 
-    public int getShiftType() {
-        return getInt(COLUMN_INDEX_SHIFT_TYPE);
+    public ShiftType getShiftType() {
+        switch (getInt(COLUMN_INDEX_SHIFT_TYPE)) {
+            case SHIFT_TYPE_NORMAL_DAY:
+                return ShiftType.NORMAL_DAY;
+            case SHIFT_TYPE_LONG_DAY:
+                return ShiftType.LONG_DAY;
+            case SHIFT_TYPE_NIGHT_SHIFT:
+                return ShiftType.NIGHT_SHIFT;
+            case SHIFT_TYPE_OTHER:
+                return ShiftType.OTHER;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     @Nullable
@@ -115,25 +137,65 @@ public class ComplianceCursor extends CursorWrapper {
         return getInt(COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED) == 1;
     }
 
-    static class ComplianceMatrixCursor extends MatrixCursor {
+    public static class Loader extends CursorLoader {
+        final ForceLoadContentObserver mObserver;
+        private final int
+                normalDayStartTotalMinutes,
+                normalDayEndTotalMinutes,
+                longDayStartTotalMinutes,
+                longDayEndTotalMinutes,
+                nightShiftStartTotalMinutes,
+                nightShiftEndTotalMinutes;
+        @Nullable
+        private final Long mShiftId;
 
-        ComplianceMatrixCursor(
-                @NonNull Cursor initialCursor,
-                @Nullable Long shiftId,
-                int normalDayStartTotalMinutes,
-                int normalDayEndTotalMinutes,
-                int longDayStartTotalMinutes,
-                int longDayEndTotalMinutes,
-                int nightShiftStartTotalMinutes,
-                int nightShiftEndTotalMinutes
-        ) {
-            super(COLUMN_NAMES, shiftId == null ? initialCursor.getCount() : 1);
-            for (int i = 0, size = initialCursor.getCount(); i < size; i++) {
+        public Loader(Context context, @Nullable Long shiftId) {
+            super(context, ShiftProvider.shiftsUri, PROJECTION, null, null, ShiftContract.Shift.COLUMN_NAME_START);
+            Log.d(TAG, "Loader() called with: shiftId = [" + shiftId + "]");
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            Resources resources = getContext().getResources();
+            normalDayStartTotalMinutes = preferences.getInt(resources.getString(R.string.key_start_normal_day), resources.getInteger(R.integer.default_start_normal_day));
+            normalDayEndTotalMinutes = preferences.getInt(resources.getString(R.string.key_end_normal_day), resources.getInteger(R.integer.default_end_normal_day));
+            longDayStartTotalMinutes = preferences.getInt(resources.getString(R.string.key_start_long_day), resources.getInteger(R.integer.default_start_long_day));
+            longDayEndTotalMinutes = preferences.getInt(resources.getString(R.string.key_end_long_day), resources.getInteger(R.integer.default_end_long_day));
+            nightShiftStartTotalMinutes = preferences.getInt(resources.getString(R.string.key_start_night_shift), resources.getInteger(R.integer.default_start_night_shift));
+            nightShiftEndTotalMinutes = preferences.getInt(resources.getString(R.string.key_end_night_shift), resources.getInteger(R.integer.default_end_night_shift));
+            mShiftId = shiftId;
+            mObserver = new ForceLoadContentObserver();
+        }
+
+        @NonNull
+        private static Duration getDurationSince(Cursor cursor, int positionToCheck, Instant cutOff) {
+            Duration totalDuration = Duration.ZERO;
+            cursor.moveToPosition(positionToCheck);
+            do {
+                Instant end = new Instant(cursor.getLong(COLUMN_INDEX_END));
+                if (!end.isAfter(cutOff)) break;
+                Instant start = new Instant(cursor.getLong(COLUMN_INDEX_START));
+                totalDuration = totalDuration.plus(new Duration(cutOff.isAfter(start) ? cutOff : start, end));
+            } while (cursor.moveToPrevious());
+            return totalDuration;
+        }
+
+        @Nullable
+        private static Interval getWeekend(Interval shift) {
+            DateTime weekendStart = shift.getStart().withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
+            Interval weekend = new Interval(weekendStart, weekendStart.plusDays(2));
+            return shift.overlaps(weekend) ? weekend : null;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            Log.d(TAG, "loadInBackground() called");
+            Cursor initialCursor = super.loadInBackground();
+            int initialCursorCount = initialCursor.getCount();
+            MatrixCursor newCursor = new MatrixCursor(COLUMN_NAMES, mShiftId == null ? initialCursorCount : 1);
+            for (int i = 0; i < initialCursorCount; i++) {
                 initialCursor.moveToPosition(i);
                 long id = initialCursor.getLong(COLUMN_INDEX_ID);
-                if (shiftId != null && shiftId != id) continue;
+                if (mShiftId != null && mShiftId != id) continue;
                 Interval currentShift = new Interval(initialCursor.getLong(COLUMN_INDEX_START), initialCursor.getLong(COLUMN_INDEX_END));
-                MatrixCursor.RowBuilder builder = newRow()
+                MatrixCursor.RowBuilder builder = newCursor.newRow()
                         .add(id)
                         .add(currentShift.getStartMillis())
                         .add(currentShift.getEndMillis());
@@ -174,29 +236,13 @@ public class ComplianceCursor extends CursorWrapper {
                         }
                     }
                 }
-                if (shiftId != null) break;
+                if (mShiftId != null) break;
             }
             initialCursor.close();
+            newCursor.setNotificationUri(getContext().getContentResolver(), ShiftProvider.shiftsUri);
+            newCursor.registerContentObserver(mObserver);
+            return newCursor;
         }
 
-        @NonNull
-        private static Duration getDurationSince(Cursor cursor, int positionToCheck, Instant cutOff) {
-            Duration totalDuration = Duration.ZERO;
-            cursor.moveToPosition(positionToCheck);
-            do {
-                Instant end = new Instant(cursor.getLong(COLUMN_INDEX_END));
-                if (!end.isAfter(cutOff)) break;
-                Instant start = new Instant(cursor.getLong(COLUMN_INDEX_START));
-                totalDuration = totalDuration.plus(new Duration(cutOff.isAfter(start) ? cutOff : start, end));
-            } while (cursor.moveToPrevious());
-            return totalDuration;
-        }
-
-        @Nullable
-        private static Interval getWeekend(Interval shift) {
-            DateTime weekendStart = shift.getStart().withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
-            Interval weekend = new Interval(weekendStart, weekendStart.plusDays(2));
-            return shift.overlaps(weekend) ? weekend : null;
-        }
     }
 }
