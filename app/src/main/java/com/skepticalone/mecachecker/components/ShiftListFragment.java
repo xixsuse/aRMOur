@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -70,7 +71,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new ComplianceCursor.Loader(getActivity(), null);
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
     }
 
     @Override

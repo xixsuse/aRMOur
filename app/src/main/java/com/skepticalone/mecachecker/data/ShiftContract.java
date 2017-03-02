@@ -52,4 +52,52 @@ final class ShiftContract {
                     "END";
         }
     }
+
+    static class Compliance {
+        static final String[] PROJECTION = new String[]{
+                ShiftContract.Shift._ID,
+                ShiftContract.Shift.COLUMN_NAME_START,
+                ShiftContract.Shift.COLUMN_NAME_END
+        };
+        final static String[]
+                COLUMN_NAMES,
+                EXTRA_COLUMN_NAMES = new String[]{
+                        "SHIFT_TYPE",
+                        "TIME_BETWEEN_SHIFTS",
+                        "DURATION_OVER_DAY",
+                        "DURATION_OVER_WEEK",
+                        "DURATION_OVER_FORTNIGHT",
+                        "CURRENT_WEEKEND_START",
+                        "CURRENT_WEEKEND_END",
+                        "PREVIOUS_WEEKEND_WORKED_START",
+                        "PREVIOUS_WEEKEND_WORKED_END",
+                        "CONSECUTIVE_WEEKENDS_WORKED"
+                };
+        final static int
+                COLUMN_INDEX_ID = 0,
+                COLUMN_INDEX_START = 1,
+                COLUMN_INDEX_END = 2,
+                COLUMN_INDEX_SHIFT_TYPE = 3,
+                COLUMN_INDEX_TIME_BETWEEN_SHIFTS = 4,
+                COLUMN_INDEX_DURATION_OVER_DAY = 5,
+                COLUMN_INDEX_DURATION_OVER_WEEK = 6,
+                COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 7,
+                COLUMN_INDEX_CURRENT_WEEKEND_START = 8,
+                COLUMN_INDEX_CURRENT_WEEKEND_END = 9,
+                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 10,
+                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 11,
+                COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 12;
+        final static int
+                SHIFT_TYPE_NORMAL_DAY = 1,
+                SHIFT_TYPE_LONG_DAY = 2,
+                SHIFT_TYPE_NIGHT_SHIFT = 3,
+                SHIFT_TYPE_OTHER = 4;
+
+        static {
+            COLUMN_NAMES = new String[PROJECTION.length + EXTRA_COLUMN_NAMES.length];
+            System.arraycopy(PROJECTION, 0, COLUMN_NAMES, 0, PROJECTION.length);
+            System.arraycopy(EXTRA_COLUMN_NAMES, 0, COLUMN_NAMES, PROJECTION.length, EXTRA_COLUMN_NAMES.length);
+        }
+
+    }
 }
