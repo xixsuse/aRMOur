@@ -28,9 +28,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 
-public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int LOADER_LIST_ID = 0;
+public class LoggedShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int LOADER_LIST_ID = 5;
     private ShiftAdapter mAdapter;
     private ShiftClickListener mListener;
     private ComplianceCursor mCursor = null;
@@ -70,7 +71,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsWithComplianceUri, null, null, null, null);
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
     }
 
     @Override
@@ -213,4 +214,5 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
     }
+
 }

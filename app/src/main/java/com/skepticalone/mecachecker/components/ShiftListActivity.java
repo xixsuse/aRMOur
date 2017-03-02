@@ -17,7 +17,7 @@ import com.skepticalone.mecachecker.R;
 
 public class ShiftListActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        ShiftListFragment.Listener {
+        ShiftClickListener {
 
     private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
 

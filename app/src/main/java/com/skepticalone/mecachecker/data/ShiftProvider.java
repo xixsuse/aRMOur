@@ -29,17 +29,25 @@ public final class ShiftProvider extends ContentProvider {
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
+            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME,
             SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME,
-            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME;
+            WITH_COMPLIANCE = "_with_compliance",
+            SHIFTS_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE,
+            SHIFT_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShift.TABLE_NAME).build();
+    public static final Uri shiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE).build();
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
+    private static final int SHIFTS_WITH_COMPLIANCE = 3;
+    private static final int SHIFT_ID_WITH_COMPLIANCE = 4;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME, SHIFTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + "/#", SHIFT_ID);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE, SHIFTS_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE + "/#", SHIFT_ID_WITH_COMPLIANCE);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -61,18 +69,16 @@ public final class ShiftProvider extends ContentProvider {
         return Uri.withAppendedPath(shiftsUri, Long.toString(shiftId));
     }
 
-    public static ContentValues getContentValues(long start, long end) {
-        ContentValues values = new ContentValues();
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START, start);
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END, end);
-        return values;
+    public static Uri shiftWithComplianceUri(long shiftId) {
+        return Uri.withAppendedPath(shiftsWithComplianceUri, Long.toString(shiftId));
     }
 
-//    public static ContentValues getContentValues(long start, long end, ShiftCategory category) {
-//        ContentValues values = getContentValues(start, end);
-//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_CATEGORY, AppConstants.getShiftCategory(category));
-//        return values;
-//    }
+    public static ContentValues getContentValues(long scheduledStart, long scheduledEnd) {
+        ContentValues values = new ContentValues();
+        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START, scheduledStart);
+        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END, scheduledEnd);
+        return values;
+    }
 
     @NonNull
     private static Duration getDurationSince(Cursor cursor, int positionToCheck, Instant cutOff) {
@@ -119,9 +125,9 @@ public final class ShiftProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "query() called with: uri = [" + uri + "]");
         switch (sUriMatcher.match(uri)) {
-            case SHIFTS:
+            case SHIFTS_WITH_COMPLIANCE:
                 return getComplianceCursor(null);
-            case SHIFT_ID:
+            case SHIFT_ID_WITH_COMPLIANCE:
                 return getComplianceCursor(Long.parseLong(uri.getLastPathSegment()));
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -136,6 +142,10 @@ public final class ShiftProvider extends ContentProvider {
                 return SHIFTS_TYPE;
             case SHIFT_ID:
                 return SHIFT_TYPE;
+            case SHIFTS_WITH_COMPLIANCE:
+                return SHIFTS_WITH_COMPLIANCE_TYPE;
+            case SHIFT_ID_WITH_COMPLIANCE:
+                return SHIFT_WITH_COMPLIANCE_TYPE;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
