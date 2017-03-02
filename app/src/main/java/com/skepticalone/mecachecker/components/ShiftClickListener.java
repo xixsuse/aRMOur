@@ -1,5 +1,7 @@
 package com.skepticalone.mecachecker.components;
 
 interface ShiftClickListener {
-    void onShiftClicked(long shiftId);
+    void onRawShiftClicked(long shiftId);
+
+    void onShiftWithComplianceClicked(long shiftId);
 }

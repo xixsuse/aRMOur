@@ -7,6 +7,10 @@
                     android:id="@+id/compliance"
                     android:icon="@drawable/ic_check_black_24dp"
                     android:title="@string/compliance" />
+                <item
+                    android:id="@+id/raw"
+                    android:icon="@drawable/ic_pencil_black_24dp"
+                    android:title="@string/raw" />
             </group>
         </menu>
     </item>

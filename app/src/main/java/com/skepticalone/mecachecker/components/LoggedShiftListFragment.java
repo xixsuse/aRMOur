@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
@@ -32,9 +32,22 @@ import org.joda.time.Interval;
 public class LoggedShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_LIST_ID = 5;
+    private static final String[] PROJECTION = new String[]{
+            ShiftContract.RosteredShift._ID,
+            ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START,
+            ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END,
+            ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START,
+            ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END
+    };
+    private static final int
+            COLUMN_INDEX_ID = 0,
+            COLUMN_INDEX_SCHEDULED_START = 1,
+            COLUMN_INDEX_SCHEDULED_END = 2,
+            COLUMN_INDEX_LOGGED_START = 3,
+            COLUMN_INDEX_LOGGED_END = 4;
     private ShiftAdapter mAdapter;
     private ShiftClickListener mListener;
-    private ComplianceCursor mCursor = null;
+    private Cursor mCursor = null;
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean mAddButtonJustClicked = false;
 
@@ -65,18 +78,18 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //noinspection ConstantConditions
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.compliance);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.raw);
         getLoaderManager().initLoader(LOADER_LIST_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, null, null, null, null);
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, PROJECTION, null, null, ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = new ComplianceCursor(data);
+        mCursor = data;
         mAdapter.notifyDataSetChanged();
         if (mAddButtonJustClicked) {
             mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
@@ -122,7 +135,7 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
                 }
                 DateTime minStart;
                 if (mCursor != null && mCursor.moveToLast()) {
-                    minStart = mCursor.getShift().getEnd().plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+                    minStart = new DateTime(mCursor.getLong(COLUMN_INDEX_SCHEDULED_END)).plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
                 } else {
                     minStart = new DateTime().withTimeAtStartOfDay();
                 }
@@ -155,16 +168,18 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
         @Override
         public long getItemId(int position) {
             mCursor.moveToPosition(position);
-            return mCursor.getId();
+            return mCursor.getLong(COLUMN_INDEX_ID);
         }
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             final CustomViewHolder holder = super.onCreateViewHolder(parent, viewType);
+            holder.primaryIconView.setVisibility(View.GONE);
+            holder.secondaryIconView.setImageResource(R.drawable.ic_check_black_24dp);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShiftClicked(holder.getItemId());
+                    mListener.onRawShiftClicked(holder.getItemId());
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -179,33 +194,34 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
         @Override
         public void onBindViewHolder(final CustomViewHolder holder, int position) {
             mCursor.moveToPosition(position);
-            int shiftTypeDrawableId;
-            switch (mCursor.getShiftType()) {
-                case NORMAL_DAY:
-                    shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
-                    break;
-                case LONG_DAY:
-                    shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
-                    break;
-                case NIGHT_SHIFT:
-                    shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
-                    break;
-                case OTHER:
-                    shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-            holder.primaryIconView.setImageResource(shiftTypeDrawableId);
-            Interval shift = mCursor.getShift();
+//            int shiftTypeDrawableId;
+//            switch (mCursor.getShiftType()) {
+//                case NORMAL_DAY:
+//                    shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
+//                    break;
+//                case LONG_DAY:
+//                    shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
+//                    break;
+//                case NIGHT_SHIFT:
+//                    shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
+//                    break;
+//                case OTHER:
+//                    shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
+//                    break;
+//                default:
+//                    throw new IllegalArgumentException();
+//            }
+//            holder.primaryIconView.setImageResource(shiftTypeDrawableId);
+            Interval shift = new Interval(mCursor.getLong(COLUMN_INDEX_SCHEDULED_START), mCursor.getLong(COLUMN_INDEX_SCHEDULED_END));
             holder.primaryTextView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
             holder.secondaryTextView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
-            boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||
-                    AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
-                    AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
-                    AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
-                    mCursor.consecutiveWeekendsWorked();
-            holder.secondaryIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+//            boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||
+//                    AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
+//                    AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
+//                    AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
+//                    mCursor.consecutiveWeekendsWorked();
+            holder.secondaryIconView.setVisibility((mCursor.isNull(COLUMN_INDEX_LOGGED_START) || mCursor.isNull(COLUMN_INDEX_LOGGED_END)) ? View.GONE : View.VISIBLE);
+//            holder.secondaryIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
         }
 
         @Override

@@ -25,8 +25,6 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final long NO_ID = -1L;
-    static final String SHIFT_ID = "SHIFT_ID";
     private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
     private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final int LOADER_DETAIL_ID = 1;
@@ -68,7 +66,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     static ShiftDetailFragment create(long id) {
         ShiftDetailFragment fragment = new ShiftDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putLong(SHIFT_ID, id);
+        arguments.putLong(ShiftDetailActivity.SHIFT_ID, id);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -76,7 +74,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mShiftId = getArguments().getLong(SHIFT_ID, NO_ID);
+        mShiftId = getArguments().getLong(ShiftDetailActivity.SHIFT_ID, ShiftDetailActivity.NO_ID);
     }
 
     @Nullable

@@ -163,7 +163,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShiftClicked(holder.getItemId());
+                    mListener.onShiftWithComplianceClicked(holder.getItemId());
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

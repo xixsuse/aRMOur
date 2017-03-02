@@ -9,6 +9,9 @@ import com.skepticalone.mecachecker.R;
 
 public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverlapListener {
 
+    public static final long NO_ID = -1L;
+    static final String SHIFT_ID = "SHIFT_ID";
+    static final String RAW = "RAW";
     private View mCoordinatorView;
 
     @Override
@@ -17,9 +20,10 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
         setContentView(R.layout.shift_detail_activity);
         mCoordinatorView = findViewById(R.id.coordinator_layout);
         if (savedInstanceState == null) {
+            long shiftId = getIntent().getLongExtra(SHIFT_ID, NO_ID);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.coordinator_layout, ShiftDetailFragment.create(getIntent().getLongExtra(ShiftDetailFragment.SHIFT_ID, ShiftDetailFragment.NO_ID)))
+                    .add(R.id.coordinator_layout, getIntent().getBooleanExtra(RAW, false) ? LoggedShiftDetailFragment.create(shiftId) : ShiftDetailFragment.create(shiftId))
                     .commit();
         }
     }

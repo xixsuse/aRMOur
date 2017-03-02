@@ -2,17 +2,19 @@ package com.skepticalone.mecachecker.data;
 
 import android.provider.BaseColumns;
 
-final class ShiftContract {
+public final class ShiftContract {
     private ShiftContract() {
     }
 
-    static class RosteredShift implements BaseColumns {
-        static final String
-                TABLE_NAME = "rostered_shifts",
+    public static class RosteredShift implements BaseColumns {
+        public static final String
                 COLUMN_NAME_SCHEDULED_START = "scheduled_start",
                 COLUMN_NAME_SCHEDULED_END = "scheduled_end",
                 COLUMN_NAME_LOGGED_START = "logged_start",
-                COLUMN_NAME_LOGGED_END = "logged_end",
+                COLUMN_NAME_LOGGED_END = "logged_end";
+
+        static final String
+                TABLE_NAME = "rostered_shifts",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                         TABLE_NAME +
                         " (" +

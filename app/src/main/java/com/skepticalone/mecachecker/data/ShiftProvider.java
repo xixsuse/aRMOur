@@ -125,6 +125,25 @@ public final class ShiftProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "query() called with: uri = [" + uri + "]");
         switch (sUriMatcher.match(uri)) {
+            case SHIFT_ID:
+                selection = ShiftContract.RosteredShift._ID + "=?";
+                selectionArgs = new String[]{
+                        uri.getLastPathSegment()
+                };
+                // intentional fallthrough
+            case SHIFTS:
+                Cursor cursor = mDbHelper.getReadableDatabase().query(
+                        ShiftContract.RosteredShift.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                //noinspection ConstantConditions
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
             case SHIFTS_WITH_COMPLIANCE:
                 return getComplianceCursor(null);
             case SHIFT_ID_WITH_COMPLIANCE:

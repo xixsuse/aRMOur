@@ -20,6 +20,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         ShiftClickListener {
 
     private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
+    private static final String SHIFT_RAW_FRAGMENT = "SHIFT_RAW_FRAGMENT";
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -68,20 +69,31 @@ public class ShiftListActivity extends AppCompatActivity implements
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
+        } else if (id == R.id.raw) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_fragment_container, new LoggedShiftListFragment(), SHIFT_RAW_FRAGMENT)
+                    .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     @Override
-    public void onShiftClicked(long shiftId) {
+    public void onRawShiftClicked(long shiftId) {
         Intent intent = new Intent(this, ShiftDetailActivity.class);
-        intent.putExtra(ShiftDetailFragment.SHIFT_ID, shiftId);
+        intent.putExtra(ShiftDetailActivity.RAW, true);
+        intent.putExtra(ShiftDetailActivity.SHIFT_ID, shiftId);
         startActivity(intent);
     }
 
+    @Override
+    public void onShiftWithComplianceClicked(long shiftId) {
+        Intent intent = new Intent(this, ShiftDetailActivity.class);
+        intent.putExtra(ShiftDetailActivity.RAW, false);
+        intent.putExtra(ShiftDetailActivity.SHIFT_ID, shiftId);
+        startActivity(intent);
+    }
 }
