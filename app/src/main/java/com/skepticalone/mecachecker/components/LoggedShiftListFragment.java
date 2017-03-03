@@ -1,10 +1,8 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -13,19 +11,13 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
-import com.skepticalone.mecachecker.util.AppConstants;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 
 
@@ -34,8 +26,8 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
     private static final int LOADER_LIST_ID = 5;
     private static final String[] PROJECTION = new String[]{
             ShiftContract.RosteredShift._ID,
-            ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START,
-            ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END,
+            ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START,
+            ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END,
             ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START,
             ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END
     };
@@ -55,7 +47,6 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (ShiftClickListener) context;
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -69,10 +60,10 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
         return layout;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shift_list_menu, menu);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.shift_list_menu, menu);
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -84,7 +75,7 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, PROJECTION, null, null, ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START);
+        return new CursorLoader(getActivity(), ShiftProvider.shiftsUri, PROJECTION, null, null, ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START);
     }
 
     @Override
@@ -102,61 +93,61 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
         mCursor = null;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        switch (itemId) {
-            case R.id.add_normal_day:
-            case R.id.add_long_day:
-            case R.id.add_night_shift:
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                int startKeyId, defaultStartId, endKeyId, defaultEndId, skipWeekendsKeyId, defaultSkipWeekendsId;
-                if (itemId == R.id.add_normal_day) {
-                    startKeyId = R.string.key_start_normal_day;
-                    defaultStartId = R.integer.default_start_normal_day;
-                    endKeyId = R.string.key_end_normal_day;
-                    defaultEndId = R.integer.default_end_normal_day;
-                    skipWeekendsKeyId = R.string.key_skip_weekend_normal_day;
-                    defaultSkipWeekendsId = R.bool.default_skip_weekend_normal_day;
-                } else if (itemId == R.id.add_long_day) {
-                    startKeyId = R.string.key_start_long_day;
-                    defaultStartId = R.integer.default_start_long_day;
-                    endKeyId = R.string.key_end_long_day;
-                    defaultEndId = R.integer.default_end_long_day;
-                    skipWeekendsKeyId = R.string.key_skip_weekend_long_day;
-                    defaultSkipWeekendsId = R.bool.default_skip_weekend_long_day;
-                } else {
-                    startKeyId = R.string.key_start_night_shift;
-                    defaultStartId = R.integer.default_start_night_shift;
-                    endKeyId = R.string.key_end_night_shift;
-                    defaultEndId = R.integer.default_end_night_shift;
-                    skipWeekendsKeyId = R.string.key_skip_weekend_night_shift;
-                    defaultSkipWeekendsId = R.bool.default_skip_weekend_night_shift;
-                }
-                DateTime minStart;
-                if (mCursor != null && mCursor.moveToLast()) {
-                    minStart = new DateTime(mCursor.getLong(COLUMN_INDEX_SCHEDULED_END)).plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
-                } else {
-                    minStart = new DateTime().withTimeAtStartOfDay();
-                }
-                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
-                DateTime newStart = minStart.withTime(TimePreference.calculateHours(startTotalMinutes), TimePreference.calculateMinutes(startTotalMinutes), 0, 0);
-                boolean skipWeekends = preferences.getBoolean(getString(skipWeekendsKeyId), getResources().getBoolean(defaultSkipWeekendsId));
-                while (newStart.isBefore(minStart) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
-                    newStart = newStart.plusDays(1);
-                }
-                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
-                DateTime newEnd = newStart.withTime(TimePreference.calculateHours(endTotalMinutes), TimePreference.calculateMinutes(endTotalMinutes), 0, 0);
-                if (!newEnd.isAfter(newStart)) {
-                    newEnd = newEnd.plusDays(1);
-                }
-                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
-                mAddButtonJustClicked = true;
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int itemId = item.getItemId();
+//        switch (itemId) {
+//            case R.id.add_normal_day:
+//            case R.id.add_long_day:
+//            case R.id.add_night_shift:
+//                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//                int startKeyId, defaultStartId, endKeyId, defaultEndId, skipWeekendsKeyId, defaultSkipWeekendsId;
+//                if (itemId == R.id.add_normal_day) {
+//                    startKeyId = R.string.key_start_normal_day;
+//                    defaultStartId = R.integer.default_start_normal_day;
+//                    endKeyId = R.string.key_end_normal_day;
+//                    defaultEndId = R.integer.default_end_normal_day;
+//                    skipWeekendsKeyId = R.string.key_skip_weekend_normal_day;
+//                    defaultSkipWeekendsId = R.bool.default_skip_weekend_normal_day;
+//                } else if (itemId == R.id.add_long_day) {
+//                    startKeyId = R.string.key_start_long_day;
+//                    defaultStartId = R.integer.default_start_long_day;
+//                    endKeyId = R.string.key_end_long_day;
+//                    defaultEndId = R.integer.default_end_long_day;
+//                    skipWeekendsKeyId = R.string.key_skip_weekend_long_day;
+//                    defaultSkipWeekendsId = R.bool.default_skip_weekend_long_day;
+//                } else {
+//                    startKeyId = R.string.key_start_night_shift;
+//                    defaultStartId = R.integer.default_start_night_shift;
+//                    endKeyId = R.string.key_end_night_shift;
+//                    defaultEndId = R.integer.default_end_night_shift;
+//                    skipWeekendsKeyId = R.string.key_skip_weekend_night_shift;
+//                    defaultSkipWeekendsId = R.bool.default_skip_weekend_night_shift;
+//                }
+//                DateTime minStart;
+//                if (mCursor != null && mCursor.moveToLast()) {
+//                    minStart = new DateTime(mCursor.getLong(COLUMN_INDEX_SCHEDULED_END)).plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+//                } else {
+//                    minStart = new DateTime().withTimeAtStartOfDay();
+//                }
+//                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
+//                DateTime newStart = minStart.withTime(TimePreference.calculateHours(startTotalMinutes), TimePreference.calculateMinutes(startTotalMinutes), 0, 0);
+//                boolean skipWeekends = preferences.getBoolean(getString(skipWeekendsKeyId), getResources().getBoolean(defaultSkipWeekendsId));
+//                while (newStart.isBefore(minStart) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
+//                    newStart = newStart.plusDays(1);
+//                }
+//                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
+//                DateTime newEnd = newStart.withTime(TimePreference.calculateHours(endTotalMinutes), TimePreference.calculateMinutes(endTotalMinutes), 0, 0);
+//                if (!newEnd.isAfter(newStart)) {
+//                    newEnd = newEnd.plusDays(1);
+//                }
+//                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
+//                mAddButtonJustClicked = true;
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     class ShiftAdapter extends AbstractTwoLineAdapter {
 

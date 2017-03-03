@@ -23,8 +23,15 @@ public class ComplianceCursor extends CursorWrapper {
     }
 
     @NonNull
-    public Interval getShift() {
-        return new Interval(getLong(ShiftContract.Compliance.COLUMN_INDEX_START), getLong(ShiftContract.Compliance.COLUMN_INDEX_END));
+    public Interval getRosteredShift() {
+        return new Interval(getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_START), getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END));
+    }
+
+    @Nullable
+    public Interval getLoggedShift() {
+        return (isNull(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_START) || isNull(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_END)) ?
+                null :
+                new Interval(getLong(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_START), getLong(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_END));
     }
 
     public ShiftType getShiftType() {

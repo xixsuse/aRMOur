@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 class ShiftDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "shifts.db";
 
     ShiftDbHelper(Context context) {

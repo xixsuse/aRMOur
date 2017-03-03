@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
@@ -121,7 +123,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 }
                 DateTime minStart;
                 if (mCursor != null && mCursor.moveToLast()) {
-                    minStart = mCursor.getShift().getEnd().plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+                    minStart = mCursor.getRosteredShift().getEnd().plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
                 } else {
                     minStart = new DateTime().withTimeAtStartOfDay();
                 }
@@ -131,12 +133,16 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                 while (newStart.isBefore(minStart) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
                     newStart = newStart.plusDays(1);
                 }
+                ContentValues values = new ContentValues();
+                values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
+
                 int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
                 DateTime newEnd = newStart.withTime(TimePreference.calculateHours(endTotalMinutes), TimePreference.calculateMinutes(endTotalMinutes), 0, 0);
                 if (!newEnd.isAfter(newStart)) {
                     newEnd = newEnd.plusDays(1);
                 }
-                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, ShiftProvider.getContentValues(newStart.getMillis(), newEnd.getMillis()));
+                values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
+                getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, values);
                 mAddButtonJustClicked = true;
                 return true;
             default:
@@ -196,7 +202,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     throw new IllegalArgumentException();
             }
             holder.primaryIconView.setImageResource(shiftTypeDrawableId);
-            Interval shift = mCursor.getShift();
+            Interval shift = mCursor.getRosteredShift();
             holder.primaryTextView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
             holder.secondaryTextView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
             boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||

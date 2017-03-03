@@ -25,8 +25,6 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String DATE_PICKER_FRAGMENT = "DATE_PICKER_FRAGMENT";
-    private static final String TIME_PICKER_FRAGMENT = "TIME_PICKER_FRAGMENT";
     private static final int LOADER_DETAIL_ID = 1;
     private final static PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
             .appendYears()
@@ -111,26 +109,27 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         ComplianceCursor cursor = new ComplianceCursor(c);
         if (cursor.moveToFirst()) {
-            final Interval shift = cursor.getShift();
-            mDateView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
+            final Interval rosteredShift = cursor.getRosteredShift();
+            final Interval loggedShift = cursor.getLoggedShift();
+            mDateView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DatePickerFragment.create(mShiftId, shift).show(getFragmentManager(), DATE_PICKER_FRAGMENT);
+                    PickerFragment.createDatePicker(mShiftId, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mStartTimeView.setText(getString(R.string.time_format, shift.getStartMillis()));
+            mStartTimeView.setText(getString(R.string.time_format, rosteredShift.getStartMillis()));
             mStartTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TimePickerFragment.create(mShiftId, shift, true).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                    PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mEndTimeView.setText(getString(shift.getStart().getDayOfMonth() == shift.getEnd().getDayOfMonth() ? R.string.time_format : R.string.time_format_with_day, shift.getEndMillis()));
+            mEndTimeView.setText(getString(rosteredShift.getStart().getDayOfMonth() == rosteredShift.getEnd().getDayOfMonth() ? R.string.time_format : R.string.time_format_with_day, rosteredShift.getEndMillis()));
             mEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TimePickerFragment.create(mShiftId, shift, false).show(getFragmentManager(), TIME_PICKER_FRAGMENT);
+                    PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             mRecyclerView.setAdapter(new ShiftDetailAdapter(cursor));
@@ -259,7 +258,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 //                        holder.primaryIconView.setVisibility(View.INVISIBLE);
                     } else {
                         // TODO: 1/03/17 messy
-                        holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriodTo(mCursor.getShift().getStart())));
+                        holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriodTo(mCursor.getRosteredShift().getStart())));
                         holder.primaryIconView.setImageResource(AppConstants.hasInsufficientTimeBetweenShifts(duration) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //                        holder.primaryIconView.setVisibility(View.VISIBLE);
                     }

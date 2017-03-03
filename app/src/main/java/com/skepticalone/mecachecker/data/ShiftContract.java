@@ -8,8 +8,8 @@ public final class ShiftContract {
 
     public static class RosteredShift implements BaseColumns {
         public static final String
-                COLUMN_NAME_SCHEDULED_START = "scheduled_start",
-                COLUMN_NAME_SCHEDULED_END = "scheduled_end",
+                COLUMN_NAME_ROSTERED_START = "rostered_start",
+                COLUMN_NAME_ROSTERED_END = "rostered_end",
                 COLUMN_NAME_LOGGED_START = "logged_start",
                 COLUMN_NAME_LOGGED_END = "logged_end";
 
@@ -19,15 +19,15 @@ public final class ShiftContract {
                         TABLE_NAME +
                         " (" +
                         _ID + " INTEGER PRIMARY KEY, " +
-                        COLUMN_NAME_SCHEDULED_START + " INTEGER NOT NULL, " +
-                        COLUMN_NAME_SCHEDULED_END + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_ROSTERED_START + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_ROSTERED_END + " INTEGER NOT NULL, " +
                         COLUMN_NAME_LOGGED_START + " INTEGER DEFAULT NULL, " +
                         COLUMN_NAME_LOGGED_END + " INTEGER DEFAULT NULL, " +
-                        "CHECK (" + COLUMN_NAME_SCHEDULED_START + " < " + COLUMN_NAME_SCHEDULED_END + "), " +
+                        "CHECK (" + COLUMN_NAME_ROSTERED_START + " < " + COLUMN_NAME_ROSTERED_END + "), " +
                         "CHECK ((" + COLUMN_NAME_LOGGED_START + " IS NULL AND " + COLUMN_NAME_LOGGED_END + " IS NULL) OR (" +
                         COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END + "))" +
                         ")",
-                SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_SCHEDULED_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_SCHEDULED_START + ")",
+                SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_ROSTERED_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_ROSTERED_START + ")",
                 SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
                 SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
                 SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -40,8 +40,8 @@ public final class ShiftContract {
                     "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
 //                    COLUMN_NAME_CATEGORY + " == NEW." + COLUMN_NAME_CATEGORY + " AND " +
                     (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
-                    "((" + COLUMN_NAME_SCHEDULED_START + " < NEW." + COLUMN_NAME_SCHEDULED_END + " AND " +
-                    "NEW." + COLUMN_NAME_SCHEDULED_START + " < " + COLUMN_NAME_SCHEDULED_END + ") OR (" +
+                    "((" + COLUMN_NAME_ROSTERED_START + " < NEW." + COLUMN_NAME_ROSTERED_END + " AND " +
+                    "NEW." + COLUMN_NAME_ROSTERED_START + " < " + COLUMN_NAME_ROSTERED_END + ") OR (" +
                     COLUMN_NAME_LOGGED_START + " < NEW." + COLUMN_NAME_LOGGED_END + " AND " +
                     "NEW." + COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END + "))" +
                     ") " +
@@ -53,8 +53,10 @@ public final class ShiftContract {
     static class Compliance {
         static final String[] PROJECTION = new String[]{
                 RosteredShift._ID,
-                RosteredShift.COLUMN_NAME_SCHEDULED_START,
-                RosteredShift.COLUMN_NAME_SCHEDULED_END
+                RosteredShift.COLUMN_NAME_ROSTERED_START,
+                RosteredShift.COLUMN_NAME_ROSTERED_END,
+                RosteredShift.COLUMN_NAME_LOGGED_START,
+                RosteredShift.COLUMN_NAME_LOGGED_END,
         };
         final static String[]
                 COLUMN_NAMES,
@@ -72,18 +74,20 @@ public final class ShiftContract {
                 };
         final static int
                 COLUMN_INDEX_ID = 0,
-                COLUMN_INDEX_START = 1,
-                COLUMN_INDEX_END = 2,
-                COLUMN_INDEX_SHIFT_TYPE = 3,
-                COLUMN_INDEX_TIME_BETWEEN_SHIFTS = 4,
-                COLUMN_INDEX_DURATION_OVER_DAY = 5,
-                COLUMN_INDEX_DURATION_OVER_WEEK = 6,
-                COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 7,
-                COLUMN_INDEX_CURRENT_WEEKEND_START = 8,
-                COLUMN_INDEX_CURRENT_WEEKEND_END = 9,
-                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 10,
-                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 11,
-                COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 12;
+                COLUMN_INDEX_ROSTERED_START = 1,
+                COLUMN_INDEX_ROSTERED_END = 2,
+                COLUMN_INDEX_LOGGED_START = 3,
+                COLUMN_INDEX_LOGGED_END = 4,
+                COLUMN_INDEX_SHIFT_TYPE = 5,
+                COLUMN_INDEX_TIME_BETWEEN_SHIFTS = 6,
+                COLUMN_INDEX_DURATION_OVER_DAY = 7,
+                COLUMN_INDEX_DURATION_OVER_WEEK = 8,
+                COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 9,
+                COLUMN_INDEX_CURRENT_WEEKEND_START = 10,
+                COLUMN_INDEX_CURRENT_WEEKEND_END = 11,
+                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 12,
+                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 13,
+                COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 14;
         final static int
                 SHIFT_TYPE_NORMAL_DAY = 1,
                 SHIFT_TYPE_LONG_DAY = 2,

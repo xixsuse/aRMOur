@@ -25,7 +25,7 @@ import org.joda.time.Interval;
 
 public final class ShiftProvider extends ContentProvider {
 
-    public static final String TAG = "ShiftProvider";
+    private static final String TAG = "ShiftProvider";
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
@@ -73,11 +73,32 @@ public final class ShiftProvider extends ContentProvider {
         return Uri.withAppendedPath(shiftsWithComplianceUri, Long.toString(shiftId));
     }
 
-    public static ContentValues getContentValues(long scheduledStart, long scheduledEnd) {
-        ContentValues values = new ContentValues();
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START, scheduledStart);
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_END, scheduledEnd);
-        return values;
+//    public static ContentValues getContentValues(long scheduledStart, long scheduledEnd) {
+//        ContentValues values = new ContentValues();
+//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START, scheduledStart);
+//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END, scheduledEnd);
+//        return values;
+//    }
+
+    private static int getShiftType(
+            int start,
+            int end,
+            int normalDayStart,
+            int normalDayEnd,
+            int longDayStart,
+            int longDayEnd,
+            int nightShiftStart,
+            int nightShiftEnd
+    ) {
+        if (start == normalDayStart && end == normalDayEnd) {
+            return ShiftContract.Compliance.SHIFT_TYPE_NORMAL_DAY;
+        } else if (start == longDayStart && end == longDayEnd) {
+            return ShiftContract.Compliance.SHIFT_TYPE_LONG_DAY;
+        } else if (start == nightShiftStart && end == nightShiftEnd) {
+            return ShiftContract.Compliance.SHIFT_TYPE_NIGHT_SHIFT;
+        } else {
+            return ShiftContract.Compliance.SHIFT_TYPE_OTHER;
+        }
     }
 
     @NonNull
@@ -85,9 +106,9 @@ public final class ShiftProvider extends ContentProvider {
         Duration totalDuration = Duration.ZERO;
         cursor.moveToPosition(positionToCheck);
         do {
-            Instant end = new Instant(cursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_END));
+            Instant end = new Instant(cursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END));
             if (!end.isAfter(cutOff)) break;
-            Instant start = new Instant(cursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_START));
+            Instant start = new Instant(cursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_START));
             totalDuration = totalDuration.plus(new Duration(cutOff.isAfter(start) ? cutOff : start, end));
         } while (cursor.moveToPrevious());
         return totalDuration;
@@ -123,27 +144,16 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "query() called with: uri = [" + uri + "]");
+        Log.d(TAG, "query() called with: uri: " + uri);
+        String table;
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
-                selection = ShiftContract.RosteredShift._ID + "=?";
-                selectionArgs = new String[]{
-                        uri.getLastPathSegment()
-                };
+                selection = ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment();
+                selectionArgs = null;
                 // intentional fallthrough
             case SHIFTS:
-                Cursor cursor = mDbHelper.getReadableDatabase().query(
-                        ShiftContract.RosteredShift.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                //noinspection ConstantConditions
-                cursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return cursor;
+                table = ShiftContract.RosteredShift.TABLE_NAME;
+                break;
             case SHIFTS_WITH_COMPLIANCE:
                 return getComplianceCursor(null);
             case SHIFT_ID_WITH_COMPLIANCE:
@@ -151,6 +161,19 @@ public final class ShiftProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        Cursor cursor = mDbHelper.getReadableDatabase().query(
+                table,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        //noinspection ConstantConditions
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
+
     }
 
     @Nullable
@@ -220,6 +243,14 @@ public final class ShiftProvider extends ContentProvider {
 
     @NonNull
     private Cursor getComplianceCursor(@Nullable Long shiftId) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int
+                normalDayStart = preferences.getInt(normalDayStartKey, normalDayStartDefault),
+                normalDayEnd = preferences.getInt(normalDayEndKey, normalDayEndDefault),
+                longDayStart = preferences.getInt(longDayStartKey, longDayStartDefault),
+                longDayEnd = preferences.getInt(longDayEndKey, longDayEndDefault),
+                nightShiftStart = preferences.getInt(nightShiftStartKey, nightShiftStartDefault),
+                nightShiftEnd = preferences.getInt(nightShiftEndKey, nightShiftEndDefault);
         Cursor initialCursor = mDbHelper.getReadableDatabase().query(
                 ShiftContract.RosteredShift.TABLE_NAME,
                 ShiftContract.Compliance.PROJECTION,
@@ -227,7 +258,7 @@ public final class ShiftProvider extends ContentProvider {
                 null,
                 null,
                 null,
-                ShiftContract.RosteredShift.COLUMN_NAME_SCHEDULED_START
+                ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START
         );
         int initialCursorCount = initialCursor.getCount();
         MatrixCursor newCursor = new MatrixCursor(ShiftContract.Compliance.COLUMN_NAMES, shiftId == null ? initialCursorCount : 1);
@@ -235,29 +266,18 @@ public final class ShiftProvider extends ContentProvider {
             initialCursor.moveToPosition(i);
             long id = initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ID);
             if (shiftId != null && shiftId != id) continue;
-            Interval currentShift = new Interval(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_START), initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_END));
+            Interval currentShift = new Interval(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_START), initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END));
+            Interval loggedShift = (initialCursor.isNull(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_START) || initialCursor.isNull(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_END)) ?
+                    null :
+                    new Interval(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_START), initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_LOGGED_END));
             MatrixCursor.RowBuilder builder = newCursor.newRow()
                     .add(id)
                     .add(currentShift.getStartMillis())
-                    .add(currentShift.getEndMillis());
-            int startTotalMinutes = currentShift.getStart().getMinuteOfDay();
-            int endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            if (startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) && endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)) {
-                builder.add(ShiftContract.Compliance.SHIFT_TYPE_NORMAL_DAY);
-            } else if (startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) && endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault)) {
-                builder.add(ShiftContract.Compliance.SHIFT_TYPE_LONG_DAY);
-            } else if (startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) && endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault)) {
-                builder.add(ShiftContract.Compliance.SHIFT_TYPE_NIGHT_SHIFT);
-            } else {
-                builder.add(ShiftContract.Compliance.SHIFT_TYPE_OTHER);
-            }
-            if (initialCursor.moveToPrevious()) {
-                builder.add(currentShift.getStartMillis() - initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_END));
-            } else {
-                builder.add(null);
-            }
-            builder
+                    .add(currentShift.getEndMillis())
+                    .add(loggedShift == null ? null : loggedShift.getStartMillis())
+                    .add(loggedShift == null ? null : loggedShift.getEndMillis())
+                    .add(getShiftType(currentShift.getStart().getMinuteOfDay(), currentShift.getEnd().getMinuteOfDay(), normalDayStart, normalDayEnd, longDayStart, longDayEnd, nightShiftStart, nightShiftEnd))
+                    .add(initialCursor.moveToPrevious() ? new Duration(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END), currentShift.getStartMillis()).getMillis() : null)
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusDays(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis());
@@ -266,14 +286,15 @@ public final class ShiftProvider extends ContentProvider {
                 builder
                         .add(currentWeekend.getStartMillis())
                         .add(currentWeekend.getEndMillis());
+                Interval previousWeekend = new Interval(currentWeekend.getStart().minusWeeks(1), currentWeekend.getEnd().minusWeeks(1));
                 initialCursor.moveToPosition(i);
                 while (initialCursor.moveToPrevious()) {
-                    Interval weekend = getWeekend(new Interval(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_START), initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_END)));
-                    if (weekend != null && !currentWeekend.equals(weekend)) {
+                    Interval weekendWorked = getWeekend(new Interval(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_START), initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END)));
+                    if (weekendWorked != null && !currentWeekend.equals(weekendWorked)) {
                         builder
-                                .add(weekend.getStartMillis())
-                                .add(weekend.getEndMillis())
-                                .add(weekend.getStart().isEqual(currentWeekend.getStart().minusWeeks(1)) && weekend.getEnd().isEqual(currentWeekend.getEnd().minusWeeks(1)) ? 1 : 0);
+                                .add(weekendWorked.getStartMillis())
+                                .add(weekendWorked.getEndMillis())
+                                .add(weekendWorked.isEqual(previousWeekend) ? 1 : 0);
                         break;
                     }
                 }
