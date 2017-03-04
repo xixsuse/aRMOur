@@ -75,8 +75,8 @@ public class LoggedShiftDetailFragment extends Fragment implements LoaderManager
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.logged_shift_detail_fragment, container, false);
         mDateView = (TextView) layout.findViewById(R.id.date);
-        mStartTimeView = (TextView) layout.findViewById(R.id.start_time);
-        mEndTimeView = (TextView) layout.findViewById(R.id.end_time);
+        mStartTimeView = (TextView) layout.findViewById(R.id.rostered_start_time);
+        mEndTimeView = (TextView) layout.findViewById(R.id.rostered_end_time);
         mLoggedTimesContainer = layout.findViewById(R.id.logged_times);
         mLoggedStartTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_start_time);
         mLoggedEndTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_end_time);
@@ -111,7 +111,6 @@ public class LoggedShiftDetailFragment extends Fragment implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
             final Interval rosteredShift = new Interval(cursor.getLong(COLUMN_INDEX_SCHEDULED_START), cursor.getLong(COLUMN_INDEX_SCHEDULED_END));
-            long dateAtMidnight = rosteredShift.getStart().withTimeAtStartOfDay().getMillis();
             final Interval loggedShift = (cursor.isNull(COLUMN_INDEX_LOGGED_START) || cursor.isNull(COLUMN_INDEX_LOGGED_END)) ?
                     null :
                     new Interval(cursor.getLong(COLUMN_INDEX_LOGGED_START), cursor.getLong(COLUMN_INDEX_LOGGED_END));
@@ -129,6 +128,7 @@ public class LoggedShiftDetailFragment extends Fragment implements LoaderManager
                     PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
+            long dateAtMidnight = rosteredShift.getStart().withTimeAtStartOfDay().getMillis();
             mEndTimeView.setText(getString(rosteredShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, rosteredShift.getEndMillis()));
             mEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override

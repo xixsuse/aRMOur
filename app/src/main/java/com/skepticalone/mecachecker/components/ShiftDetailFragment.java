@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
 
@@ -48,8 +50,13 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     private long mShiftId;
     private TextView
             mDateView,
-            mStartTimeView,
-            mEndTimeView;
+            mRosteredStartTimeView,
+            mRosteredEndTimeView,
+            mLoggedStartTimeView,
+            mLoggedEndTimeView,
+            mToggleLoggedTimesView;
+    private View mLoggedTimesContainer;
+
     //    ,
 //            mShiftTypeView,
 //            mTimeBetweenShiftsView,
@@ -81,8 +88,13 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         View layout = inflater.inflate(R.layout.shift_detail_fragment, container, false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mDateView = (TextView) layout.findViewById(R.id.date);
-        mStartTimeView = (TextView) layout.findViewById(R.id.start_time);
-        mEndTimeView = (TextView) layout.findViewById(R.id.end_time);
+        mRosteredStartTimeView = (TextView) layout.findViewById(R.id.rostered_start_time);
+        mRosteredEndTimeView = (TextView) layout.findViewById(R.id.rostered_end_time);
+        mLoggedTimesContainer = layout.findViewById(R.id.logged_times);
+        mLoggedStartTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_start_time);
+        mLoggedEndTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_end_time);
+        mToggleLoggedTimesView = (TextView) layout.findViewById(R.id.toggle_logged_times);
+
 //        mShiftTypeView = (TextView) layout.findViewById(R.id.shift_type);
 //        mTimeBetweenShiftsView = (TextView) layout.findViewById(R.id.time_between_shifts);
 //        mDurationWorkedOverDayView = (TextView) layout.findViewById(R.id.duration_worked_over_day);
@@ -118,20 +130,60 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                     PickerFragment.createDatePicker(mShiftId, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mStartTimeView.setText(getString(R.string.time_format, rosteredShift.getStartMillis()));
-            mStartTimeView.setOnClickListener(new View.OnClickListener() {
+            mRosteredStartTimeView.setText(getString(R.string.time_format, rosteredShift.getStartMillis()));
+            mRosteredStartTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mEndTimeView.setText(getString(rosteredShift.getStart().getDayOfMonth() == rosteredShift.getEnd().getDayOfMonth() ? R.string.time_format : R.string.time_format_with_day, rosteredShift.getEndMillis()));
-            mEndTimeView.setOnClickListener(new View.OnClickListener() {
+            long dateAtMidnight = rosteredShift.getStart().withTimeAtStartOfDay().getMillis();
+            mRosteredEndTimeView.setText(getString(rosteredShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, rosteredShift.getEndMillis()));
+            mRosteredEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
+            if (loggedShift == null) {
+                mLoggedTimesContainer.setVisibility(View.GONE);
+                mToggleLoggedTimesView.setText(R.string.log_hours);
+                mToggleLoggedTimesView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContentValues values = new ContentValues();
+                        values.put(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
+                        values.put(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
+                        getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
+                    }
+                });
+            } else {
+                mLoggedStartTimeView.setText(getString(loggedShift.getStart().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, loggedShift.getStartMillis()));
+                mLoggedStartTimeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, false, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    }
+                });
+                mLoggedEndTimeView.setText(getString(loggedShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, loggedShift.getEndMillis()));
+                mLoggedEndTimeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    }
+                });
+                mLoggedTimesContainer.setVisibility(View.VISIBLE);
+                mToggleLoggedTimesView.setText(R.string.remove_log);
+                mToggleLoggedTimesView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContentValues values = new ContentValues();
+                        values.putNull(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START);
+                        values.putNull(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END);
+                        getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
+                    }
+                });
+            }
             mRecyclerView.setAdapter(new ShiftDetailAdapter(cursor));
 //            int shiftTypeDrawableId, shiftTypeStringId;
 //            switch (cursor.getShiftCategory()) {
