@@ -206,14 +206,14 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 //            }
 //            mShiftTypeView.setText(shiftTypeStringId);
 //            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mShiftTypeView, 0, 0, shiftTypeDrawableId, 0);
-//            Duration duration = cursor.getTimeBetweenShifts();
+//            Duration duration = cursor.getIntervalBetweenShifts();
 //            if (duration == null) {
 //                mTimeBetweenShiftsView.setText(R.string.not_applicable);
 //                mTimeBetweenShiftsView.setTextColor(mTextColor);
 //                mTimeBetweenShiftsView.setCompoundDrawables(null, null, null, null);
 //            } else {
 //                mTimeBetweenShiftsView.setText(periodFormatter.print(duration.toPeriodTo(shift.getStart())));
-//                error = AppConstants.hasInsufficientTimeBetweenShifts(duration);
+//                error = AppConstants.hasInsufficientIntervalBetweenShifts(duration);
 //                mTimeBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
 //                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mTimeBetweenShiftsView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
 //            }
@@ -273,7 +273,6 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public void onBindViewHolder(CustomViewHolder holder, int position) {
-            Duration duration;
             switch (position) {
                 case 0:
                     holder.primaryTextView.setText(R.string.shift_type);
@@ -304,36 +303,35 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                     break;
                 case 1:
                     holder.primaryTextView.setText(R.string.time_between_shifts);
-                    duration = mCursor.getTimeBetweenShifts();
-                    if (duration == null) {
+                    Interval intervalBetweenShifts = mCursor.getIntervalBetweenShifts();
+                    if (intervalBetweenShifts == null) {
                         holder.secondaryTextView.setText(R.string.not_applicable);
 //                        holder.primaryIconView.setVisibility(View.INVISIBLE);
                     } else {
-                        // TODO: 1/03/17 messy
-                        holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriodTo(mCursor.getRosteredShift().getStart())));
-                        holder.primaryIconView.setImageResource(AppConstants.hasInsufficientTimeBetweenShifts(duration) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                        holder.secondaryTextView.setText(periodFormatter.print(intervalBetweenShifts.toPeriod()));
+                        holder.primaryIconView.setImageResource(AppConstants.hasInsufficientIntervalBetweenShifts(intervalBetweenShifts) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //                        holder.primaryIconView.setVisibility(View.VISIBLE);
                     }
                     break;
                 case 2:
                     holder.primaryTextView.setText(R.string.duration_worked_over_day);
-                    duration = mCursor.getDurationOverDay();
-                    holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriod()));
-                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverDay(duration) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                    Duration durationOverDay = mCursor.getDurationOverDay();
+                    holder.secondaryTextView.setText(periodFormatter.print(durationOverDay.toPeriod()));
+                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverDay(durationOverDay) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //                    holder.primaryIconView.setVisibility(View.VISIBLE);
                     break;
                 case 3:
                     holder.primaryTextView.setText(R.string.duration_worked_over_week);
-                    duration = mCursor.getDurationOverWeek();
-                    holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriod()));
-                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverWeek(duration) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                    Duration durationOverWeek = mCursor.getDurationOverWeek();
+                    holder.secondaryTextView.setText(periodFormatter.print(durationOverWeek.toPeriod()));
+                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverWeek(durationOverWeek) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //                    holder.primaryIconView.setVisibility(View.VISIBLE);
                     break;
                 case 4:
                     holder.primaryTextView.setText(R.string.duration_worked_over_fortnight);
-                    duration = mCursor.getDurationOverFortnight();
-                    holder.secondaryTextView.setText(periodFormatter.print(duration.toPeriod()));
-                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverFortnight(duration) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                    Duration durationOverFortnight = mCursor.getDurationOverFortnight();
+                    holder.secondaryTextView.setText(periodFormatter.print(durationOverFortnight.toPeriod()));
+                    holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverFortnight(durationOverFortnight) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
 //                    holder.primaryIconView.setVisibility(View.VISIBLE);
                     break;
                 case 5:

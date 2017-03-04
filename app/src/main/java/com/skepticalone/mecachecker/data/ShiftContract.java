@@ -62,7 +62,7 @@ public final class ShiftContract {
                 COLUMN_NAMES,
                 EXTRA_COLUMN_NAMES = new String[]{
                         "SHIFT_TYPE",
-                        "TIME_BETWEEN_SHIFTS",
+                        "LAST_SHIFT_ROSTERED_END",
                         "DURATION_OVER_DAY",
                         "DURATION_OVER_WEEK",
                         "DURATION_OVER_FORTNIGHT",
@@ -79,7 +79,7 @@ public final class ShiftContract {
                 COLUMN_INDEX_LOGGED_START = 3,
                 COLUMN_INDEX_LOGGED_END = 4,
                 COLUMN_INDEX_SHIFT_TYPE = 5,
-                COLUMN_INDEX_TIME_BETWEEN_SHIFTS = 6,
+                COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 6,
                 COLUMN_INDEX_DURATION_OVER_DAY = 7,
                 COLUMN_INDEX_DURATION_OVER_WEEK = 8,
                 COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 9,

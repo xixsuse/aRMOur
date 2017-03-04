@@ -50,8 +50,8 @@ public class ComplianceCursor extends CursorWrapper {
     }
 
     @Nullable
-    public Duration getTimeBetweenShifts() {
-        return isNull(ShiftContract.Compliance.COLUMN_INDEX_TIME_BETWEEN_SHIFTS) ? null : new Duration(getLong(ShiftContract.Compliance.COLUMN_INDEX_TIME_BETWEEN_SHIFTS));
+    public Interval getIntervalBetweenShifts() {
+        return isNull(ShiftContract.Compliance.COLUMN_INDEX_LAST_SHIFT_ROSTERED_END) ? null : new Interval(getLong(ShiftContract.Compliance.COLUMN_INDEX_LAST_SHIFT_ROSTERED_END), getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_START));
     }
 
     @NonNull

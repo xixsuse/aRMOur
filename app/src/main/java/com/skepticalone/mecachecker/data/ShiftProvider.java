@@ -277,7 +277,7 @@ public final class ShiftProvider extends ContentProvider {
                     .add(loggedShift == null ? null : loggedShift.getStartMillis())
                     .add(loggedShift == null ? null : loggedShift.getEndMillis())
                     .add(getShiftType(currentShift.getStart().getMinuteOfDay(), currentShift.getEnd().getMinuteOfDay(), normalDayStart, normalDayEnd, longDayStart, longDayEnd, nightShiftStart, nightShiftEnd))
-                    .add(initialCursor.moveToPrevious() ? new Duration(initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END), currentShift.getStartMillis()).getMillis() : null)
+                    .add(initialCursor.moveToPrevious() ? initialCursor.getLong(ShiftContract.Compliance.COLUMN_INDEX_ROSTERED_END) : null)
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusDays(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis());

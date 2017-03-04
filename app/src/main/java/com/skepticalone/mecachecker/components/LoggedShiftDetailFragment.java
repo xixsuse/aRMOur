@@ -196,14 +196,14 @@ public class LoggedShiftDetailFragment extends Fragment implements LoaderManager
 //            }
 //            mShiftTypeView.setText(shiftTypeStringId);
 //            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mShiftTypeView, 0, 0, shiftTypeDrawableId, 0);
-//            Duration duration = cursor.getTimeBetweenShifts();
+//            Duration duration = cursor.getIntervalBetweenShifts();
 //            if (duration == null) {
 //                mTimeBetweenShiftsView.setText(R.string.not_applicable);
 //                mTimeBetweenShiftsView.setTextColor(mTextColor);
 //                mTimeBetweenShiftsView.setCompoundDrawables(null, null, null, null);
 //            } else {
 //                mTimeBetweenShiftsView.setText(periodFormatter.print(duration.toPeriodTo(shift.getStart())));
-//                error = AppConstants.hasInsufficientTimeBetweenShifts(duration);
+//                error = AppConstants.hasInsufficientIntervalBetweenShifts(duration);
 //                mTimeBetweenShiftsView.setTextColor(error ? mErrorColor : mTextColor);
 //                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mTimeBetweenShiftsView, 0, 0, error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp, 0);
 //            }

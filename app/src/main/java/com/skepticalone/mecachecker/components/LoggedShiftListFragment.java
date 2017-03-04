@@ -206,7 +206,7 @@ public class LoggedShiftListFragment extends Fragment implements LoaderManager.L
             Interval shift = new Interval(mCursor.getLong(COLUMN_INDEX_SCHEDULED_START), mCursor.getLong(COLUMN_INDEX_SCHEDULED_END));
             holder.primaryTextView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
             holder.secondaryTextView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
-//            boolean error = AppConstants.hasInsufficientTimeBetweenShifts(mCursor.getTimeBetweenShifts()) ||
+//            boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
 //                    AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
 //                    AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
 //                    AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
