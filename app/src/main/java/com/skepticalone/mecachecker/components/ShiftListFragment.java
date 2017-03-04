@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +34,7 @@ import org.joda.time.Interval;
 public class ShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_LIST_ID = 0;
-    private ShiftAdapter mAdapter;
+    private Adapter mAdapter;
     private ShiftClickListener mListener;
     private ComplianceCursor mCursor = null;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -52,8 +53,11 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
         RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
         mLayoutManager = recyclerView.getLayoutManager();
-        mAdapter = new ShiftAdapter();
+        mAdapter = new Adapter();
         recyclerView.setAdapter(mAdapter);
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
+        );
         return layout;
     }
 
@@ -150,9 +154,9 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    class ShiftAdapter extends AbstractTwoLineAdapter {
+    private class Adapter extends AbstractTwoLineAdapter {
 
-        ShiftAdapter() {
+        Adapter() {
             super();
             setHasStableIds(true);
         }
@@ -202,9 +206,14 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
                     throw new IllegalArgumentException();
             }
             holder.primaryIconView.setImageResource(shiftTypeDrawableId);
-            Interval shift = mCursor.getRosteredShift();
-            holder.primaryTextView.setText(getString(R.string.day_date_format, shift.getStartMillis()));
-            holder.secondaryTextView.setText(getString(R.string.time_span_format, shift.getStartMillis(), shift.getEndMillis()));
+            Interval rosteredShift = mCursor.getRosteredShift();
+            holder.primaryTextView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
+            Interval loggedShift = mCursor.getLoggedShift();
+            if (loggedShift == null) {
+                holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
+            } else {
+                holder.secondaryTextView.setText(getString(R.string.double_time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis(), loggedShift.getStartMillis(), loggedShift.getEndMillis()));
+            }
             boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
                     AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
                     AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
