@@ -59,7 +59,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="0dp"
-        android:contentDescription="@string/compliance"
+        android:contentDescription="@string/rostered"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

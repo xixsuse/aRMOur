@@ -20,7 +20,6 @@ public class ShiftListActivity extends AppCompatActivity implements
         ShiftClickListener {
 
     private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
-    private static final String SHIFT_RAW_FRAGMENT = "SHIFT_RAW_FRAGMENT";
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -40,7 +39,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.compliance);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
+                    .add(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
         }
     }
@@ -67,7 +66,11 @@ public class ShiftListActivity extends AppCompatActivity implements
 
         if (id == R.id.compliance) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
+                    .replace(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
+                    .commit();
+        } else if (id == R.id.additional) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_fragment_container, new AdditionalDutiesListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));

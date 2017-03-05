@@ -6,10 +6,11 @@
                 <item
                     android:id="@+id/compliance"
                     android:icon="@drawable/ic_check_black_24dp"
-                    android:title="@string/compliance" />
-                <!--<item-->
-                <!--android:icon="@drawable/ic_pencil_black_24dp"-->
-                <!--android:title="@string/raw" />-->
+                    android:title="@string/rostered" />
+                <item
+                    android:id="@+id/additional"
+                    android:icon="@drawable/ic_dollar_black_24dp"
+                    android:title="@string/additional" />
             </group>
         </menu>
     </item>
