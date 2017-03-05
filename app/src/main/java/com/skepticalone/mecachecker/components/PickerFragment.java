@@ -34,7 +34,6 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     private ShiftOverlapListener mListener;
     private Interval oldRosteredShift;
     private Interval oldLoggedShift;
-//    private boolean mIsRostered, mIsStart;
 
     public static PickerFragment createDatePicker(long shiftId, Interval rosteredShift, @Nullable Interval loggedShift) {
         Bundle arguments = new Bundle();

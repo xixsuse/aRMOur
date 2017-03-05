@@ -154,7 +154,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    private class Adapter extends AbstractTwoLineAdapter {
+    private class Adapter extends RecyclerView.Adapter<TwoLineViewHolder> {
 
         Adapter() {
             super();
@@ -168,12 +168,12 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         @Override
-        public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final CustomViewHolder holder = super.onCreateViewHolder(parent, viewType);
+        public TwoLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final TwoLineViewHolder holder = new TwoLineViewHolder(parent);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShiftWithComplianceClicked(holder.getItemId());
+                    mListener.onShiftClicked(holder.getItemId());
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -186,7 +186,7 @@ public class ShiftListFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         @Override
-        public void onBindViewHolder(final CustomViewHolder holder, int position) {
+        public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             int shiftTypeDrawableId;
             switch (mCursor.getShiftType()) {

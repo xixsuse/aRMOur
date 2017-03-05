@@ -173,7 +173,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    private class Adapter extends AbstractTwoLineAdapter {
+    private class Adapter extends RecyclerView.Adapter<TwoLineViewHolder> {
 
         private final ComplianceCursor mCursor;
 
@@ -185,14 +185,14 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
         }
 
         @Override
-        public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            CustomViewHolder holder = super.onCreateViewHolder(parent, viewType);
+        public TwoLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TwoLineViewHolder holder = new TwoLineViewHolder(parent);
             holder.secondaryIconView.setVisibility(View.GONE);
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(CustomViewHolder holder, int position) {
+        public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             switch (position) {
                 case 0:
                     holder.primaryTextView.setText(R.string.shift_type);

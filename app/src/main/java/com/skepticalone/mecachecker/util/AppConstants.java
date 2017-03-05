@@ -34,27 +34,4 @@ public final class AppConstants {
         return duration.isLongerThan(MAXIMUM_DURATION_OVER_FORTNIGHT);
     }
 
-//    public static int getShiftCategory(ShiftCategory category) {
-//        switch (category) {
-//            case ROSTERED:
-//                return SHIFT_TYPE_ROSTERED;
-//            case ADDITIONAL:
-//                return SHIFT_TYPE_ADDITIONAL;
-//            default:
-//                throw new IllegalArgumentException();
-//        }
-//    }
-//
-//    public static ShiftCategory getShiftCategory(int category) {
-//        switch (category) {
-//            case SHIFT_TYPE_ROSTERED:
-//                return ShiftCategory.ROSTERED;
-//            case SHIFT_TYPE_ADDITIONAL:
-//                return ShiftCategory.ADDITIONAL;
-//            default:
-//                throw new IllegalArgumentException();
-//        }
-//    }
-
-
 }

@@ -73,13 +73,6 @@ public final class ShiftProvider extends ContentProvider {
         return Uri.withAppendedPath(shiftsWithComplianceUri, Long.toString(shiftId));
     }
 
-//    public static ContentValues getContentValues(long scheduledStart, long scheduledEnd) {
-//        ContentValues values = new ContentValues();
-//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START, scheduledStart);
-//        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END, scheduledEnd);
-//        return values;
-//    }
-
     private static int getShiftType(
             int start,
             int end,

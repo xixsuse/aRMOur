@@ -11,7 +11,6 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
 
     public static final long NO_ID = -1L;
     static final String SHIFT_ID = "SHIFT_ID";
-    static final String RAW = "RAW";
     static final String PICKER_FRAGMENT = "PICKER_FRAGMENT";
     private View mCoordinatorView;
 
@@ -24,7 +23,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
             long shiftId = getIntent().getLongExtra(SHIFT_ID, NO_ID);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.coordinator_layout, getIntent().getBooleanExtra(RAW, false) ? LoggedShiftDetailFragment.create(shiftId) : ShiftDetailFragment.create(shiftId))
+                    .add(R.id.coordinator_layout, ShiftDetailFragment.create(shiftId))
                     .commit();
         }
     }

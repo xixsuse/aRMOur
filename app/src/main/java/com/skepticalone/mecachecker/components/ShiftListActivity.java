@@ -69,10 +69,6 @@ public class ShiftListActivity extends AppCompatActivity implements
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.list_fragment_container, new ShiftListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
-        } else if (id == R.id.raw) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new LoggedShiftListFragment(), SHIFT_RAW_FRAGMENT)
-                    .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
@@ -82,17 +78,8 @@ public class ShiftListActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRawShiftClicked(long shiftId) {
+    public void onShiftClicked(long shiftId) {
         Intent intent = new Intent(this, ShiftDetailActivity.class);
-        intent.putExtra(ShiftDetailActivity.RAW, true);
-        intent.putExtra(ShiftDetailActivity.SHIFT_ID, shiftId);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onShiftWithComplianceClicked(long shiftId) {
-        Intent intent = new Intent(this, ShiftDetailActivity.class);
-        intent.putExtra(ShiftDetailActivity.RAW, false);
         intent.putExtra(ShiftDetailActivity.SHIFT_ID, shiftId);
         startActivity(intent);
     }
