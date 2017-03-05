@@ -4,18 +4,14 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
 public class ComplianceCursor extends CursorWrapper {
-    private static final String TAG = "ComplianceCursor";
-
 
     public ComplianceCursor(Cursor cursor) {
         super(cursor);
-        Log.d(TAG, "ComplianceCursor() called with: cursor = [" + cursor + "]");
     }
 
     public long getId() {

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-//noinspection GroovyMissingReturnStatement
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
