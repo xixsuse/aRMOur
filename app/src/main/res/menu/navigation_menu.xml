@@ -6,11 +6,11 @@
                 <item
                     android:id="@+id/compliance"
                     android:icon="@drawable/ic_check_black_24dp"
-                    android:title="@string/rostered" />
+                    android:title="@string/rostered_shifts" />
                 <item
                     android:id="@+id/additional"
                     android:icon="@drawable/ic_dollar_black_24dp"
-                    android:title="@string/additional" />
+                    android:title="@string/additional_shifts" />
             </group>
         </menu>
     </item>

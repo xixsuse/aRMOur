@@ -27,18 +27,17 @@ import org.joda.time.LocalTime;
 
 public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
-    private static final int LOADER_ID = 1;
-    private final RecyclerView.Adapter mAdapter = new Adapter();
+    private final Adapter mAdapter = new Adapter();
     private Compliance.Wrapper mCursor = null;
 
     @Override
     int getLoaderId() {
-        return LOADER_ID;
+        return LOADER_ID_ROSTERED_LIST;
     }
 
     @Override
     int getTitle() {
-        return R.string.rostered;
+        return R.string.rostered_shifts;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursor = new Compliance.Wrapper(data);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.swapCursor(mCursor);
         if (mAddButtonJustClicked) {
             mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
             mAddButtonJustClicked = false;
@@ -59,7 +58,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursor = null;
-        mAdapter.notifyDataSetChanged();
+        mAdapter.swapCursor(null);
     }
 
     @Override
@@ -110,27 +109,24 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
         mAddButtonJustClicked = true;
     }
 
-    private class Adapter extends RecyclerView.Adapter<TwoLineViewHolder> {
-
-        Adapter() {
-            super();
-            setHasStableIds(true);
-        }
+    private class Adapter extends StableCursorAdapter<Compliance.Wrapper> {
 
         @Override
         public long getItemId(int position) {
+            //noinspection ConstantConditions
             mCursor.moveToPosition(position);
             return mCursor.getId();
         }
 
         @Override
         public TwoLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final TwoLineViewHolder holder = new TwoLineViewHolder(parent);
+            final TwoLineViewHolder holder = super.onCreateViewHolder(parent, viewType);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), ShiftDetailActivity.class);
                     intent.putExtra(ShiftDetailActivity.SHIFT_ID, holder.getItemId());
+                    intent.putExtra(ShiftDetailActivity.IS_ROSTERED, true);
                     startActivity(intent);
                 }
             });
@@ -145,40 +141,36 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
         @Override
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
-            mCursor.moveToPosition(position);
-            Interval rosteredShift = mCursor.getRosteredShift();
-            holder.primaryTextView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
-            int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            holder.primaryIconView.setImageResource(
-                    startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                            endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
-                            R.drawable.ic_normal_day_black_24dp :
-                            startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
-                                    endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
-                                    R.drawable.ic_long_day_black_24dp :
-                                    startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                                            endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
-                                            R.drawable.ic_night_shift_black_24dp :
-                                            R.drawable.ic_custom_shift_black_24dp
-            );
-            Interval loggedShift = mCursor.getLoggedShift();
-            if (loggedShift == null) {
-                holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
-            } else {
-                holder.secondaryTextView.setText(getString(R.string.double_time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis(), loggedShift.getStartMillis(), loggedShift.getEndMillis()));
+            if (mCursor != null && mCursor.moveToPosition(position)) {
+                Interval rosteredShift = mCursor.getRosteredShift();
+                holder.primaryTextView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
+                int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                holder.primaryIconView.setImageResource(
+                        startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                                endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
+                                R.drawable.ic_normal_day_black_24dp :
+                                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
+                                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
+                                        R.drawable.ic_long_day_black_24dp :
+                                        startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                                                endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
+                                                R.drawable.ic_night_shift_black_24dp :
+                                                R.drawable.ic_custom_shift_black_24dp
+                );
+                Interval loggedShift = mCursor.getLoggedShift();
+                if (loggedShift == null) {
+                    holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
+                } else {
+                    holder.secondaryTextView.setText(getString(R.string.double_time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis(), loggedShift.getStartMillis(), loggedShift.getEndMillis()));
+                }
+                boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
+                        AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
+                        AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
+                        AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
+                        mCursor.consecutiveWeekendsWorked();
+                holder.secondaryIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
             }
-            boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
-                    AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
-                    AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||
-                    AppConstants.exceedsDurationOverFortnight(mCursor.getDurationOverFortnight()) ||
-                    mCursor.consecutiveWeekendsWorked();
-            holder.secondaryIconView.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mCursor == null ? 0 : mCursor.getCount();
         }
 
     }

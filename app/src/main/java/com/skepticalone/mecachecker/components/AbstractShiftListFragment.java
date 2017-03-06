@@ -2,36 +2,30 @@ package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.LoaderManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.LocalTime;
 
-abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragment {
 
-    RecyclerView.LayoutManager mLayoutManager;
     boolean mAddButtonJustClicked = false;
 
-    abstract RecyclerView.Adapter getAdapter();
+    @Override
+    boolean shouldAddDivider() {
+        return true;
+    }
 
-    abstract int getLoaderId();
+    @Override
+    int getLayout() {
+        return R.layout.shift_list_fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -39,34 +33,10 @@ abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragmen
         setHasOptionsMenu(true);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.shift_list_fragment, container, false);
-        RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycler);
-        mLayoutManager = recyclerView.getLayoutManager();
-        recyclerView.setAdapter(getAdapter());
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
-        );
-        return layout;
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.shift_list_menu, menu);
     }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //noinspection ConstantConditions
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
-        getLoaderManager().initLoader(getLoaderId(), null, this);
-    }
-
-    @StringRes
-    abstract int getTitle();
 
     abstract void addShift(ShiftType shiftType, @NonNull LocalTime startTime, @NonNull LocalTime endTime);
 

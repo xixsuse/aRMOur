@@ -62,14 +62,13 @@ public class ShiftListActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.compliance) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.additional) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new AdditionalDutiesListFragment(), SHIFT_LIST_FRAGMENT)
+                    .replace(R.id.list_fragment_container, new AdditionalShiftsListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));
