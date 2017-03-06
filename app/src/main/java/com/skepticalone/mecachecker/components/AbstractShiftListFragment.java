@@ -21,19 +21,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.LocalTime;
 
 abstract public class AbstractShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int LOADER_LIST_ID = 0;
     ShiftClickListener mListener;
-    Compliance.Wrapper mCursor = null;
     RecyclerView.LayoutManager mLayoutManager;
 
     abstract RecyclerView.Adapter getAdapter();
+
+    abstract int getLoaderId();
 
     @Override
     public void onAttach(Context context) {
@@ -65,7 +64,7 @@ abstract public class AbstractShiftListFragment extends Fragment implements Load
         super.onActivityCreated(savedInstanceState);
         //noinspection ConstantConditions
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
-        getLoaderManager().initLoader(LOADER_LIST_ID, null, this);
+        getLoaderManager().initLoader(getLoaderId(), null, this);
     }
 
     @StringRes

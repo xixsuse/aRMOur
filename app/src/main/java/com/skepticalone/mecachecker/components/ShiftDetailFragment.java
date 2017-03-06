@@ -27,7 +27,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int LOADER_DETAIL_ID = 1;
+    private static final int LOADER_DETAIL_ID = 3;
     private final static PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
             .appendYears()
             .appendSuffix(" year", " years")
@@ -95,7 +95,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftWithComplianceUri(mShiftId), null, null, null, null);
+        return new CursorLoader(getActivity(), ShiftProvider.rosteredShiftUri(mShiftId), null, null, null, null);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                         ContentValues values = new ContentValues();
                         values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
                         values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
-                        getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
+                        getActivity().getContentResolver().update(ShiftProvider.rosteredShiftUri(mShiftId), values, null, null);
                     }
                 });
             } else {
@@ -161,7 +161,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                         ContentValues values = new ContentValues();
                         values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START);
                         values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END);
-                        getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
+                        getActivity().getContentResolver().update(ShiftProvider.rosteredShiftUri(mShiftId), values, null, null);
                     }
                 });
             }

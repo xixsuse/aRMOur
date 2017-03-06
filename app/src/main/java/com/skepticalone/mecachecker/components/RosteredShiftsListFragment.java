@@ -25,8 +25,15 @@ import org.joda.time.LocalTime;
 
 public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
+    private static final int LOADER_ID = 1;
     private final RecyclerView.Adapter mAdapter = new Adapter();
     private boolean mAddButtonJustClicked = false;
+    private Compliance.Wrapper mCursor = null;
+
+    @Override
+    int getLoaderId() {
+        return LOADER_ID;
+    }
 
     @Override
     int getTitle() {
@@ -35,7 +42,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.shiftsWithComplianceUri, null, null, null, null);
+        return new CursorLoader(getActivity(), ShiftProvider.rosteredShiftsUri, null, null, null, null);
     }
 
     @Override
@@ -51,6 +58,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCursor = null;
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -97,7 +105,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             newEnd = newEnd.plusDays(1);
         }
         values.put(ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
-        getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, values);
+        getActivity().getContentResolver().insert(ShiftProvider.rosteredShiftsUri, values);
         mAddButtonJustClicked = true;
     }
 
@@ -126,7 +134,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return getActivity().getContentResolver().delete(ShiftProvider.shiftUri(holder.getItemId()), null, null) == 1;
+                    return getActivity().getContentResolver().delete(ShiftProvider.rosteredShiftUri(holder.getItemId()), null, null) == 1;
                 }
             });
             return holder;

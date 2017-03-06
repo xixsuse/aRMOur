@@ -164,7 +164,7 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     }
 
     private void save(ContentValues values) {
-        if (getActivity().getContentResolver().update(ShiftProvider.shiftUri(getArguments().getLong(SHIFT_ID)), values, null, null) == 0) {
+        if (getActivity().getContentResolver().update(ShiftProvider.rosteredShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null) == 0) {
             mListener.onShiftOverlap();
         }
     }

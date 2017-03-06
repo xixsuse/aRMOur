@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -22,25 +23,24 @@ public final class ShiftProvider extends ContentProvider {
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
-            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
-            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
-            WITH_COMPLIANCE = "_with_compliance",
-            SHIFTS_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE,
-            SHIFT_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE;
+            ROSTERED_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
+            ROSTERED_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
+            ADDITIONAL_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.AdditionalShifts.TABLE_NAME,
+            ADDITIONAL_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.AdditionalShifts.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
-    public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build();
-    public static final Uri shiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE).build();
-    private static final int SHIFTS = 1;
-    private static final int SHIFT_ID = 2;
-    private static final int SHIFTS_WITH_COMPLIANCE = 3;
-    private static final int SHIFT_ID_WITH_COMPLIANCE = 4;
+    public static final Uri rosteredShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build();
+    public static final Uri additionalShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.AdditionalShifts.TABLE_NAME).build();
+    private static final int ROSTERED_SHIFTS = 1;
+    private static final int ROSTERED_SHIFT = 2;
+    private static final int ADDITIONAL_SHIFTS = 3;
+    private static final int ADDITIONAL_SHIFT = 4;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME, SHIFTS);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + "/#", SHIFT_ID);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE, SHIFTS_WITH_COMPLIANCE);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE + "/#", SHIFT_ID_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME, ROSTERED_SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + "/#", ROSTERED_SHIFT);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME, ADDITIONAL_SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME + "/#", ADDITIONAL_SHIFT);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -58,12 +58,12 @@ public final class ShiftProvider extends ContentProvider {
             nightShiftStartDefault,
             nightShiftEndDefault;
 
-    public static Uri shiftUri(long shiftId) {
-        return Uri.withAppendedPath(shiftsUri, Long.toString(shiftId));
+    public static Uri rosteredShiftUri(long shiftId) {
+        return Uri.withAppendedPath(rosteredShiftsUri, Long.toString(shiftId));
     }
 
-    public static Uri shiftWithComplianceUri(long shiftId) {
-        return Uri.withAppendedPath(shiftsWithComplianceUri, Long.toString(shiftId));
+    public static Uri additionalShiftUri(long shiftId) {
+        return Uri.withAppendedPath(additionalShiftsUri, Long.toString(shiftId));
     }
 
     @Override
@@ -93,18 +93,11 @@ public final class ShiftProvider extends ContentProvider {
         String table;
         int match = sUriMatcher.match(uri);
         switch (match) {
-            case SHIFT_ID:
-                selection = ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment();
-                selectionArgs = null;
-                // intentional fallthrough
-            case SHIFTS:
-                table = ShiftContract.RosteredShifts.TABLE_NAME;
-                break;
-            case SHIFTS_WITH_COMPLIANCE:
-            case SHIFT_ID_WITH_COMPLIANCE:
+            case ROSTERED_SHIFTS:
+            case ROSTERED_SHIFT:
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                 Cursor cursor = Compliance.getCursor(mDbHelper.getReadableDatabase(),
-                        match == SHIFT_ID_WITH_COMPLIANCE ? Long.parseLong(uri.getLastPathSegment()) : null,
+                        match == ROSTERED_SHIFT ? Long.parseLong(uri.getLastPathSegment()) : null,
                         preferences.getInt(normalDayStartKey, normalDayStartDefault),
                         preferences.getInt(normalDayEndKey, normalDayEndDefault),
                         preferences.getInt(longDayStartKey, longDayStartDefault),
@@ -113,8 +106,15 @@ public final class ShiftProvider extends ContentProvider {
                         preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
                 );
                 //noinspection ConstantConditions
-                cursor.setNotificationUri(getContext().getContentResolver(), ShiftProvider.shiftsUri);
+                cursor.setNotificationUri(getContext().getContentResolver(), ShiftProvider.rosteredShiftsUri);
                 return cursor;
+            case ADDITIONAL_SHIFT:
+                selection = ShiftContract.AdditionalShifts._ID + "=" + uri.getLastPathSegment();
+                selectionArgs = null;
+                // intentional fallthrough
+            case ADDITIONAL_SHIFTS:
+                table = ShiftContract.AdditionalShifts.TABLE_NAME;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -137,14 +137,14 @@ public final class ShiftProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case SHIFTS:
-                return SHIFTS_TYPE;
-            case SHIFT_ID:
-                return SHIFT_TYPE;
-            case SHIFTS_WITH_COMPLIANCE:
-                return SHIFTS_WITH_COMPLIANCE_TYPE;
-            case SHIFT_ID_WITH_COMPLIANCE:
-                return SHIFT_WITH_COMPLIANCE_TYPE;
+            case ROSTERED_SHIFTS:
+                return ROSTERED_SHIFTS_TYPE;
+            case ROSTERED_SHIFT:
+                return ROSTERED_SHIFT_TYPE;
+            case ADDITIONAL_SHIFTS:
+                return ADDITIONAL_SHIFTS_TYPE;
+            case ADDITIONAL_SHIFT:
+                return ADDITIONAL_SHIFT_TYPE;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -153,50 +153,67 @@ public final class ShiftProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
+        Uri newUri;
         switch (sUriMatcher.match(uri)) {
-            case SHIFTS:
-                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.RosteredShifts.TABLE_NAME, null, values);
-                //noinspection ConstantConditions
-                getContext().getContentResolver().notifyChange(uri, null);
-                return shiftUri(shiftId);
+            case ROSTERED_SHIFTS:
+                newUri = rosteredShiftUri(mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.RosteredShifts.TABLE_NAME, null, values));
+                break;
+            case ADDITIONAL_SHIFTS:
+                newUri = additionalShiftUri(mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.AdditionalShifts.TABLE_NAME, null, values));
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        //noinspection ConstantConditions
+        getContext().getContentResolver().notifyChange(uri, null);
+        return newUri;
+
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        String tableName;
         switch (sUriMatcher.match(uri)) {
-            case SHIFT_ID:
-                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.RosteredShifts.TABLE_NAME, ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment(), null);
-                if (deleted > 0) {
-                    //noinspection ConstantConditions
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-                return deleted;
+            case ROSTERED_SHIFT:
+                tableName = ShiftContract.RosteredShifts.TABLE_NAME;
+                break;
+            case ADDITIONAL_SHIFT:
+                tableName = ShiftContract.AdditionalShifts.TABLE_NAME;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        int deleted = mDbHelper.getWritableDatabase().delete(tableName, BaseColumns._ID + "=" + uri.getLastPathSegment(), null);
+        if (deleted > 0) {
+            //noinspection ConstantConditions
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return deleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        String tableName;
         switch (sUriMatcher.match(uri)) {
-            case SHIFT_ID:
-                try {
-                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.RosteredShifts.TABLE_NAME, values, ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment(), null);
-                    if (updated > 0) {
-                        //noinspection ConstantConditions
-                        getContext().getContentResolver().notifyChange(uri, null);
-                    }
-                    return updated;
-                } catch (SQLiteConstraintException e) {
-                    return 0;
-                }
+            case ROSTERED_SHIFT:
+                tableName = ShiftContract.RosteredShifts.TABLE_NAME;
+                break;
+            case ADDITIONAL_SHIFT:
+                tableName = ShiftContract.AdditionalShifts.TABLE_NAME;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
+        try {
+            int updated = mDbHelper.getWritableDatabase().update(tableName, values, BaseColumns._ID + "=" + uri.getLastPathSegment(), null);
+            if (updated > 0) {
+                //noinspection ConstantConditions
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
+            return updated;
+        } catch (SQLiteConstraintException e) {
+            return 0;
+        }
     }
-
 
 }

@@ -64,7 +64,8 @@ public final class ShiftContract {
                         COLUMN_NAME_CLAIMED + " INTEGER DEFAULT NULL, " +
                         COLUMN_NAME_PAID + " INTEGER DEFAULT NULL, " +
                         COLUMN_NAME_COMMENT + " TEXT DEFAULT NULL, " +
-                        "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + ")" +
+                        "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + "), " +
+                        "CHECK (length(" + COLUMN_NAME_COMMENT + ") > 0)" +
                         ")",
                 SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_START + ")",
                 SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
