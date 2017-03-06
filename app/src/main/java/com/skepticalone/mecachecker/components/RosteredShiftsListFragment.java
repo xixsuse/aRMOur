@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -128,7 +129,9 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShiftClicked(holder.getItemId());
+                    Intent intent = new Intent(getActivity(), ShiftDetailActivity.class);
+                    intent.putExtra(ShiftDetailActivity.SHIFT_ID, holder.getItemId());
+                    startActivity(intent);
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

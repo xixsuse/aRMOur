@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
@@ -109,13 +110,23 @@ public class AdditionalDutiesListFragment extends AbstractShiftListFragment {
 
         @Override
         public TwoLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new TwoLineViewHolder(parent);
+            final TwoLineViewHolder holder = new TwoLineViewHolder(parent);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return getActivity().getContentResolver().delete(ShiftProvider.additionalShiftUri(holder.getItemId()), null, null) == 1;
+                }
+            });
+            return holder;
         }
 
         @Override
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             mCursor.moveToPosition(position);
-            holder.primaryTextView.setText(getString(R.string.day_date_format, mCursor.getLong(COLUMN_INDEX_START)));
+            long start = mCursor.getLong(COLUMN_INDEX_START);
+            holder.primaryTextView.setText(getString(R.string.day_date_format, start));
+            holder.secondaryTextView.setText(getString(R.string.time_span_format, start, mCursor.getLong(COLUMN_INDEX_END)));
+            holder.secondaryIconView.setImageResource(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? R.drawable.ic_check_box_outline_blank_black_24dp : mCursor.isNull(COLUMN_INDEX_PAID) ? R.drawable.ic_indeterminate_check_box_black_24dp : R.drawable.ic_check_box_black_24dp);
         }
 
         @Override

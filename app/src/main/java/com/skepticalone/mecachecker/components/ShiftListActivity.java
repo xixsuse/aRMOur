@@ -16,8 +16,7 @@ import android.view.MenuItem;
 import com.skepticalone.mecachecker.R;
 
 public class ShiftListActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        ShiftClickListener {
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
 
@@ -80,10 +79,4 @@ public class ShiftListActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
-    public void onShiftClicked(long shiftId) {
-        Intent intent = new Intent(this, ShiftDetailActivity.class);
-        intent.putExtra(ShiftDetailActivity.SHIFT_ID, shiftId);
-        startActivity(intent);
-    }
 }

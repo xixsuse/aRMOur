@@ -27,7 +27,6 @@ import org.joda.time.LocalTime;
 
 abstract public class AbstractShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    ShiftClickListener mListener;
     RecyclerView.LayoutManager mLayoutManager;
 
     abstract RecyclerView.Adapter getAdapter();
@@ -37,7 +36,6 @@ abstract public class AbstractShiftListFragment extends Fragment implements Load
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (ShiftClickListener) context;
         setHasOptionsMenu(true);
     }
 
