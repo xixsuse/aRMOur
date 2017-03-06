@@ -90,13 +90,13 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             newStart = newStart.plusDays(1);
         }
         ContentValues values = new ContentValues();
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
+        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
 
         DateTime newEnd = newStart.withTime(endTime);
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
-        values.put(ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
+        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
         getActivity().getContentResolver().insert(ShiftProvider.shiftsUri, values);
         mAddButtonJustClicked = true;
     }

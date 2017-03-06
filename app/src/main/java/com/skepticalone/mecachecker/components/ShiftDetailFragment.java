@@ -133,8 +133,8 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
-                        values.put(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
-                        values.put(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
+                        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
+                        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
                         getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
                     }
                 });
@@ -159,8 +159,8 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
-                        values.putNull(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START);
-                        values.putNull(ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END);
+                        values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START);
+                        values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END);
                         getActivity().getContentResolver().update(ShiftProvider.shiftUri(mShiftId), values, null, null);
                     }
                 });

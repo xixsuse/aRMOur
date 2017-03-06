@@ -17,11 +17,11 @@ public final class Compliance {
 
     private static final String[] RAW_PROJECTION = new String[]{
 
-            ShiftContract.RosteredShift._ID,
-            ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START,
-            ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_END,
-            ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_START,
-            ShiftContract.RosteredShift.COLUMN_NAME_LOGGED_END,
+            ShiftContract.RosteredShifts._ID,
+            ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
+            ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END,
+            ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START,
+            ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END,
     },
             EXTRA_COLUMN_NAMES = new String[]{
                     "SHIFT_TYPE",
@@ -79,13 +79,13 @@ public final class Compliance {
                             int nightShiftEnd
     ) {
         Cursor initialCursor = readableDatabase.query(
-                ShiftContract.RosteredShift.TABLE_NAME,
+                ShiftContract.RosteredShifts.TABLE_NAME,
                 RAW_PROJECTION,
                 null,
                 null,
                 null,
                 null,
-                ShiftContract.RosteredShift.COLUMN_NAME_ROSTERED_START
+                ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START
         );
         int initialCursorCount = initialCursor.getCount();
         MatrixCursor newCursor = new MatrixCursor(MATRIX_COLUMN_NAMES, shiftId == null ? initialCursorCount : 1);

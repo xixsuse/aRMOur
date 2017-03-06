@@ -22,14 +22,14 @@ public final class ShiftProvider extends ContentProvider {
     private static final String
             AUTHORITY = "com.skepticalone.mecachecker.provider",
             PROVIDER_TYPE = "/vnd.com.skepticalone.provider.",
-            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME,
-            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME,
+            SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
+            SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
             WITH_COMPLIANCE = "_with_compliance",
-            SHIFTS_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE,
-            SHIFT_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE;
+            SHIFTS_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE,
+            SHIFT_WITH_COMPLIANCE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
-    public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShift.TABLE_NAME).build();
-    public static final Uri shiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE).build();
+    public static final Uri shiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build();
+    public static final Uri shiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE).build();
     private static final int SHIFTS = 1;
     private static final int SHIFT_ID = 2;
     private static final int SHIFTS_WITH_COMPLIANCE = 3;
@@ -37,10 +37,10 @@ public final class ShiftProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME, SHIFTS);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + "/#", SHIFT_ID);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE, SHIFTS_WITH_COMPLIANCE);
-        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShift.TABLE_NAME + WITH_COMPLIANCE + "/#", SHIFT_ID_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME, SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + "/#", SHIFT_ID);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE, SHIFTS_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + WITH_COMPLIANCE + "/#", SHIFT_ID_WITH_COMPLIANCE);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -94,11 +94,11 @@ public final class ShiftProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case SHIFT_ID:
-                selection = ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment();
+                selection = ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment();
                 selectionArgs = null;
                 // intentional fallthrough
             case SHIFTS:
-                table = ShiftContract.RosteredShift.TABLE_NAME;
+                table = ShiftContract.RosteredShifts.TABLE_NAME;
                 break;
             case SHIFTS_WITH_COMPLIANCE:
             case SHIFT_ID_WITH_COMPLIANCE:
@@ -155,7 +155,7 @@ public final class ShiftProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         switch (sUriMatcher.match(uri)) {
             case SHIFTS:
-                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.RosteredShift.TABLE_NAME, null, values);
+                long shiftId = mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.RosteredShifts.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
                 return shiftUri(shiftId);
@@ -168,7 +168,7 @@ public final class ShiftProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
-                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.RosteredShift.TABLE_NAME, ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment(), null);
+                int deleted = mDbHelper.getWritableDatabase().delete(ShiftContract.RosteredShifts.TABLE_NAME, ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment(), null);
                 if (deleted > 0) {
                     //noinspection ConstantConditions
                     getContext().getContentResolver().notifyChange(uri, null);
@@ -184,7 +184,7 @@ public final class ShiftProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case SHIFT_ID:
                 try {
-                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.RosteredShift.TABLE_NAME, values, ShiftContract.RosteredShift._ID + "=" + uri.getLastPathSegment(), null);
+                    int updated = mDbHelper.getWritableDatabase().update(ShiftContract.RosteredShifts.TABLE_NAME, values, ShiftContract.RosteredShifts._ID + "=" + uri.getLastPathSegment(), null);
                     if (updated > 0) {
                         //noinspection ConstantConditions
                         getContext().getContentResolver().notifyChange(uri, null);

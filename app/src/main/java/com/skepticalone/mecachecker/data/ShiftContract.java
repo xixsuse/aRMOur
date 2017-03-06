@@ -6,7 +6,7 @@ public final class ShiftContract {
     private ShiftContract() {
     }
 
-    public static class RosteredShift implements BaseColumns {
+    public static class RosteredShifts implements BaseColumns {
         public static final String
                 COLUMN_NAME_ROSTERED_START = "rostered_start",
                 COLUMN_NAME_ROSTERED_END = "rostered_end",
@@ -31,7 +31,7 @@ public final class ShiftContract {
                 SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         private static String createTrigger(boolean insert) {
-            return "CREATE TRIGGER " + (insert ? "insert" : "update") + "_trigger " +
+            return "CREATE TRIGGER " + TABLE_NAME + (insert ? "_insert_trigger " : "_update_trigger ") +
                     "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
                     "SELECT CASE WHEN EXISTS (" +
                     "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
@@ -39,9 +39,47 @@ public final class ShiftContract {
                     "((" + COLUMN_NAME_ROSTERED_START + " < NEW." + COLUMN_NAME_ROSTERED_END + " AND " +
                     "NEW." + COLUMN_NAME_ROSTERED_START + " < " + COLUMN_NAME_ROSTERED_END + ") OR (" +
                     COLUMN_NAME_LOGGED_START + " < NEW." + COLUMN_NAME_LOGGED_END + " AND " +
-                    "NEW." + COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END + "))" +
-                    ") " +
-                    "THEN RAISE (ABORT, 'Overlapping shifts') END; " +
+                    "NEW." + COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END +
+                    "))) THEN RAISE (ABORT, 'Overlapping shifts') END; " +
+                    "END";
+        }
+    }
+
+    public static class AdditionalShifts implements BaseColumns {
+        public static final String
+                COLUMN_NAME_START = "start",
+                COLUMN_NAME_END = "end",
+                COLUMN_NAME_RATE = "rate",
+                COLUMN_NAME_CLAIMED = "claimed",
+                COLUMN_NAME_PAID = "paid",
+                COLUMN_NAME_COMMENT = "comment";
+        static final String TABLE_NAME = "additional_shifts",
+                SQL_CREATE_TABLE = "CREATE TABLE " +
+                        TABLE_NAME +
+                        " (" +
+                        _ID + " INTEGER PRIMARY KEY, " +
+                        COLUMN_NAME_START + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_END + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_RATE + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_CLAIMED + " INTEGER DEFAULT NULL, " +
+                        COLUMN_NAME_PAID + " INTEGER DEFAULT NULL, " +
+                        COLUMN_NAME_COMMENT + " TEXT DEFAULT NULL, " +
+                        "CHECK (" + COLUMN_NAME_START + " < " + COLUMN_NAME_END + ")" +
+                        ")",
+                SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_START + ")",
+                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
+                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
+                SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+        private static String createTrigger(boolean insert) {
+            return "CREATE TRIGGER " + TABLE_NAME + (insert ? "_insert_trigger " : "_update_trigger ") +
+                    "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
+                    "SELECT CASE WHEN EXISTS (" +
+                    "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
+                    (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
+                    COLUMN_NAME_START + " < NEW." + COLUMN_NAME_END + " AND " +
+                    "NEW." + COLUMN_NAME_START + " < " + COLUMN_NAME_END +
+                    ") THEN RAISE (ABORT, 'Overlapping shifts') END; " +
                     "END";
         }
     }
