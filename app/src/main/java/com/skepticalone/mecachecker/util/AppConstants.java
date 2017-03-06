@@ -14,6 +14,9 @@ public final class AppConstants {
     private static final int MINUTES_PER_STEP = 5;
     private static final int SHIFT_TYPE_ROSTERED = 1, SHIFT_TYPE_ADDITIONAL = 2;
 
+    private AppConstants() {
+    }
+
     public static int getSteppedMinutes(int minutes) {
         return minutes - minutes % MINUTES_PER_STEP;
     }

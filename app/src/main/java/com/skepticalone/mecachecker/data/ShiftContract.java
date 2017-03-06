@@ -12,9 +12,7 @@ public final class ShiftContract {
                 COLUMN_NAME_ROSTERED_END = "rostered_end",
                 COLUMN_NAME_LOGGED_START = "logged_start",
                 COLUMN_NAME_LOGGED_END = "logged_end";
-
-        static final String
-                TABLE_NAME = "rostered_shifts",
+        static final String TABLE_NAME = "rostered_shifts",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                         TABLE_NAME +
                         " (" +
@@ -31,74 +29,21 @@ public final class ShiftContract {
                 SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
                 SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
                 SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-        private final static String ERROR_MESSAGE_ON_OVERLAP = "Overlapping shifts";
 
         private static String createTrigger(boolean insert) {
             return "CREATE TRIGGER " + (insert ? "insert" : "update") + "_trigger " +
                     "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
                     "SELECT CASE WHEN EXISTS (" +
                     "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
-//                    COLUMN_NAME_CATEGORY + " == NEW." + COLUMN_NAME_CATEGORY + " AND " +
                     (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
                     "((" + COLUMN_NAME_ROSTERED_START + " < NEW." + COLUMN_NAME_ROSTERED_END + " AND " +
                     "NEW." + COLUMN_NAME_ROSTERED_START + " < " + COLUMN_NAME_ROSTERED_END + ") OR (" +
                     COLUMN_NAME_LOGGED_START + " < NEW." + COLUMN_NAME_LOGGED_END + " AND " +
                     "NEW." + COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END + "))" +
                     ") " +
-                    "THEN RAISE (ABORT, '" + ERROR_MESSAGE_ON_OVERLAP + "') END; " +
+                    "THEN RAISE (ABORT, 'Overlapping shifts') END; " +
                     "END";
         }
     }
 
-    static class Compliance {
-        static final String[] PROJECTION = new String[]{
-                RosteredShift._ID,
-                RosteredShift.COLUMN_NAME_ROSTERED_START,
-                RosteredShift.COLUMN_NAME_ROSTERED_END,
-                RosteredShift.COLUMN_NAME_LOGGED_START,
-                RosteredShift.COLUMN_NAME_LOGGED_END,
-        };
-        final static String[]
-                COLUMN_NAMES,
-                EXTRA_COLUMN_NAMES = new String[]{
-                        "SHIFT_TYPE",
-                        "LAST_SHIFT_ROSTERED_END",
-                        "DURATION_OVER_DAY",
-                        "DURATION_OVER_WEEK",
-                        "DURATION_OVER_FORTNIGHT",
-                        "CURRENT_WEEKEND_START",
-                        "CURRENT_WEEKEND_END",
-                        "PREVIOUS_WEEKEND_WORKED_START",
-                        "PREVIOUS_WEEKEND_WORKED_END",
-                        "CONSECUTIVE_WEEKENDS_WORKED"
-                };
-        final static int
-                COLUMN_INDEX_ID = 0,
-                COLUMN_INDEX_ROSTERED_START = 1,
-                COLUMN_INDEX_ROSTERED_END = 2,
-                COLUMN_INDEX_LOGGED_START = 3,
-                COLUMN_INDEX_LOGGED_END = 4,
-                COLUMN_INDEX_SHIFT_TYPE = 5,
-                COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 6,
-                COLUMN_INDEX_DURATION_OVER_DAY = 7,
-                COLUMN_INDEX_DURATION_OVER_WEEK = 8,
-                COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 9,
-                COLUMN_INDEX_CURRENT_WEEKEND_START = 10,
-                COLUMN_INDEX_CURRENT_WEEKEND_END = 11,
-                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 12,
-                COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 13,
-                COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 14;
-        final static int
-                SHIFT_TYPE_NORMAL_DAY = 1,
-                SHIFT_TYPE_LONG_DAY = 2,
-                SHIFT_TYPE_NIGHT_SHIFT = 3,
-                SHIFT_TYPE_OTHER = 4;
-
-        static {
-            COLUMN_NAMES = new String[PROJECTION.length + EXTRA_COLUMN_NAMES.length];
-            System.arraycopy(PROJECTION, 0, COLUMN_NAMES, 0, PROJECTION.length);
-            System.arraycopy(EXTRA_COLUMN_NAMES, 0, COLUMN_NAMES, PROJECTION.length, EXTRA_COLUMN_NAMES.length);
-        }
-
-    }
 }

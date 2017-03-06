@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
@@ -40,7 +40,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = new ComplianceCursor(data);
+        mCursor = new Compliance.Wrapper(data);
         mAdapter.notifyDataSetChanged();
         if (mAddButtonJustClicked) {
             mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);

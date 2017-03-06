@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
@@ -100,7 +100,7 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
-        ComplianceCursor cursor = new ComplianceCursor(c);
+        Compliance.Wrapper cursor = new Compliance.Wrapper(c);
         if (cursor.moveToFirst()) {
             final Interval rosteredShift = cursor.getRosteredShift();
             final Interval loggedShift = cursor.getLoggedShift();
@@ -175,9 +175,9 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
 
     private class Adapter extends RecyclerView.Adapter<TwoLineViewHolder> {
 
-        private final ComplianceCursor mCursor;
+        private final Compliance.Wrapper mCursor;
 
-        Adapter(ComplianceCursor c) {
+        Adapter(Compliance.Wrapper c) {
             super();
             mCursor = c;
             mCursor.moveToFirst();

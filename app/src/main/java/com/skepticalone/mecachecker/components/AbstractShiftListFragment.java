@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ComplianceCursor;
+import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.LocalTime;
@@ -30,7 +30,7 @@ abstract public class AbstractShiftListFragment extends Fragment implements Load
 
     private static final int LOADER_LIST_ID = 0;
     ShiftClickListener mListener;
-    ComplianceCursor mCursor = null;
+    Compliance.Wrapper mCursor = null;
     RecyclerView.LayoutManager mLayoutManager;
 
     abstract RecyclerView.Adapter getAdapter();
