@@ -1,10 +1,11 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,7 +26,7 @@ import org.joda.time.Interval;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
-public class ShiftDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ShiftDetailFragment extends ShiftTypeVariableFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOADER_DETAIL_ID = 3;
     private final static PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
@@ -196,29 +197,31 @@ public class ShiftDetailFragment extends Fragment implements LoaderManager.Loade
             switch (position) {
                 case 0:
                     holder.primaryTextView.setText(R.string.shift_type);
-                    int shiftTypeDrawableId, shiftTypeStringId;
-                    switch (mCursor.getShiftType()) {
-                        case NORMAL_DAY:
-                            shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
-                            shiftTypeStringId = R.string.normal_day;
-                            break;
-                        case LONG_DAY:
-                            shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
-                            shiftTypeStringId = R.string.long_day;
-                            break;
-                        case NIGHT_SHIFT:
-                            shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
-                            shiftTypeStringId = R.string.night_shift;
-                            break;
-                        case OTHER:
-                            shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
-                            shiftTypeStringId = R.string.custom;
-                            break;
-                        default:
-                            throw new IllegalArgumentException();
+                    Interval rosteredShift = mCursor.getRosteredShift();
+                    int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    if (
+                            startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                                    endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)
+                            ) {
+                        holder.secondaryTextView.setText(R.string.normal_day);
+                        holder.primaryIconView.setImageResource(R.drawable.ic_normal_day_black_24dp);
+                    } else if (
+                            startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
+                                    endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault)
+                            ) {
+                        holder.secondaryTextView.setText(R.string.long_day);
+                        holder.primaryIconView.setImageResource(R.drawable.ic_long_day_black_24dp);
+                    } else if (
+                            startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                                    endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
+                            ) {
+                        holder.secondaryTextView.setText(R.string.night_shift);
+                        holder.primaryIconView.setImageResource(R.drawable.ic_night_shift_black_24dp);
+                    } else {
+                        holder.secondaryTextView.setText(R.string.custom);
+                        holder.primaryIconView.setImageResource(R.drawable.ic_custom_shift_black_24dp);
                     }
-                    holder.secondaryTextView.setText(shiftTypeStringId);
-                    holder.primaryIconView.setImageResource(shiftTypeDrawableId);
                     break;
                 case 1:
                     holder.primaryTextView.setText(R.string.time_between_shifts);

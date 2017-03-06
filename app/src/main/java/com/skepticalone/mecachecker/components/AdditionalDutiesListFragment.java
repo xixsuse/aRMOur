@@ -1,8 +1,10 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -16,6 +18,7 @@ import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
 public class AdditionalDutiesListFragment extends AbstractShiftListFragment {
@@ -76,6 +79,7 @@ public class AdditionalDutiesListFragment extends AbstractShiftListFragment {
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, getResources().getInteger(R.integer.additional_duties_rate_house_officer));
         getActivity().getContentResolver().insert(ShiftProvider.additionalShiftsUri, values);
+        mAddButtonJustClicked = true;
     }
 
     @Override
@@ -87,6 +91,10 @@ public class AdditionalDutiesListFragment extends AbstractShiftListFragment {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursor = data;
         mAdapter.notifyDataSetChanged();
+        if (mAddButtonJustClicked) {
+            mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
+            mAddButtonJustClicked = false;
+        }
     }
 
     @Override
@@ -123,9 +131,23 @@ public class AdditionalDutiesListFragment extends AbstractShiftListFragment {
         @Override
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             mCursor.moveToPosition(position);
-            long start = mCursor.getLong(COLUMN_INDEX_START);
-            holder.primaryTextView.setText(getString(R.string.day_date_format, start));
-            holder.secondaryTextView.setText(getString(R.string.time_span_format, start, mCursor.getLong(COLUMN_INDEX_END)));
+            Interval currentShift = new Interval(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END));
+            holder.primaryTextView.setText(getString(R.string.day_date_format, currentShift.getStartMillis()));
+            holder.secondaryTextView.setText(getString(R.string.time_span_format, currentShift.getStartMillis(), currentShift.getEndMillis()));
+            int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            holder.primaryIconView.setImageResource(
+                    startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                            endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
+                            R.drawable.ic_normal_day_black_24dp :
+                            startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
+                                    endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
+                                    R.drawable.ic_long_day_black_24dp :
+                                    startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                                            endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
+                                            R.drawable.ic_night_shift_black_24dp :
+                                            R.drawable.ic_custom_shift_black_24dp
+            );
             holder.secondaryIconView.setImageResource(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? R.drawable.ic_check_box_outline_blank_black_24dp : mCursor.isNull(COLUMN_INDEX_PAID) ? R.drawable.ic_indeterminate_check_box_black_24dp : R.drawable.ic_check_box_black_24dp);
         }
 

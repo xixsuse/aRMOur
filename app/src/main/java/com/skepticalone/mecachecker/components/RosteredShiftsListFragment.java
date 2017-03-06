@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,7 +29,6 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
     private static final int LOADER_ID = 1;
     private final RecyclerView.Adapter mAdapter = new Adapter();
-    private boolean mAddButtonJustClicked = false;
     private Compliance.Wrapper mCursor = null;
 
     @Override
@@ -146,26 +146,22 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
         @Override
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             mCursor.moveToPosition(position);
-            int shiftTypeDrawableId;
-            switch (mCursor.getShiftType()) {
-                case NORMAL_DAY:
-                    shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
-                    break;
-                case LONG_DAY:
-                    shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
-                    break;
-                case NIGHT_SHIFT:
-                    shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
-                    break;
-                case OTHER:
-                    shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-            holder.primaryIconView.setImageResource(shiftTypeDrawableId);
             Interval rosteredShift = mCursor.getRosteredShift();
             holder.primaryTextView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
+            int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            holder.primaryIconView.setImageResource(
+                    startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                            endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
+                            R.drawable.ic_normal_day_black_24dp :
+                            startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
+                                    endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
+                                    R.drawable.ic_long_day_black_24dp :
+                                    startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                                            endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
+                                            R.drawable.ic_night_shift_black_24dp :
+                                            R.drawable.ic_custom_shift_black_24dp
+            );
             Interval loggedShift = mCursor.getLoggedShift();
             if (loggedShift == null) {
                 holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));

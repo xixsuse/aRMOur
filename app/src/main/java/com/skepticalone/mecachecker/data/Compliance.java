@@ -24,7 +24,6 @@ public final class Compliance {
             ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END,
     },
             EXTRA_COLUMN_NAMES = new String[]{
-                    "SHIFT_TYPE",
                     "LAST_SHIFT_ROSTERED_END",
                     "DURATION_OVER_DAY",
                     "DURATION_OVER_WEEK",
@@ -42,22 +41,15 @@ public final class Compliance {
             COLUMN_INDEX_ROSTERED_END = 2,
             COLUMN_INDEX_LOGGED_START = 3,
             COLUMN_INDEX_LOGGED_END = 4,
-            COLUMN_INDEX_SHIFT_TYPE = 5,
-            COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 6,
-            COLUMN_INDEX_DURATION_OVER_DAY = 7,
-            COLUMN_INDEX_DURATION_OVER_WEEK = 8,
-            COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 9,
-            COLUMN_INDEX_CURRENT_WEEKEND_START = 10,
-            COLUMN_INDEX_CURRENT_WEEKEND_END = 11,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 12,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 13,
-            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 14;
-
-    private final static int
-            SHIFT_TYPE_NORMAL_DAY = 1,
-            SHIFT_TYPE_LONG_DAY = 2,
-            SHIFT_TYPE_NIGHT_SHIFT = 3,
-            SHIFT_TYPE_OTHER = 4;
+            COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 5,
+            COLUMN_INDEX_DURATION_OVER_DAY = 6,
+            COLUMN_INDEX_DURATION_OVER_WEEK = 7,
+            COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 8,
+            COLUMN_INDEX_CURRENT_WEEKEND_START = 9,
+            COLUMN_INDEX_CURRENT_WEEKEND_END = 10,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 11,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 12,
+            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 13;
 
     static {
         MATRIX_COLUMN_NAMES = new String[RAW_PROJECTION.length + EXTRA_COLUMN_NAMES.length];
@@ -69,15 +61,7 @@ public final class Compliance {
     }
 
     @NonNull
-    static Cursor getCursor(SQLiteDatabase readableDatabase,
-                            @Nullable Long shiftId,
-                            int normalDayStart,
-                            int normalDayEnd,
-                            int longDayStart,
-                            int longDayEnd,
-                            int nightShiftStart,
-                            int nightShiftEnd
-    ) {
+    static Cursor getCursor(SQLiteDatabase readableDatabase, @Nullable Long shiftId) {
         Cursor initialCursor = readableDatabase.query(
                 ShiftContract.RosteredShifts.TABLE_NAME,
                 RAW_PROJECTION,
@@ -102,18 +86,8 @@ public final class Compliance {
                     .add(currentShift.getStartMillis())
                     .add(currentShift.getEndMillis())
                     .add(loggedShift == null ? null : loggedShift.getStartMillis())
-                    .add(loggedShift == null ? null : loggedShift.getEndMillis());
-            int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
-            if (startTotalMinutes == normalDayStart && endTotalMinutes == normalDayEnd) {
-                builder.add(SHIFT_TYPE_NORMAL_DAY);
-            } else if (startTotalMinutes == longDayStart && endTotalMinutes == longDayEnd) {
-                builder.add(SHIFT_TYPE_LONG_DAY);
-            } else if (startTotalMinutes == nightShiftStart && endTotalMinutes == nightShiftEnd) {
-                builder.add(SHIFT_TYPE_NIGHT_SHIFT);
-            } else {
-                builder.add(SHIFT_TYPE_OTHER);
-            }
-            builder.add(initialCursor.moveToPrevious() ? initialCursor.getLong(COLUMN_INDEX_ROSTERED_END) : null)
+                    .add(loggedShift == null ? null : loggedShift.getEndMillis())
+                    .add(initialCursor.moveToPrevious() ? initialCursor.getLong(COLUMN_INDEX_ROSTERED_END) : null)
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusDays(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis());
@@ -180,21 +154,6 @@ public final class Compliance {
             return (isNull(COLUMN_INDEX_LOGGED_START) || isNull(COLUMN_INDEX_LOGGED_END)) ?
                     null :
                     new Interval(getLong(COLUMN_INDEX_LOGGED_START), getLong(COLUMN_INDEX_LOGGED_END));
-        }
-
-        public ShiftType getShiftType() {
-            switch (getInt(COLUMN_INDEX_SHIFT_TYPE)) {
-                case SHIFT_TYPE_NORMAL_DAY:
-                    return ShiftType.NORMAL_DAY;
-                case SHIFT_TYPE_LONG_DAY:
-                    return ShiftType.LONG_DAY;
-                case SHIFT_TYPE_NIGHT_SHIFT:
-                    return ShiftType.NIGHT_SHIFT;
-                case SHIFT_TYPE_OTHER:
-                    return ShiftType.OTHER;
-                default:
-                    throw new IllegalArgumentException();
-            }
         }
 
         @Nullable

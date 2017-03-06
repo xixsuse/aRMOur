@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,9 +24,10 @@ import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.LocalTime;
 
-abstract public class AbstractShiftListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     RecyclerView.LayoutManager mLayoutManager;
+    boolean mAddButtonJustClicked = false;
 
     abstract RecyclerView.Adapter getAdapter();
 
