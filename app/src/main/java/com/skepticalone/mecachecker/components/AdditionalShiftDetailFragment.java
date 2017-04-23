@@ -80,7 +80,6 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
             mRosteredEndTimeView.setText(getString(currentShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, currentShift.getEndMillis()));
         }
         mAdapter.swapCursor(cursor);
-
     }
 
     private class Adapter extends CursorAdapter<Cursor> {

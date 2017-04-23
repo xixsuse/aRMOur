@@ -62,14 +62,14 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PickerFragment.createDatePicker(mShiftId, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    PickerFragment.createDatePicker(mShiftId, true, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             mRosteredStartTimeView.setText(getString(R.string.time_format, rosteredShift.getStartMillis()));
             mRosteredStartTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             long dateAtMidnight = rosteredShift.getStart().withTimeAtStartOfDay().getMillis();
@@ -77,7 +77,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
             mRosteredEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             if (loggedShift == null) {
@@ -97,14 +97,14 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                 mLoggedStartTimeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, false, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                        PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                     }
                 });
                 mLoggedEndTimeView.setText(getString(loggedShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, loggedShift.getEndMillis()));
                 mLoggedEndTimeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        PickerFragment.createTimePicker(mShiftId, rosteredShift, loggedShift, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                        PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, false, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                     }
                 });
                 mLoggedTimesContainer.setVisibility(View.VISIBLE);
