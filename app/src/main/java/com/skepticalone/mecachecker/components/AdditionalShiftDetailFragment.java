@@ -73,11 +73,29 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
-            Interval currentShift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
+            final Interval currentShift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
             mDateView.setText(getString(R.string.day_date_format, currentShift.getStartMillis()));
+            mDateView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PickerFragment.createDatePicker(mShiftId, false, currentShift, null).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                }
+            });
             mRosteredStartTimeView.setText(getString(R.string.time_format, currentShift.getStartMillis()));
+            mRosteredStartTimeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PickerFragment.createTimePicker(mShiftId, false, currentShift, null, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                }
+            });
             long dateAtMidnight = currentShift.getStart().withTimeAtStartOfDay().getMillis();
             mRosteredEndTimeView.setText(getString(currentShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, currentShift.getEndMillis()));
+            mRosteredEndTimeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PickerFragment.createTimePicker(mShiftId, false, currentShift, null, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                }
+            });
         }
         mAdapter.swapCursor(cursor);
     }
