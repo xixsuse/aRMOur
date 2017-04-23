@@ -67,7 +67,7 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.additionalShiftsUri, PROJECTION, null, null, ShiftContract.AdditionalShifts.COLUMN_NAME_START);
+        return new CursorLoader(getActivity(), ShiftProvider.additionalShiftUri(mShiftId), PROJECTION, null, null, ShiftContract.AdditionalShifts.COLUMN_NAME_START);
     }
 
     @Override
