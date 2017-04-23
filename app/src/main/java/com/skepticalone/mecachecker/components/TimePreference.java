@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -16,39 +17,49 @@ import org.joda.time.LocalTime;
 
 import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
-@SuppressWarnings("WeakerAccess")
 public class TimePreference extends DialogPreference {
 
     private int mTotalMinutes;
     @Nullable
     private TimePicker mTimePicker;
 
-    public TimePreference(Context context) {
-        this(context, null);
+    @TargetApi(21)
+    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
     }
 
-    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    public TimePreference(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.dialogPreferenceStyle);
-    }
-
-    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
     public TimePreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setPositiveButtonText(R.string.set);
-        setNegativeButtonText(R.string.cancel);
+        init();
+    }
+
+    public TimePreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    @TargetApi(21)
+    public TimePreference(Context context) {
+        super(context);
+        init();
     }
 
     private static int calculateTotalMinutes(int hours, int minutes) {
         return hours * MINUTES_PER_HOUR + minutes;
     }
 
-    public static int calculateHours(int totalMinutes) {
+    static int calculateHours(int totalMinutes) {
         return totalMinutes / MINUTES_PER_HOUR;
     }
 
-    public static int calculateMinutes(int totalMinutes) {
+    static int calculateMinutes(int totalMinutes) {
         return totalMinutes % MINUTES_PER_HOUR;
+    }
+
+    private void init() {
+        setPositiveButtonText(R.string.set);
+        setNegativeButtonText(R.string.cancel);
     }
 
     @Override
