@@ -1,10 +1,8 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +13,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.Duration;
@@ -82,8 +81,8 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
             });
             if (loggedShift == null) {
                 mLoggedTimesContainer.setVisibility(View.GONE);
-                mToggleLoggedTimesView.setText(R.string.log_hours);
-                mToggleLoggedTimesView.setOnClickListener(new View.OnClickListener() {
+                mToggleButtonView.setText(R.string.log_hours);
+                mToggleButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
@@ -108,8 +107,8 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     }
                 });
                 mLoggedTimesContainer.setVisibility(View.VISIBLE);
-                mToggleLoggedTimesView.setText(R.string.remove_log);
-                mToggleLoggedTimesView.setOnClickListener(new View.OnClickListener() {
+                mToggleButtonView.setText(R.string.remove_log);
+                mToggleButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
@@ -143,31 +142,24 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                 switch (position) {
                     case 0:
                         holder.primaryTextView.setText(R.string.shift_type);
-                        Interval rosteredShift = mCursor.getRosteredShift();
-                        int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        if (
-                                startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                                        endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)
-                                ) {
-                            holder.secondaryTextView.setText(R.string.normal_day);
-                            holder.primaryIconView.setImageResource(R.drawable.ic_normal_day_black_24dp);
-                        } else if (
-                                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
-                                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault)
-                                ) {
-                            holder.secondaryTextView.setText(R.string.long_day);
-                            holder.primaryIconView.setImageResource(R.drawable.ic_long_day_black_24dp);
-                        } else if (
-                                startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                                        endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
-                                ) {
-                            holder.secondaryTextView.setText(R.string.night_shift);
-                            holder.primaryIconView.setImageResource(R.drawable.ic_night_shift_black_24dp);
+                        Interval shift = mCursor.getRosteredShift();
+                        ShiftType shiftType = getShiftType(shift.getStart().getMinuteOfDay(), shift.getEnd().getMinuteOfDay());
+                        int shiftTypeStringId, shiftTypeDrawableId;
+                        if (shiftType == ShiftType.NORMAL_DAY) {
+                            shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;
+                            shiftTypeStringId = R.string.normal_day;
+                        } else if (shiftType == ShiftType.LONG_DAY) {
+                            shiftTypeDrawableId = R.drawable.ic_long_day_black_24dp;
+                            shiftTypeStringId = R.string.long_day;
+                        } else if (shiftType == ShiftType.NIGHT_SHIFT) {
+                            shiftTypeDrawableId = R.drawable.ic_night_shift_black_24dp;
+                            shiftTypeStringId = R.string.night_shift;
                         } else {
-                            holder.secondaryTextView.setText(R.string.custom);
-                            holder.primaryIconView.setImageResource(R.drawable.ic_custom_shift_black_24dp);
+                            shiftTypeDrawableId = R.drawable.ic_custom_shift_black_24dp;
+                            shiftTypeStringId = R.string.custom;
                         }
+                        holder.primaryIconView.setImageResource(shiftTypeDrawableId);
+                        holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), periodFormatter.print(shift.toPeriod())));
                         break;
                     case 1:
                         holder.primaryTextView.setText(R.string.time_between_shifts);

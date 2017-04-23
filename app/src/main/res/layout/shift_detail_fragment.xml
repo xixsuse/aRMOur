@@ -86,7 +86,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/toggle_logged_times"
+        android:id="@+id/toggle_button"
         style="@style/ShiftDetailButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

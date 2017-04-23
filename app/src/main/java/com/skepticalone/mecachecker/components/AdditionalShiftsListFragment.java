@@ -149,7 +149,7 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
                                                 R.drawable.ic_night_shift_black_24dp :
                                                 R.drawable.ic_custom_shift_black_24dp
                 );
-                holder.secondaryIconView.setImageResource(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? R.drawable.ic_check_box_empty_black_24dp : mCursor.isNull(COLUMN_INDEX_PAID) ? R.drawable.ic_check_box_full_black_24dp : R.drawable.ic_check_box_half_black_24dp);
+                holder.secondaryIconView.setImageResource(mCursor.isNull(COLUMN_INDEX_PAID) ? mCursor.isNull(COLUMN_INDEX_CLAIMED) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
             }
         }
 

@@ -41,7 +41,7 @@ abstract public class AbstractShiftDetailFragment extends ShiftTypeVariableFragm
             mRosteredEndTimeView,
             mLoggedStartTimeView,
             mLoggedEndTimeView,
-            mToggleLoggedTimesView;
+            mToggleButtonView;
     View mLoggedTimesContainer;
 
     @Override
@@ -71,7 +71,7 @@ abstract public class AbstractShiftDetailFragment extends ShiftTypeVariableFragm
         mLoggedTimesContainer = layout.findViewById(R.id.logged_times);
         mLoggedStartTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_start_time);
         mLoggedEndTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_end_time);
-        mToggleLoggedTimesView = (TextView) layout.findViewById(R.id.toggle_logged_times);
+        mToggleButtonView = (TextView) layout.findViewById(R.id.toggle_button);
         return layout;
     }
 

@@ -12,6 +12,7 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
     public static final long NO_ID = -1L;
     static final String SHIFT_ID = "SHIFT_ID";
     static final String PICKER_FRAGMENT = "PICKER_FRAGMENT";
+    static final String HOURLY_RATE_FRAGMENT = "HOURLY_RATE_FRAGMENT";
     static final String IS_ROSTERED = "IS_ROSTERED";
     private View mCoordinatorView;
 

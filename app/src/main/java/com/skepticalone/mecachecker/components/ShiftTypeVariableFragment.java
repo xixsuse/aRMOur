@@ -1,9 +1,11 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftType;
 
 
 public abstract class ShiftTypeVariableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -78,6 +81,28 @@ public abstract class ShiftTypeVariableFragment extends Fragment implements Load
     abstract int getLayout();
 
     abstract boolean shouldAddDivider();
+
+    ShiftType getShiftType(int startTotalMinutes, int endTotalMinutes) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (
+                startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                        endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)
+                ) {
+            return ShiftType.NORMAL_DAY;
+        } else if (
+                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
+                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault)
+                ) {
+            return ShiftType.LONG_DAY;
+        } else if (
+                startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                        endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
+                ) {
+            return ShiftType.NIGHT_SHIFT;
+        } else {
+            return ShiftType.OTHER;
+        }
+    }
 
     @Nullable
     @Override
