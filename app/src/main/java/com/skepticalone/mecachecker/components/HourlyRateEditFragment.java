@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -32,6 +33,7 @@ public class HourlyRateEditFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        @SuppressLint("InflateParams")
         final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.hourly_rate_layout, null);
         editText.setText(String.format(Locale.US, "%.2f", getArguments().getInt(HOURLY_RATE) / 100f));
         return new AlertDialog.Builder(getActivity())

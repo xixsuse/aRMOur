@@ -17,7 +17,7 @@ import org.joda.time.LocalTime;
 
 import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
-public class TimePreference extends DialogPreference {
+class TimePreference extends DialogPreference {
 
     private int mTotalMinutes;
     @Nullable

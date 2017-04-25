@@ -9,7 +9,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 
-public class IntegerPreference extends DialogPreference {
+class IntegerPreference extends DialogPreference {
 
     private EditText mEditText;
 
