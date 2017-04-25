@@ -21,13 +21,16 @@
     <string name="day_date_format">%1$tA %1$te/%1$tm/%1$ty</string>
     <string name="time_span_format">%1$tl:%1$tM %1$tp - %2$tl:%2$tM %2$tp</string>
     <string name="double_time_span_format">%1$tl:%1$tM %1$tp - %2$tl:%2$tM %2$tp\n(%3$tl:%3$tM %3$tp - %4$tl:%4$tM %4$tp)</string>
-    <string name="hourly_rate_format">$%1$.2f</string>
+    <string name="currency_format">$%1$.2f</string>
     <string name="time_format">%1$tl:%1$tM %1$tp</string>
     <string name="time_format_with_day">%1$tl:%1$tM %1$tp (%1$ta)</string>
     <string name="period_format">%1$te/%1$tm/%1$ty - %2$te/%2$tm/%2$ty</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>
+    <string name="mark_as_claimed">Mark as claimed</string>
+    <string name="mark_as_paid">Mark as paid</string>
+    <string name="total">Total</string>
     <string name="shift_type_duration_format">%1$s (%2$s)</string>
     <string name="title_shift_list">Shifts</string>
     <string name="title_shift_detail">Shift Detail</string>

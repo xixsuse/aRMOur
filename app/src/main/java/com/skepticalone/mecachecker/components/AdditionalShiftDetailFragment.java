@@ -14,6 +14,7 @@ import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 
 public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
@@ -100,9 +101,9 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
             if (cursor.isNull(COLUMN_INDEX_PAID)) {
                 final boolean isClaimed = !cursor.isNull(COLUMN_INDEX_CLAIMED);
                 if (isClaimed) {
-                    mToggleButtonView.setText("Mark as Paid");
+                    mToggleButtonView.setText(R.string.mark_as_paid);
                 } else {
-                    mToggleButtonView.setText("Mark as Claimed!");
+                    mToggleButtonView.setText(R.string.mark_as_claimed);
                 }
                 mToggleButtonView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -149,10 +150,10 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
                         holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), periodFormatter.print(shift.toPeriod())));
                         break;
                     case 1:
-                        holder.primaryIconView.setImageResource(R.drawable.ic_dollar_black_24dp);
+                        holder.primaryIconView.setImageResource(R.drawable.ic_watch_black_24dp);
                         holder.primaryTextView.setText(R.string.hourly_rate);
                         final int hourlyRate = mCursor.getInt(COLUMN_INDEX_RATE);
-                        holder.secondaryTextView.setText(getString(R.string.hourly_rate_format, hourlyRate / 100f));
+                        holder.secondaryTextView.setText(getString(R.string.currency_format, hourlyRate / 100f));
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -161,11 +162,17 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
                         });
                         break;
                     case 2:
+                        holder.primaryIconView.setImageResource(R.drawable.ic_dollar_black_24dp);
+                        holder.primaryTextView.setText(R.string.total);
+                        float total = ((mCursor.getLong(COLUMN_INDEX_END) - mCursor.getLong(COLUMN_INDEX_START)) * mCursor.getInt(COLUMN_INDEX_RATE)) / (DateTimeConstants.MILLIS_PER_HOUR * 100f);
+                        holder.secondaryTextView.setText(getString(R.string.currency_format, total));
+                        break;
+                    case 3:
                         holder.primaryIconView.setImageResource(R.drawable.ic_check_box_half_black_24dp);
                         holder.primaryTextView.setText(R.string.claimed);
                         holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : getString(R.string.datetime_format, mCursor.getLong(COLUMN_INDEX_CLAIMED)));
                         break;
-                    case 3:
+                    case 4:
                         holder.primaryIconView.setImageResource(R.drawable.ic_check_box_full_black_24dp);
                         holder.primaryTextView.setText(R.string.paid);
                         holder.secondaryTextView.setText(getString(R.string.datetime_format, mCursor.getLong(COLUMN_INDEX_PAID)));
@@ -178,7 +185,7 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
 
         @Override
         public int getItemCount() {
-            return mCursor == null ? 0 : mCursor.isNull(COLUMN_INDEX_PAID) ? mCursor.isNull(COLUMN_INDEX_CLAIMED) ? 2 : 3 : 4;
+            return mCursor == null ? 0 : mCursor.isNull(COLUMN_INDEX_PAID) ? mCursor.isNull(COLUMN_INDEX_CLAIMED) ? 3 : 4 : 5;
         }
     }
 }

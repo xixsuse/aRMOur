@@ -5,4 +5,5 @@
     android:layout_height="wrap_content"
     android:drawableLeft="@drawable/ic_dollar_black_24dp"
     android:drawableStart="@drawable/ic_dollar_black_24dp"
+    android:hint="@string/hourly_rate"
     android:inputType="numberDecimal" />
