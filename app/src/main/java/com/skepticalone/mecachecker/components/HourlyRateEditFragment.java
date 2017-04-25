@@ -2,11 +2,16 @@ package com.skepticalone.mecachecker.components;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+
+import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftContract;
+import com.skepticalone.mecachecker.data.ShiftProvider;
 
 import java.util.Locale;
 
@@ -27,12 +32,26 @@ public class HourlyRateEditFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        EditText rateView = new EditText(getActivity());
-        rateView.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
-        rateView.setText(String.format(Locale.US, "%.2f", getArguments().getInt(HOURLY_RATE) / 100f));
+        final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.hourly_rate_layout, null);
+        editText.setText(String.format(Locale.US, "%.2f", getArguments().getInt(HOURLY_RATE) / 100f));
         return new AlertDialog.Builder(getActivity())
-                .setView(rateView)
-                .setCancelable(true)
+                .setTitle(R.string.hourly_rate)
+                .setView(editText)
+                .setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int rate = Math.round(Float.parseFloat(editText.getText().toString()) * 100);
+                        ContentValues values = new ContentValues();
+                        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, rate);
+                        getActivity().getContentResolver().update(ShiftProvider.additionalShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        HourlyRateEditFragment.this.getDialog().cancel();
+                    }
+                })
                 .create();
     }
+
 }

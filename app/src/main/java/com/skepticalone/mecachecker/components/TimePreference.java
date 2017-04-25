@@ -26,23 +26,19 @@ public class TimePreference extends DialogPreference {
     @TargetApi(21)
     public TimePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
     public TimePreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     @TargetApi(21)
     public TimePreference(Context context) {
         super(context);
-        init();
     }
 
     private static int calculateTotalMinutes(int hours, int minutes) {
@@ -55,11 +51,6 @@ public class TimePreference extends DialogPreference {
 
     static int calculateMinutes(int totalMinutes) {
         return totalMinutes % MINUTES_PER_HOUR;
-    }
-
-    private void init() {
-        setPositiveButtonText(R.string.set);
-        setNegativeButtonText(R.string.cancel);
     }
 
     @Override
