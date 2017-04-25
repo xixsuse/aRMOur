@@ -7,10 +7,15 @@ import org.joda.time.Interval;
 
 public final class AppConstants {
 
-    public static final Duration MINIMUM_TIME_BETWEEN_SHIFTS = Duration.standardHours(8);
-    private static final Duration MAXIMUM_DURATION_OVER_DAY = Duration.standardHours(16);
-    private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(72);
-    private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(144);
+
+    public static final int MINIMUM_HOURS_BETWEEN_SHIFTS = 8;
+    public static final int MAXIMUM_HOURS_OVER_DAY = 16;
+    public static final int MAXIMUM_HOURS_OVER_WEEK = 72;
+    public static final int MAXIMUM_HOURS_OVER_FORTNIGHT = 144;
+    public static final Duration MINIMUM_DURATION_BETWEEN_SHIFTS = Duration.standardHours(MINIMUM_HOURS_BETWEEN_SHIFTS);
+    private static final Duration MAXIMUM_DURATION_OVER_DAY = Duration.standardHours(MAXIMUM_HOURS_OVER_DAY);
+    private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(MAXIMUM_HOURS_OVER_WEEK);
+    private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(MAXIMUM_HOURS_OVER_FORTNIGHT);
     private static final int MINUTES_PER_STEP = 5;
     private static final int SHIFT_TYPE_ROSTERED = 1, SHIFT_TYPE_ADDITIONAL = 2;
 
@@ -22,7 +27,7 @@ public final class AppConstants {
     }
 
     public static boolean hasInsufficientIntervalBetweenShifts(@Nullable Interval interval) {
-        return interval != null && interval.toDuration().isShorterThan(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+        return interval != null && interval.toDuration().isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
     }
 
     public static boolean exceedsDurationOverDay(Duration duration) {

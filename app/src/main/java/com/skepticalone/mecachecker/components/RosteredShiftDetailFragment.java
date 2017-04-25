@@ -21,6 +21,7 @@ import org.joda.time.Interval;
 
 public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
 
+    private static final String MESSAGE_FRAGMENT = "MESSAGE_FRAGMENT";
     private final Adapter mAdapter = new Adapter();
 
     static RosteredShiftDetailFragment create(long id) {
@@ -171,24 +172,48 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                             holder.secondaryTextView.setText(periodFormatter.print(intervalBetweenShifts.toPeriod()));
                             holder.primaryIconView.setImageResource(AppConstants.hasInsufficientIntervalBetweenShifts(intervalBetweenShifts) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         }
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MessageFragment.create(getString(R.string.meca_minimum_hours_between_shifts, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)).show(getFragmentManager(), MESSAGE_FRAGMENT);
+                            }
+                        });
                         break;
                     case 2:
                         holder.primaryTextView.setText(R.string.duration_worked_over_day);
                         Duration durationOverDay = mCursor.getDurationOverDay();
                         holder.secondaryTextView.setText(periodFormatter.print(durationOverDay.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverDay(durationOverDay) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MessageFragment.create(getString(R.string.meca_maximum_hours_over_day, AppConstants.MAXIMUM_HOURS_OVER_DAY)).show(getFragmentManager(), MESSAGE_FRAGMENT);
+                            }
+                        });
                         break;
                     case 3:
                         holder.primaryTextView.setText(R.string.duration_worked_over_week);
                         Duration durationOverWeek = mCursor.getDurationOverWeek();
                         holder.secondaryTextView.setText(periodFormatter.print(durationOverWeek.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverWeek(durationOverWeek) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MessageFragment.create(getString(R.string.meca_maximum_hours_over_week, AppConstants.MAXIMUM_HOURS_OVER_WEEK)).show(getFragmentManager(), MESSAGE_FRAGMENT);
+                            }
+                        });
                         break;
                     case 4:
                         holder.primaryTextView.setText(R.string.duration_worked_over_fortnight);
                         Duration durationOverFortnight = mCursor.getDurationOverFortnight();
                         holder.secondaryTextView.setText(periodFormatter.print(durationOverFortnight.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverFortnight(durationOverFortnight) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MessageFragment.create(getString(R.string.meca_maximum_hours_over_fortnight, AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT)).show(getFragmentManager(), MESSAGE_FRAGMENT);
+                            }
+                        });
                         break;
                     case 5:
                         holder.primaryTextView.setText(R.string.last_weekend_worked);
@@ -196,6 +221,12 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                         //noinspection ConstantConditions
                         holder.secondaryTextView.setText(getString(R.string.period_format, previousWeekend.getStartMillis(), previousWeekend.getEndMillis() - 1));
                         holder.primaryIconView.setImageResource(mCursor.consecutiveWeekendsWorked() ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MessageFragment.create(getString(R.string.meca_consecutive_weekends)).show(getFragmentManager(), MESSAGE_FRAGMENT);
+                            }
+                        });
                         break;
                     default:
                         throw new IllegalArgumentException();

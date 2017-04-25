@@ -70,7 +70,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     void addShift(ShiftType shiftType, @NonNull LocalTime startTime, @NonNull LocalTime endTime) {
         DateTime minStart;
         if (mCursor != null && mCursor.moveToLast()) {
-            minStart = mCursor.getRosteredShift().getEnd().plus(AppConstants.MINIMUM_TIME_BETWEEN_SHIFTS);
+            minStart = mCursor.getRosteredShift().getEnd().plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
         } else {
             minStart = new DateTime().withTimeAtStartOfDay();
         }
