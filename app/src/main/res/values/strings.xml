@@ -49,7 +49,7 @@
     <string name="remove_log">Remove log</string>
     <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
     <string name="meca_maximum_hours_over_day" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %d hours in any day.</string>
-    <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %1$d hours in any consecutive seven days.\n\n(13.4.1) Where an employee is rostered on duty in excess of %1$d hours in any seven day period then a penalty payment of $500 shall apply for that period.</string>
+    <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %1$d hours in any consecutive seven days.\n\n(13.4.1) Where an employee is rostered on duty in excess of %1$d hours in any seven day period then a penalty payment of $550 shall apply for that period.</string>
     <string name="meca_maximum_hours_over_fortnight" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is required to work in excess of %1$d hours in a period of 14 consecutive days the employer shall pay a penalty of $1000 to the employee. Any penalty shall apply only once in respect of any particular 7 day period.</string>
     <string name="meca_consecutive_weekends">(13.5.1) Employees shall have every second weekend completely free from duties.</string>
 </resources>
