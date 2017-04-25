@@ -22,5 +22,6 @@
     <string name="skip_weekend_title">Skip weekends</string>
     <string name="skip_weekend_summary_on">New shifts will always begin on weekdays</string>
     <string name="skip_weekend_summary_off">New shifts may begin on weekends</string>
-    <integer name="additional_duties_rate_house_officer">4500</integer>
+    <string name="key_hourly_rate">key_hourly_rate</string>
+    <integer name="default_hourly_rate">5500</integer>
 </resources>

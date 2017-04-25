@@ -73,7 +73,8 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             newEnd = newEnd.plusDays(1);
         }
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
-        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, getResources().getInteger(R.integer.additional_duties_rate_house_officer));
+        int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate));
+        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, hourlyRate);
         getActivity().getContentResolver().insert(ShiftProvider.additionalShiftsUri, values);
         mAddButtonJustClicked = true;
     }

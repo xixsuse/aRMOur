@@ -62,4 +62,12 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/additional_shifts">
+        <com.skepticalone.mecachecker.components.HourlyRatePreference
+            android:defaultValue="@integer/default_hourly_rate"
+            android:icon="@drawable/ic_watch_black_24dp"
+            android:key="@string/key_hourly_rate"
+            android:title="@string/hourly_rate" />
+    </PreferenceCategory>
+    o
 </PreferenceScreen>

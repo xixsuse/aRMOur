@@ -1,11 +1,9 @@
 package com.skepticalone.mecachecker.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.DialogPreference;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
@@ -19,26 +17,15 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 class TimePreference extends DialogPreference {
 
+    private static final int DEFAULT_TOTAL_MINUTES = 0;
     private int mTotalMinutes;
-    @Nullable
     private TimePicker mTimePicker;
-
-    @TargetApi(21)
-    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @TargetApi(21)
-    public TimePreference(Context context) {
-        super(context);
+        setDialogLayoutResource(R.layout.time_preference_layout);
+        setPositiveButtonText(R.string.set);
+        setNegativeButtonText(R.string.cancel);
     }
 
     private static int calculateTotalMinutes(int hours, int minutes) {
@@ -53,48 +40,49 @@ class TimePreference extends DialogPreference {
         return totalMinutes % MINUTES_PER_HOUR;
     }
 
-    @Override
-    protected View onCreateDialogView() {
-        mTimePicker = new TimePicker(getContext());
-        mTimePicker.setIs24HourView(false);
-        return mTimePicker;
-    }
+//    @Override
+//    protected View onCreateDialogView() {
+//        mTimePicker = new TimePicker(getContext());
+//        mTimePicker.setIs24HourView(false);
+//        return mTimePicker;
+//    }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-        if (mTimePicker != null) {
-            int hours = calculateHours(mTotalMinutes);
-            int minutes = calculateMinutes(mTotalMinutes);
-            if (Build.VERSION.SDK_INT >= 23) {
-                mTimePicker.setHour(hours);
-                mTimePicker.setMinute(minutes);
-            } else {
-                //noinspection deprecation
-                mTimePicker.setCurrentHour(hours);
-                //noinspection deprecation
-                mTimePicker.setCurrentMinute(minutes);
-            }
+        mTimePicker = (TimePicker) view;
+        ((TimePicker) view).setIs24HourView(false);
+        int hours = calculateHours(mTotalMinutes);
+        int minutes = calculateMinutes(mTotalMinutes);
+        if (Build.VERSION.SDK_INT >= 23) {
+            mTimePicker.setHour(hours);
+            mTimePicker.setMinute(minutes);
+        } else {
+            //noinspection deprecation
+            mTimePicker.setCurrentHour(hours);
+            //noinspection deprecation
+            mTimePicker.setCurrentMinute(minutes);
         }
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInteger(index, 0);
+        return a.getInteger(index, DEFAULT_TOTAL_MINUTES);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        mTotalMinutes = defaultValue == null ? 0 : (int) defaultValue;
         if (restorePersistedValue) {
-            mTotalMinutes = getPersistedInt(mTotalMinutes);
+            mTotalMinutes = getPersistedInt(DEFAULT_TOTAL_MINUTES);
+        } else {
+            mTotalMinutes = (int) defaultValue;
+            persistInt(mTotalMinutes);
         }
-        setSummary(getSummary());
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        if (positiveResult && mTimePicker != null) {
+        if (positiveResult) {
             int hours, minutes;
             if (Build.VERSION.SDK_INT >= 23) {
                 hours = mTimePicker.getHour();
@@ -107,11 +95,8 @@ class TimePreference extends DialogPreference {
             }
             minutes = AppConstants.getSteppedMinutes(minutes);
             mTotalMinutes = calculateTotalMinutes(hours, minutes);
-            setSummary(getSummary());
-            if (callChangeListener(mTotalMinutes)) {
-                persistInt(mTotalMinutes);
-                notifyChanged();
-            }
+            persistInt(mTotalMinutes);
+            notifyChanged();
         }
     }
 

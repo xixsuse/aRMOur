@@ -14,8 +14,6 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 
-import java.util.Locale;
-
 public class HourlyRateEditFragment extends DialogFragment {
 
     private static final String SHIFT_ID = "SHIFT_ID";
@@ -35,7 +33,7 @@ public class HourlyRateEditFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         @SuppressLint("InflateParams")
         final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.hourly_rate_layout, null);
-        editText.setText(String.format(Locale.US, "%.2f", getArguments().getInt(HOURLY_RATE) / 100f));
+        editText.setText(getString(R.string.decimal_format, getArguments().getInt(HOURLY_RATE) / 100f));
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.hourly_rate)
                 .setView(editText)
