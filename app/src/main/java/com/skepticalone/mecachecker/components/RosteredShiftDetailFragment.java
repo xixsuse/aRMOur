@@ -161,6 +161,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                         }
                         holder.primaryIconView.setImageResource(shiftTypeDrawableId);
                         holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), periodFormatter.print(shift.toPeriod())));
+                        holder.itemView.setOnClickListener(null);
                         break;
                     case 1:
                         holder.primaryTextView.setText(R.string.time_between_shifts);
