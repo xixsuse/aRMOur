@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="category_new_shifts_title">New shifts</string>
+    <string name="key_normal_day">key_normal_day</string>
     <string name="key_start_normal_day">key_start_normal_day</string>
     <string name="key_end_normal_day">key_end_normal_day</string>
     <string name="key_skip_weekend_normal_day">key_skip_weekend_normal_day</string>
+    <string name="key_long_day">key_long_day</string>
     <string name="key_start_long_day">key_start_long_day</string>
     <string name="key_end_long_day">key_end_long_day</string>
     <string name="key_skip_weekend_long_day">key_skip_weekend_long_day</string>
+    <string name="key_night_shift">key_night_shift</string>
     <string name="key_start_night_shift">key_start_night_shift</string>
     <string name="key_end_night_shift">key_end_night_shift</string>
     <string name="key_skip_weekend_night_shift">key_skip_weekend_night_shift</string>

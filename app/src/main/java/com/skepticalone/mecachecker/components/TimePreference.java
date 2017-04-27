@@ -17,7 +17,7 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 class TimePreference extends DialogPreference {
 
-    private static final int DEFAULT_TOTAL_MINUTES = 0;
+    static final int DEFAULT_TOTAL_MINUTES = 0;
     private int mTotalMinutes;
     private TimePicker mTimePicker;
 
@@ -39,13 +39,6 @@ class TimePreference extends DialogPreference {
     static int calculateMinutes(int totalMinutes) {
         return totalMinutes % MINUTES_PER_HOUR;
     }
-
-//    @Override
-//    protected View onCreateDialogView() {
-//        mTimePicker = new TimePicker(getContext());
-//        mTimePicker.setIs24HourView(false);
-//        return mTimePicker;
-//    }
 
     @Override
     protected void onBindDialogView(View view) {

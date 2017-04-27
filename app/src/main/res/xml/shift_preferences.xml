@@ -3,6 +3,7 @@
     <PreferenceCategory android:title="@string/category_new_shifts_title">
         <PreferenceScreen
             android:icon="@drawable/ic_normal_day_black_24dp"
+            android:key="@string/key_normal_day"
             android:title="@string/normal_day">
             <PreferenceCategory android:title="@string/normal_day">
                 <com.skepticalone.mecachecker.components.TimePreference
@@ -23,6 +24,7 @@
         </PreferenceScreen>
         <PreferenceScreen
             android:icon="@drawable/ic_long_day_black_24dp"
+            android:key="@string/key_long_day"
             android:title="@string/long_day">
             <PreferenceCategory android:title="@string/long_day">
                 <com.skepticalone.mecachecker.components.TimePreference
@@ -43,6 +45,7 @@
         </PreferenceScreen>
         <PreferenceScreen
             android:icon="@drawable/ic_night_shift_black_24dp"
+            android:key="@string/key_night_shift"
             android:title="@string/night_shift">
             <PreferenceCategory android:title="@string/night_shift">
                 <com.skepticalone.mecachecker.components.TimePreference
