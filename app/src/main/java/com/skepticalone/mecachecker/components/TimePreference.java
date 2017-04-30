@@ -10,14 +10,10 @@ import android.widget.TimePicker;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.AppConstants;
-
-import org.joda.time.LocalTime;
-
-import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 class TimePreference extends DialogPreference {
 
-    static final int DEFAULT_TOTAL_MINUTES = 0;
     private int mTotalMinutes;
     private TimePicker mTimePicker;
 
@@ -28,25 +24,14 @@ class TimePreference extends DialogPreference {
         setNegativeButtonText(R.string.cancel);
     }
 
-    private static int calculateTotalMinutes(int hours, int minutes) {
-        return hours * MINUTES_PER_HOUR + minutes;
-    }
-
-    static int calculateHours(int totalMinutes) {
-        return totalMinutes / MINUTES_PER_HOUR;
-    }
-
-    static int calculateMinutes(int totalMinutes) {
-        return totalMinutes % MINUTES_PER_HOUR;
-    }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mTimePicker = (TimePicker) view;
         ((TimePicker) view).setIs24HourView(false);
-        int hours = calculateHours(mTotalMinutes);
-        int minutes = calculateMinutes(mTotalMinutes);
+        int hours = DateTimeUtils.calculateHours(mTotalMinutes);
+        int minutes = DateTimeUtils.calculateMinutes(mTotalMinutes);
         if (Build.VERSION.SDK_INT >= 23) {
             mTimePicker.setHour(hours);
             mTimePicker.setMinute(minutes);
@@ -60,13 +45,13 @@ class TimePreference extends DialogPreference {
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInteger(index, DEFAULT_TOTAL_MINUTES);
+        return a.getInteger(index, 0);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         if (restorePersistedValue) {
-            mTotalMinutes = getPersistedInt(DEFAULT_TOTAL_MINUTES);
+            mTotalMinutes = getPersistedInt(0);
         } else {
             mTotalMinutes = (int) defaultValue;
             persistInt(mTotalMinutes);
@@ -87,7 +72,7 @@ class TimePreference extends DialogPreference {
                 minutes = mTimePicker.getCurrentMinute();
             }
             minutes = AppConstants.getSteppedMinutes(minutes);
-            mTotalMinutes = calculateTotalMinutes(hours, minutes);
+            mTotalMinutes = DateTimeUtils.calculateTotalMinutes(hours, minutes);
             persistInt(mTotalMinutes);
             notifyChanged();
         }
@@ -95,7 +80,7 @@ class TimePreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return getContext().getString(R.string.time_format, new LocalTime(calculateHours(mTotalMinutes), calculateMinutes(mTotalMinutes)).toDateTimeToday().getMillis());
+        return DateTimeUtils.getTimeString(mTotalMinutes);
     }
 
 }

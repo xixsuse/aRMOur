@@ -19,6 +19,7 @@ import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -143,7 +144,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             if (mCursor != null && mCursor.moveToPosition(position)) {
                 Interval rosteredShift = mCursor.getRosteredShift();
-                holder.primaryTextView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
+                holder.primaryTextView.setText(DateTimeUtils.getFullDateString(rosteredShift.getStart()));
                 int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 holder.primaryIconView.setImageResource(
@@ -160,9 +161,10 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
                 );
                 Interval loggedShift = mCursor.getLoggedShift();
                 if (loggedShift == null) {
-                    holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
+                    holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(rosteredShift));
+//                    holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
                 } else {
-                    holder.secondaryTextView.setText(getString(R.string.double_time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis(), loggedShift.getStartMillis(), loggedShift.getEndMillis()));
+                    holder.secondaryTextView.setText(DateTimeUtils.getDoubleTimeSpanString(rosteredShift, loggedShift));
                 }
                 boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
                         AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||

@@ -17,6 +17,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -134,8 +135,8 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
         public void onBindViewHolder(TwoLineViewHolder holder, int position) {
             if (mCursor != null && mCursor.moveToPosition(position)) {
                 Interval currentShift = new Interval(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END));
-                holder.primaryTextView.setText(getString(R.string.day_date_format, currentShift.getStartMillis()));
-                holder.secondaryTextView.setText(getString(R.string.time_span_format, currentShift.getStartMillis(), currentShift.getEndMillis()));
+                holder.primaryTextView.setText(DateTimeUtils.getFullDateString(currentShift.getStart()));
+                holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(currentShift));
                 int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 holder.primaryIconView.setImageResource(

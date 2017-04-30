@@ -26,7 +26,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/rostered_start_time"
+            android:id="@+id/start_time"
             style="@style/ShiftDetailButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             tools:text="9:00 am" />
 
         <Button
-            android:id="@+id/rostered_end_time"
+            android:id="@+id/end_time"
             style="@style/ShiftDetailButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

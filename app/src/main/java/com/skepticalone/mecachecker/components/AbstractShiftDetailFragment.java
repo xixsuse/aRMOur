@@ -11,34 +11,12 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
-
 abstract public class AbstractShiftDetailFragment extends ShiftTypeVariableFragment {
-    final static PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-            .appendYears()
-            .appendSuffix(" year", " years")
-            .appendSeparator(", ")
-            .appendMonths()
-            .appendSuffix(" month", " months")
-            .appendSeparator(", ")
-            .appendWeeks()
-            .appendSuffix(" week", " weeks")
-            .appendSeparator(", ")
-            .appendDays()
-            .appendSuffix(" day", " days")
-            .appendSeparator(", ")
-            .appendHours()
-            .appendSuffix(" hour", " hours")
-            .appendSeparator(", ")
-            .appendMinutes()
-            .appendSuffix(" minute", " minutes")
-            .toFormatter();
     long mShiftId;
     TextView
             mDateView,
-            mRosteredStartTimeView,
-            mRosteredEndTimeView,
+            mStartTimeView,
+            mEndTimeView,
             mLoggedStartTimeView,
             mLoggedEndTimeView,
             mToggleButtonView;
@@ -66,8 +44,8 @@ abstract public class AbstractShiftDetailFragment extends ShiftTypeVariableFragm
         View layout = super.onCreateView(inflater, container, savedInstanceState);
         //noinspection ConstantConditions
         mDateView = (TextView) layout.findViewById(R.id.date);
-        mRosteredStartTimeView = (TextView) layout.findViewById(R.id.rostered_start_time);
-        mRosteredEndTimeView = (TextView) layout.findViewById(R.id.rostered_end_time);
+        mStartTimeView = (TextView) layout.findViewById(R.id.start_time);
+        mEndTimeView = (TextView) layout.findViewById(R.id.end_time);
         mLoggedTimesContainer = layout.findViewById(R.id.logged_times);
         mLoggedStartTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_start_time);
         mLoggedEndTimeView = (TextView) mLoggedTimesContainer.findViewById(R.id.logged_end_time);

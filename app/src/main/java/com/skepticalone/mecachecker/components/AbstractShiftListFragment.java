@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.LocalTime;
 
@@ -70,9 +71,9 @@ abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragmen
                 }
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
-                LocalTime startTime = new LocalTime(TimePreference.calculateHours(startTotalMinutes), TimePreference.calculateMinutes(startTotalMinutes));
+                LocalTime startTime = new LocalTime(DateTimeUtils.calculateHours(startTotalMinutes), DateTimeUtils.calculateMinutes(startTotalMinutes));
                 int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
-                LocalTime endTime = new LocalTime(TimePreference.calculateHours(endTotalMinutes), TimePreference.calculateMinutes(endTotalMinutes));
+                LocalTime endTime = new LocalTime(DateTimeUtils.calculateHours(endTotalMinutes), DateTimeUtils.calculateMinutes(endTotalMinutes));
                 addShift(shiftType, startTime, endTime);
                 return true;
             default:

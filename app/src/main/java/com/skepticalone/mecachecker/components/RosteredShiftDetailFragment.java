@@ -15,6 +15,7 @@ import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -58,23 +59,22 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
         if (cursor.moveToFirst()) {
             final Interval rosteredShift = cursor.getRosteredShift();
             final Interval loggedShift = cursor.getLoggedShift();
-            mDateView.setText(getString(R.string.day_date_format, rosteredShift.getStartMillis()));
+            mDateView.setText(DateTimeUtils.getFullDateString(rosteredShift.getStart()));
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createDatePicker(mShiftId, true, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mRosteredStartTimeView.setText(getString(R.string.time_format, rosteredShift.getStartMillis()));
-            mRosteredStartTimeView.setOnClickListener(new View.OnClickListener() {
+            mStartTimeView.setText(DateTimeUtils.getTimeString(rosteredShift, true, null));
+            mStartTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            long dateAtMidnight = rosteredShift.getStart().withTimeAtStartOfDay().getMillis();
-            mRosteredEndTimeView.setText(getString(rosteredShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, rosteredShift.getEndMillis()));
-            mRosteredEndTimeView.setOnClickListener(new View.OnClickListener() {
+            mEndTimeView.setText(DateTimeUtils.getTimeString(rosteredShift, false, null));
+            mEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
@@ -93,14 +93,14 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     }
                 });
             } else {
-                mLoggedStartTimeView.setText(getString(loggedShift.getStart().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, loggedShift.getStartMillis()));
+                mLoggedStartTimeView.setText(DateTimeUtils.getTimeString(loggedShift, true, rosteredShift.getStart()));
                 mLoggedStartTimeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         PickerFragment.createTimePicker(mShiftId, true, rosteredShift, loggedShift, true, true).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                     }
                 });
-                mLoggedEndTimeView.setText(getString(loggedShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, loggedShift.getEndMillis()));
+                mLoggedEndTimeView.setText(DateTimeUtils.getTimeString(loggedShift, false, rosteredShift.getStart()));
                 mLoggedEndTimeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -160,7 +160,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                             shiftTypeStringId = R.string.custom;
                         }
                         holder.primaryIconView.setImageResource(shiftTypeDrawableId);
-                        holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), periodFormatter.print(shift.toPeriod())));
+                        holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), DateTimeUtils.getPeriodString(shift.toPeriod())));
                         holder.itemView.setOnClickListener(null);
                         break;
                     case 1:
@@ -170,7 +170,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                             holder.secondaryTextView.setText(R.string.not_applicable);
                             holder.primaryIconView.setImageResource(0);
                         } else {
-                            holder.secondaryTextView.setText(periodFormatter.print(intervalBetweenShifts.toPeriod()));
+                            holder.secondaryTextView.setText(DateTimeUtils.getPeriodString(intervalBetweenShifts.toPeriod()));
                             holder.primaryIconView.setImageResource(AppConstants.hasInsufficientIntervalBetweenShifts(intervalBetweenShifts) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         }
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +183,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     case 2:
                         holder.primaryTextView.setText(R.string.duration_worked_over_day);
                         Duration durationOverDay = mCursor.getDurationOverDay();
-                        holder.secondaryTextView.setText(periodFormatter.print(durationOverDay.toPeriod()));
+                        holder.secondaryTextView.setText(DateTimeUtils.getPeriodString(durationOverDay.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverDay(durationOverDay) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -195,7 +195,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     case 3:
                         holder.primaryTextView.setText(R.string.duration_worked_over_week);
                         Duration durationOverWeek = mCursor.getDurationOverWeek();
-                        holder.secondaryTextView.setText(periodFormatter.print(durationOverWeek.toPeriod()));
+                        holder.secondaryTextView.setText(DateTimeUtils.getPeriodString(durationOverWeek.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverWeek(durationOverWeek) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -207,7 +207,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     case 4:
                         holder.primaryTextView.setText(R.string.duration_worked_over_fortnight);
                         Duration durationOverFortnight = mCursor.getDurationOverFortnight();
-                        holder.secondaryTextView.setText(periodFormatter.print(durationOverFortnight.toPeriod()));
+                        holder.secondaryTextView.setText(DateTimeUtils.getPeriodString(durationOverFortnight.toPeriod()));
                         holder.primaryIconView.setImageResource(AppConstants.exceedsDurationOverFortnight(durationOverFortnight) ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -220,7 +220,8 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                         holder.primaryTextView.setText(R.string.last_weekend_worked);
                         Interval previousWeekend = mCursor.getPreviousWeekend();
                         //noinspection ConstantConditions
-                        holder.secondaryTextView.setText(getString(R.string.period_format, previousWeekend.getStartMillis(), previousWeekend.getEndMillis() - 1));
+                        holder.secondaryTextView.setText(DateTimeUtils.getDateSpanString(previousWeekend));
+//                        holder.secondaryTextView.setText(getString(R.string.period_format, previousWeekend.getStartMillis(), previousWeekend.getEndMillis() - 1));
                         holder.primaryIconView.setImageResource(mCursor.consecutiveWeekendsWorked() ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override

@@ -13,6 +13,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
@@ -76,23 +77,30 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
             final Interval currentShift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-            mDateView.setText(getString(R.string.day_date_format, currentShift.getStartMillis()));
+            mDateView.setText(DateTimeUtils.getFullDateString(currentShift.getStart()));
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createDatePicker(mShiftId, false, currentShift, null).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            mRosteredStartTimeView.setText(getString(R.string.time_format, currentShift.getStartMillis()));
-            mRosteredStartTimeView.setOnClickListener(new View.OnClickListener() {
+            mStartTimeView.setText(DateTimeUtils.getTimeString(currentShift, true, null));
+            mStartTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, false, currentShift, null, true, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            long dateAtMidnight = currentShift.getStart().withTimeAtStartOfDay().getMillis();
-            mRosteredEndTimeView.setText(getString(currentShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight) ? R.string.time_format : R.string.time_format_with_day, currentShift.getEndMillis()));
-            mRosteredEndTimeView.setOnClickListener(new View.OnClickListener() {
+//            long dateAtMidnight = currentShift.getStart().withTimeAtStartOfDay().getMillis();
+//            String endTimeString;
+//            if (currentShift.getEnd().withTimeAtStartOfDay().isEqual(dateAtMidnight)){
+//                endTimeString = DateTimeUtils.timeFormatter.print(currentShift.getEnd());
+//            } else {
+//                StringBuilder sb = new StringBuilder();
+//
+//            }
+            mEndTimeView.setText(DateTimeUtils.getTimeString(currentShift, false, null));
+            mEndTimeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     PickerFragment.createTimePicker(mShiftId, false, currentShift, null, false, false).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
@@ -147,7 +155,7 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
                             shiftTypeStringId = R.string.custom;
                         }
                         holder.primaryIconView.setImageResource(shiftTypeDrawableId);
-                        holder.secondaryTextView.setText(getString(R.string.shift_type_duration_format, getString(shiftTypeStringId), periodFormatter.print(shift.toPeriod())));
+                        holder.secondaryTextView.setText(DateTimeUtils.getShiftTypeWithDurationString(getString(shiftTypeStringId), shift.toPeriod()));
                         break;
                     case 1:
                         holder.primaryIconView.setImageResource(R.drawable.ic_watch_black_24dp);
@@ -170,12 +178,12 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
                     case 3:
                         holder.primaryIconView.setImageResource(R.drawable.ic_check_box_half_black_24dp);
                         holder.primaryTextView.setText(R.string.claimed);
-                        holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : getString(R.string.datetime_format, mCursor.getLong(COLUMN_INDEX_CLAIMED)));
+                        holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_CLAIMED)));
                         break;
                     case 4:
                         holder.primaryIconView.setImageResource(R.drawable.ic_check_box_full_black_24dp);
                         holder.primaryTextView.setText(R.string.paid);
-                        holder.secondaryTextView.setText(getString(R.string.datetime_format, mCursor.getLong(COLUMN_INDEX_PAID)));
+                        holder.secondaryTextView.setText(DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_PAID)));
                         break;
                     default:
                         throw new IllegalArgumentException();
