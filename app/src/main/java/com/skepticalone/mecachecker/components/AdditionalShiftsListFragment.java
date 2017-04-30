@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -31,13 +32,15 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             ShiftContract.AdditionalShifts.COLUMN_NAME_END,
             ShiftContract.AdditionalShifts.COLUMN_NAME_CLAIMED,
             ShiftContract.AdditionalShifts.COLUMN_NAME_PAID,
+            ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT,
     };
     private final static int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_START = 1,
             COLUMN_INDEX_END = 2,
             COLUMN_INDEX_CLAIMED = 3,
-            COLUMN_INDEX_PAID = 4;
+            COLUMN_INDEX_PAID = 4,
+            COLUMN_INDEX_COMMENT = 5;
     private final Adapter mAdapter = new Adapter();
     private Cursor mCursor = null;
 
@@ -76,6 +79,10 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
         int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate));
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, hourlyRate);
+        // TODO: 30/04/17 remove this
+        if (BuildConfig.DEBUG) {
+            values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT, "This is a comment");
+        }
         getActivity().getContentResolver().insert(ShiftProvider.additionalShiftsUri, values);
         mAddButtonJustClicked = true;
     }
@@ -136,7 +143,15 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             if (mCursor != null && mCursor.moveToPosition(position)) {
                 Interval currentShift = new Interval(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END));
                 holder.primaryTextView.setText(DateTimeUtils.getFullDateString(currentShift.getStart()));
-                holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(currentShift));
+                // TODO: 30/04/17 clean up
+                if (mCursor.isNull(COLUMN_INDEX_COMMENT)) {
+                    holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(currentShift));
+                } else {
+                    holder.secondaryTextView.setText(
+                            mCursor.getString(COLUMN_INDEX_COMMENT) + '\n' +
+                                    DateTimeUtils.getTimeSpanString(currentShift)
+                    );
+                }
                 int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 holder.primaryIconView.setImageResource(

@@ -175,25 +175,44 @@ public class AdditionalShiftDetailFragment extends AbstractShiftDetailFragment {
                         float total = ((mCursor.getLong(COLUMN_INDEX_END) - mCursor.getLong(COLUMN_INDEX_START)) * mCursor.getInt(COLUMN_INDEX_RATE)) / (DateTimeConstants.MILLIS_PER_HOUR * 100f);
                         holder.secondaryTextView.setText(getString(R.string.currency_format, total));
                         break;
-                    case 3:
-                        holder.primaryIconView.setImageResource(R.drawable.ic_check_box_half_black_24dp);
-                        holder.primaryTextView.setText(R.string.claimed);
-                        holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_CLAIMED)));
-                        break;
-                    case 4:
-                        holder.primaryIconView.setImageResource(R.drawable.ic_check_box_full_black_24dp);
-                        holder.primaryTextView.setText(R.string.paid);
-                        holder.secondaryTextView.setText(DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_PAID)));
-                        break;
+//                    case 3:
+//                        holder.primaryIconView.setImageResource(R.drawable.ic_check_box_half_black_24dp);
+//                        holder.primaryTextView.setText(R.string.claimed);
+//                        holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_CLAIMED)));
+//                        break;
+//                    case 4:
+//                        holder.primaryIconView.setImageResource(R.drawable.ic_check_box_full_black_24dp);
+//                        holder.primaryTextView.setText(R.string.paid);
+//                        holder.secondaryTextView.setText(DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_PAID)));
+//                        break;
                     default:
-                        throw new IllegalArgumentException();
+                        if (position == 3 && !mCursor.isNull(COLUMN_INDEX_COMMENT)) {
+                            holder.primaryIconView.setImageResource(R.drawable.ic_pencil_black_24dp);
+                            holder.primaryTextView.setText(R.string.comment);
+                            holder.secondaryTextView.setText(mCursor.getString(COLUMN_INDEX_COMMENT));
+                        } else if (position == 3 || (position == 4 && !mCursor.isNull(COLUMN_INDEX_COMMENT))) {
+                            holder.primaryIconView.setImageResource(R.drawable.ic_check_box_half_black_24dp);
+                            holder.primaryTextView.setText(R.string.claimed);
+                            holder.secondaryTextView.setText(mCursor.isNull(COLUMN_INDEX_CLAIMED) ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_CLAIMED)));
+                        } else {
+                            holder.primaryIconView.setImageResource(R.drawable.ic_check_box_full_black_24dp);
+                            holder.primaryTextView.setText(R.string.paid);
+                            holder.secondaryTextView.setText(DateTimeUtils.getDateTimeString(mCursor.getLong(COLUMN_INDEX_PAID)));
+                        }
                 }
             }
         }
 
         @Override
         public int getItemCount() {
-            return mCursor == null ? 0 : mCursor.isNull(COLUMN_INDEX_PAID) ? mCursor.isNull(COLUMN_INDEX_CLAIMED) ? 3 : 4 : 5;
+            int count = 0;
+            if (mCursor != null) {
+                count += 3;
+                if (!mCursor.isNull(COLUMN_INDEX_COMMENT)) count++;
+                if (!mCursor.isNull(COLUMN_INDEX_PAID)) count += 2;
+                else if (!mCursor.isNull(COLUMN_INDEX_CLAIMED)) count++;
+            }
+            return count;
         }
     }
 }
