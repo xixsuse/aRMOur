@@ -9,6 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <Button
@@ -16,8 +18,7 @@
             style="@style/ShiftDetailButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_margin="8dp"
             tools:text="Friday 27/01/2017" />
 
         <LinearLayout
@@ -26,7 +27,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/rostered_start_time"
+                android:id="@+id/start_time"
                 style="@style/ShiftDetailButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -38,7 +39,7 @@
                 tools:text="9:00 am" />
 
             <Button
-                android:id="@+id/rostered_end_time"
+                android:id="@+id/end_time"
                 style="@style/ShiftDetailButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -56,7 +57,7 @@
             android:minHeight="60dp">
 
             <TextView
-                android:id="@+id/shift_type_title"
+                android:id="@+id/shift_type"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -64,40 +65,42 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="72dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/shift_type"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/long_day" />
 
             <TextView
-                android:id="@+id/shift_type_text"
+                android:id="@+id/shift_duration"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="72dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shift_type_title"
-                tools:text="Long day (14 hours, 30 minutes)" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shift_type"
+                tools:text="14 hours, 30 minutes" />
 
             <ImageView
-                android:id="@+id/shift_type_icon"
+                android:id="@+id/shift_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/shift_type"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_normal_day_black_24dp" />
+                tools:src="@drawable/ic_long_day_black_24dp" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -117,26 +120,25 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/hourly_rate"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/hourly_rate_text"
-                style="@style/Widget.AppCompat.EditText"
+                android:id="@+id/hourly_rate_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="72dp"
+                android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/hourly_rate_title"
                 tools:text="45.00" />
 
@@ -147,19 +149,136 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/hourly_rate"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_dollar_black_24dp"
+                android:src="@drawable/ic_watch_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/claimed_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="60dp">
+
+            <TextView
+                android:id="@+id/total_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/total"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/total_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="72dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total_title"
+                tools:text="$140.50" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/total"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dollar_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp">
+
+            <TextView
+                android:id="@+id/comment_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/comment"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <AutoCompleteTextView
+                android:id="@+id/comment_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="72dp"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/comment_title"
+                tools:text="This is a comment" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/comment"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_pencil_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp">
+
+            <Switch
+                android:id="@+id/claimed_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:checked="true" />
 
             <TextView
                 android:id="@+id/claimed_title"
@@ -172,22 +291,23 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/claimed"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/claimed_switch"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/claimed_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="72dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/claimed_switch"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/claimed_title"
                 tools:text="Sunday 23/04/17 3:00 pm" />
 
@@ -198,11 +318,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/claimed"
                 android:scaleType="fitCenter"
+                android:src="@drawable/ic_check_box_half_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_check_box_half_black_24dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -211,6 +332,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="60dp">
+
+            <Switch
+                android:id="@+id/paid_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/paid_title"
@@ -223,24 +354,25 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/paid"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/paid_switch"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/paid_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="72dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/paid_switch"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/paid_title"
-                tools:text="Sunday 23/04/17 7:57 pm" />
+                tools:text="Not yet" />
 
             <ImageView
                 android:layout_width="40dp"
@@ -249,21 +381,14 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/paid"
                 android:scaleType="fitCenter"
+                android:src="@drawable/ic_check_box_full_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_check_box_full_black_24dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
-        <Button
-            android:id="@+id/update_status"
-            style="@style/ShiftDetailButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            tools:text="Mark as claimed" />
     </LinearLayout>
 </ScrollView>

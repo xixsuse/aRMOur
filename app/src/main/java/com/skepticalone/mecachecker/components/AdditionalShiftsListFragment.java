@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.BuildConfig;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
@@ -79,10 +78,6 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
         int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate));
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, hourlyRate);
-        // TODO: 30/04/17 remove this
-        if (BuildConfig.DEBUG) {
-            values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT, "This is a comment");
-        }
         getActivity().getContentResolver().insert(ShiftProvider.additionalShiftsUri, values);
         mAddButtonJustClicked = true;
     }
@@ -143,13 +138,13 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             if (mCursor != null && mCursor.moveToPosition(position)) {
                 Interval currentShift = new Interval(mCursor.getLong(COLUMN_INDEX_START), mCursor.getLong(COLUMN_INDEX_END));
                 holder.primaryTextView.setText(DateTimeUtils.getFullDateString(currentShift.getStart()));
-                // TODO: 30/04/17 clean up
+                String timeSpanString = DateTimeUtils.getTimeSpanString(currentShift);
                 if (mCursor.isNull(COLUMN_INDEX_COMMENT)) {
-                    holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(currentShift));
+                    holder.secondaryTextView.setText(timeSpanString);
                 } else {
                     holder.secondaryTextView.setText(
-                            mCursor.getString(COLUMN_INDEX_COMMENT) + '\n' +
-                                    DateTimeUtils.getTimeSpanString(currentShift)
+                            // TODO: 30/04/17 clean up
+                            mCursor.getString(COLUMN_INDEX_COMMENT) + '\n' + timeSpanString
                     );
                 }
                 int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();

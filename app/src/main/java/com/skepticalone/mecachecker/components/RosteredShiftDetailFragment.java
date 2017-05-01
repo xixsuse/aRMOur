@@ -144,7 +144,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     case 0:
                         holder.primaryTextView.setText(R.string.shift_type);
                         Interval shift = mCursor.getRosteredShift();
-                        ShiftType shiftType = getShiftType(shift.getStart().getMinuteOfDay(), shift.getEnd().getMinuteOfDay());
+                        ShiftType shiftType = getShiftType(shift);
                         int shiftTypeStringId, shiftTypeDrawableId;
                         if (shiftType == ShiftType.NORMAL_DAY) {
                             shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;

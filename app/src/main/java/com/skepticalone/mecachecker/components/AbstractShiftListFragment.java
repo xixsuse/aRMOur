@@ -14,7 +14,7 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.LocalTime;
 
-abstract public class AbstractShiftListFragment extends ShiftTypeVariableFragment {
+abstract public class AbstractShiftListFragment extends LayoutManagerFragment {
 
     boolean mAddButtonJustClicked = false;
 
