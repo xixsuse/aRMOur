@@ -9,29 +9,28 @@ import android.widget.EditText;
 
 import com.skepticalone.mecachecker.R;
 
-class HourlyRatePreference extends DialogPreference {
+class CurrencyPreference extends DialogPreference {
 
-    private final int mDefaultValue;
+    private static final int DEFAULT_VALUE = 0;
     private EditText mEditText;
     private int mValue;
 
-    public HourlyRatePreference(Context context, AttributeSet attrs) {
+    CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDefaultValue = context.getResources().getInteger(R.integer.default_hourly_rate);
-        setDialogLayoutResource(R.layout.hourly_rate_layout);
+        setDialogLayoutResource(R.layout.currency_input);
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInteger(index, mDefaultValue);
+        return a.getInteger(index, DEFAULT_VALUE);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         if (restorePersistedValue) {
-            mValue = getPersistedInt(mDefaultValue);
+            mValue = getPersistedInt(DEFAULT_VALUE);
         } else {
             mValue = (int) defaultValue;
             persistInt(mValue);

@@ -3,18 +3,7 @@ package com.skepticalone.mecachecker.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
@@ -22,13 +11,7 @@ import com.skepticalone.mecachecker.data.ShiftType;
 import org.joda.time.Interval;
 
 
-abstract class ShiftTypeAwareFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    static final int
-            LOADER_ID_ROSTERED_LIST = 1,
-            LOADER_ID_ROSTERED_DETAIL = 2,
-            LOADER_ID_ADDITIONAL_LIST = 3,
-            LOADER_ID_ADDITIONAL_DETAIL = 4;
+abstract class ShiftTypeAwareFragment extends BaseFragment {
 
     String
             normalDayStartKey,
@@ -63,28 +46,6 @@ abstract class ShiftTypeAwareFragment extends Fragment implements LoaderManager.
         nightShiftEndDefault = resources.getInteger(R.integer.default_end_night_shift);
     }
 
-    @Nullable
-    @Override
-    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getLayout(), container, false);
-    }
-
-    @Override
-    public final void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //noinspection ConstantConditions
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
-        getLoaderManager().initLoader(getLoaderId(), null, this);
-    }
-
-    @LayoutRes
-    abstract int getLayout();
-
-    abstract int getLoaderId();
-
-    @StringRes
-    abstract int getTitle();
-
     ShiftType getShiftType(Interval shift) {
         int startTotalMinutes = shift.getStart().getMinuteOfDay(),
                 endTotalMinutes = shift.getEnd().getMinuteOfDay();
@@ -108,28 +69,5 @@ abstract class ShiftTypeAwareFragment extends Fragment implements LoaderManager.
             return ShiftType.OTHER;
         }
     }
-
-//    ShiftType getShiftType(int startTotalMinutes, int endTotalMinutes) {
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        if (
-//                startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-//                        endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)
-//                ) {
-//            return ShiftType.NORMAL_DAY;
-//        } else if (
-//                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
-//                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault)
-//                ) {
-//            return ShiftType.LONG_DAY;
-//        } else if (
-//                startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-//                        endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault)
-//                ) {
-//            return ShiftType.NIGHT_SHIFT;
-//        } else {
-//            return ShiftType.OTHER;
-//        }
-//    }
-
 
 }

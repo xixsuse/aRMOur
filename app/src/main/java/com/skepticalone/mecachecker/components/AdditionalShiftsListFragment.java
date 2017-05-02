@@ -25,7 +25,7 @@ import org.joda.time.LocalTime;
 
 public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
 
-    private static final String[] PROJECTION = new String[]{
+    private static final String[] PROJECTION = {
             ShiftContract.AdditionalShifts._ID,
             ShiftContract.AdditionalShifts.COLUMN_NAME_START,
             ShiftContract.AdditionalShifts.COLUMN_NAME_END,
@@ -45,7 +45,7 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
 
     @Override
     int getLoaderId() {
-        return LOADER_ID_ADDITIONAL_LIST;
+        return ShiftListActivity.LOADER_ID_ADDITIONAL_LIST;
     }
 
     @Override

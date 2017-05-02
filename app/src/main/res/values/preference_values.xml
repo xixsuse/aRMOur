@@ -27,4 +27,6 @@
     <string name="skip_weekend_summary_off">New shifts may begin on weekends</string>
     <string name="key_hourly_rate">key_hourly_rate</string>
     <integer name="default_hourly_rate">5500</integer>
+    <string name="key_cross_cover_payment">key_cross_cover_payment</string>
+    <integer name="default_cross_cover_payment">15000</integer>
 </resources>

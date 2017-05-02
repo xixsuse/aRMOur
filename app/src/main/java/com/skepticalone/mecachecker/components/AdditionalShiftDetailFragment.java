@@ -30,7 +30,7 @@ import org.joda.time.Interval;
 
 public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
-    private static final String[] PROJECTION = new String[]{
+    private static final String[] PROJECTION = {
             ShiftContract.AdditionalShifts._ID,
             ShiftContract.AdditionalShifts.COLUMN_NAME_START,
             ShiftContract.AdditionalShifts.COLUMN_NAME_END,
@@ -139,7 +139,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
     @Override
     int getLoaderId() {
-        return LOADER_ID_ADDITIONAL_DETAIL;
+        return ShiftListActivity.LOADER_ID_ADDITIONAL_DETAIL;
     }
 
     @Override

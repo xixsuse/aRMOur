@@ -4,13 +4,17 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/compliance"
+                    android:id="@+id/rostered"
                     android:icon="@drawable/ic_check_black_24dp"
                     android:title="@string/rostered_shifts" />
                 <item
                     android:id="@+id/additional"
                     android:icon="@drawable/ic_dollar_black_24dp"
                     android:title="@string/additional_shifts" />
+                <item
+                    android:id="@+id/cross_cover"
+                    android:icon="@drawable/ic_cross_cover_black_24dp"
+                    android:title="@string/cross_cover" />
             </group>
         </menu>
     </item>

@@ -21,14 +21,19 @@ public final class ShiftProvider extends ContentProvider {
             ROSTERED_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
             ROSTERED_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.RosteredShifts.TABLE_NAME,
             ADDITIONAL_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.AdditionalShifts.TABLE_NAME,
-            ADDITIONAL_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.AdditionalShifts.TABLE_NAME;
+            ADDITIONAL_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.AdditionalShifts.TABLE_NAME,
+            CROSS_COVER_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.CrossCoverShifts.TABLE_NAME,
+            CROSS_COVER_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.CrossCoverShifts.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri rosteredShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build();
     public static final Uri additionalShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.AdditionalShifts.TABLE_NAME).build();
+    public static final Uri crossCoverShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.CrossCoverShifts.TABLE_NAME).build();
     private static final int ROSTERED_SHIFTS = 1;
     private static final int ROSTERED_SHIFT = 2;
     private static final int ADDITIONAL_SHIFTS = 3;
     private static final int ADDITIONAL_SHIFT = 4;
+    private static final int CROSS_COVER_SHIFTS = 5;
+    private static final int CROSS_COVER_SHIFT = 6;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
@@ -36,6 +41,8 @@ public final class ShiftProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + "/#", ROSTERED_SHIFT);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME, ADDITIONAL_SHIFTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME + "/#", ADDITIONAL_SHIFT);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.CrossCoverShifts.TABLE_NAME, CROSS_COVER_SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.CrossCoverShifts.TABLE_NAME + "/#", CROSS_COVER_SHIFT);
     }
 
     private ShiftDbHelper mDbHelper;
@@ -46,6 +53,10 @@ public final class ShiftProvider extends ContentProvider {
 
     public static Uri additionalShiftUri(long shiftId) {
         return Uri.withAppendedPath(additionalShiftsUri, Long.toString(shiftId));
+    }
+
+    public static Uri crossCoverShiftUri(long shiftId) {
+        return Uri.withAppendedPath(crossCoverShiftsUri, Long.toString(shiftId));
     }
 
     @Override
@@ -74,6 +85,13 @@ public final class ShiftProvider extends ContentProvider {
             case ADDITIONAL_SHIFTS:
                 table = ShiftContract.AdditionalShifts.TABLE_NAME;
                 break;
+            case CROSS_COVER_SHIFT:
+                selection = ShiftContract.CrossCoverShifts._ID + "=" + uri.getLastPathSegment();
+                selectionArgs = null;
+                // intentional fallthrough
+            case CROSS_COVER_SHIFTS:
+                table = ShiftContract.CrossCoverShifts.TABLE_NAME;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -89,7 +107,6 @@ public final class ShiftProvider extends ContentProvider {
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
-
     }
 
     @Nullable
@@ -104,6 +121,10 @@ public final class ShiftProvider extends ContentProvider {
                 return ADDITIONAL_SHIFTS_TYPE;
             case ADDITIONAL_SHIFT:
                 return ADDITIONAL_SHIFT_TYPE;
+            case CROSS_COVER_SHIFTS:
+                return CROSS_COVER_SHIFTS_TYPE;
+            case CROSS_COVER_SHIFT:
+                return CROSS_COVER_SHIFT_TYPE;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
@@ -119,6 +140,9 @@ public final class ShiftProvider extends ContentProvider {
                 break;
             case ADDITIONAL_SHIFTS:
                 newUri = additionalShiftUri(mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.AdditionalShifts.TABLE_NAME, null, values));
+                break;
+            case CROSS_COVER_SHIFTS:
+                newUri = additionalShiftUri(mDbHelper.getWritableDatabase().insertOrThrow(ShiftContract.CrossCoverShifts.TABLE_NAME, null, values));
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -138,6 +162,9 @@ public final class ShiftProvider extends ContentProvider {
                 break;
             case ADDITIONAL_SHIFT:
                 tableName = ShiftContract.AdditionalShifts.TABLE_NAME;
+                break;
+            case CROSS_COVER_SHIFT:
+                tableName = ShiftContract.CrossCoverShifts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -159,6 +186,9 @@ public final class ShiftProvider extends ContentProvider {
                 break;
             case ADDITIONAL_SHIFT:
                 tableName = ShiftContract.AdditionalShifts.TABLE_NAME;
+                break;
+            case CROSS_COVER_SHIFT:
+                tableName = ShiftContract.CrossCoverShifts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);

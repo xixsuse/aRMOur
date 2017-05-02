@@ -33,7 +33,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
     @Override
     int getLoaderId() {
-        return LOADER_ID_ROSTERED_LIST;
+        return ShiftListActivity.LOADER_ID_ROSTERED_LIST;
     }
 
     @Override

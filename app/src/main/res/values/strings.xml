@@ -9,6 +9,7 @@
     <string name="add_normal_day">Add normal day</string>
     <string name="add_long_day">Add long day</string>
     <string name="add_night_shift">Add night shift</string>
+    <string name="add_cross_cover">Add cross cover</string>
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
@@ -17,9 +18,12 @@
     <string name="rostered_shift">Rostered shift</string>
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>
+    <string name="cross_cover">Cross cover</string>
     <string name="decimal_format">%.2f</string>
     <string name="currency_format">$%.2f</string>
     <string name="hourly_rate">Hourly rate</string>
+    <string name="cross_cover_payment">Cross cover payment</string>
+    <string name="currency_input_hint">Enter value ($)</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>
     <string name="total">Total</string>

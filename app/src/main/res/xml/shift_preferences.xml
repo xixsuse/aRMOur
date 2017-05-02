@@ -66,11 +66,17 @@
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/additional_shifts">
-        <com.skepticalone.mecachecker.components.HourlyRatePreference
+        <com.skepticalone.mecachecker.components.CurrencyPreference
             android:defaultValue="@integer/default_hourly_rate"
             android:icon="@drawable/ic_watch_black_24dp"
             android:key="@string/key_hourly_rate"
             android:title="@string/hourly_rate" />
     </PreferenceCategory>
-    o
+    <PreferenceCategory android:title="@string/cross_cover">
+        <com.skepticalone.mecachecker.components.CurrencyPreference
+            android:defaultValue="@integer/default_cross_cover_payment"
+            android:icon="@drawable/ic_cross_cover_black_24dp"
+            android:key="@string/key_cross_cover_payment"
+            android:title="@string/cross_cover_payment" />
+    </PreferenceCategory>
 </PreferenceScreen>

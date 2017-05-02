@@ -35,7 +35,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
 
     @Override
     int getLoaderId() {
-        return LOADER_ID_ROSTERED_DETAIL;
+        return ShiftListActivity.LOADER_ID_ROSTERED_DETAIL;
     }
 
     @Override

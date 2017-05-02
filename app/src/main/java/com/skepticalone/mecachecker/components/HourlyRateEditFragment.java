@@ -32,7 +32,7 @@ public class HourlyRateEditFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         @SuppressLint("InflateParams")
-        final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.hourly_rate_layout, null);
+        final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.currency_input, null);
         editText.setText(getString(R.string.decimal_format, getArguments().getInt(HOURLY_RATE) / 100f));
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.hourly_rate)
