@@ -25,23 +25,30 @@ public final class ShiftProvider extends ContentProvider {
             CROSS_COVER_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + ShiftContract.CrossCoverShifts.TABLE_NAME,
             CROSS_COVER_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + ShiftContract.CrossCoverShifts.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
-    public static final Uri rosteredShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build();
-    public static final Uri additionalShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.AdditionalShifts.TABLE_NAME).build();
-    public static final Uri crossCoverShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.CrossCoverShifts.TABLE_NAME).build();
+    public static final Uri rosteredShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.RosteredShifts.TABLE_NAME).build(),
+            additionalShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.AdditionalShifts.TABLE_NAME).build(),
+            crossCoverShiftsUri = baseContentUri.buildUpon().appendPath(ShiftContract.CrossCoverShifts.TABLE_NAME).build(),
+            additionalShiftsDistinctCommentsUri = additionalShiftsUri.buildUpon().appendPath("distinct").build(),
+            crossCoverShiftsDistinctCommentsUri = crossCoverShiftsUri.buildUpon().appendPath("distinct").build();
     private static final int ROSTERED_SHIFTS = 1;
     private static final int ROSTERED_SHIFT = 2;
     private static final int ADDITIONAL_SHIFTS = 3;
-    private static final int ADDITIONAL_SHIFT = 4;
-    private static final int CROSS_COVER_SHIFTS = 5;
-    private static final int CROSS_COVER_SHIFT = 6;
+    private static final int ADDITIONAL_SHIFTS_DISTINCT_COMMENTS = 4;
+    private static final int ADDITIONAL_SHIFT = 5;
+    private static final int CROSS_COVER_SHIFTS = 6;
+    private static final int CROSS_COVER_SHIFTS_DISTINCT_COMMENTS = 7;
+    private static final int CROSS_COVER_SHIFT = 8;
+
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME, ROSTERED_SHIFTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.RosteredShifts.TABLE_NAME + "/#", ROSTERED_SHIFT);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME, ADDITIONAL_SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME + "/distinct", ADDITIONAL_SHIFTS_DISTINCT_COMMENTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.AdditionalShifts.TABLE_NAME + "/#", ADDITIONAL_SHIFT);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.CrossCoverShifts.TABLE_NAME, CROSS_COVER_SHIFTS);
+        sUriMatcher.addURI(AUTHORITY, ShiftContract.CrossCoverShifts.TABLE_NAME + "/distinct", CROSS_COVER_SHIFTS_DISTINCT_COMMENTS);
         sUriMatcher.addURI(AUTHORITY, ShiftContract.CrossCoverShifts.TABLE_NAME + "/#", CROSS_COVER_SHIFT);
     }
 
@@ -83,6 +90,7 @@ public final class ShiftProvider extends ContentProvider {
                 selectionArgs = null;
                 // intentional fallthrough
             case ADDITIONAL_SHIFTS:
+            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
                 table = ShiftContract.AdditionalShifts.TABLE_NAME;
                 break;
             case CROSS_COVER_SHIFT:
@@ -90,19 +98,22 @@ public final class ShiftProvider extends ContentProvider {
                 selectionArgs = null;
                 // intentional fallthrough
             case CROSS_COVER_SHIFTS:
+            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
                 table = ShiftContract.CrossCoverShifts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         Cursor cursor = mDbHelper.getReadableDatabase().query(
+                match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS || match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS,
                 table,
                 projection,
                 selection,
                 selectionArgs,
+                match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS ? ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT : match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS ? ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT : null,
                 null,
-                null,
-                sortOrder
+                sortOrder,
+                null
         );
         //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -118,10 +129,12 @@ public final class ShiftProvider extends ContentProvider {
             case ROSTERED_SHIFT:
                 return ROSTERED_SHIFT_TYPE;
             case ADDITIONAL_SHIFTS:
+            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
                 return ADDITIONAL_SHIFTS_TYPE;
             case ADDITIONAL_SHIFT:
                 return ADDITIONAL_SHIFT_TYPE;
             case CROSS_COVER_SHIFTS:
+            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
                 return CROSS_COVER_SHIFTS_TYPE;
             case CROSS_COVER_SHIFT:
                 return CROSS_COVER_SHIFT_TYPE;

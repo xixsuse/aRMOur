@@ -114,10 +114,10 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
             public Cursor runQuery(CharSequence constraint) {
                 String[] projection = new String[]{ShiftContract.AdditionalShifts._ID, ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT};
                 boolean filtered = constraint != null && constraint.length() > 0;
-                String select = filtered ? (ShiftContract.AdditionalShifts._ID + " != ? AND " + ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT + " IS NOT NULL AND " + ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
-                String[] selectArgs = filtered ? new String[]{Long.toString(mShiftId), "%" + constraint.toString() + "%"} : null;
+                String select = filtered ? (ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
+                String[] selectArgs = filtered ? new String[]{"%" + constraint.toString() + "%"} : null;
                 String sort = ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT;
-                return getActivity().getContentResolver().query(ShiftProvider.additionalShiftsUri, projection, select, selectArgs, sort);
+                return getActivity().getContentResolver().query(ShiftProvider.additionalShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
             }
         });
         commentAdapter.setStringConversionColumn(1);
@@ -157,7 +157,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PickerFragment.createDatePicker(mShiftId, false, mShift, null).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    PickerFragment.createIntervalDatePicker(mShiftId, false, mShift, null).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             mStartTimeView.setText(DateTimeUtils.getTimeString(mShift, true, null));
@@ -248,7 +248,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
         if (hourlyRateString.length() > 0) {
             values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(hourlyRateString) * 100));
         }
-        String comment = mCommentView.getText().toString();
+        String comment = mCommentView.getText().toString().trim();
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
         return values;
     }

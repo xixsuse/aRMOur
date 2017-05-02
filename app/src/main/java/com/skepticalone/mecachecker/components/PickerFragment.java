@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.TimePicker;
 import com.skepticalone.mecachecker.data.ShiftContract;
 import com.skepticalone.mecachecker.data.ShiftProvider;
 import com.skepticalone.mecachecker.util.AppConstants;
+import com.skepticalone.mecachecker.util.ShiftCategory;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -31,18 +33,31 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     private static final String IS_DATE = "IS_DATE";
     private static final String IS_START = "IS_START";
     private static final String IS_ROSTERED = "IS_ROSTERED";
+    private static final String IS_ADDITIONAL = "IS_ADDITIONAL";
+    private static final String IS_CROSS_COVER = "IS_CROSS_COVER";
     private static final String IS_LOGGED = "IS_LOGGED";
     private ShiftOverlapListener mListener;
     private Interval oldShift;
     private Interval oldLoggedShift;
     private boolean isDate;
-    private boolean isRostered;
+    private ShiftCategory mShiftCategory;
 
-    public static PickerFragment createDatePicker(long shiftId, boolean isRostered, Interval shift, @Nullable Interval loggedShift) {
+    public static PickerFragment createCrossCoverDatePicker(long shiftId, DateTime date) {
         Bundle arguments = new Bundle();
         arguments.putBoolean(IS_DATE, true);
         arguments.putLong(SHIFT_ID, shiftId);
-        arguments.putBoolean(IS_ROSTERED, isRostered);
+        arguments.putBoolean(IS_CROSS_COVER, true);
+        arguments.putLong(SHIFT_START, date.getMillis());
+        PickerFragment fragment = new PickerFragment();
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
+    public static PickerFragment createIntervalDatePicker(long shiftId, boolean isRostered, Interval shift, @Nullable Interval loggedShift) {
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(IS_DATE, true);
+        arguments.putLong(SHIFT_ID, shiftId);
+        arguments.putBoolean(isRostered ? IS_ROSTERED : IS_ADDITIONAL, true);
         arguments.putLong(SHIFT_START, shift.getStartMillis());
         arguments.putLong(SHIFT_END, shift.getEndMillis());
         if (isRostered && loggedShift != null) {
@@ -76,10 +91,12 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (ShiftOverlapListener) context;
-        oldShift = new Interval(getArguments().getLong(SHIFT_START), getArguments().getLong(SHIFT_END));
         isDate = getArguments().getBoolean(IS_DATE);
-        isRostered = getArguments().getBoolean(IS_ROSTERED);
-        oldLoggedShift = (getArguments().containsKey(LOGGED_SHIFT_START) && getArguments().containsKey(LOGGED_SHIFT_END)) ? new Interval(getArguments().getLong(LOGGED_SHIFT_START), getArguments().getLong(LOGGED_SHIFT_END)) : null;
+        mShiftCategory = getArguments().getBoolean(IS_ROSTERED, false) ? ShiftCategory.ROSTERED : getArguments().getBoolean(IS_ADDITIONAL, false) ? ShiftCategory.ADDITIONAL : getArguments().getBoolean(IS_CROSS_COVER, false) ? ShiftCategory.CROSS_COVER : null;
+        if (mShiftCategory != ShiftCategory.CROSS_COVER) {
+            oldShift = new Interval(getArguments().getLong(SHIFT_START), getArguments().getLong(SHIFT_END));
+            oldLoggedShift = (getArguments().containsKey(LOGGED_SHIFT_START) && getArguments().containsKey(LOGGED_SHIFT_END)) ? new Interval(getArguments().getLong(LOGGED_SHIFT_START), getArguments().getLong(LOGGED_SHIFT_END)) : null;
+        }
     }
 
     @NonNull
@@ -87,7 +104,7 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         DateTime dateTime;
         if (isDate) {
-            dateTime = oldShift.getStart();
+            dateTime = mShiftCategory == ShiftCategory.CROSS_COVER ? new DateTime(getArguments().getLong(SHIFT_START)) : oldShift.getStart();
             return new DatePickerDialog(getActivity(), this,
                     dateTime.getYear(),
                     dateTime.getMonthOfYear() - 1,
@@ -113,19 +130,25 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         ContentValues values = new ContentValues();
         LocalDate thisDate = new LocalDate(year, month + 1, dayOfMonth);
-        DateTime start = oldShift.getStart().withDate(thisDate);
-        values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START : ShiftContract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
-        DateTime end = start.withTime(oldShift.getEnd().toLocalTime());
-        if (!end.isAfter(start)) {
-            end = end.plusDays(1);
+        if (mShiftCategory == ShiftCategory.CROSS_COVER) {
+            values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_DATE, thisDate.toDateTimeAtStartOfDay().getMillis());
+        } else {
+            boolean isRostered = mShiftCategory == ShiftCategory.ROSTERED;
+            DateTime start = oldShift.getStart().withDate(thisDate);
+            values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START : ShiftContract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
+            DateTime end = start.withTime(oldShift.getEnd().toLocalTime());
+            if (!end.isAfter(start)) {
+                end = end.plusDays(1);
+            }
+            values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END : ShiftContract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
+            if (isRostered) updateLoggedValues(values, start);
         }
-        values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END : ShiftContract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
-        if (isRostered) updateLoggedValues(values, start);
         save(values);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
+        boolean isRostered = mShiftCategory == ShiftCategory.ROSTERED;
         ContentValues values = new ContentValues();
         DateTime start, end;
         boolean isStart = getArguments().getBoolean(IS_START);
@@ -171,7 +194,21 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
 
     private void save(ContentValues values) {
         long shiftId = getArguments().getLong(SHIFT_ID);
-        if (getActivity().getContentResolver().update(isRostered ? ShiftProvider.rosteredShiftUri(shiftId) : ShiftProvider.additionalShiftUri(shiftId), values, null, null) == 0) {
+        Uri uri;
+        switch (mShiftCategory) {
+            case ROSTERED:
+                uri = ShiftProvider.rosteredShiftUri(shiftId);
+                break;
+            case ADDITIONAL:
+                uri = ShiftProvider.additionalShiftUri(shiftId);
+                break;
+            case CROSS_COVER:
+                uri = ShiftProvider.crossCoverShiftUri(shiftId);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        if (getActivity().getContentResolver().update(uri, values, null, null) == 0) {
             mListener.onShiftOverlap();
         }
     }

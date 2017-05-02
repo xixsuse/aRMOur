@@ -76,10 +76,10 @@ public class CrossCoverDetailFragment extends BaseFragment {
             public Cursor runQuery(CharSequence constraint) {
                 String[] projection = new String[]{ShiftContract.CrossCoverShifts._ID, ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT};
                 boolean filtered = constraint != null && constraint.length() > 0;
-                String select = filtered ? (ShiftContract.CrossCoverShifts._ID + " != ? AND " + ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT + " IS NOT NULL AND " + ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
-                String[] selectArgs = filtered ? new String[]{Long.toString(mShiftId), "%" + constraint.toString() + "%"} : null;
+                String select = filtered ? (ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
+                String[] selectArgs = filtered ? new String[]{"%" + constraint.toString() + "%"} : null;
                 String sort = ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT;
-                return getActivity().getContentResolver().query(ShiftProvider.crossCoverShiftsUri, projection, select, selectArgs, sort);
+                return getActivity().getContentResolver().query(ShiftProvider.crossCoverShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
             }
         });
         commentAdapter.setStringConversionColumn(1);
@@ -114,8 +114,14 @@ public class CrossCoverDetailFragment extends BaseFragment {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
-            DateTime date = new DateTime(cursor.getLong(COLUMN_INDEX_DATE));
+            final DateTime date = new DateTime(cursor.getLong(COLUMN_INDEX_DATE));
             mDateView.setText(DateTimeUtils.getFullDateString(date));
+            mDateView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PickerFragment.createCrossCoverDatePicker(mShiftId, date).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                }
+            });
             float crossCoverPayment = cursor.getInt(COLUMN_INDEX_RATE) / 100f;
             mCrossCoverPaymentView.setText(getString(R.string.decimal_format, crossCoverPayment));
             mCommentView.setText(cursor.isNull(COLUMN_INDEX_COMMENT) ? "" : cursor.getString(COLUMN_INDEX_COMMENT));
@@ -170,7 +176,7 @@ public class CrossCoverDetailFragment extends BaseFragment {
         if (crossCoverPaymentString.length() > 0) {
             values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(crossCoverPaymentString) * 100));
         }
-        String comment = mCommentView.getText().toString();
+        String comment = mCommentView.getText().toString().trim();
         values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
         return values;
     }

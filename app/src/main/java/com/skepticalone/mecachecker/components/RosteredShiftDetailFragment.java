@@ -63,7 +63,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
             mDateView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PickerFragment.createDatePicker(mShiftId, true, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
+                    PickerFragment.createIntervalDatePicker(mShiftId, true, rosteredShift, loggedShift).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
             mStartTimeView.setText(DateTimeUtils.getTimeString(rosteredShift, true, null));
