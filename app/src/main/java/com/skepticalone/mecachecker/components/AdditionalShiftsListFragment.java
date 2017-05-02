@@ -120,7 +120,7 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), ShiftDetailActivity.class);
                     intent.putExtra(ShiftDetailActivity.SHIFT_ID, holder.getItemId());
-                    intent.putExtra(ShiftDetailActivity.IS_ROSTERED, false);
+                    intent.putExtra(ShiftDetailActivity.IS_ADDITIONAL, true);
                     startActivity(intent);
                 }
             });

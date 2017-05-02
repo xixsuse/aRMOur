@@ -14,6 +14,8 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
     static final String PICKER_FRAGMENT = "PICKER_FRAGMENT";
     static final String HOURLY_RATE_FRAGMENT = "HOURLY_RATE_FRAGMENT";
     static final String IS_ROSTERED = "IS_ROSTERED";
+    static final String IS_ADDITIONAL = "IS_ADDITIONAL";
+    static final String IS_CROSS_COVER = "IS_CROSS_COVER";
     private View mCoordinatorView;
 
     @Override
@@ -25,7 +27,10 @@ public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverl
             long shiftId = getIntent().getLongExtra(SHIFT_ID, NO_ID);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.coordinator_layout, getIntent().getBooleanExtra(IS_ROSTERED, false) ? RosteredShiftDetailFragment.create(shiftId) : AdditionalShiftDetailFragment.create(shiftId))
+                    .add(R.id.coordinator_layout, getIntent().getBooleanExtra(IS_ROSTERED, false) ? RosteredShiftDetailFragment.create(shiftId) :
+                            getIntent().getBooleanExtra(IS_ADDITIONAL, false) ? AdditionalShiftDetailFragment.create(shiftId) :
+                                    getIntent().getBooleanExtra(IS_CROSS_COVER, false) ? CrossCoverDetailFragment.create(shiftId) : null
+                    )
                     .commit();
         }
     }

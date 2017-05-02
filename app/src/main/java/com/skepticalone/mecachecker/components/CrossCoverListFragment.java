@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -171,6 +172,15 @@ public class CrossCoverListFragment extends BaseFragment {
                 mPrimaryText = (TextView) itemView.findViewById(R.id.primary_text);
                 mSecondaryText = (TextView) itemView.findViewById(R.id.secondary_text);
                 mIcon = (ImageView) itemView.findViewById(R.id.icon);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), ShiftDetailActivity.class);
+                        intent.putExtra(ShiftDetailActivity.SHIFT_ID, getItemId());
+                        intent.putExtra(ShiftDetailActivity.IS_CROSS_COVER, true);
+                        startActivity(intent);
+                    }
+                });
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
