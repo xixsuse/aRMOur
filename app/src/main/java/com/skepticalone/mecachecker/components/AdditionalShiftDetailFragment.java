@@ -100,10 +100,13 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    float total = mShift.toDurationMillis() * Math.round(Float.parseFloat(s.toString())) / DateTimeConstants.MILLIS_PER_HOUR;
-                    mTotalView.setText(getString(R.string.currency_format, total));
+                float total;
+                try {
+                    total = (float) Math.round(Float.parseFloat(s.toString()) * 100) * mShift.toDurationMillis() / DateTimeConstants.MILLIS_PER_HOUR / 100;
+                } catch (NumberFormatException e) {
+                    return;
                 }
+                mTotalView.setText(getString(R.string.currency_format, total));
             }
         });
         mTotalView = (TextView) view.findViewById(R.id.total_text);
@@ -244,9 +247,10 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
-        String hourlyRateString = mHourlyRateView.getText().toString();
-        if (hourlyRateString.length() > 0) {
-            values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(hourlyRateString) * 100));
+        try {
+            values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mHourlyRateView.getText().toString()) * 100));
+        } catch (NumberFormatException e) {
+            // do nothing
         }
         String comment = mCommentView.getText().toString().trim();
         values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);

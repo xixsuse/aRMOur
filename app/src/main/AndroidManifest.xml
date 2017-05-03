@@ -11,7 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity
+            android:name=".components.summary.SummaryActivity"
+            android:label="@string/summary"
+            android:parentActivityName=".components.ShiftListActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".components.ShiftListActivity"
             android:label="@string/title_shift_list"
@@ -21,7 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
@@ -32,7 +35,6 @@
             android:label="@string/settings"
             android:parentActivityName=".components.ShiftListActivity"
             android:theme="@style/AppTheme" />
-
         <provider
             android:name=".data.ShiftProvider"
             android:authorities="com.skepticalone.mecachecker.provider"

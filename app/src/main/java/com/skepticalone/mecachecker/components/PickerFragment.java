@@ -73,7 +73,7 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
         Bundle arguments = new Bundle();
         arguments.putBoolean(IS_DATE, false);
         arguments.putLong(SHIFT_ID, shiftId);
-        arguments.putBoolean(IS_ROSTERED, isRostered);
+        arguments.putBoolean(isRostered ? IS_ROSTERED : IS_ADDITIONAL, true);
         arguments.putLong(SHIFT_START, rosteredShift.getStartMillis());
         arguments.putLong(SHIFT_END, rosteredShift.getEndMillis());
         if (loggedShift != null) {

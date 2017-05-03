@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.components.summary.SummaryActivity;
 
 public class ShiftListActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -70,7 +71,9 @@ public class ShiftListActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.rostered) {
+        if (id == R.id.summary) {
+            startActivity(new Intent(this, SummaryActivity.class));
+        } else if (id == R.id.rostered) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
                     .commit();

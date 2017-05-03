@@ -172,9 +172,10 @@ public class CrossCoverDetailFragment extends BaseFragment {
 
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
-        String crossCoverPaymentString = mCrossCoverPaymentView.getText().toString();
-        if (crossCoverPaymentString.length() > 0) {
-            values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(crossCoverPaymentString) * 100));
+        try {
+            values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mCrossCoverPaymentView.getText().toString()) * 100));
+        } catch (NumberFormatException e) {
+            // do nothing
         }
         String comment = mCommentView.getText().toString().trim();
         values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
