@@ -11,6 +11,9 @@
     <string name="add_long_day">Add long day</string>
     <string name="add_night_shift">Add night shift</string>
     <string name="add_cross_cover">Add cross cover</string>
+    <string name="shifts">Shifts</string>
+    <string name="hours">Hours</string>
+    <string name="money">Money</string>
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
