@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="claimed">#4caf50</color>-->
-    <color name="claimed">#2196f3</color>
     <color name="unclaimed">#ffa000</color>
+    <color name="claimed">#2196f3</color>
+    <color name="paid">#4caf50</color>
 </resources>

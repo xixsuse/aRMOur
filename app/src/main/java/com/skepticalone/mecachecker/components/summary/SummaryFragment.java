@@ -42,6 +42,8 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
             shiftsUnclaimed, shiftsClaimed, shiftsPaid, shiftsTotal,
             hoursUnclaimed, hoursClaimed, hoursPaid, hoursTotal,
             moneyUnclaimed, moneyClaimed, moneyPaid, moneyTotal;
+    private PieView
+            shiftsPie, hoursPie, moneyPie;
     private ProgressBar
             shiftsProgress, hoursProgress, moneyProgress;
 
@@ -55,6 +57,7 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
         shiftsClaimed = (TextView) shiftsLayout.findViewById(R.id.claimed);
         shiftsPaid = (TextView) shiftsLayout.findViewById(R.id.paid);
         shiftsTotal = (TextView) shiftsLayout.findViewById(R.id.total);
+        shiftsPie = (PieView) shiftsLayout.findViewById(R.id.pie);
         shiftsProgress = (ProgressBar) shiftsLayout.findViewById(R.id.progress);
         View hoursLayout = layout.findViewById(R.id.hours);
         ((TextView) hoursLayout.findViewById(R.id.title)).setText(R.string.hours);
@@ -62,6 +65,7 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
         hoursClaimed = (TextView) hoursLayout.findViewById(R.id.claimed);
         hoursPaid = (TextView) hoursLayout.findViewById(R.id.paid);
         hoursTotal = (TextView) hoursLayout.findViewById(R.id.total);
+        hoursPie = (PieView) hoursLayout.findViewById(R.id.pie);
         hoursProgress = (ProgressBar) hoursLayout.findViewById(R.id.progress);
         View moneyLayout = layout.findViewById(R.id.money);
         ((TextView) moneyLayout.findViewById(R.id.title)).setText(R.string.money);
@@ -69,6 +73,7 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
         moneyClaimed = (TextView) moneyLayout.findViewById(R.id.claimed);
         moneyPaid = (TextView) moneyLayout.findViewById(R.id.paid);
         moneyTotal = (TextView) moneyLayout.findViewById(R.id.total);
+        moneyPie = (PieView) moneyLayout.findViewById(R.id.pie);
         moneyProgress = (ProgressBar) moneyLayout.findViewById(R.id.progress);
         return layout;
     }
@@ -95,58 +100,70 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        int
-                shiftsUnclaimedCount = 0, shiftsClaimedCount = 0, shiftsPaidCount = 0,
-                moneyUnclaimedCount = 0, moneyClaimedCount = 0, moneyPaidCount = 0;
-        Duration
-                durationUnclaimed = Duration.ZERO, durationClaimed = Duration.ZERO, durationPaid = Duration.ZERO;
+        switch (loader.getId()) {
+            case SummaryActivity.LOADER_ID_ADDITIONAL:
+                int
+                        shiftsUnclaimedCount = 0, shiftsClaimedCount = 0, shiftsPaidCount = 0,
+                        moneyUnclaimedCount = 0, moneyClaimedCount = 0, moneyPaidCount = 0;
+                Duration
+                        durationUnclaimed = Duration.ZERO, durationClaimed = Duration.ZERO, durationPaid = Duration.ZERO;
 
-        while (cursor.moveToNext()) {
-            Duration durationCurrent = new Duration(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-            int moneyCurrent = Math.round(cursor.getInt(COLUMN_INDEX_RATE) * (float) durationCurrent.getMillis() / DateTimeConstants.MILLIS_PER_HOUR);
-            if (!cursor.isNull(COLUMN_INDEX_PAID)) {
-                shiftsPaidCount++;
-                durationPaid = durationPaid.plus(durationCurrent);
-                moneyPaidCount += moneyCurrent;
-            } else if (!cursor.isNull(COLUMN_INDEX_CLAIMED)) {
-                shiftsClaimedCount++;
-                durationClaimed = durationClaimed.plus(durationCurrent);
-                moneyClaimedCount += moneyCurrent;
-            } else {
-                shiftsUnclaimedCount++;
-                durationUnclaimed = durationUnclaimed.plus(durationCurrent);
-                moneyUnclaimedCount += moneyCurrent;
-            }
-        }
+                if (cursor.moveToFirst()) {
+                    do {
+                        Duration durationCurrent = new Duration(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
+                        int moneyCurrent = Math.round(cursor.getInt(COLUMN_INDEX_RATE) * (float) durationCurrent.getMillis() / DateTimeConstants.MILLIS_PER_HOUR);
+                        if (!cursor.isNull(COLUMN_INDEX_PAID)) {
+                            shiftsPaidCount++;
+                            durationPaid = durationPaid.plus(durationCurrent);
+                            moneyPaidCount += moneyCurrent;
+                        } else if (!cursor.isNull(COLUMN_INDEX_CLAIMED)) {
+                            shiftsClaimedCount++;
+                            durationClaimed = durationClaimed.plus(durationCurrent);
+                            moneyClaimedCount += moneyCurrent;
+                        } else {
+                            shiftsUnclaimedCount++;
+                            durationUnclaimed = durationUnclaimed.plus(durationCurrent);
+                            moneyUnclaimedCount += moneyCurrent;
+                        }
+                    } while (cursor.moveToNext());
+                }
 
-        int shiftsTotalCount = shiftsUnclaimedCount + shiftsClaimedCount + shiftsPaidCount;
-        shiftsTotal.setText(String.format(Locale.US, "%d", shiftsTotalCount));
-        if (shiftsTotalCount != 0) {
-            shiftsProgress.setMax(shiftsTotalCount);
-            shiftsProgress.setProgress(shiftsPaidCount);
-            shiftsUnclaimed.setText(String.format(Locale.US, "Unclaimed: %d (%d%%)", shiftsUnclaimedCount, 100 * shiftsUnclaimedCount / shiftsTotalCount));
-            shiftsClaimed.setText(String.format(Locale.US, "Claimed: %d (%d%%)", shiftsClaimedCount, 100 * shiftsClaimedCount / shiftsTotalCount));
-            shiftsPaid.setText(String.format(Locale.US, "Paid: %d (%d%%)", shiftsPaidCount, 100 * shiftsPaidCount / shiftsTotalCount));
-        }
+                int shiftsTotalCount = shiftsUnclaimedCount + shiftsClaimedCount + shiftsPaidCount;
+                shiftsTotal.setText(String.format(Locale.US, "%d", shiftsTotalCount));
+                if (shiftsTotalCount != 0) {
+                    shiftsProgress.setMax(shiftsTotalCount);
+                    shiftsProgress.setProgress(shiftsPaidCount);
+                    shiftsUnclaimed.setText(String.format(Locale.US, "Unclaimed: %d (%d%%)", shiftsUnclaimedCount, 100 * shiftsUnclaimedCount / shiftsTotalCount));
+                    shiftsClaimed.setText(String.format(Locale.US, "Claimed: %d (%d%%)", shiftsClaimedCount, 100 * shiftsClaimedCount / shiftsTotalCount));
+                    shiftsPaid.setText(String.format(Locale.US, "Paid: %d (%d%%)", shiftsPaidCount, 100 * shiftsPaidCount / shiftsTotalCount));
+                    shiftsPie.set(shiftsUnclaimedCount, shiftsClaimedCount, shiftsPaidCount);
+                }
 
-        Duration durationTotal = durationUnclaimed.plus(durationClaimed).plus(durationPaid);
-        hoursTotal.setText(String.format(Locale.US, "%.1f", (float) durationTotal.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR));
-        if (!durationTotal.isEqual(Duration.ZERO)) {
-            hoursProgress.setMax(100);
-            hoursProgress.setProgress((int) (100 * durationPaid.getMillis() / durationTotal.getMillis()));
-            hoursUnclaimed.setText(String.format(Locale.US, "Unclaimed: %.1f (%d%%)", (float) durationUnclaimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationUnclaimed.getMillis() / durationTotal.getMillis()));
-            hoursClaimed.setText(String.format(Locale.US, "Claimed: %.1f (%d%%)", (float) durationClaimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationClaimed.getMillis() / durationTotal.getMillis()));
-            hoursPaid.setText(String.format(Locale.US, "Paid: %.1f (%d%%)", (float) durationPaid.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationPaid.getMillis() / durationTotal.getMillis()));
-        }
+                Duration durationTotal = durationUnclaimed.plus(durationClaimed).plus(durationPaid);
+                hoursTotal.setText(String.format(Locale.US, "%.1f", (float) durationTotal.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR));
+                if (!durationTotal.isEqual(Duration.ZERO)) {
+                    hoursProgress.setMax(100);
+                    hoursProgress.setProgress((int) (100 * durationPaid.getMillis() / durationTotal.getMillis()));
+                    hoursUnclaimed.setText(String.format(Locale.US, "Unclaimed: %.1f (%d%%)", (float) durationUnclaimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationUnclaimed.getMillis() / durationTotal.getMillis()));
+                    hoursClaimed.setText(String.format(Locale.US, "Claimed: %.1f (%d%%)", (float) durationClaimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationClaimed.getMillis() / durationTotal.getMillis()));
+                    hoursPaid.setText(String.format(Locale.US, "Paid: %.1f (%d%%)", (float) durationPaid.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * durationPaid.getMillis() / durationTotal.getMillis()));
+                    hoursPie.set(durationUnclaimed.getMillis(), durationClaimed.getMillis(), durationPaid.getMillis());
+                }
 
-        int moneyTotalCount = moneyUnclaimedCount + moneyClaimedCount + moneyPaidCount;
-        moneyTotal.setText(String.format(Locale.US, "$%.2f", moneyTotalCount / 100f));
-        if (moneyTotalCount != 0) {
-            moneyProgress.setMax(moneyTotalCount);
-            moneyProgress.setProgress(moneyPaidCount);
-            moneyUnclaimed.setText(String.format(Locale.US, "Unclaimed: $%.2f (%d%%)", moneyUnclaimedCount / 100f, 100 * moneyUnclaimedCount / moneyTotalCount));
-            moneyClaimed.setText(String.format(Locale.US, "Claimed: $%.2f (%d%%)", moneyClaimedCount / 100f, 100 * moneyClaimedCount / moneyTotalCount));
-            moneyPaid.setText(String.format(Locale.US, "Paid: $%.2f (%d%%)", moneyPaidCount / 100f, 100 * moneyPaidCount / moneyTotalCount));
+                int moneyTotalCount = moneyUnclaimedCount + moneyClaimedCount + moneyPaidCount;
+                moneyTotal.setText(String.format(Locale.US, "$%.2f", moneyTotalCount / 100f));
+                if (moneyTotalCount != 0) {
+                    moneyProgress.setMax(moneyTotalCount);
+                    moneyProgress.setProgress(moneyPaidCount);
+                    moneyUnclaimed.setText(String.format(Locale.US, "Unclaimed: $%.2f (%d%%)", moneyUnclaimedCount / 100f, 100 * moneyUnclaimedCount / moneyTotalCount));
+                    moneyClaimed.setText(String.format(Locale.US, "Claimed: $%.2f (%d%%)", moneyClaimedCount / 100f, 100 * moneyClaimedCount / moneyTotalCount));
+                    moneyPaid.setText(String.format(Locale.US, "Paid: $%.2f (%d%%)", moneyPaidCount / 100f, 100 * moneyPaidCount / moneyTotalCount));
+                    moneyPie.set(moneyUnclaimedCount, moneyClaimedCount, moneyPaidCount);
+                }
+
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
 
     }
