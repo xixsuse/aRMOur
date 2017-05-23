@@ -9,6 +9,9 @@ import android.widget.EditText;
 
 import com.skepticalone.mecachecker.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 class CurrencyPreference extends DialogPreference {
 
     private static final int DEFAULT_VALUE = 0;
@@ -39,21 +42,25 @@ class CurrencyPreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return getContext().getString(R.string.currency_format, mValue / 100f);
+        return getContext().getString(R.string.currency_format, BigDecimal.valueOf(mValue, 2));
     }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mEditText = (EditText) view;
-        mEditText.setText(getContext().getString(R.string.decimal_format, mValue / 100f));
+        mEditText.setText(BigDecimal.valueOf(mValue, 2).toPlainString());
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
-            mValue = Math.round(Float.parseFloat(mEditText.getText().toString()) * 100);
-            persistInt(mValue);
+            try {
+                mValue = (new BigDecimal(mEditText.getText().toString())).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue();
+                persistInt(mValue);
+            } catch (NumberFormatException e) {
+                // do nothing
+            }
         }
     }
 

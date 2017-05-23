@@ -22,7 +22,7 @@ public class PieView extends View {
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mRectF = new RectF();
     private Rect mRect = new Rect();
-    private float unclaimed, claimed, paid;
+    private long unclaimed, claimed, paid;
 
     public PieView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -34,9 +34,9 @@ public class PieView extends View {
                 R.styleable.PieView,
                 0, 0);
         try {
-            unclaimed = a.getFloat(R.styleable.PieView_unclaimed, 0);
-            claimed = a.getFloat(R.styleable.PieView_claimed, 0);
-            paid = a.getFloat(R.styleable.PieView_paid, 0);
+            unclaimed = a.getInteger(R.styleable.PieView_unclaimed, 0);
+            claimed = a.getInteger(R.styleable.PieView_claimed, 0);
+            paid = a.getInteger(R.styleable.PieView_paid, 0);
         } finally {
             a.recycle();
         }
@@ -47,8 +47,8 @@ public class PieView extends View {
         super.onDraw(canvas);
         if (unclaimed != 0 || claimed != 0 || paid != 0) {
             mRectF.set(0, 0, canvas.getWidth(), canvas.getHeight());
-            float factor = 360 / (unclaimed + claimed + paid);
-            float startAngle = -90;
+            float factor = 360f / (unclaimed + claimed + paid);
+            float startAngle = -90f;
             float sweepAngle;
             if (unclaimed != 0) {
                 mPaint.setColor(unclaimedColor);
@@ -70,7 +70,7 @@ public class PieView extends View {
         }
     }
 
-    public void set(float unclaimed, float claimed, float paid) {
+    public void set(long unclaimed, long claimed, long paid) {
         this.unclaimed = unclaimed;
         this.claimed = claimed;
         this.paid = paid;

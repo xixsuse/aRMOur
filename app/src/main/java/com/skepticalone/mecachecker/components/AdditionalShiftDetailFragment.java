@@ -28,6 +28,9 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
     private static final String[] PROJECTION = {
@@ -100,13 +103,13 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                float total;
                 try {
-                    total = (float) Math.round(Float.parseFloat(s.toString()) * 100) * mShift.toDurationMillis() / DateTimeConstants.MILLIS_PER_HOUR / 100;
+                    BigDecimal rate = (new BigDecimal(s.toString())).setScale(2, RoundingMode.HALF_UP);
+                    BigDecimal total = rate.multiply(BigDecimal.valueOf(mShift.toDurationMillis())).divide(BigDecimal.valueOf(DateTimeConstants.MILLIS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
+                    mTotalView.setText(getString(R.string.currency_format, total));
                 } catch (NumberFormatException e) {
-                    return;
+                    mTotalView.setText(R.string.not_applicable);
                 }
-                mTotalView.setText(getString(R.string.currency_format, total));
             }
         });
         mTotalView = (TextView) view.findViewById(R.id.total_text);
@@ -204,8 +207,8 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
             mShiftTypeView.setText(shiftTypeStringId);
             mShiftIconView.setImageResource(shiftTypeDrawableId);
             mDurationView.setText(DateTimeUtils.getPeriodString(shift.toPeriod()));
-            float hourlyRate = cursor.getInt(COLUMN_INDEX_RATE) / 100f;
-            mHourlyRateView.setText(getString(R.string.decimal_format, hourlyRate));
+            BigDecimal hourlyRate = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_RATE), 2);
+            mHourlyRateView.setText(hourlyRate.toPlainString());
             mCommentView.setText(cursor.isNull(COLUMN_INDEX_COMMENT) ? "" : cursor.getString(COLUMN_INDEX_COMMENT));
             mClaimedSwitch.setVisibility(View.VISIBLE);
             if (cursor.isNull(COLUMN_INDEX_CLAIMED)) {
@@ -256,7 +259,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
         try {
-            values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mHourlyRateView.getText().toString()) * 100));
+            values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, (new BigDecimal(mHourlyRateView.getText().toString())).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue());
         } catch (NumberFormatException e) {
             // do nothing
         }

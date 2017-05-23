@@ -24,6 +24,9 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class CrossCoverDetailFragment extends BaseFragment {
 
     private static final String[] PROJECTION = {
@@ -37,7 +40,7 @@ public class CrossCoverDetailFragment extends BaseFragment {
     private static final int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_DATE = 1,
-            COLUMN_INDEX_RATE = 2,
+            COLUMN_INDEX_PAYMENT = 2,
             COLUMN_INDEX_CLAIMED = 3,
             COLUMN_INDEX_PAID = 4,
             COLUMN_INDEX_COMMENT = 5;
@@ -131,8 +134,8 @@ public class CrossCoverDetailFragment extends BaseFragment {
                     PickerFragment.createCrossCoverDatePicker(mShiftId, date).show(getFragmentManager(), ShiftDetailActivity.PICKER_FRAGMENT);
                 }
             });
-            float crossCoverPayment = cursor.getInt(COLUMN_INDEX_RATE) / 100f;
-            mCrossCoverPaymentView.setText(getString(R.string.decimal_format, crossCoverPayment));
+            BigDecimal crossCoverPayment = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_PAYMENT), 2);
+            mCrossCoverPaymentView.setText(crossCoverPayment.toPlainString());
             mCommentView.setText(cursor.isNull(COLUMN_INDEX_COMMENT) ? "" : cursor.getString(COLUMN_INDEX_COMMENT));
             mClaimedSwitch.setVisibility(View.VISIBLE);
             if (cursor.isNull(COLUMN_INDEX_CLAIMED)) {
@@ -182,7 +185,8 @@ public class CrossCoverDetailFragment extends BaseFragment {
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
         try {
-            values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, Math.round(Float.parseFloat(mCrossCoverPaymentView.getText().toString()) * 100));
+            BigDecimal payment = (new BigDecimal(mCrossCoverPaymentView.getText().toString())).setScale(2, RoundingMode.HALF_UP);
+            values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, payment.unscaledValue().intValue());
         } catch (NumberFormatException e) {
             // do nothing
         }

@@ -23,6 +23,9 @@ import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 public class ExpenseDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -110,8 +113,8 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
             mTitleView.setText(cursor.getString(COLUMN_INDEX_TITLE));
-            mPaymentView.setText(getString(R.string.decimal_format, cursor.getInt(COLUMN_INDEX_PAYMENT) / 100f));
-
+            BigDecimal payment = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_PAYMENT), 2);
+            mPaymentView.setText(payment.toPlainString());
             mClaimedLayout.setVisibility(View.VISIBLE);
             mClaimedSwitch.setVisibility(View.VISIBLE);
             if (cursor.isNull(COLUMN_INDEX_CLAIMED)) {
@@ -163,13 +166,12 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
         if (title.length() > 0) {
             values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
         }
-        int payment;
         try {
-            payment = Math.round(Float.parseFloat(mPaymentView.getText().toString()) * 100);
+            BigDecimal payment = (new BigDecimal(mPaymentView.getText().toString())).setScale(2, RoundingMode.HALF_UP);
+            values.put(Contract.Expenses.COLUMN_NAME_PAYMENT, payment.unscaledValue().intValue());
         } catch (NumberFormatException e) {
-            payment = 0;
+            // do nothing
         }
-        values.put(Contract.Expenses.COLUMN_NAME_PAYMENT, payment);
         return values;
     }
 
@@ -179,6 +181,9 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
         ContentValues values = getUpdatedValues();
         if (!values.containsKey(Contract.Expenses.COLUMN_NAME_TITLE)) return;
         if (isNewExpense()) {
+            if (!values.containsKey(Contract.Expenses.COLUMN_NAME_PAYMENT)) {
+                values.put(Contract.Expenses.COLUMN_NAME_PAYMENT, 0);
+            }
             Uri uri = getActivity().getContentResolver().insert(Provider.expensesUri, values);
             if (uri != null) {
                 mExpenseId = Long.valueOf(uri.getLastPathSegment());

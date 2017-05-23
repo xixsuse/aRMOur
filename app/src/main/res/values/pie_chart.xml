@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PieView">
-        <attr name="unclaimed" format="float" />
-        <attr name="claimed" format="float" />
-        <attr name="paid" format="float" />
+        <attr name="unclaimed" format="integer" />
+        <attr name="claimed" format="integer" />
+        <attr name="paid" format="integer" />
     </declare-styleable>
 </resources>

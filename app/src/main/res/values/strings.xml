@@ -24,7 +24,6 @@
     <string name="additional_shift">Additional shift</string>
     <string name="cross_cover">Cross cover</string>
     <string name="expenses">Expenses</string>
-    <string name="decimal_format">%.2f</string>
     <string name="currency_format">$%.2f</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="title">Title</string>

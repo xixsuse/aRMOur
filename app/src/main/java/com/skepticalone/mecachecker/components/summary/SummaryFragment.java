@@ -20,6 +20,7 @@ import com.skepticalone.mecachecker.data.Provider;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public class SummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -103,27 +104,30 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
         switch (loader.getId()) {
             case SummaryActivity.LOADER_ID_ADDITIONAL:
                 int
-                        shiftsUnclaimedCount = 0, shiftsClaimedCount = 0, shiftsPaidCount = 0,
-                        moneyUnclaimedCount = 0, moneyClaimedCount = 0, moneyPaidCount = 0;
+                        shiftsUnclaimedCount = 0, shiftsClaimedCount = 0, shiftsPaidCount = 0;
+                BigDecimal
+                        moneyUnclaimedCount = BigDecimal.ZERO, moneyClaimedCount = BigDecimal.ZERO, moneyPaidCount = BigDecimal.ZERO;
                 Duration
                         durationUnclaimed = Duration.ZERO, durationClaimed = Duration.ZERO, durationPaid = Duration.ZERO;
 
                 if (cursor.moveToFirst()) {
                     do {
                         Duration durationCurrent = new Duration(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-                        int moneyCurrent = Math.round(cursor.getInt(COLUMN_INDEX_RATE) * (float) durationCurrent.getMillis() / DateTimeConstants.MILLIS_PER_HOUR);
+                        BigDecimal moneyCurrent = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_RATE), 2)
+                                .multiply(BigDecimal.valueOf(durationCurrent.getMillis()))
+                                .divide(BigDecimal.valueOf(DateTimeConstants.MILLIS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
                         if (!cursor.isNull(COLUMN_INDEX_PAID)) {
                             shiftsPaidCount++;
                             durationPaid = durationPaid.plus(durationCurrent);
-                            moneyPaidCount += moneyCurrent;
+                            moneyPaidCount = moneyPaidCount.add(moneyCurrent);
                         } else if (!cursor.isNull(COLUMN_INDEX_CLAIMED)) {
                             shiftsClaimedCount++;
                             durationClaimed = durationClaimed.plus(durationCurrent);
-                            moneyClaimedCount += moneyCurrent;
+                            moneyClaimedCount = moneyClaimedCount.add(moneyCurrent);
                         } else {
                             shiftsUnclaimedCount++;
                             durationUnclaimed = durationUnclaimed.plus(durationCurrent);
-                            moneyUnclaimedCount += moneyCurrent;
+                            moneyUnclaimedCount = moneyUnclaimedCount.add(moneyCurrent);
                         }
                     } while (cursor.moveToNext());
                 }
@@ -150,15 +154,15 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
                     hoursPie.set(durationUnclaimed.getMillis(), durationClaimed.getMillis(), durationPaid.getMillis());
                 }
 
-                int moneyTotalCount = moneyUnclaimedCount + moneyClaimedCount + moneyPaidCount;
-                moneyTotal.setText(String.format(Locale.US, "$%.2f", moneyTotalCount / 100f));
-                if (moneyTotalCount != 0) {
-                    moneyProgress.setMax(moneyTotalCount);
-                    moneyProgress.setProgress(moneyPaidCount);
-                    moneyUnclaimed.setText(String.format(Locale.US, "Unclaimed: $%.2f (%d%%)", moneyUnclaimedCount / 100f, 100 * moneyUnclaimedCount / moneyTotalCount));
-                    moneyClaimed.setText(String.format(Locale.US, "Claimed: $%.2f (%d%%)", moneyClaimedCount / 100f, 100 * moneyClaimedCount / moneyTotalCount));
-                    moneyPaid.setText(String.format(Locale.US, "Paid: $%.2f (%d%%)", moneyPaidCount / 100f, 100 * moneyPaidCount / moneyTotalCount));
-                    moneyPie.set(moneyUnclaimedCount, moneyClaimedCount, moneyPaidCount);
+                BigDecimal moneyTotalCount = moneyUnclaimedCount.add(moneyClaimedCount).add(moneyPaidCount);
+                moneyTotal.setText(String.format(Locale.US, "$%.2f", moneyTotalCount));
+                if (!moneyTotalCount.equals(BigDecimal.ZERO)) {
+                    moneyProgress.setMax(moneyTotalCount.unscaledValue().intValue());
+                    moneyProgress.setProgress(moneyPaidCount.unscaledValue().intValue());
+                    moneyUnclaimed.setText(String.format(Locale.US, "Unclaimed: $%.2f (%d%%)", moneyUnclaimedCount, moneyUnclaimedCount.scaleByPowerOfTen(2).divide(moneyTotalCount, 0, BigDecimal.ROUND_HALF_UP).intValue()));
+                    moneyClaimed.setText(String.format(Locale.US, "Claimed: $%.2f (%d%%)", moneyClaimedCount, moneyClaimedCount.scaleByPowerOfTen(2).divide(moneyTotalCount, 0, BigDecimal.ROUND_HALF_UP).intValue()));
+                    moneyPaid.setText(String.format(Locale.US, "Paid: $%.2f (%d%%)", moneyPaidCount, moneyPaidCount.scaleByPowerOfTen(2).divide(moneyTotalCount, 0, BigDecimal.ROUND_HALF_UP).intValue()));
+                    moneyPie.set(moneyUnclaimedCount.longValue(), moneyClaimedCount.longValue(), moneyPaidCount.longValue());
                 }
 
                 break;

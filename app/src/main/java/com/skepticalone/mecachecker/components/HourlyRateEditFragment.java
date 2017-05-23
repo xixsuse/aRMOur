@@ -14,6 +14,9 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class HourlyRateEditFragment extends DialogFragment {
 
     private static final String SHIFT_ID = "SHIFT_ID";
@@ -33,17 +36,21 @@ public class HourlyRateEditFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         @SuppressLint("InflateParams")
         final EditText editText = (EditText) getActivity().getLayoutInflater().inflate(R.layout.currency_input, null);
-        editText.setText(getString(R.string.decimal_format, getArguments().getInt(HOURLY_RATE) / 100f));
+        editText.setText(BigDecimal.valueOf(getArguments().getInt(HOURLY_RATE), 2).toPlainString());
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.hourly_rate)
                 .setView(editText)
                 .setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int rate = Math.round(Float.parseFloat(editText.getText().toString()) * 100);
-                        ContentValues values = new ContentValues();
-                        values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, rate);
-                        getActivity().getContentResolver().update(Provider.additionalShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
+                        try {
+                            BigDecimal rate = (new BigDecimal(editText.getText().toString())).setScale(2, RoundingMode.HALF_UP);
+                            ContentValues values = new ContentValues();
+                            values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, rate.unscaledValue().intValue());
+                            getActivity().getContentResolver().update(Provider.additionalShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
+                        } catch (NumberFormatException e) {
+                            // do nothing
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
