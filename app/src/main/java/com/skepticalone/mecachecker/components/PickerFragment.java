@@ -13,8 +13,8 @@ import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.ShiftCategory;
 
@@ -131,16 +131,16 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
         ContentValues values = new ContentValues();
         LocalDate thisDate = new LocalDate(year, month + 1, dayOfMonth);
         if (mShiftCategory == ShiftCategory.CROSS_COVER) {
-            values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_DATE, thisDate.toDateTimeAtStartOfDay().getMillis());
+            values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, thisDate.toDateTimeAtStartOfDay().getMillis());
         } else {
             boolean isRostered = mShiftCategory == ShiftCategory.ROSTERED;
             DateTime start = oldShift.getStart().withDate(thisDate);
-            values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START : ShiftContract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
+            values.put(isRostered ? Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START : Contract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
             DateTime end = start.withTime(oldShift.getEnd().toLocalTime());
             if (!end.isAfter(start)) {
                 end = end.plusDays(1);
             }
-            values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END : ShiftContract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
+            values.put(isRostered ? Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END : Contract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
             if (isRostered) updateLoggedValues(values, start);
         }
         save(values);
@@ -155,17 +155,17 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
         if (isRostered && getArguments().getBoolean(IS_LOGGED)) {
             LocalTime thisTime = new LocalTime(hourOfDay, minutes);
             start = oldShift.getStart().withTime(isStart ? thisTime : oldLoggedShift.getStart().toLocalTime());
-            values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START, start.getMillis());
+            values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_START, start.getMillis());
             end = start.withTime(isStart ? oldLoggedShift.getEnd().toLocalTime() : thisTime);
             if (!end.isAfter(start)) {
                 end = end.plusDays(1);
             }
-            values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END, end.getMillis());
+            values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_END, end.getMillis());
         } else {
             LocalTime thisTime = new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minutes));
             if (isStart) {
                 start = oldShift.getStart().withTime(thisTime);
-                values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START : ShiftContract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
+                values.put(isRostered ? Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START : Contract.AdditionalShifts.COLUMN_NAME_START, start.getMillis());
                 end = start.withTime(oldShift.getEnd().toLocalTime());
             } else {
                 start = oldShift.getStart();
@@ -174,7 +174,7 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
             if (!end.isAfter(start)) {
                 end = end.plusDays(1);
             }
-            values.put(isRostered ? ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END : ShiftContract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
+            values.put(isRostered ? Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END : Contract.AdditionalShifts.COLUMN_NAME_END, end.getMillis());
             updateLoggedValues(values, start);
         }
         save(values);
@@ -183,12 +183,12 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
     private void updateLoggedValues(ContentValues values, DateTime startOfRosteredShift) {
         if (oldLoggedShift != null) {
             DateTime start = startOfRosteredShift.withTime(oldLoggedShift.getStart().toLocalTime());
-            values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START, start.getMillis());
+            values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_START, start.getMillis());
             DateTime end = start.withTime(oldLoggedShift.getEnd().toLocalTime());
             if (!end.isAfter(start)) {
                 end = end.plusDays(1);
             }
-            values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END, end.getMillis());
+            values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_END, end.getMillis());
         }
     }
 
@@ -197,13 +197,13 @@ public class PickerFragment extends DialogFragment implements DatePickerDialog.O
         Uri uri;
         switch (mShiftCategory) {
             case ROSTERED:
-                uri = ShiftProvider.rosteredShiftUri(shiftId);
+                uri = Provider.rosteredShiftUri(shiftId);
                 break;
             case ADDITIONAL:
-                uri = ShiftProvider.additionalShiftUri(shiftId);
+                uri = Provider.additionalShiftUri(shiftId);
                 break;
             case CROSS_COVER:
-                uri = ShiftProvider.crossCoverShiftUri(shiftId);
+                uri = Provider.crossCoverShiftUri(shiftId);
                 break;
             default:
                 throw new IllegalStateException();

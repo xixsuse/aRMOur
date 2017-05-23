@@ -20,8 +20,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
@@ -31,13 +31,13 @@ import org.joda.time.Interval;
 public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
 
     private static final String[] PROJECTION = {
-            ShiftContract.AdditionalShifts._ID,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_START,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_END,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_RATE,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_CLAIMED,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_PAID,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT,
+            Contract.AdditionalShifts._ID,
+            Contract.AdditionalShifts.COLUMN_NAME_START,
+            Contract.AdditionalShifts.COLUMN_NAME_END,
+            Contract.AdditionalShifts.COLUMN_NAME_RATE,
+            Contract.AdditionalShifts.COLUMN_NAME_CLAIMED,
+            Contract.AdditionalShifts.COLUMN_NAME_PAID,
+            Contract.AdditionalShifts.COLUMN_NAME_COMMENT,
     };
     private final static int
             COLUMN_INDEX_ID = 0,
@@ -111,45 +111,53 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
         });
         mTotalView = (TextView) view.findViewById(R.id.total_text);
         mCommentView = (AutoCompleteTextView) view.findViewById(R.id.comment_text);
-        SimpleCursorAdapter commentAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT}, new int[]{android.R.id.text1}, 0);
+        SimpleCursorAdapter commentAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{Contract.AdditionalShifts.COLUMN_NAME_COMMENT}, new int[]{android.R.id.text1}, 0);
         commentAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
-                String[] projection = new String[]{ShiftContract.AdditionalShifts._ID, ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT};
+                String[] projection = new String[]{Contract.AdditionalShifts._ID, Contract.AdditionalShifts.COLUMN_NAME_COMMENT};
                 boolean filtered = constraint != null && constraint.length() > 0;
-                String select = filtered ? (ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
+                String select = filtered ? (Contract.AdditionalShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
                 String[] selectArgs = filtered ? new String[]{"%" + constraint.toString() + "%"} : null;
-                String sort = ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT;
-                return getActivity().getContentResolver().query(ShiftProvider.additionalShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
+                String sort = Contract.AdditionalShifts.COLUMN_NAME_COMMENT;
+                return getActivity().getContentResolver().query(Provider.additionalShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
             }
         });
         commentAdapter.setStringConversionColumn(1);
         mCommentView.setAdapter(commentAdapter);
-        mClaimedView = (TextView) view.findViewById(R.id.claimed_text);
-        mClaimedSwitch = (Switch) view.findViewById(R.id.claimed_switch);
+
+        View claimedLayout = view.findViewById(R.id.claimed_layout);
+        ((ImageView) claimedLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_half_black_24dp);
+        ((TextView) claimedLayout.findViewById(R.id.title)).setText(R.string.claimed);
+        mClaimedView = (TextView) claimedLayout.findViewById(R.id.text);
+        mClaimedSwitch = (Switch) view.findViewById(R.id.button);
+
         mPaidLayout = view.findViewById(R.id.paid_layout);
-        mPaidView = (TextView) mPaidLayout.findViewById(R.id.paid_text);
-        mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.paid_switch);
+        ((ImageView) mPaidLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_full_black_24dp);
+        ((TextView) mPaidLayout.findViewById(R.id.title)).setText(R.string.paid);
+        mPaidView = (TextView) mPaidLayout.findViewById(R.id.text);
+        mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.button);
+
     }
 
     @Override
-    int getLayout() {
+    public int getLayout() {
         return R.layout.additional_shift_detail_fragment;
     }
 
     @Override
-    int getLoaderId() {
+    public int getLoaderId() {
         return ShiftListActivity.LOADER_ID_ADDITIONAL_DETAIL;
     }
 
     @Override
-    int getTitle() {
+    public int getTitle() {
         return R.string.additional_shift;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.additionalShiftUri(mShiftId), PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), Provider.additionalShiftUri(mShiftId), PROJECTION, null, null, null);
     }
 
     @Override
@@ -221,8 +229,8 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     ContentValues values = getUpdatedValues();
-                    values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_CLAIMED, isChecked ? System.currentTimeMillis() : null);
-                    getActivity().getContentResolver().update(ShiftProvider.additionalShiftUri(mShiftId), values, null, null);
+                    values.put(Contract.AdditionalShifts.COLUMN_NAME_CLAIMED, isChecked ? System.currentTimeMillis() : null);
+                    getActivity().getContentResolver().update(Provider.additionalShiftUri(mShiftId), values, null, null);
                     mClaimedSwitch.setOnCheckedChangeListener(null);
                 }
             });
@@ -230,8 +238,8 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     ContentValues values = getUpdatedValues();
-                    values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_PAID, isChecked ? System.currentTimeMillis() : null);
-                    getActivity().getContentResolver().update(ShiftProvider.additionalShiftUri(mShiftId), values, null, null);
+                    values.put(Contract.AdditionalShifts.COLUMN_NAME_PAID, isChecked ? System.currentTimeMillis() : null);
+                    getActivity().getContentResolver().update(Provider.additionalShiftUri(mShiftId), values, null, null);
                     mPaidSwitch.setOnCheckedChangeListener(null);
                 }
             });
@@ -248,19 +256,19 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
         try {
-            values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mHourlyRateView.getText().toString()) * 100));
+            values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mHourlyRateView.getText().toString()) * 100));
         } catch (NumberFormatException e) {
             // do nothing
         }
         String comment = mCommentView.getText().toString().trim();
-        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
         return values;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().getContentResolver().update(ShiftProvider.additionalShiftUri(mShiftId), getUpdatedValues(), null, null);
+        getActivity().getContentResolver().update(Provider.additionalShiftUri(mShiftId), getUpdatedValues(), null, null);
     }
 
 }

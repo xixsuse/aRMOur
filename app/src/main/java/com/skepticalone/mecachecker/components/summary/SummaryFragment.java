@@ -14,8 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
@@ -25,11 +25,11 @@ import java.util.Locale;
 public class SummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String[] PROJECTION = {
-            ShiftContract.AdditionalShifts.COLUMN_NAME_START,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_END,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_RATE,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_CLAIMED,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_PAID,
+            Contract.AdditionalShifts.COLUMN_NAME_START,
+            Contract.AdditionalShifts.COLUMN_NAME_END,
+            Contract.AdditionalShifts.COLUMN_NAME_RATE,
+            Contract.AdditionalShifts.COLUMN_NAME_CLAIMED,
+            Contract.AdditionalShifts.COLUMN_NAME_PAID,
     };
     private static final int
             COLUMN_INDEX_START = 0,
@@ -90,7 +90,7 @@ public class SummaryFragment extends Fragment implements LoaderManager.LoaderCal
 //            case SummaryActivity.LOADER_ID_ROSTERED:
 //                break;
             case SummaryActivity.LOADER_ID_ADDITIONAL:
-                return new CursorLoader(getActivity(), ShiftProvider.additionalShiftsUri, PROJECTION, null, null, ShiftContract.AdditionalShifts.COLUMN_NAME_START);
+                return new CursorLoader(getActivity(), Provider.additionalShiftsUri, PROJECTION, null, null, Contract.AdditionalShifts.COLUMN_NAME_START);
 //            case SummaryActivity.LOADER_ID_CROSS_COVER:
 //                break;
             default:

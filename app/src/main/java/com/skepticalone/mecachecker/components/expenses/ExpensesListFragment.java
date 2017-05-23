@@ -1,11 +1,9 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.components.expenses;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -21,26 +19,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.components.BaseFragment;
+import com.skepticalone.mecachecker.components.ShiftListActivity;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
-import com.skepticalone.mecachecker.util.DateTimeUtils;
 
-import org.joda.time.DateTime;
-
-
-public class CrossCoverListFragment extends BaseFragment {
+public class ExpensesListFragment extends BaseFragment {
 
     private static final String[] PROJECTION = {
-            Contract.CrossCoverShifts._ID,
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE,
-            Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
-            Contract.CrossCoverShifts.COLUMN_NAME_PAID,
-            Contract.CrossCoverShifts.COLUMN_NAME_COMMENT,
+            Contract.Expenses._ID,
+            Contract.Expenses.COLUMN_NAME_TITLE,
+            Contract.Expenses.COLUMN_NAME_CLAIMED,
+            Contract.Expenses.COLUMN_NAME_PAID,
+            Contract.Expenses.COLUMN_NAME_COMMENT,
     };
 
     private static final int
             COLUMN_INDEX_ID = 0,
-            COLUMN_INDEX_DATE = 1,
+            COLUMN_INDEX_TITLE = 1,
             COLUMN_INDEX_CLAIMED = 2,
             COLUMN_INDEX_PAID = 3,
             COLUMN_INDEX_COMMENT = 4;
@@ -60,12 +56,12 @@ public class CrossCoverListFragment extends BaseFragment {
 
     @Override
     public final int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_CROSS_COVER_LIST;
+        return ShiftListActivity.LOADER_ID_EXPENSES_LIST;
     }
 
     @Override
     public final int getTitle() {
-        return R.string.cross_cover;
+        return R.string.expenses;
     }
 
     @Override
@@ -86,17 +82,14 @@ public class CrossCoverListFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add) {
-            ContentValues values = new ContentValues();
-            values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, mAdapter.getNewShiftDate().getMillis());
-            values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_cross_cover_payment), getResources().getInteger(R.integer.default_cross_cover_payment)));
-            getActivity().getContentResolver().insert(Provider.crossCoverShiftsUri, values);
+            startActivity(new Intent(getActivity(), ExpenseDetailActivity.class));
             return true;
         } else return super.onOptionsItemSelected(item);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Provider.crossCoverShiftsUri, PROJECTION, null, null, Contract.CrossCoverShifts.COLUMN_NAME_DATE);
+        return new CursorLoader(getActivity(), Provider.expensesUri, PROJECTION, null, null, Contract.Expenses._ID);
     }
 
     @Override
@@ -125,22 +118,16 @@ public class CrossCoverListFragment extends BaseFragment {
             notifyDataSetChanged();
         }
 
-        DateTime getNewShiftDate() {
-            if (mCursor != null) {
-                return (mCursor.moveToLast() ? new DateTime(mCursor.getLong(COLUMN_INDEX_DATE)).plusDays(1) : new DateTime()).withTimeAtStartOfDay();
-            } else throw new IllegalStateException();
-        }
-
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public Adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.two_line_list_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(Adapter.ViewHolder holder, int position) {
             //noinspection ConstantConditions
             mCursor.moveToPosition(position);
-            holder.mPrimaryText.setText(DateTimeUtils.getFullDateString(new DateTime(mCursor.getLong(COLUMN_INDEX_DATE))));
+            holder.mPrimaryText.setText(mCursor.getString(COLUMN_INDEX_TITLE));
             if (mCursor.isNull(COLUMN_INDEX_COMMENT)) {
                 holder.mSecondaryText.setVisibility(View.GONE);
             } else {
@@ -175,20 +162,20 @@ public class CrossCoverListFragment extends BaseFragment {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), ShiftDetailActivity.class);
-                        intent.putExtra(ShiftDetailActivity.SHIFT_ID, getItemId());
-                        intent.putExtra(ShiftDetailActivity.IS_CROSS_COVER, true);
+                        Intent intent = new Intent(getActivity(), ExpenseDetailActivity.class);
+                        intent.putExtra(ExpenseDetailActivity.EXPENSE_ID, getItemId());
                         startActivity(intent);
                     }
                 });
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        getActivity().getContentResolver().delete(Provider.crossCoverShiftUri(getItemId()), null, null);
+                        getActivity().getContentResolver().delete(Provider.expenseUri(getItemId()), null, null);
                         return true;
                     }
                 });
             }
         }
     }
+
 }

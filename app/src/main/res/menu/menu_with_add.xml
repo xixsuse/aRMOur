@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/add_cross_cover"
+        android:id="@+id/add"
         android:icon="@drawable/ic_add_white_24dp"
-        android:title="@string/add_cross_cover"
+        android:title="@string/add"
         app:showAsAction="ifRoom" />
 </menu>

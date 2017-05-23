@@ -32,7 +32,7 @@ abstract public class AbstractShiftDetailFragment extends LayoutManagerFragment 
     }
 
     @Override
-    int getLayout() {
+    public int getLayout() {
         return R.layout.shift_detail_fragment;
     }
 

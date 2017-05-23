@@ -29,11 +29,11 @@ public abstract class BaseFragment extends Fragment implements LoaderManager.Loa
     }
 
     @LayoutRes
-    abstract int getLayout();
+    protected abstract int getLayout();
 
-    abstract int getLoaderId();
+    protected abstract int getLoaderId();
 
     @StringRes
-    abstract int getTitle();
+    protected abstract int getTitle();
 
 }

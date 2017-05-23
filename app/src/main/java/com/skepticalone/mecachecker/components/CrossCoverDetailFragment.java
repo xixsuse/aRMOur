@@ -13,12 +13,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
@@ -26,12 +27,12 @@ import org.joda.time.DateTime;
 public class CrossCoverDetailFragment extends BaseFragment {
 
     private static final String[] PROJECTION = {
-            ShiftContract.CrossCoverShifts._ID,
-            ShiftContract.CrossCoverShifts.COLUMN_NAME_DATE,
-            ShiftContract.CrossCoverShifts.COLUMN_NAME_RATE,
-            ShiftContract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
-            ShiftContract.CrossCoverShifts.COLUMN_NAME_PAID,
-            ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT,
+            Contract.CrossCoverShifts._ID,
+            Contract.CrossCoverShifts.COLUMN_NAME_DATE,
+            Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT,
+            Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
+            Contract.CrossCoverShifts.COLUMN_NAME_PAID,
+            Contract.CrossCoverShifts.COLUMN_NAME_COMMENT,
     };
     private static final int
             COLUMN_INDEX_ID = 0,
@@ -70,45 +71,53 @@ public class CrossCoverDetailFragment extends BaseFragment {
         mDateView = (TextView) view.findViewById(R.id.date);
         mCrossCoverPaymentView = (EditText) view.findViewById(R.id.cross_cover_payment_edit);
         mCommentView = (AutoCompleteTextView) view.findViewById(R.id.comment_text);
-        SimpleCursorAdapter commentAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT}, new int[]{android.R.id.text1}, 0);
+        SimpleCursorAdapter commentAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{Contract.CrossCoverShifts.COLUMN_NAME_COMMENT}, new int[]{android.R.id.text1}, 0);
         commentAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
-                String[] projection = new String[]{ShiftContract.CrossCoverShifts._ID, ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT};
+                String[] projection = new String[]{Contract.CrossCoverShifts._ID, Contract.CrossCoverShifts.COLUMN_NAME_COMMENT};
                 boolean filtered = constraint != null && constraint.length() > 0;
-                String select = filtered ? (ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
+                String select = filtered ? (Contract.CrossCoverShifts.COLUMN_NAME_COMMENT + " LIKE ?") : null;
                 String[] selectArgs = filtered ? new String[]{"%" + constraint.toString() + "%"} : null;
-                String sort = ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT;
-                return getActivity().getContentResolver().query(ShiftProvider.crossCoverShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
+                String sort = Contract.CrossCoverShifts.COLUMN_NAME_COMMENT;
+                return getActivity().getContentResolver().query(Provider.crossCoverShiftsDistinctCommentsUri, projection, select, selectArgs, sort);
             }
         });
         commentAdapter.setStringConversionColumn(1);
         mCommentView.setAdapter(commentAdapter);
-        mClaimedView = (TextView) view.findViewById(R.id.claimed_text);
-        mClaimedSwitch = (Switch) view.findViewById(R.id.claimed_switch);
+
+        View claimedLayout = view.findViewById(R.id.claimed_layout);
+        ((ImageView) claimedLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_half_black_24dp);
+        ((TextView) claimedLayout.findViewById(R.id.title)).setText(R.string.claimed);
+        mClaimedView = (TextView) claimedLayout.findViewById(R.id.text);
+        mClaimedSwitch = (Switch) view.findViewById(R.id.button);
+
         mPaidLayout = view.findViewById(R.id.paid_layout);
-        mPaidView = (TextView) mPaidLayout.findViewById(R.id.paid_text);
-        mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.paid_switch);
+        ((ImageView) mPaidLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_full_black_24dp);
+        ((TextView) mPaidLayout.findViewById(R.id.title)).setText(R.string.paid);
+        mPaidView = (TextView) mPaidLayout.findViewById(R.id.text);
+        mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.button);
+
     }
 
     @Override
-    int getLayout() {
+    public int getLayout() {
         return R.layout.cross_cover_detail_fragment;
     }
 
     @Override
-    int getLoaderId() {
+    public int getLoaderId() {
         return ShiftListActivity.LOADER_ID_CROSS_COVER_DETAIL;
     }
 
     @Override
-    int getTitle() {
+    public int getTitle() {
         return R.string.cross_cover;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.crossCoverShiftUri(mShiftId), PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), Provider.crossCoverShiftUri(mShiftId), PROJECTION, null, null, null);
     }
 
     @Override
@@ -147,8 +156,8 @@ public class CrossCoverDetailFragment extends BaseFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     ContentValues values = getUpdatedValues();
-                    values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_CLAIMED, isChecked ? System.currentTimeMillis() : null);
-                    getActivity().getContentResolver().update(ShiftProvider.crossCoverShiftUri(mShiftId), values, null, null);
+                    values.put(Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED, isChecked ? System.currentTimeMillis() : null);
+                    getActivity().getContentResolver().update(Provider.crossCoverShiftUri(mShiftId), values, null, null);
                     mClaimedSwitch.setOnCheckedChangeListener(null);
                 }
             });
@@ -156,8 +165,8 @@ public class CrossCoverDetailFragment extends BaseFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     ContentValues values = getUpdatedValues();
-                    values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_PAID, isChecked ? System.currentTimeMillis() : null);
-                    getActivity().getContentResolver().update(ShiftProvider.crossCoverShiftUri(mShiftId), values, null, null);
+                    values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAID, isChecked ? System.currentTimeMillis() : null);
+                    getActivity().getContentResolver().update(Provider.crossCoverShiftUri(mShiftId), values, null, null);
                     mPaidSwitch.setOnCheckedChangeListener(null);
                 }
             });
@@ -173,18 +182,18 @@ public class CrossCoverDetailFragment extends BaseFragment {
     private ContentValues getUpdatedValues() {
         ContentValues values = new ContentValues();
         try {
-            values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_RATE, Math.round(Float.parseFloat(mCrossCoverPaymentView.getText().toString()) * 100));
+            values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, Math.round(Float.parseFloat(mCrossCoverPaymentView.getText().toString()) * 100));
         } catch (NumberFormatException e) {
             // do nothing
         }
         String comment = mCommentView.getText().toString().trim();
-        values.put(ShiftContract.CrossCoverShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_COMMENT, comment.length() > 0 ? comment : null);
         return values;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().getContentResolver().update(ShiftProvider.crossCoverShiftUri(mShiftId), getUpdatedValues(), null, null);
+        getActivity().getContentResolver().update(Provider.crossCoverShiftUri(mShiftId), getUpdatedValues(), null, null);
     }
 }

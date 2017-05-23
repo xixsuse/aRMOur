@@ -2,8 +2,8 @@ package com.skepticalone.mecachecker.data;
 
 import android.provider.BaseColumns;
 
-public final class ShiftContract {
-    private ShiftContract() {
+public final class Contract {
+    private Contract() {
     }
 
     public static class RosteredShifts implements BaseColumns {
@@ -90,7 +90,7 @@ public final class ShiftContract {
     public static class CrossCoverShifts implements BaseColumns {
         public static final String
                 COLUMN_NAME_DATE = "date",
-                COLUMN_NAME_RATE = "rate",
+                COLUMN_NAME_PAYMENT = "payment",
                 COLUMN_NAME_CLAIMED = "claimed",
                 COLUMN_NAME_PAID = "paid",
                 COLUMN_NAME_COMMENT = "comment";
@@ -100,10 +100,35 @@ public final class ShiftContract {
                         " (" +
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_NAME_DATE + " INTEGER UNIQUE NOT NULL, " +
-                        COLUMN_NAME_RATE + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_PAYMENT + " INTEGER NOT NULL, " +
                         COLUMN_NAME_CLAIMED + " INTEGER DEFAULT NULL, " +
                         COLUMN_NAME_PAID + " INTEGER DEFAULT NULL, " +
                         COLUMN_NAME_COMMENT + " TEXT DEFAULT NULL, " +
+                        "CHECK (" + COLUMN_NAME_PAID + " IS NULL OR " + COLUMN_NAME_CLAIMED + " IS NOT NULL), " +
+                        "CHECK (" + COLUMN_NAME_CLAIMED + " <= " + COLUMN_NAME_PAID + "), " +
+                        "CHECK (length(" + COLUMN_NAME_COMMENT + ") > 0)" +
+                        ")",
+                SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    public static class Expenses implements BaseColumns {
+        public static final String
+                COLUMN_NAME_TITLE = "title",
+                COLUMN_NAME_PAYMENT = "payment",
+                COLUMN_NAME_CLAIMED = "claimed",
+                COLUMN_NAME_PAID = "paid",
+                COLUMN_NAME_COMMENT = "comment";
+        static final String TABLE_NAME = "expenses",
+                SQL_CREATE_TABLE = "CREATE TABLE " +
+                        TABLE_NAME +
+                        " (" +
+                        _ID + " INTEGER PRIMARY KEY, " +
+                        COLUMN_NAME_TITLE + " TEXT NOT NULL, " +
+                        COLUMN_NAME_PAYMENT + " INTEGER NOT NULL, " +
+                        COLUMN_NAME_CLAIMED + " INTEGER DEFAULT NULL, " +
+                        COLUMN_NAME_PAID + " INTEGER DEFAULT NULL, " +
+                        COLUMN_NAME_COMMENT + " TEXT DEFAULT NULL, " +
+                        "CHECK (length(" + COLUMN_NAME_TITLE + ") > 0), " +
                         "CHECK (" + COLUMN_NAME_PAID + " IS NULL OR " + COLUMN_NAME_CLAIMED + " IS NOT NULL), " +
                         "CHECK (" + COLUMN_NAME_CLAIMED + " <= " + COLUMN_NAME_PAID + "), " +
                         "CHECK (length(" + COLUMN_NAME_COMMENT + ") > 0)" +

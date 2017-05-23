@@ -19,9 +19,9 @@ public class PieView extends View {
     private static final String TAG = "PieView";
     @ColorInt
     private final int unclaimedColor, claimedColor, paidColor;
-    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RectF mRectF = new RectF();
     private Rect mRect = new Rect();
-    private RectF mRectF = new RectF();
     private float unclaimed, claimed, paid;
 
     public PieView(Context context, @Nullable AttributeSet attrs) {

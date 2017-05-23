@@ -11,8 +11,8 @@ import android.support.v4.app.DialogFragment;
 import android.widget.EditText;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 
 public class HourlyRateEditFragment extends DialogFragment {
 
@@ -42,8 +42,8 @@ public class HourlyRateEditFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int rate = Math.round(Float.parseFloat(editText.getText().toString()) * 100);
                         ContentValues values = new ContentValues();
-                        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, rate);
-                        getActivity().getContentResolver().update(ShiftProvider.additionalShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
+                        values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, rate);
+                        getActivity().getContentResolver().update(Provider.additionalShiftUri(getArguments().getLong(SHIFT_ID)), values, null, null);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

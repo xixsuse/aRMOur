@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Compliance;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
@@ -32,18 +32,18 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     private Compliance.Wrapper mCursor = null;
 
     @Override
-    int getLoaderId() {
+    public int getLoaderId() {
         return ShiftListActivity.LOADER_ID_ROSTERED_LIST;
     }
 
     @Override
-    int getTitle() {
+    public int getTitle() {
         return R.string.rostered_shifts;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.rosteredShiftsUri, null, null, null, null);
+        return new CursorLoader(getActivity(), Provider.rosteredShiftsUri, null, null, null, null);
     }
 
     @Override
@@ -99,14 +99,14 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             newStart = newStart.plusDays(1);
         }
         ContentValues values = new ContentValues();
-        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
+        values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
 
         DateTime newEnd = newStart.withTime(endTime);
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
-        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
-        getActivity().getContentResolver().insert(ShiftProvider.rosteredShiftsUri, values);
+        values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newEnd.getMillis());
+        getActivity().getContentResolver().insert(Provider.rosteredShiftsUri, values);
         mAddButtonJustClicked = true;
     }
 
@@ -134,7 +134,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return getActivity().getContentResolver().delete(ShiftProvider.rosteredShiftUri(holder.getItemId()), null, null) == 1;
+                    return getActivity().getContentResolver().delete(Provider.rosteredShiftUri(holder.getItemId()), null, null) == 1;
                 }
             });
             return holder;

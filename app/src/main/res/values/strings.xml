@@ -7,10 +7,10 @@
     <string name="normal_day">Normal day</string>
     <string name="long_day">Long day</string>
     <string name="night_shift">Night shift</string>
+    <string name="add">Add</string>
     <string name="add_normal_day">Add normal day</string>
     <string name="add_long_day">Add long day</string>
     <string name="add_night_shift">Add night shift</string>
-    <string name="add_cross_cover">Add cross cover</string>
     <string name="shifts">Shifts</string>
     <string name="hours">Hours</string>
     <string name="money">Money</string>
@@ -23,9 +23,12 @@
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>
     <string name="cross_cover">Cross cover</string>
+    <string name="expenses">Expenses</string>
     <string name="decimal_format">%.2f</string>
     <string name="currency_format">$%.2f</string>
     <string name="hourly_rate">Hourly rate</string>
+    <string name="title">Title</string>
+    <string name="payment">Payment</string>
     <string name="cross_cover_payment">Cross cover payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
     <string name="claimed">Claimed</string>
@@ -35,6 +38,7 @@
     <string name="shift_type_duration_format">%1$s (%2$s)</string>
     <string name="title_shift_list">Shifts</string>
     <string name="title_shift_detail">Shift Detail</string>
+    <string name="title_expense_detail">Expense Detail</string>
     <string name="not_applicable">N/A</string>
     <string name="time_between_shifts">Time between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>

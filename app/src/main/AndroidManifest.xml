@@ -31,12 +31,17 @@
             android:parentActivityName=".components.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".components.expenses.ExpenseDetailActivity"
+            android:label="@string/title_expense_detail"
+            android:parentActivityName=".components.ShiftListActivity"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".components.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <provider
-            android:name=".data.ShiftProvider"
+            android:name=".data.Provider"
             android:authorities="com.skepticalone.mecachecker.provider"
             android:exported="false" />
 

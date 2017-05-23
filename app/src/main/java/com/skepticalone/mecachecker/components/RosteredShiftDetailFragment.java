@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Compliance;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
@@ -34,12 +34,12 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
     }
 
     @Override
-    int getLoaderId() {
+    public int getLoaderId() {
         return ShiftListActivity.LOADER_ID_ROSTERED_DETAIL;
     }
 
     @Override
-    int getTitle() {
+    public int getTitle() {
         return R.string.rostered_shift;
     }
 
@@ -50,7 +50,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.rosteredShiftUri(mShiftId), null, null, null, null);
+        return new CursorLoader(getActivity(), Provider.rosteredShiftUri(mShiftId), null, null, null, null);
     }
 
     @Override
@@ -87,9 +87,9 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
-                        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
-                        values.put(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
-                        getActivity().getContentResolver().update(ShiftProvider.rosteredShiftUri(mShiftId), values, null, null);
+                        values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_START, rosteredShift.getStartMillis());
+                        values.put(Contract.RosteredShifts.COLUMN_NAME_LOGGED_END, rosteredShift.getEndMillis());
+                        getActivity().getContentResolver().update(Provider.rosteredShiftUri(mShiftId), values, null, null);
                     }
                 });
             } else {
@@ -113,9 +113,9 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
                     @Override
                     public void onClick(View v) {
                         ContentValues values = new ContentValues();
-                        values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START);
-                        values.putNull(ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END);
-                        getActivity().getContentResolver().update(ShiftProvider.rosteredShiftUri(mShiftId), values, null, null);
+                        values.putNull(Contract.RosteredShifts.COLUMN_NAME_LOGGED_START);
+                        values.putNull(Contract.RosteredShifts.COLUMN_NAME_LOGGED_END);
+                        getActivity().getContentResolver().update(Provider.rosteredShiftUri(mShiftId), values, null, null);
                     }
                 });
             }

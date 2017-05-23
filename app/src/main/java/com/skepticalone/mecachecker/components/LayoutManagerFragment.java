@@ -17,7 +17,7 @@ public abstract class LayoutManagerFragment extends ShiftTypeAwareFragment {
     abstract RecyclerView.Adapter getAdapter();
 
     @LayoutRes
-    abstract int getLayout();
+    abstract public int getLayout();
 
     abstract boolean shouldAddDivider();
 

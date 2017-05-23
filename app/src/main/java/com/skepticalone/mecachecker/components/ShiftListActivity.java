@@ -14,20 +14,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.components.expenses.ExpensesListFragment;
 import com.skepticalone.mecachecker.components.summary.SummaryActivity;
 
 public class ShiftListActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
-    static final int
+    public static final int
             LOADER_ID_ROSTERED_LIST = 1,
             LOADER_ID_ROSTERED_DETAIL = 2,
             LOADER_ID_ADDITIONAL_LIST = 3,
             LOADER_ID_ADDITIONAL_DETAIL = 4,
             LOADER_ID_CROSS_COVER_LIST = 5,
-            LOADER_ID_CROSS_COVER_DETAIL = 6;
+            LOADER_ID_CROSS_COVER_DETAIL = 6,
+            LOADER_ID_EXPENSES_LIST = 7,
+            LOADER_ID_EXPENSES_DETAIL = 8;
 
-    private static final String SHIFT_LIST_FRAGMENT = "SHIFT_LIST_FRAGMENT";
+    private static final String LIST_FRAGMENT = "LIST_FRAGMENT";
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -47,7 +50,7 @@ public class ShiftListActivity extends AppCompatActivity implements
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.rostered);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
+                    .add(R.id.list_fragment_container, new RosteredShiftsListFragment(), LIST_FRAGMENT)
                     .commit();
         }
     }
@@ -75,15 +78,19 @@ public class ShiftListActivity extends AppCompatActivity implements
             startActivity(new Intent(this, SummaryActivity.class));
         } else if (id == R.id.rostered) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new RosteredShiftsListFragment(), SHIFT_LIST_FRAGMENT)
+                    .replace(R.id.list_fragment_container, new RosteredShiftsListFragment(), LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.additional) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new AdditionalShiftsListFragment(), SHIFT_LIST_FRAGMENT)
+                    .replace(R.id.list_fragment_container, new AdditionalShiftsListFragment(), LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.cross_cover) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_fragment_container, new CrossCoverListFragment(), SHIFT_LIST_FRAGMENT)
+                    .replace(R.id.list_fragment_container, new CrossCoverListFragment(), LIST_FRAGMENT)
+                    .commit();
+        } else if (id == R.id.expenses) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_fragment_container, new ExpensesListFragment(), LIST_FRAGMENT)
                     .commit();
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));

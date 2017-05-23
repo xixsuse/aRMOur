@@ -24,8 +24,8 @@ abstract public class AbstractShiftListFragment extends LayoutManagerFragment {
     }
 
     @Override
-    int getLayout() {
-        return R.layout.shift_list_fragment;
+    public int getLayout() {
+        return R.layout.recycler_view;
     }
 
     @Override

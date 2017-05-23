@@ -17,11 +17,11 @@ public final class Compliance {
 
     private static final String[] RAW_PROJECTION = new String[]{
 
-            ShiftContract.RosteredShifts._ID,
-            ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
-            ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_END,
-            ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_START,
-            ShiftContract.RosteredShifts.COLUMN_NAME_LOGGED_END,
+            Contract.RosteredShifts._ID,
+            Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
+            Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END,
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_START,
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_END,
     },
             EXTRA_COLUMN_NAMES = new String[]{
                     "LAST_SHIFT_ROSTERED_END",
@@ -63,13 +63,13 @@ public final class Compliance {
     @NonNull
     static Cursor getCursor(SQLiteDatabase readableDatabase, @Nullable Long shiftId) {
         Cursor initialCursor = readableDatabase.query(
-                ShiftContract.RosteredShifts.TABLE_NAME,
+                Contract.RosteredShifts.TABLE_NAME,
                 RAW_PROJECTION,
                 null,
                 null,
                 null,
                 null,
-                ShiftContract.RosteredShifts.COLUMN_NAME_ROSTERED_START
+                Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START
         );
         int initialCursorCount = initialCursor.getCount();
         MatrixCursor newCursor = new MatrixCursor(MATRIX_COLUMN_NAMES, shiftId == null ? initialCursorCount : 1);

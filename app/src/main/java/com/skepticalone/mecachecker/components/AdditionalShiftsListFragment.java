@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftContract;
-import com.skepticalone.mecachecker.data.ShiftProvider;
+import com.skepticalone.mecachecker.data.Contract;
+import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
@@ -26,12 +26,12 @@ import org.joda.time.LocalTime;
 public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
 
     private static final String[] PROJECTION = {
-            ShiftContract.AdditionalShifts._ID,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_START,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_END,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_CLAIMED,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_PAID,
-            ShiftContract.AdditionalShifts.COLUMN_NAME_COMMENT,
+            Contract.AdditionalShifts._ID,
+            Contract.AdditionalShifts.COLUMN_NAME_START,
+            Contract.AdditionalShifts.COLUMN_NAME_END,
+            Contract.AdditionalShifts.COLUMN_NAME_CLAIMED,
+            Contract.AdditionalShifts.COLUMN_NAME_PAID,
+            Contract.AdditionalShifts.COLUMN_NAME_COMMENT,
     };
     private final static int
             COLUMN_INDEX_ID = 0,
@@ -44,12 +44,12 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
     private Cursor mCursor = null;
 
     @Override
-    int getLoaderId() {
+    public int getLoaderId() {
         return ShiftListActivity.LOADER_ID_ADDITIONAL_LIST;
     }
 
     @Override
-    int getTitle() {
+    public int getTitle() {
         return R.string.additional_shifts;
     }
 
@@ -70,21 +70,21 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             newStart = newStart.plusDays(1);
         }
         ContentValues values = new ContentValues();
-        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_START, newStart.getMillis());
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_START, newStart.getMillis());
         DateTime newEnd = newStart.withTime(endTime);
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
-        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_END, newEnd.getMillis());
         int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate));
-        values.put(ShiftContract.AdditionalShifts.COLUMN_NAME_RATE, hourlyRate);
-        getActivity().getContentResolver().insert(ShiftProvider.additionalShiftsUri, values);
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, hourlyRate);
+        getActivity().getContentResolver().insert(Provider.additionalShiftsUri, values);
         mAddButtonJustClicked = true;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShiftProvider.additionalShiftsUri, PROJECTION, null, null, ShiftContract.AdditionalShifts.COLUMN_NAME_START);
+        return new CursorLoader(getActivity(), Provider.additionalShiftsUri, PROJECTION, null, null, Contract.AdditionalShifts.COLUMN_NAME_START);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return getActivity().getContentResolver().delete(ShiftProvider.additionalShiftUri(holder.getItemId()), null, null) == 1;
+                    return getActivity().getContentResolver().delete(Provider.additionalShiftUri(holder.getItemId()), null, null) == 1;
                 }
             });
             return holder;
