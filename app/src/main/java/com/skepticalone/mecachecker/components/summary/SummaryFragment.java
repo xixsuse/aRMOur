@@ -85,6 +85,7 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
                 progressBar = (ProgressBar) itemView.findViewById(R.id.progress);
             }
         }
+
     }
 
 }

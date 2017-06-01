@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.components.summary;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.View;
@@ -18,6 +19,9 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 public class AdditionalSummaryFragment extends SummaryFragment {
+
+    @StringRes
+    static final int tabTitle = R.string.additional_shifts;
 
     private static final String[] PROJECTION = {
             Contract.AdditionalShifts.COLUMN_NAME_START,
