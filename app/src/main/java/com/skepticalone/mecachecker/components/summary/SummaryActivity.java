@@ -16,7 +16,7 @@ public class SummaryActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(android.R.id.content, new SummaryFragment(), SUMMARY_FRAGMENT)
+                    .replace(android.R.id.content, new AdditionalSummaryFragment(), SUMMARY_FRAGMENT)
                     .commit();
         }
     }
