@@ -74,7 +74,7 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
         }
     }
 
-    final class SummaryAdapter extends RecyclerView.Adapter<SummaryViewHolder> {
+    private final class SummaryAdapter extends RecyclerView.Adapter<SummaryViewHolder> {
 
         @Nullable
         private Cursor mCursor = null;

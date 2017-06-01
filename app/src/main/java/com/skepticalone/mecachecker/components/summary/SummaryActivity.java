@@ -39,7 +39,7 @@ public class SummaryActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new AdditionalSummaryFragment();
+                    return new RosteredSummaryFragment();
                 case 1:
                     return new AdditionalSummaryFragment();
                 default:
@@ -56,7 +56,7 @@ public class SummaryActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(AdditionalSummaryFragment.tabTitle);
+                    return getString(RosteredSummaryFragment.tabTitle);
                 case 1:
                     return getString(AdditionalSummaryFragment.tabTitle);
                 default:

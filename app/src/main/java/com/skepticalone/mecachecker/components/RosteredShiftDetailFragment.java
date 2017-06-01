@@ -50,7 +50,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Provider.rosteredShiftUri(mShiftId), null, null, null, null);
+        return new CursorLoader(getActivity(), Provider.rosteredShiftWithComplianceUri(mShiftId), null, null, null, null);
     }
 
     @Override

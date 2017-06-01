@@ -27,7 +27,9 @@ public final class Provider extends ContentProvider {
             EXPENSES_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + Contract.Expenses.TABLE_NAME,
             EXPENSE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + Contract.Expenses.TABLE_NAME;
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
-    public static final Uri rosteredShiftsUri = baseContentUri.buildUpon().appendPath(Contract.RosteredShifts.TABLE_NAME).build(),
+    public static final Uri
+            rosteredShiftsUri = baseContentUri.buildUpon().appendPath(Contract.RosteredShifts.TABLE_NAME).build(),
+            rosteredShiftsWithComplianceUri = rosteredShiftsUri.buildUpon().appendPath("compliance").build(),
             additionalShiftsUri = baseContentUri.buildUpon().appendPath(Contract.AdditionalShifts.TABLE_NAME).build(),
             crossCoverShiftsUri = baseContentUri.buildUpon().appendPath(Contract.CrossCoverShifts.TABLE_NAME).build(),
             expensesUri = baseContentUri.buildUpon().appendPath(Contract.Expenses.TABLE_NAME).build(),
@@ -36,20 +38,24 @@ public final class Provider extends ContentProvider {
     private static final int
             ROSTERED_SHIFTS = 1,
             ROSTERED_SHIFT = 2,
-            ADDITIONAL_SHIFTS = 3,
-            ADDITIONAL_SHIFTS_DISTINCT_COMMENTS = 4,
-            ADDITIONAL_SHIFT = 5,
-            CROSS_COVER_SHIFTS = 6,
-            CROSS_COVER_SHIFTS_DISTINCT_COMMENTS = 7,
-            CROSS_COVER_SHIFT = 8,
-            EXPENSES = 9,
-            EXPENSE = 10;
+            ROSTERED_SHIFTS_WITH_COMPLIANCE = 3,
+            ROSTERED_SHIFT_WITH_COMPLIANCE = 4,
+            ADDITIONAL_SHIFTS = 5,
+            ADDITIONAL_SHIFTS_DISTINCT_COMMENTS = 6,
+            ADDITIONAL_SHIFT = 7,
+            CROSS_COVER_SHIFTS = 8,
+            CROSS_COVER_SHIFTS_DISTINCT_COMMENTS = 9,
+            CROSS_COVER_SHIFT = 10,
+            EXPENSES = 11,
+            EXPENSE = 12;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME, ROSTERED_SHIFTS);
         sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/#", ROSTERED_SHIFT);
+        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/compliance", ROSTERED_SHIFTS_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/compliance/#", ROSTERED_SHIFT_WITH_COMPLIANCE);
         sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME, ADDITIONAL_SHIFTS);
         sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME + "/distinct", ADDITIONAL_SHIFTS_DISTINCT_COMMENTS);
         sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME + "/#", ADDITIONAL_SHIFT);
@@ -64,6 +70,14 @@ public final class Provider extends ContentProvider {
 
     public static Uri rosteredShiftUri(long shiftId) {
         return Uri.withAppendedPath(rosteredShiftsUri, Long.toString(shiftId));
+    }
+
+    public static Uri rosteredShiftWithComplianceUri(long shiftId) {
+        return Uri.withAppendedPath(rosteredShiftsWithComplianceUri, Long.toString(shiftId));
+    }
+
+    private static Uri rosteredShiftWithComplianceUri(Uri rosteredShiftUri) {
+        return rosteredShiftWithComplianceUri(Long.valueOf(rosteredShiftUri.getLastPathSegment()));
     }
 
     public static Uri additionalShiftUri(long shiftId) {
@@ -91,12 +105,19 @@ public final class Provider extends ContentProvider {
         String table;
         int match = sUriMatcher.match(uri);
         switch (match) {
-            case ROSTERED_SHIFTS:
-            case ROSTERED_SHIFT:
-                Cursor cursor = Compliance.getCursor(mDbHelper.getReadableDatabase(), match == ROSTERED_SHIFT ? Long.parseLong(uri.getLastPathSegment()) : null);
+            case ROSTERED_SHIFTS_WITH_COMPLIANCE:
+            case ROSTERED_SHIFT_WITH_COMPLIANCE:
+                Cursor cursor = Compliance.getCursor(mDbHelper.getReadableDatabase(), match == ROSTERED_SHIFT_WITH_COMPLIANCE ? Long.parseLong(uri.getLastPathSegment()) : null);
                 //noinspection ConstantConditions
-                cursor.setNotificationUri(getContext().getContentResolver(), Provider.rosteredShiftsUri);
+                cursor.setNotificationUri(getContext().getContentResolver(), Provider.rosteredShiftsWithComplianceUri);
                 return cursor;
+            case ROSTERED_SHIFT:
+                selection = Contract.RosteredShifts._ID + "=" + uri.getLastPathSegment();
+                selectionArgs = null;
+                // intentional fallthrough
+            case ROSTERED_SHIFTS:
+                table = Contract.RosteredShifts.TABLE_NAME;
+                break;
             case ADDITIONAL_SHIFT:
                 selection = Contract.AdditionalShifts._ID + "=" + uri.getLastPathSegment();
                 selectionArgs = null;
@@ -144,8 +165,10 @@ public final class Provider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case ROSTERED_SHIFTS:
+            case ROSTERED_SHIFTS_WITH_COMPLIANCE:
                 return ROSTERED_SHIFTS_TYPE;
             case ROSTERED_SHIFT:
+            case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 return ROSTERED_SHIFT_TYPE;
             case ADDITIONAL_SHIFTS:
             case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
@@ -170,7 +193,8 @@ public final class Provider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         Uri newUri;
-        switch (sUriMatcher.match(uri)) {
+        int match = sUriMatcher.match(uri);
+        switch (match) {
             case ROSTERED_SHIFTS:
                 newUri = rosteredShiftUri(mDbHelper.getWritableDatabase().insert(Contract.RosteredShifts.TABLE_NAME, null, values));
                 break;
@@ -188,6 +212,9 @@ public final class Provider extends ContentProvider {
         }
         //noinspection ConstantConditions
         getContext().getContentResolver().notifyChange(uri, null);
+        if (match == ROSTERED_SHIFTS) {
+            getContext().getContentResolver().notifyChange(rosteredShiftsWithComplianceUri, null);
+        }
         return newUri;
 
     }
@@ -195,7 +222,8 @@ public final class Provider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         String tableName;
-        switch (sUriMatcher.match(uri)) {
+        int match = sUriMatcher.match(uri);
+        switch (match) {
             case ROSTERED_SHIFT:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
@@ -215,6 +243,9 @@ public final class Provider extends ContentProvider {
         if (deleted > 0) {
             //noinspection ConstantConditions
             getContext().getContentResolver().notifyChange(uri, null);
+            if (match == ROSTERED_SHIFT) {
+                getContext().getContentResolver().notifyChange(rosteredShiftWithComplianceUri(uri), null);
+            }
         }
         return deleted;
     }
@@ -222,7 +253,8 @@ public final class Provider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         String tableName;
-        switch (sUriMatcher.match(uri)) {
+        int match = sUriMatcher.match(uri);
+        switch (match) {
             case ROSTERED_SHIFT:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
@@ -243,6 +275,9 @@ public final class Provider extends ContentProvider {
             if (updated > 0) {
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
+                if (match == ROSTERED_SHIFT) {
+                    getContext().getContentResolver().notifyChange(rosteredShiftWithComplianceUri(uri), null);
+                }
             }
             return updated;
         } catch (SQLiteConstraintException e) {

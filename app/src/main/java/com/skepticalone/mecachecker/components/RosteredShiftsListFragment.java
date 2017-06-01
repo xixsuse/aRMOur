@@ -43,7 +43,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Provider.rosteredShiftsUri, null, null, null, null);
+        return new CursorLoader(getActivity(), Provider.rosteredShiftsWithComplianceUri, null, null, null, null);
     }
 
     @Override
