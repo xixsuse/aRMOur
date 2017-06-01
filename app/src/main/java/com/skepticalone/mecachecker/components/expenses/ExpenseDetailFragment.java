@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -45,6 +46,7 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
             COLUMN_INDEX_COMMENT = 4;
 
     private long mExpenseId;
+    private TextInputLayout mTitleLayout, mPaymentLayout;
     private EditText mTitleView, mPaymentView;
     private View mClaimedLayout, mPaidLayout;
     private Switch mClaimedSwitch, mPaidSwitch;
@@ -74,8 +76,10 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_detail_fragment, container, false);
-        mTitleView = (EditText) view.findViewById(R.id.title);
-        mPaymentView = (EditText) view.findViewById(R.id.payment);
+        mTitleLayout = (TextInputLayout) view.findViewById(R.id.title_layout);
+        mTitleView = (EditText) mTitleLayout.findViewById(R.id.title);
+        mPaymentLayout = (TextInputLayout) view.findViewById(R.id.payment_layout);
+        mPaymentView = (EditText) mPaymentLayout.findViewById(R.id.payment);
 
         mClaimedLayout = view.findViewById(R.id.claimed_layout);
         ((ImageView) mClaimedLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_half_black_24dp);
@@ -112,9 +116,13 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (cursor.moveToFirst()) {
+            mTitleLayout.setHintAnimationEnabled(false);
             mTitleView.setText(cursor.getString(COLUMN_INDEX_TITLE));
+            mTitleLayout.setHintAnimationEnabled(true);
             BigDecimal payment = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_PAYMENT), 2);
+            mPaymentLayout.setHintAnimationEnabled(false);
             mPaymentView.setText(payment.toPlainString());
+            mPaymentLayout.setHintAnimationEnabled(true);
             mClaimedLayout.setVisibility(View.VISIBLE);
             mClaimedSwitch.setVisibility(View.VISIBLE);
             if (cursor.isNull(COLUMN_INDEX_CLAIMED)) {
