@@ -1,11 +1,13 @@
 package com.skepticalone.mecachecker.components.summary;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +17,7 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 
-public abstract class SummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public abstract class AbstractSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final SummaryAdapter mAdapter = new SummaryAdapter();
 
@@ -33,6 +35,15 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
         getLoaderManager().initLoader(getLoaderId(), null, this);
     }
 
+    abstract String[] getProjection();
+
+    abstract Uri getContentUri();
+
+    @Override
+    public final Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), getContentUri(), getProjection(), null, null, null);
+    }
+
     @Override
     public final void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
@@ -47,7 +58,10 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
 
     abstract int getRowCount();
 
-    abstract void bindViewHolderToCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor);
+    abstract void bindCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor);
+
+    void onViewHolderCreated(SummaryViewHolder holder) {
+    }
 
     final class SummaryViewHolder extends RecyclerView.ViewHolder {
         final TextView
@@ -76,13 +90,15 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
 
         @Override
         public SummaryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new SummaryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_item, parent, false));
+            SummaryViewHolder viewHolder = new SummaryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_item, parent, false));
+            onViewHolderCreated(viewHolder);
+            return viewHolder;
         }
 
         @Override
         public final void onBindViewHolder(SummaryViewHolder holder, int position) {
             assert mCursor != null;
-            bindViewHolderToCursor(holder, position, mCursor);
+            bindCursor(holder, position, mCursor);
         }
 
         @Override

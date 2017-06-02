@@ -44,7 +44,7 @@ public class SummaryActivity extends AppCompatActivity {
                 case 0:
                     return new RosteredSummaryFragment();
                 case 1:
-                    return new AdditionalSummaryFragment();
+                    return new AdditionalShiftsSummaryFragment();
                 case 2:
                     return new CrossCoverSummaryFragment();
                 case 3:
@@ -65,7 +65,7 @@ public class SummaryActivity extends AppCompatActivity {
                 case 0:
                     return getString(RosteredSummaryFragment.tabTitle);
                 case 1:
-                    return getString(AdditionalSummaryFragment.tabTitle);
+                    return getString(AdditionalShiftsSummaryFragment.tabTitle);
                 case 2:
                     return getString(CrossCoverSummaryFragment.tabTitle);
                 case 3:

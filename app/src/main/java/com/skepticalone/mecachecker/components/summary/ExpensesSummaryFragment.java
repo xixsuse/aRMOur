@@ -7,7 +7,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 
-public class ExpensesSummaryFragment extends PaymentsSummaryFragment {
+public class ExpensesSummaryFragment extends AbstractSinglePaymentSummaryFragment {
 
     @StringRes
     static final int tabTitle = R.string.expenses;

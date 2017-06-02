@@ -11,7 +11,6 @@
     <string name="add_normal_day">Add normal day</string>
     <string name="add_long_day">Add long day</string>
     <string name="add_night_shift">Add night shift</string>
-    <string name="shifts">Shifts</string>
     <string name="hours">Hours</string>
     <string name="rostered_hours">Rostered hours</string>
     <string name="logged_hours">Logged hours</string>
@@ -22,8 +21,8 @@
     <string name="shift_type">Shift type</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
-    <string name="rostered">Rostered</string>
     <string name="logged_shifts">Logged shifts</string>
+    <string name="rostered">Rostered</string>
     <string name="additional">Additional</string>
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>

@@ -1,11 +1,9 @@
 package com.skepticalone.mecachecker.components.summary;
 
 import android.database.Cursor;
-import android.os.Bundle;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
@@ -17,7 +15,7 @@ import org.joda.time.Duration;
 
 import java.util.Locale;
 
-public class RosteredSummaryFragment extends SummaryFragment {
+public class RosteredSummaryFragment extends AbstractSummaryFragment {
 
     @StringRes
     static final int tabTitle = R.string.rostered;
@@ -40,25 +38,33 @@ public class RosteredSummaryFragment extends SummaryFragment {
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Provider.rosteredShiftsUri, PROJECTION, null, null, null);
+    String[] getProjection() {
+        return PROJECTION;
+    }
+
+    @Override
+    Uri getContentUri() {
+        return Provider.rosteredShiftsUri;
     }
 
     @Override
     int getRowCount() {
-        return 3;
+        return 4;
     }
 
     @Override
-    void bindViewHolderToCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor) {
+    void bindCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor) {
         switch (row) {
             case 0:
-                onBindShiftNumber(holder, cursor);
+                onBindShiftNumber(holder, cursor, false);
                 break;
             case 1:
                 onBindShiftsDuration(holder, cursor, false);
                 break;
             case 2:
+                onBindShiftNumber(holder, cursor, true);
+                break;
+            case 3:
                 onBindShiftsDuration(holder, cursor, true);
                 break;
             default:
@@ -66,29 +72,27 @@ public class RosteredSummaryFragment extends SummaryFragment {
         }
     }
 
-    private void onBindShiftNumber(SummaryViewHolder holder, @NonNull Cursor cursor) {
-        int logged = 0, not_logged = 0;
+    @Override
+    void onViewHolderCreated(SummaryViewHolder holder) {
+        holder.subtotalsView.setVisibility(View.GONE);
+        holder.pieView.setVisibility(View.GONE);
+    }
+
+    private void onBindShiftNumber(SummaryViewHolder holder, @NonNull Cursor cursor, boolean logged) {
+        holder.titleView.setText(logged ? R.string.logged_shifts : R.string.rostered_shifts);
+        int count = 0;
         if (cursor.moveToFirst()) {
             do {
-                if (cursor.isNull(COLUMN_INDEX_LOGGED_START) || cursor.isNull(COLUMN_INDEX_LOGGED_END)) {
-                    not_logged++;
-                } else {
-                    logged++;
+                if (!logged || (!cursor.isNull(COLUMN_INDEX_LOGGED_START) && !cursor.isNull(COLUMN_INDEX_LOGGED_END))) {
+                    count++;
                 }
             } while (cursor.moveToNext());
         }
-        int total = logged + not_logged;
-        holder.titleView.setText(R.string.rostered_shifts);
-        holder.totalView.setText(String.format(Locale.US, "%d", total));
-        holder.unclaimedView.setText(String.format(Locale.US, "Not logged: %d (%d%%)", not_logged, 100 * not_logged / total));
-        holder.claimedView.setText(String.format(Locale.US, "Logged: %d (%d%%)", logged, 100 * logged / total));
-        holder.paidView.setVisibility(View.GONE);
-        holder.subtotalsView.setVisibility(View.VISIBLE);
-        holder.pieView.set(not_logged, logged);
-        holder.pieView.setVisibility(View.VISIBLE);
+        holder.totalView.setText(String.format(Locale.US, "%d", count));
     }
 
     private void onBindShiftsDuration(SummaryViewHolder holder, @NonNull Cursor cursor, boolean logged) {
+        holder.titleView.setText(logged ? R.string.logged_hours : R.string.rostered_hours);
         int
                 columnIndexStart = logged ? COLUMN_INDEX_LOGGED_START : COLUMN_INDEX_ROSTERED_START,
                 columnIndexEnd = logged ? COLUMN_INDEX_LOGGED_END : COLUMN_INDEX_ROSTERED_END;
@@ -100,10 +104,7 @@ public class RosteredSummaryFragment extends SummaryFragment {
                 }
             } while (cursor.moveToNext());
         }
-        holder.titleView.setText(logged ? R.string.logged_hours : R.string.rostered_hours);
         holder.totalView.setText(String.format(Locale.US, "%.1f", (float) duration.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR));
-        holder.subtotalsView.setVisibility(View.GONE);
-        holder.pieView.setVisibility(View.GONE);
     }
 
 }

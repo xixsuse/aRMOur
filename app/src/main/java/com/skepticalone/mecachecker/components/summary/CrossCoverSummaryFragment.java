@@ -7,7 +7,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 
-public class CrossCoverSummaryFragment extends PaymentsSummaryFragment {
+public class CrossCoverSummaryFragment extends AbstractSinglePaymentSummaryFragment {
 
     @StringRes
     static final int tabTitle = R.string.cross_cover;

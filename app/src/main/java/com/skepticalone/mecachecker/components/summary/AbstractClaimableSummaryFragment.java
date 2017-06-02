@@ -2,12 +2,8 @@ package com.skepticalone.mecachecker.components.summary;
 
 
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
@@ -15,60 +11,44 @@ import com.skepticalone.mecachecker.R;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-public abstract class PaymentsSummaryFragment extends SummaryFragment {
-
-    private static final int
-            COLUMN_INDEX_PAYMENT = 0,
-            COLUMN_INDEX_CLAIMED = 1,
-            COLUMN_INDEX_PAID = 2;
+public abstract class AbstractClaimableSummaryFragment extends AbstractSummaryFragment {
 
     @Override
-    int getRowCount() {
-        return 2;
-    }
-
-    @Override
-    void bindViewHolderToCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor) {
+    void bindCursor(SummaryViewHolder holder, int row, @NonNull Cursor cursor) {
         switch (row) {
             case 0:
-                onBindExpenseItems(holder, cursor);
+                bindCursorToItemCounts(holder, cursor);
                 break;
             case 1:
-                onBindExpenseMoney(holder, cursor);
+                bindCursorToMoney(holder, cursor);
                 break;
             default:
                 throw new IllegalStateException();
         }
     }
 
+    @Override
+    int getRowCount() {
+        return 2;
+    }
+
     @StringRes
     abstract int getItemsTitle();
 
-    abstract Uri getContentUri();
+    abstract int getColumnIndexClaimed();
 
-    abstract String getColumnNamePayment();
+    abstract int getColumnIndexPaid();
 
-    abstract String getColumnNameClaimed();
+    abstract BigDecimal getCurrentSum(@NonNull Cursor cursor);
 
-    abstract String getColumnNamePaid();
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), getContentUri(), new String[]{
-                getColumnNamePayment(),
-                getColumnNameClaimed(),
-                getColumnNamePaid()
-        }, null, null, null);
-    }
-
-    private void onBindExpenseItems(SummaryViewHolder holder, @NonNull Cursor cursor) {
+    private void bindCursorToItemCounts(SummaryViewHolder holder, @NonNull Cursor cursor) {
         holder.titleView.setText(getItemsTitle());
         int total = 0, unclaimed = 0, claimed = 0, paid = 0;
         if (cursor.moveToFirst()) {
             do {
-                if (!cursor.isNull(COLUMN_INDEX_PAID)) {
+                if (!cursor.isNull(getColumnIndexPaid())) {
                     paid++;
-                } else if (!cursor.isNull(COLUMN_INDEX_CLAIMED)) {
+                } else if (!cursor.isNull(getColumnIndexClaimed())) {
                     claimed++;
                 } else {
                     unclaimed++;
@@ -90,16 +70,15 @@ public abstract class PaymentsSummaryFragment extends SummaryFragment {
         }
     }
 
-
-    private void onBindExpenseMoney(SummaryViewHolder holder, @NonNull Cursor cursor) {
+    private void bindCursorToMoney(SummaryViewHolder holder, @NonNull Cursor cursor) {
         holder.titleView.setText(R.string.money);
         BigDecimal total = BigDecimal.ZERO, unclaimed = BigDecimal.ZERO, claimed = BigDecimal.ZERO, paid = BigDecimal.ZERO;
         if (cursor.moveToFirst()) {
             do {
-                BigDecimal current = BigDecimal.valueOf(cursor.getInt(COLUMN_INDEX_PAYMENT), 2);
-                if (!cursor.isNull(COLUMN_INDEX_PAID)) {
+                BigDecimal current = getCurrentSum(cursor);
+                if (!cursor.isNull(getColumnIndexPaid())) {
                     paid = paid.add(current);
-                } else if (!cursor.isNull(COLUMN_INDEX_CLAIMED)) {
+                } else if (!cursor.isNull(getColumnIndexClaimed())) {
                     claimed = claimed.add(current);
                 } else {
                     unclaimed = unclaimed.add(current);
