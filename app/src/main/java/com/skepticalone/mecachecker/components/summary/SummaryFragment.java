@@ -7,13 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
@@ -25,9 +22,7 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = new RecyclerView(getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.summary_fragment, container, false);
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
@@ -56,21 +51,21 @@ public abstract class SummaryFragment extends Fragment implements LoaderManager.
 
     final class SummaryViewHolder extends RecyclerView.ViewHolder {
         final TextView
-                titleView, unclaimedView, claimedView, paidView, totalView;
+                titleView, totalView, unclaimedView, claimedView, paidView;
+        final View
+                subtotalsView;
         final PieView
                 pieView;
-        final ProgressBar
-                progressBar;
 
         private SummaryViewHolder(View itemView) {
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.title);
-            unclaimedView = (TextView) itemView.findViewById(R.id.unclaimed);
-            claimedView = (TextView) itemView.findViewById(R.id.claimed);
-            paidView = (TextView) itemView.findViewById(R.id.paid);
             totalView = (TextView) itemView.findViewById(R.id.total);
+            subtotalsView = itemView.findViewById(R.id.subtotals);
+            unclaimedView = (TextView) subtotalsView.findViewById(R.id.unclaimed);
+            claimedView = (TextView) subtotalsView.findViewById(R.id.claimed);
+            paidView = (TextView) subtotalsView.findViewById(R.id.paid);
             pieView = (PieView) itemView.findViewById(R.id.pie);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progress);
         }
     }
 

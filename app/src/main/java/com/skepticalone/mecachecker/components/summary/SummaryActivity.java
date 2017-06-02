@@ -14,7 +14,11 @@ import com.skepticalone.mecachecker.R;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    static final int LOADER_ID_ROSTERED = 1, LOADER_ID_ADDITIONAL = 2, LOADER_ID_CROSS_COVER = 3;
+    static final int
+            LOADER_ID_ROSTERED = 1,
+            LOADER_ID_ADDITIONAL = 2,
+            LOADER_ID_CROSS_COVER = 3,
+            LOADER_ID_EXPENSES = 4;
     private static final String SUMMARY_FRAGMENT = "SUMMARY_FRAGMENT";
 
     @Override
@@ -29,7 +33,7 @@ public class SummaryActivity extends AppCompatActivity {
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
-        private static final int NUM_ITEMS = 2;
+        private static final int NUM_ITEMS = 4;
 
         private MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -42,6 +46,10 @@ public class SummaryActivity extends AppCompatActivity {
                     return new RosteredSummaryFragment();
                 case 1:
                     return new AdditionalSummaryFragment();
+                case 2:
+                    return new CrossCoverSummaryFragment();
+                case 3:
+                    return new ExpensesSummaryFragment();
                 default:
                     throw new IllegalStateException();
             }
@@ -59,6 +67,10 @@ public class SummaryActivity extends AppCompatActivity {
                     return getString(RosteredSummaryFragment.tabTitle);
                 case 1:
                     return getString(AdditionalSummaryFragment.tabTitle);
+                case 2:
+                    return getString(CrossCoverSummaryFragment.tabTitle);
+                case 3:
+                    return getString(ExpensesSummaryFragment.tabTitle);
                 default:
                     throw new IllegalStateException();
             }

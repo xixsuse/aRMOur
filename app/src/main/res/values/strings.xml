@@ -22,10 +22,13 @@
     <string name="shift_type">Shift type</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
+    <string name="rostered">Rostered</string>
     <string name="logged_shifts">Logged shifts</string>
+    <string name="additional">Additional</string>
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>
     <string name="cross_cover">Cross cover</string>
+    <string name="cross_cover_shifts">Cross cover shifts</string>
     <string name="expenses">Expenses</string>
     <string name="currency_format">$%.2f</string>
     <string name="hourly_rate">Hourly rate</string>

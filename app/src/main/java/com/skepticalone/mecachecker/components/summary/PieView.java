@@ -14,29 +14,28 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 
-
 public class PieView extends View {
     private static final String TAG = "PieView";
     @ColorInt
-    private final int unclaimedColor, claimedColor, paidColor;
+    private final int colorOne, colorTwo, colorThree;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mRectF = new RectF();
     private Rect mRect = new Rect();
-    private long unclaimed, claimed, paid;
+    private long one, two, three;
 
     public PieView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        unclaimedColor = ContextCompat.getColor(context, R.color.unclaimed);
-        claimedColor = ContextCompat.getColor(context, R.color.claimed);
-        paidColor = ContextCompat.getColor(context, R.color.paid);
+        colorOne = ContextCompat.getColor(context, R.color.one);
+        colorTwo = ContextCompat.getColor(context, R.color.two);
+        colorThree = ContextCompat.getColor(context, R.color.three);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.PieView,
                 0, 0);
         try {
-            unclaimed = a.getInteger(R.styleable.PieView_unclaimed, 0);
-            claimed = a.getInteger(R.styleable.PieView_claimed, 0);
-            paid = a.getInteger(R.styleable.PieView_paid, 0);
+            one = a.getInteger(R.styleable.PieView_one, 0);
+            two = a.getInteger(R.styleable.PieView_two, 0);
+            three = a.getInteger(R.styleable.PieView_three, 0);
         } finally {
             a.recycle();
         }
@@ -45,35 +44,39 @@ public class PieView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (unclaimed != 0 || claimed != 0 || paid != 0) {
+        if (one != 0 || two != 0 || three != 0) {
             mRectF.set(0, 0, canvas.getWidth(), canvas.getHeight());
-            float factor = 360f / (unclaimed + claimed + paid);
+            float factor = 360f / (one + two + three);
             float startAngle = -90f;
             float sweepAngle;
-            if (unclaimed != 0) {
-                mPaint.setColor(unclaimedColor);
-                sweepAngle = unclaimed * factor;
+            if (one != 0) {
+                mPaint.setColor(colorOne);
+                sweepAngle = one * factor;
                 canvas.drawArc(mRectF, startAngle, sweepAngle, true, mPaint);
                 startAngle += sweepAngle;
             }
-            if (claimed != 0) {
-                mPaint.setColor(claimedColor);
-                sweepAngle = claimed * factor;
+            if (two != 0) {
+                mPaint.setColor(colorTwo);
+                sweepAngle = two * factor;
                 canvas.drawArc(mRectF, startAngle, sweepAngle, true, mPaint);
                 startAngle += sweepAngle;
             }
-            if (paid != 0) {
-                mPaint.setColor(paidColor);
-                sweepAngle = paid * factor;
+            if (three != 0) {
+                mPaint.setColor(colorThree);
+                sweepAngle = three * factor;
                 canvas.drawArc(mRectF, startAngle, sweepAngle, true, mPaint);
             }
         }
     }
 
-    public void set(long unclaimed, long claimed, long paid) {
-        this.unclaimed = unclaimed;
-        this.claimed = claimed;
-        this.paid = paid;
+    public void set(long one, long two, long three) {
+        this.one = one;
+        this.two = two;
+        this.three = three;
         invalidate();
+    }
+
+    public void set(long one, long two) {
+        set(one, two, 0);
     }
 }
