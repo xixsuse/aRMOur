@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.skepticalone.mecachecker.R;
 
-
 public class SummaryActivity extends AppCompatActivity {
 
     static final int
