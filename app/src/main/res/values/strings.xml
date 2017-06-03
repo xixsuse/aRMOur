@@ -30,12 +30,16 @@
     <string name="cross_cover_shifts">Cross cover shifts</string>
     <string name="expenses">Expenses</string>
     <string name="number">Number</string>
+    <string name="number_format">%d</string>
+    <string name="hours_format">%.1f</string>
     <string name="currency_format">$%.2f</string>
+    <string name="subtotal_format">%1$s (%2$d%%)</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="title">Title</string>
     <string name="payment">Payment</string>
     <string name="cross_cover_payment">Cross cover payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
+    <string name="unclaimed">Unclaimed</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>
     <string name="total">Total</string>

@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components.summary;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,7 +26,6 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 
 import java.math.BigDecimal;
-import java.util.Locale;
 
 public class AllSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -164,10 +164,10 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalDuration = totalDuration.plus(new Duration(cursor.getLong(ROSTERED_COLUMN_INDEX_ROSTERED_START), cursor.getLong(ROSTERED_COLUMN_INDEX_ROSTERED_END)));
             } while (cursor.moveToNext());
         }
-        mAdapter.update(POSITION_ROSTERED_NUMBER, new Adapter.Payload(totalCount));
-        mAdapter.update(POSITION_ROSTERED_DURATION, new Adapter.Payload(totalDuration));
-        mAdapter.update(POSITION_LOGGED_NUMBER, new Adapter.Payload(loggedCount));
-        mAdapter.update(POSITION_LOGGED_DURATION, new Adapter.Payload(loggedDuration));
+        mAdapter.update(POSITION_ROSTERED_NUMBER, new Adapter.Payload(getContext(), totalCount));
+        mAdapter.update(POSITION_ROSTERED_DURATION, new Adapter.Payload(getContext(), totalDuration));
+        mAdapter.update(POSITION_LOGGED_NUMBER, new Adapter.Payload(getContext(), loggedCount));
+        mAdapter.update(POSITION_LOGGED_DURATION, new Adapter.Payload(getContext(), loggedDuration));
     }
 
     void getAdditionalData(@NonNull Cursor cursor) {
@@ -199,9 +199,9 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalMoney = totalMoney.add(currentMoney);
             } while (cursor.moveToNext());
         }
-        mAdapter.update(POSITION_ADDITIONAL_NUMBER, new Adapter.Payload(totalCount, unclaimedCount, claimedCount, paidCount));
-        mAdapter.update(POSITION_ADDITIONAL_DURATION, new Adapter.Payload(totalDuration, unclaimedDuration, claimedDuration, paidDuration));
-        mAdapter.update(POSITION_ADDITIONAL_MONEY, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
+        mAdapter.update(POSITION_ADDITIONAL_NUMBER, new Adapter.Payload(getContext(), totalCount, unclaimedCount, claimedCount, paidCount));
+        mAdapter.update(POSITION_ADDITIONAL_DURATION, new Adapter.Payload(getContext(), totalDuration, unclaimedDuration, claimedDuration, paidDuration));
+        mAdapter.update(POSITION_ADDITIONAL_MONEY, new Adapter.Payload(getContext(), totalMoney, unclaimedMoney, claimedMoney, paidMoney));
     }
 
     void getSinglePaymentData(int id, @NonNull Cursor cursor) {
@@ -224,8 +224,8 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalMoney = totalMoney.add(currentMoney);
             } while (cursor.moveToNext());
         }
-        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_NUMBER : POSITION_EXPENSES_NUMBER, new Adapter.Payload(totalCount, unclaimedCount, claimedCount, paidCount));
-        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_MONEY : POSITION_EXPENSES_MONEY, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
+        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_NUMBER : POSITION_EXPENSES_NUMBER, new Adapter.Payload(getContext(), totalCount, unclaimedCount, claimedCount, paidCount));
+        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_MONEY : POSITION_EXPENSES_MONEY, new Adapter.Payload(getContext(), totalMoney, unclaimedMoney, claimedMoney, paidMoney));
     }
 
     @Override
@@ -337,66 +337,89 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 this.showExtra = showExtra;
             }
 
-            private Payload(int total, boolean showExtra) {
-                this(R.string.number, String.format(Locale.US, "%d", total), showExtra);
+            private Payload(Context context, int total, boolean showExtra) {
+                this(R.string.number, getNumberString(context, total), showExtra);
             }
 
-            private Payload(Duration total, boolean showExtra) {
-                this(R.string.hours, String.format(Locale.US, "%.1f", (float) total.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR), showExtra);
+            private Payload(Context context, Duration total, boolean showExtra) {
+                this(R.string.hours, getDurationString(context, total), showExtra);
             }
 
-            private Payload(BigDecimal total, boolean showExtra) {
-                this(R.string.money, String.format(Locale.US, "$%.2f", total), showExtra);
+            private Payload(Context context, BigDecimal total, boolean showExtra) {
+                this(R.string.money, getMoneyString(context, total), showExtra);
             }
 
-            Payload(int total) {
-                this(total, false);
+            Payload(Context context, int total) {
+                this(context, total, false);
             }
 
-            Payload(int total, int unclaimed, int claimed, int paid) {
-                this(total, total != 0);
+            Payload(Context context, int total, int unclaimed, int claimed, int paid) {
+                this(context, total, total != 0);
                 if (showExtra) {
-                    unclaimedText = String.format(Locale.US, "Unclaimed: %d (%d%%)", unclaimed, 100 * unclaimed / total);
+                    unclaimedText = getNumberSubtotalString(context, unclaimed, total);
                     unclaimedPart = (long) unclaimed;
-                    claimedText = String.format(Locale.US, "Claimed: %d (%d%%)", claimed, 100 * claimed / total);
+                    claimedText = getNumberSubtotalString(context, claimed, total);
                     claimedPart = (long) claimed;
-                    paidText = String.format(Locale.US, "Paid: %d (%d%%)", paid, 100 * paid / total);
+                    paidText = getNumberSubtotalString(context, paid, total);
                     paidPart = (long) paid;
                 }
             }
 
-            Payload(BigDecimal total) {
-                this(total, false);
+            Payload(Context context, BigDecimal total) {
+                this(context, total, false);
             }
 
-            Payload(BigDecimal total, BigDecimal unclaimed, BigDecimal claimed, BigDecimal paid) {
-                this(total, !total.equals(BigDecimal.ZERO));
+            Payload(Context context, BigDecimal total, BigDecimal unclaimed, BigDecimal claimed, BigDecimal paid) {
+                this(context, total, !total.equals(BigDecimal.ZERO));
                 if (showExtra) {
                     unclaimedPart = unclaimed.longValue();
-                    unclaimedText = String.format(Locale.US, "Unclaimed: $%.2f (%d%%)", unclaimed, unclaimed.scaleByPowerOfTen(2).divide(total, 0, BigDecimal.ROUND_HALF_UP).intValue());
+                    unclaimedText = getMoneySubtotalString(context, unclaimed, total);
                     claimedPart = claimed.longValue();
-                    claimedText = String.format(Locale.US, "Claimed: $%.2f (%d%%)", claimed, claimed.scaleByPowerOfTen(2).divide(total, 0, BigDecimal.ROUND_HALF_UP).intValue());
+                    claimedText = getMoneySubtotalString(context, claimed, total);
                     paidPart = paid.longValue();
-                    paidText = String.format(Locale.US, "Paid: $%.2f (%d%%)", paid, paid.scaleByPowerOfTen(2).divide(total, 0, BigDecimal.ROUND_HALF_UP).intValue());
+                    paidText = getMoneySubtotalString(context, paid, total);
                 }
             }
 
-            Payload(Duration total) {
-                this(total, false);
+            Payload(Context context, Duration total) {
+                this(context, total, false);
             }
 
-            Payload(Duration total, Duration unclaimed, Duration claimed, Duration paid) {
-                this(total, !total.isEqual(Duration.ZERO));
+            Payload(Context context, Duration total, Duration unclaimed, Duration claimed, Duration paid) {
+                this(context, total, !total.isEqual(Duration.ZERO));
                 if (showExtra) {
                     unclaimedPart = unclaimed.getMillis();
-                    unclaimedText = String.format(Locale.US, "Unclaimed: %.1f (%d%%)", (float) unclaimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * unclaimed.getMillis() / total.getMillis());
+                    unclaimedText = getDurationSubtotalString(context, unclaimed, total);
                     claimedPart = claimed.getMillis();
-                    claimedText = String.format(Locale.US, "Claimed: %.1f (%d%%)", (float) claimed.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * claimed.getMillis() / total.getMillis());
+                    claimedText = getDurationSubtotalString(context, claimed, total);
                     paidPart = paid.getMillis();
-                    paidText = String.format(Locale.US, "Paid: %.1f (%d%%)", (float) paid.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR, 100 * paid.getMillis() / total.getMillis());
+                    paidText = getDurationSubtotalString(context, paid, total);
                 }
             }
 
+            private static String getNumberString(Context context, int number) {
+                return context.getString(R.string.number_format, number);
+            }
+
+            private static String getNumberSubtotalString(Context context, int number, int total) {
+                return context.getString(R.string.subtotal_format, getNumberString(context, number), 100 * number / total);
+            }
+
+            private static String getDurationString(Context context, Duration duration) {
+                return context.getString(R.string.hours_format, (float) duration.getStandardMinutes() / DateTimeConstants.MINUTES_PER_HOUR);
+            }
+
+            private static String getDurationSubtotalString(Context context, Duration duration, Duration total) {
+                return context.getString(R.string.subtotal_format, getDurationString(context, duration), 100 * duration.getMillis() / total.getMillis());
+            }
+
+            private static String getMoneyString(Context context, BigDecimal money) {
+                return context.getString(R.string.currency_format, money);
+            }
+
+            private static String getMoneySubtotalString(Context context, BigDecimal money, BigDecimal total) {
+                return context.getString(R.string.subtotal_format, getMoneyString(context, money), money.scaleByPowerOfTen(2).divide(total, 0, BigDecimal.ROUND_HALF_UP).intValue());
+            }
         }
 
         static class BodyViewHolder extends RecyclerView.ViewHolder {
@@ -419,19 +442,21 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
             }
 
             void bindTo(@Nullable Payload payload) {
-                if (payload == null) return;
-                titleView.setText(payload.title);
-                totalView.setText(payload.totalText);
-                if (payload.showExtra) {
-                    unclaimedView.setText(payload.unclaimedText);
-                    claimedView.setText(payload.claimedText);
-                    paidView.setText(payload.paidText);
-                    subtotalsView.setVisibility(View.VISIBLE);
-                    pieView.set(payload.unclaimedPart, payload.claimedPart, payload.paidPart);
-                    pieView.setVisibility(View.VISIBLE);
+                if (payload != null) {
+                    titleView.setText(payload.title);
+                    totalView.setText(payload.totalText);
+                    if (payload.showExtra) {
+                        unclaimedView.setText(payload.unclaimedText);
+                        claimedView.setText(payload.claimedText);
+                        paidView.setText(payload.paidText);
+                        pieView.set(payload.unclaimedPart, payload.claimedPart, payload.paidPart);
+                        subtotalsView.setVisibility(View.VISIBLE);
+                    } else {
+                        subtotalsView.setVisibility(View.GONE);
+                    }
+                    itemView.setVisibility(View.VISIBLE);
                 } else {
-                    subtotalsView.setVisibility(View.GONE);
-                    pieView.setVisibility(View.GONE);
+                    itemView.setVisibility(View.GONE);
                 }
             }
 

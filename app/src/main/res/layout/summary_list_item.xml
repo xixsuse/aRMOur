@@ -6,84 +6,123 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/total"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside"
             tools:text="Money" />
 
         <TextView
             android:id="@+id/total"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:layout_constraintBottom_toTopOf="@+id/subtotals"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="$16089.98" />
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/subtotals"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/pie"
-            app:layout_constraintTop_toBottomOf="@id/total">
+            android:layout_margin="8dp">
+
+            <com.skepticalone.mecachecker.components.summary.PieView
+                android:id="@+id/pie"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/unclaimed_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unclaimed"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/one"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/unclaimed"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/one"
-                android:textSize="14sp"
-                tools:text="Unclaimed: $2324.42 (5.6%)" />
+                app:layout_constraintBaseline_toBaselineOf="@id/unclaimed_title"
+                app:layout_constraintEnd_toStartOf="@id/pie"
+                app:layout_constraintStart_toEndOf="@id/unclaimed_title"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_goneMarginRight="0dp"
+                tools:text="$2324.42 (5.6%)" />
+
+            <TextView
+                android:id="@+id/claimed_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/claimed"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/two"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/unclaimed_title" />
 
             <TextView
                 android:id="@+id/claimed"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/two"
-                android:textSize="14sp"
-                tools:text="Claimed: 15 (35.1%)" />
+                app:layout_constraintBaseline_toBaselineOf="@id/claimed_title"
+                app:layout_constraintEnd_toStartOf="@id/pie"
+                app:layout_constraintStart_toEndOf="@id/claimed_title"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_goneMarginRight="0dp"
+                tools:text="15 (35.1%)" />
+
+            <TextView
+                android:id="@+id/paid_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/paid"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/three"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/claimed_title" />
 
             <TextView
                 android:id="@+id/paid"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/three"
-                android:textSize="14sp"
-                tools:text="Paid: 27 (54.6%)" />
+                app:layout_constraintBaseline_toBaselineOf="@id/paid_title"
+                app:layout_constraintEnd_toStartOf="@id/pie"
+                app:layout_constraintStart_toEndOf="@id/paid_title"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_goneMarginRight="0dp"
+                tools:text="27 (54.6%)" />
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
-        <com.skepticalone.mecachecker.components.summary.PieView
-            android:id="@+id/pie"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
