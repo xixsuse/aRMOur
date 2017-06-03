@@ -2,14 +2,10 @@ package com.skepticalone.mecachecker.components.summary;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-
-import com.skepticalone.mecachecker.R;
 
 public class SummaryActivity extends AppCompatActivity {
 
@@ -23,12 +19,20 @@ public class SummaryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_pager);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new AllSummaryFragment(), "ALL_SUMMARY").commit();
+        }
     }
+
+//    @Override
+//    protected void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.view_pager);
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+//        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(viewPager);
+//    }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
