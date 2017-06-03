@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ import org.joda.time.Duration;
 
 import java.math.BigDecimal;
 
-public class AllSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String[]
             ROSTERED_PROJECTION = {
@@ -109,6 +110,8 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                     }
                 }
             });
+        } else {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
@@ -147,11 +150,10 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
             default:
                 throw new IllegalStateException();
         }
-//        Log.i(TAG, "onCreateLoader(): id = [" + id + "], contentUri = [" + contentUri + "]");
         return new CursorLoader(getActivity(), contentUri, projection, null, null, null);
     }
 
-    void getRosteredData(@NonNull Cursor cursor) {
+    private void getRosteredData(@NonNull Cursor cursor) {
         int totalCount = 0, loggedCount = 0;
         Duration totalDuration = Duration.ZERO, loggedDuration = Duration.ZERO;
         if (cursor.moveToFirst()) {
@@ -170,7 +172,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
         mAdapter.update(POSITION_LOGGED_DURATION, new Adapter.Payload(getContext(), loggedDuration));
     }
 
-    void getAdditionalData(@NonNull Cursor cursor) {
+    private void getAdditionalData(@NonNull Cursor cursor) {
         int totalCount = 0, unclaimedCount = 0, claimedCount = 0, paidCount = 0;
         Duration totalDuration = Duration.ZERO, unclaimedDuration = Duration.ZERO, claimedDuration = Duration.ZERO, paidDuration = Duration.ZERO;
         BigDecimal totalMoney = BigDecimal.ZERO, unclaimedMoney = BigDecimal.ZERO, claimedMoney = BigDecimal.ZERO, paidMoney = BigDecimal.ZERO;
@@ -204,7 +206,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
         mAdapter.update(POSITION_ADDITIONAL_MONEY, new Adapter.Payload(getContext(), totalMoney, unclaimedMoney, claimedMoney, paidMoney));
     }
 
-    void getSinglePaymentData(int id, @NonNull Cursor cursor) {
+    private void getSinglePaymentData(int id, @NonNull Cursor cursor) {
         int totalCount = 0, unclaimedCount = 0, claimedCount = 0, paidCount = 0;
         BigDecimal totalMoney = BigDecimal.ZERO, unclaimedMoney = BigDecimal.ZERO, claimedMoney = BigDecimal.ZERO, paidMoney = BigDecimal.ZERO;
         if (cursor.moveToFirst()) {
@@ -269,7 +271,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == VIEW_TYPE_HEADER) {
-                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_layout, parent, false));
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_header, parent, false));
             } else if (viewType == VIEW_TYPE_CONTENT) {
                 return new BodyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_item, parent, false));
             } else {
@@ -432,7 +434,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
 
             private BodyViewHolder(View itemView) {
                 super(itemView);
-                titleView = (TextView) itemView.findViewById(R.id.title);
+                titleView = (TextView) itemView.findViewById(R.id.item_title);
                 totalView = (TextView) itemView.findViewById(R.id.total);
                 subtotalsView = itemView.findViewById(R.id.subtotals);
                 unclaimedView = (TextView) subtotalsView.findViewById(R.id.unclaimed);

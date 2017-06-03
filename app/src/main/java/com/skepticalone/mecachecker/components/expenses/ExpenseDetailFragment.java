@@ -77,19 +77,19 @@ public class ExpenseDetailFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_detail_fragment, container, false);
         mTitleLayout = (TextInputLayout) view.findViewById(R.id.title_layout);
-        mTitleView = (EditText) mTitleLayout.findViewById(R.id.title);
+        mTitleView = (EditText) mTitleLayout.findViewById(R.id.expense_title);
         mPaymentLayout = (TextInputLayout) view.findViewById(R.id.payment_layout);
         mPaymentView = (EditText) mPaymentLayout.findViewById(R.id.payment);
 
         mClaimedLayout = view.findViewById(R.id.claimed_layout);
         ((ImageView) mClaimedLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_half_black_24dp);
-        ((TextView) mClaimedLayout.findViewById(R.id.title)).setText(R.string.claimed);
+        ((TextView) mClaimedLayout.findViewById(R.id.switch_title)).setText(R.string.claimed);
         mClaimedView = (TextView) mClaimedLayout.findViewById(R.id.text);
         mClaimedSwitch = (Switch) view.findViewById(R.id.button);
 
         mPaidLayout = view.findViewById(R.id.paid_layout);
         ((ImageView) mPaidLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_full_black_24dp);
-        ((TextView) mPaidLayout.findViewById(R.id.title)).setText(R.string.paid);
+        ((TextView) mPaidLayout.findViewById(R.id.switch_title)).setText(R.string.paid);
         mPaidView = (TextView) mPaidLayout.findViewById(R.id.text);
         mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.button);
 

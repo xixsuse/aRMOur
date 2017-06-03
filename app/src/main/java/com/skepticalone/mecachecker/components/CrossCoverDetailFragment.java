@@ -91,13 +91,13 @@ public class CrossCoverDetailFragment extends BaseFragment {
 
         View claimedLayout = view.findViewById(R.id.claimed_layout);
         ((ImageView) claimedLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_half_black_24dp);
-        ((TextView) claimedLayout.findViewById(R.id.title)).setText(R.string.claimed);
+        ((TextView) claimedLayout.findViewById(R.id.switch_title)).setText(R.string.claimed);
         mClaimedView = (TextView) claimedLayout.findViewById(R.id.text);
         mClaimedSwitch = (Switch) view.findViewById(R.id.button);
 
         mPaidLayout = view.findViewById(R.id.paid_layout);
         ((ImageView) mPaidLayout.findViewById(R.id.icon)).setImageResource(R.drawable.ic_check_box_full_black_24dp);
-        ((TextView) mPaidLayout.findViewById(R.id.title)).setText(R.string.paid);
+        ((TextView) mPaidLayout.findViewById(R.id.switch_title)).setText(R.string.paid);
         mPaidView = (TextView) mPaidLayout.findViewById(R.id.text);
         mPaidSwitch = (Switch) mPaidLayout.findViewById(R.id.button);
 

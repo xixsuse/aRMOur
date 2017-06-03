@@ -12,8 +12,6 @@
     <string name="add_long_day">Add long day</string>
     <string name="add_night_shift">Add night shift</string>
     <string name="hours">Hours</string>
-    <string name="rostered_hours">Rostered hours</string>
-    <string name="logged_hours">Logged hours</string>
     <string name="money">Money</string>
     <string name="custom">Custom</string>
     <string name="set">Set</string>
@@ -22,8 +20,6 @@
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
     <string name="logged_shifts">Logged shifts</string>
-    <string name="rostered">Rostered</string>
-    <string name="additional">Additional</string>
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>
     <string name="cross_cover">Cross cover</string>
