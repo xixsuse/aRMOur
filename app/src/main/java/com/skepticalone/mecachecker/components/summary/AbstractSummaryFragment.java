@@ -113,6 +113,4 @@ public abstract class AbstractSummaryFragment extends Fragment implements Loader
 
     }
 
-
-
 }

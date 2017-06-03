@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 public class AllSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "Adapter";
+
     private static final String[]
             ROSTERED_PROJECTION = {
             Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
@@ -52,6 +53,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                     Contract.Expenses.COLUMN_NAME_CLAIMED,
                     Contract.Expenses.COLUMN_NAME_PAID
             };
+
     private static final int
             ROSTERED_COLUMN_INDEX_ROSTERED_START = 0,
             ROSTERED_COLUMN_INDEX_ROSTERED_END = 1,
@@ -64,13 +66,50 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
             ADDITIONAL_COLUMN_INDEX_PAID = 4,
             SINGLE_PAYMENT_COLUMN_INDEX_PAYMENT = 0,
             SINGLE_PAYMENT_COLUMN_INDEX_CLAIMED = 1,
-            SINGLE_PAYMENT_COLUMN_INDEX_PAID = 2;
+            SINGLE_PAYMENT_COLUMN_INDEX_PAID = 2,
+            POSITION_ROSTERED_HEADER = 0,
+            POSITION_ROSTERED_NUMBER = 1,
+            POSITION_ROSTERED_DURATION = 2,
+            POSITION_LOGGED_HEADER = 3,
+            POSITION_LOGGED_NUMBER = 4,
+            POSITION_LOGGED_DURATION = 5,
+            POSITION_ADDITIONAL_HEADER = 6,
+            POSITION_ADDITIONAL_NUMBER = 7,
+            POSITION_ADDITIONAL_DURATION = 8,
+            POSITION_ADDITIONAL_MONEY = 9,
+            POSITION_CROSS_COVER_HEADER = 10,
+            POSITION_CROSS_COVER_NUMBER = 11,
+            POSITION_CROSS_COVER_MONEY = 12,
+            POSITION_EXPENSES_HEADER = 13,
+            POSITION_EXPENSES_NUMBER = 14,
+            POSITION_EXPENSES_MONEY = 15,
+            ITEM_COUNT = 16;
+
     private final Adapter mAdapter = new Adapter();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.summary_fragment, container, false);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch (position) {
+                        case POSITION_ROSTERED_HEADER:
+                        case POSITION_LOGGED_HEADER:
+                        case POSITION_ADDITIONAL_HEADER:
+                        case POSITION_CROSS_COVER_HEADER:
+                        case POSITION_EXPENSES_HEADER:
+                            return gridLayoutManager.getSpanCount();
+                        default:
+                            return 1;
+                    }
+                }
+            });
+        }
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
@@ -125,10 +164,10 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalDuration = totalDuration.plus(new Duration(cursor.getLong(ROSTERED_COLUMN_INDEX_ROSTERED_START), cursor.getLong(ROSTERED_COLUMN_INDEX_ROSTERED_END)));
             } while (cursor.moveToNext());
         }
-        mAdapter.update(0, new Adapter.Payload(R.string.rostered_shifts, totalCount));
-        mAdapter.update(1, new Adapter.Payload(totalDuration));
-        mAdapter.update(2, new Adapter.Payload(R.string.logged_shifts, loggedCount));
-        mAdapter.update(3, new Adapter.Payload(loggedDuration));
+        mAdapter.update(POSITION_ROSTERED_NUMBER, new Adapter.Payload(totalCount));
+        mAdapter.update(POSITION_ROSTERED_DURATION, new Adapter.Payload(totalDuration));
+        mAdapter.update(POSITION_LOGGED_NUMBER, new Adapter.Payload(loggedCount));
+        mAdapter.update(POSITION_LOGGED_DURATION, new Adapter.Payload(loggedDuration));
     }
 
     void getAdditionalData(@NonNull Cursor cursor) {
@@ -160,9 +199,9 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalMoney = totalMoney.add(currentMoney);
             } while (cursor.moveToNext());
         }
-        mAdapter.update(4, new Adapter.Payload(R.string.additional_shifts, totalCount, unclaimedCount, claimedCount, paidCount));
-        mAdapter.update(5, new Adapter.Payload(totalDuration, unclaimedDuration, claimedDuration, paidDuration));
-        mAdapter.update(6, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
+        mAdapter.update(POSITION_ADDITIONAL_NUMBER, new Adapter.Payload(totalCount, unclaimedCount, claimedCount, paidCount));
+        mAdapter.update(POSITION_ADDITIONAL_DURATION, new Adapter.Payload(totalDuration, unclaimedDuration, claimedDuration, paidDuration));
+        mAdapter.update(POSITION_ADDITIONAL_MONEY, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
     }
 
     void getSinglePaymentData(int id, @NonNull Cursor cursor) {
@@ -185,8 +224,8 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 totalMoney = totalMoney.add(currentMoney);
             } while (cursor.moveToNext());
         }
-        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? 7 : 9, new Adapter.Payload(id == SummaryActivity.LOADER_ID_CROSS_COVER ? R.string.cross_cover_shifts : R.string.expenses, totalCount, unclaimedCount, claimedCount, paidCount));
-        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? 8 : 10, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
+        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_NUMBER : POSITION_EXPENSES_NUMBER, new Adapter.Payload(totalCount, unclaimedCount, claimedCount, paidCount));
+        mAdapter.update(id == SummaryActivity.LOADER_ID_CROSS_COVER ? POSITION_CROSS_COVER_MONEY : POSITION_EXPENSES_MONEY, new Adapter.Payload(totalMoney, unclaimedMoney, claimedMoney, paidMoney));
     }
 
     @Override
@@ -222,14 +261,20 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
         }
     }
 
-    static class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+    private static class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private static final int ITEM_COUNT = 11;
+        private static final int VIEW_TYPE_HEADER = 1, VIEW_TYPE_CONTENT = 2;
         private final Payload[] mPayloads = new Payload[ITEM_COUNT];
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_item, parent, false));
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == VIEW_TYPE_HEADER) {
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_layout, parent, false));
+            } else if (viewType == VIEW_TYPE_CONTENT) {
+                return new BodyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_list_item, parent, false));
+            } else {
+                throw new IllegalStateException();
+            }
         }
 
         void update(int position, Payload payload) {
@@ -238,8 +283,37 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bindTo(mPayloads[position]);
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            int headerRes;
+            if (position == POSITION_ROSTERED_HEADER) {
+                headerRes = R.string.rostered_shifts;
+            } else if (position == POSITION_LOGGED_HEADER) {
+                headerRes = R.string.logged_shifts;
+            } else if (position == POSITION_ADDITIONAL_HEADER) {
+                headerRes = R.string.additional_shifts;
+            } else if (position == POSITION_CROSS_COVER_HEADER) {
+                headerRes = R.string.cross_cover_shifts;
+            } else if (position == POSITION_EXPENSES_HEADER) {
+                headerRes = R.string.expenses;
+            } else {
+                ((BodyViewHolder) holder).bindTo(mPayloads[position]);
+                return;
+            }
+            ((HeaderViewHolder) holder).headerView.setText(headerRes);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            switch (position) {
+                case POSITION_ROSTERED_HEADER:
+                case POSITION_LOGGED_HEADER:
+                case POSITION_ADDITIONAL_HEADER:
+                case POSITION_CROSS_COVER_HEADER:
+                case POSITION_EXPENSES_HEADER:
+                    return VIEW_TYPE_HEADER;
+                default:
+                    return VIEW_TYPE_CONTENT;
+            }
         }
 
         @Override
@@ -263,8 +337,8 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 this.showExtra = showExtra;
             }
 
-            private Payload(@StringRes int titleRes, int total, boolean showExtra) {
-                this(titleRes, String.format(Locale.US, "%d", total), showExtra);
+            private Payload(int total, boolean showExtra) {
+                this(R.string.number, String.format(Locale.US, "%d", total), showExtra);
             }
 
             private Payload(Duration total, boolean showExtra) {
@@ -275,12 +349,12 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 this(R.string.money, String.format(Locale.US, "$%.2f", total), showExtra);
             }
 
-            Payload(@StringRes int titleRes, int total) {
-                this(titleRes, total, false);
+            Payload(int total) {
+                this(total, false);
             }
 
-            Payload(@StringRes int titleRes, int total, int unclaimed, int claimed, int paid) {
-                this(titleRes, total, total != 0);
+            Payload(int total, int unclaimed, int claimed, int paid) {
+                this(total, total != 0);
                 if (showExtra) {
                     unclaimedText = String.format(Locale.US, "Unclaimed: %d (%d%%)", unclaimed, 100 * unclaimed / total);
                     unclaimedPart = (long) unclaimed;
@@ -325,7 +399,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
 
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        static class BodyViewHolder extends RecyclerView.ViewHolder {
             final TextView
                     titleView, totalView, unclaimedView, claimedView, paidView;
             final View
@@ -333,7 +407,7 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
             final PieView
                     pieView;
 
-            private ViewHolder(View itemView) {
+            private BodyViewHolder(View itemView) {
                 super(itemView);
                 titleView = (TextView) itemView.findViewById(R.id.title);
                 totalView = (TextView) itemView.findViewById(R.id.total);
@@ -361,6 +435,15 @@ public class AllSummaryFragment extends Fragment implements LoaderManager.Loader
                 }
             }
 
+        }
+
+        static class HeaderViewHolder extends RecyclerView.ViewHolder {
+            final TextView headerView;
+
+            HeaderViewHolder(View itemView) {
+                super(itemView);
+                headerView = (TextView) itemView;
+            }
         }
     }
 }
