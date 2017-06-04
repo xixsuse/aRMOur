@@ -22,7 +22,7 @@ public abstract class BaseFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        shiftTypeCalculator = new ShiftTypeCalculator(context.getResources());
+        shiftTypeCalculator = new ShiftTypeCalculator(context);
     }
 
     @Nullable

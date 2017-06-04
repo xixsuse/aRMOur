@@ -29,7 +29,8 @@ public class ShiftTypeCalculator {
             nightShiftStartDefault,
             nightShiftEndDefault;
 
-    public ShiftTypeCalculator(Resources resources) {
+    public ShiftTypeCalculator(Context context) {
+        Resources resources = context.getResources();
         normalDayStartKey = resources.getString(R.string.key_start_normal_day);
         normalDayEndKey = resources.getString(R.string.key_end_normal_day);
         longDayStartKey = resources.getString(R.string.key_start_long_day);

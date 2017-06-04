@@ -73,7 +73,8 @@ abstract class AbstractItemListFragment extends Fragment implements LoaderManage
 
     abstract void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor);
 
-    abstract void onViewHolderCreated(ListItemViewHolder holder);
+    void onViewHolderCreated(ListItemViewHolder holder) {
+    }
 
     private final class CursorAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
 

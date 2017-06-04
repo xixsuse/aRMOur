@@ -4,15 +4,9 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.skepticalone.mecachecker.R;
-
-public abstract class AbstractSinglePaymentItemListFragment extends AbstractItemListFragment {
+public abstract class AbstractSinglePaymentItemListFragment extends AbstractPaymentItemListFragment {
 
     abstract CharSequence getText(@NonNull Cursor cursor);
-
-    abstract int getColumnIndexClaimed();
-
-    abstract int getColumnIndexPaid();
 
     @Override
     final void onViewHolderCreated(ListItemViewHolder holder) {
@@ -21,8 +15,8 @@ public abstract class AbstractSinglePaymentItemListFragment extends AbstractItem
 
     @Override
     final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
+        super.bindViewHolderToCursor(holder, cursor);
         holder.text.setText(getText(cursor));
-        holder.secondaryIcon.setImageResource(cursor.isNull(getColumnIndexPaid()) ? cursor.isNull(getColumnIndexClaimed()) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
     }
 
 }

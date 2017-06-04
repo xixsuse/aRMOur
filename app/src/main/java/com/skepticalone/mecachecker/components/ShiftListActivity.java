@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.components.shifts.AdditionalShiftsListFragment;
 import com.skepticalone.mecachecker.components.shifts.CrossCoverListFragment;
 import com.skepticalone.mecachecker.components.shifts.ExpensesListFragment;
 import com.skepticalone.mecachecker.components.summary.SummaryActivity;
