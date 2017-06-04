@@ -16,13 +16,13 @@ public abstract class AbstractSinglePaymentItemListFragment extends AbstractItem
 
     @Override
     final void onViewHolderCreated(ListItemViewHolder holder) {
-        holder.secondaryIcon.setVisibility(View.GONE);
+        holder.primaryIcon.setVisibility(View.GONE);
     }
 
     @Override
     final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
         holder.text.setText(getText(cursor));
-        holder.primaryIcon.setImageResource(cursor.isNull(getColumnIndexPaid()) ? cursor.isNull(getColumnIndexClaimed()) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
+        holder.secondaryIcon.setImageResource(cursor.isNull(getColumnIndexPaid()) ? cursor.isNull(getColumnIndexClaimed()) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
     }
 
 }
