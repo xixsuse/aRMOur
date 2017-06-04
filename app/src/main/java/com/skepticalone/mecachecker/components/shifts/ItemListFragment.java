@@ -3,6 +3,8 @@ package com.skepticalone.mecachecker.components.shifts;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -14,14 +16,44 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftType;
 
-abstract class AbstractItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+abstract class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
+
+    @DrawableRes
+    static int getShiftTypeIcon(ShiftType shiftType) {
+        switch (shiftType) {
+            case NORMAL_DAY:
+                return R.drawable.ic_normal_day_black_24dp;
+            case LONG_DAY:
+                return R.drawable.ic_long_day_black_24dp;
+            case NIGHT_SHIFT:
+                return R.drawable.ic_night_shift_black_24dp;
+            case OTHER:
+                return R.drawable.ic_custom_shift_black_24dp;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    @DrawableRes
+    static int getClaimStatusIcon(@NonNull Cursor cursor, int columnIndexClaimed, int columnIndexPaid) {
+        return cursor.isNull(columnIndexPaid) ? cursor.isNull(columnIndexClaimed) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -42,6 +74,15 @@ abstract class AbstractItemListFragment extends Fragment implements LoaderManage
         getLoaderManager().initLoader(getLoaderId(), null, this);
     }
 
+    @MenuRes
+    abstract int getMenu();
+
+    @Override
+    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(getMenu(), menu);
+    }
+
     @StringRes
     abstract int getTitle();
 
@@ -60,12 +101,12 @@ abstract class AbstractItemListFragment extends Fragment implements LoaderManage
     }
 
     @Override
-    public final void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
     }
 
     @Override
-    public final void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
 
@@ -75,6 +116,10 @@ abstract class AbstractItemListFragment extends Fragment implements LoaderManage
 
     void onViewHolderCreated(ListItemViewHolder holder) {
     }
+
+    abstract void onItemClicked(long id);
+
+    abstract Uri getItemUri(long id);
 
     private final class CursorAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
 
@@ -99,8 +144,20 @@ abstract class AbstractItemListFragment extends Fragment implements LoaderManage
         }
 
         @Override
-        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ListItemViewHolder viewHolder = new ListItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
+        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+            final ListItemViewHolder viewHolder = new ListItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClicked(viewHolder.getItemId());
+                }
+            });
+            viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return getActivity().getContentResolver().delete(getItemUri(viewHolder.getItemId()), null, null) > 0;
+                }
+            });
             onViewHolderCreated(viewHolder);
             return viewHolder;
         }

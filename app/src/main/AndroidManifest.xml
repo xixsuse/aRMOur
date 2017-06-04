@@ -14,10 +14,10 @@
         <activity
             android:name=".components.summary.SummaryActivity"
             android:label="@string/summary"
-            android:parentActivityName=".components.ShiftListActivity"
+            android:parentActivityName=".components.shifts.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".components.ShiftListActivity"
+            android:name=".components.shifts.ShiftListActivity"
             android:label="@string/title_shift_list"
             android:launchMode="singleTop">
             <intent-filter>
@@ -28,17 +28,17 @@
         <activity
             android:name=".components.ShiftDetailActivity"
             android:label="@string/title_shift_detail"
-            android:parentActivityName=".components.ShiftListActivity"
+            android:parentActivityName=".components.shifts.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".components.expenses.ExpenseDetailActivity"
             android:label="@string/title_expense_detail"
-            android:parentActivityName=".components.ShiftListActivity"
+            android:parentActivityName=".components.shifts.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".components.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".components.ShiftListActivity"
+            android:parentActivityName=".components.shifts.ShiftListActivity"
             android:theme="@style/AppTheme" />
         <provider
             android:name=".data.Provider"

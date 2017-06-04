@@ -1,23 +1,22 @@
 package com.skepticalone.mecachecker.components.shifts;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.ShiftListActivity;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
-import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
-import com.skepticalone.mecachecker.util.ShiftTypeCalculator;
 
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.joda.time.Interval;
 
-public class AdditionalShiftsListFragment extends AbstractPaymentItemListFragment {
+public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
     private static final String[] PROJECTION = {
             Contract.AdditionalShifts._ID,
@@ -35,40 +34,6 @@ public class AdditionalShiftsListFragment extends AbstractPaymentItemListFragmen
             COLUMN_INDEX_PAID = 4,
             COLUMN_INDEX_COMMENT = 5;
 
-    private ShiftTypeCalculator shiftTypeCalculator;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        shiftTypeCalculator = new ShiftTypeCalculator(context);
-    }
-
-    @DrawableRes
-    private int getShiftTypeIcon(ShiftType shiftType) {
-        switch (shiftType) {
-            case NORMAL_DAY:
-                return R.drawable.ic_normal_day_black_24dp;
-            case LONG_DAY:
-                return R.drawable.ic_long_day_black_24dp;
-            case NIGHT_SHIFT:
-                return R.drawable.ic_night_shift_black_24dp;
-            case OTHER:
-                return R.drawable.ic_custom_shift_black_24dp;
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
-    @Override
-    int getColumnIndexClaimed() {
-        return COLUMN_INDEX_CLAIMED;
-    }
-
-    @Override
-    int getColumnIndexPaid() {
-        return COLUMN_INDEX_PAID;
-    }
-
     @Override
     int getTitle() {
         return R.string.additional_shifts;
@@ -82,6 +47,11 @@ public class AdditionalShiftsListFragment extends AbstractPaymentItemListFragmen
     @Override
     Uri getContentUri() {
         return Provider.additionalShiftsUri;
+    }
+
+    @Override
+    Uri getItemUri(long id) {
+        return Provider.additionalShiftUri(id);
     }
 
     @Override
@@ -102,15 +72,44 @@ public class AdditionalShiftsListFragment extends AbstractPaymentItemListFragmen
 
     @Override
     void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
-        super.bindViewHolderToCursor(holder, cursor);
         Interval shift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-        ShiftType shiftType = shiftTypeCalculator.getShiftType(shift, getActivity());
-        holder.primaryIcon.setImageResource(getShiftTypeIcon(shiftType));
+        holder.primaryIcon.setImageResource(getShiftTypeIcon(getShiftType(shift)));
         holder.setText(
                 DateTimeUtils.getFullDateString(shift.getStart()),
                 DateTimeUtils.getTimeSpanString(shift),
                 cursor.isNull(COLUMN_INDEX_COMMENT) ? null : cursor.getString(COLUMN_INDEX_COMMENT)
         );
+        holder.secondaryIcon.setImageResource(getClaimStatusIcon(cursor, COLUMN_INDEX_CLAIMED, COLUMN_INDEX_PAID));
     }
 
+    @Override
+    int getColumnIndexShiftEnd() {
+        return COLUMN_INDEX_END;
+    }
+
+    @Override
+    DateTime getEarliestStartForNewShift(@Nullable Instant lastShiftEnd) {
+        DateTime minStart = new DateTime().withTimeAtStartOfDay();
+        if (lastShiftEnd != null && lastShiftEnd.isAfter(minStart)) {
+            return lastShiftEnd.toDateTime();
+        }
+        return minStart;
+    }
+
+    @Override
+    void addShift(@NonNull Interval newShift) {
+        ContentValues values = new ContentValues();
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_START, newShift.getStartMillis());
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_END, newShift.getEndMillis());
+        values.put(Contract.AdditionalShifts.COLUMN_NAME_RATE, PreferenceManager
+                .getDefaultSharedPreferences(getActivity())
+                .getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate))
+        );
+        getActivity().getContentResolver().insert(Provider.additionalShiftsUri, values);
+    }
+
+    @Override
+    void onItemClicked(long id) {
+        // TODO: 5/06/17  
+    }
 }

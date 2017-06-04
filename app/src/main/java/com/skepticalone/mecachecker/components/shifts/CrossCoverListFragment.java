@@ -1,19 +1,22 @@
 package com.skepticalone.mecachecker.components.shifts;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.Loader;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.ShiftListActivity;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 
-public class CrossCoverListFragment extends AbstractSinglePaymentItemListFragment {
+public class CrossCoverListFragment extends SinglePaymentItemListFragment {
 
     private static final String[] PROJECTION = {
             Contract.CrossCoverShifts._ID,
@@ -30,6 +33,9 @@ public class CrossCoverListFragment extends AbstractSinglePaymentItemListFragmen
             COLUMN_INDEX_PAID = 3,
             COLUMN_INDEX_COMMENT = 4;
 
+    @Nullable
+    private Instant mLastCrossCover = null;
+
     @Override
     int getTitle() {
         return R.string.cross_cover;
@@ -43,6 +49,11 @@ public class CrossCoverListFragment extends AbstractSinglePaymentItemListFragmen
     @Override
     Uri getContentUri() {
         return Provider.crossCoverShiftsUri;
+    }
+
+    @Override
+    Uri getItemUri(long id) {
+        return Provider.crossCoverShiftUri(id);
     }
 
     @Override
@@ -81,6 +92,31 @@ public class CrossCoverListFragment extends AbstractSinglePaymentItemListFragmen
     @Override
     String getSecondLine(@NonNull Cursor cursor) {
         return cursor.isNull(COLUMN_INDEX_COMMENT) ? null : cursor.getString(COLUMN_INDEX_COMMENT);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        super.onLoadFinished(loader, data);
+        mLastCrossCover = data.moveToLast() ? new Instant(data.getLong(COLUMN_INDEX_DATE)) : null;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        super.onLoaderReset(loader);
+        mLastCrossCover = null;
+    }
+
+    @Override
+    void addItem() {
+        ContentValues values = new ContentValues();
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, (mLastCrossCover == null ? new DateTime() : mLastCrossCover.toDateTime().plusDays(1)).withTimeAtStartOfDay().getMillis());
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_cross_cover_payment), getResources().getInteger(R.integer.default_cross_cover_payment)));
+        getActivity().getContentResolver().insert(Provider.crossCoverShiftsUri, values);
+    }
+
+    @Override
+    void onItemClicked(long id) {
+        // TODO: 5/06/17
     }
 
 }

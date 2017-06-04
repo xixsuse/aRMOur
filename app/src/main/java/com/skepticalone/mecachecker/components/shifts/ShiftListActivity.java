@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.components.shifts;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.shifts.AdditionalShiftsListFragment;
-import com.skepticalone.mecachecker.components.shifts.CrossCoverListFragment;
-import com.skepticalone.mecachecker.components.shifts.ExpensesListFragment;
+import com.skepticalone.mecachecker.components.SettingsActivity;
 import com.skepticalone.mecachecker.components.summary.SummaryActivity;
 
 public class ShiftListActivity extends AppCompatActivity implements

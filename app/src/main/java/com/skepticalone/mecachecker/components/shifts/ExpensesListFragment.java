@@ -6,11 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.ShiftListActivity;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 
-public class ExpensesListFragment extends AbstractSinglePaymentItemListFragment {
+public class ExpensesListFragment extends SinglePaymentItemListFragment {
 
     private static final String[] PROJECTION = {
             Contract.Expenses._ID,
@@ -58,6 +57,11 @@ public class ExpensesListFragment extends AbstractSinglePaymentItemListFragment 
     }
 
     @Override
+    Uri getItemUri(long id) {
+        return Provider.expenseUri(id);
+    }
+
+    @Override
     String[] getProjection() {
         return PROJECTION;
     }
@@ -78,6 +82,17 @@ public class ExpensesListFragment extends AbstractSinglePaymentItemListFragment 
     @Override
     String getSecondLine(@NonNull Cursor cursor) {
         return null;
+    }
+
+    @Override
+    void addItem() {
+        // TODO: 5/06/17
+//        startActivity(new Intent(getActivity(), ExpenseDetailActivity.class));
+    }
+
+    @Override
+    void onItemClicked(long id) {
+        // TODO: 5/06/17
     }
 
 }

@@ -15,6 +15,24 @@ import org.joda.time.Interval;
 
 public final class Compliance {
 
+
+    public final static int
+            COLUMN_INDEX_ID = 0,
+            COLUMN_INDEX_ROSTERED_END = 2;
+    private final static int
+            COLUMN_INDEX_ROSTERED_START = 1,
+            COLUMN_INDEX_LOGGED_START = 3,
+            COLUMN_INDEX_LOGGED_END = 4,
+            COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 5,
+            COLUMN_INDEX_DURATION_OVER_DAY = 6,
+            COLUMN_INDEX_DURATION_OVER_WEEK = 7,
+            COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 8,
+            COLUMN_INDEX_CURRENT_WEEKEND_START = 9,
+            COLUMN_INDEX_CURRENT_WEEKEND_END = 10,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 11,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 12,
+            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 13;
+
     private static final String[] RAW_PROJECTION = new String[]{
 
             Contract.RosteredShifts._ID,
@@ -35,21 +53,6 @@ public final class Compliance {
                     "CONSECUTIVE_WEEKENDS_WORKED"
             },
             MATRIX_COLUMN_NAMES;
-    private final static int
-            COLUMN_INDEX_ID = 0,
-            COLUMN_INDEX_ROSTERED_START = 1,
-            COLUMN_INDEX_ROSTERED_END = 2,
-            COLUMN_INDEX_LOGGED_START = 3,
-            COLUMN_INDEX_LOGGED_END = 4,
-            COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 5,
-            COLUMN_INDEX_DURATION_OVER_DAY = 6,
-            COLUMN_INDEX_DURATION_OVER_WEEK = 7,
-            COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 8,
-            COLUMN_INDEX_CURRENT_WEEKEND_START = 9,
-            COLUMN_INDEX_CURRENT_WEEKEND_END = 10,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 11,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 12,
-            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 13;
 
     static {
         MATRIX_COLUMN_NAMES = new String[RAW_PROJECTION.length + EXTRA_COLUMN_NAMES.length];
