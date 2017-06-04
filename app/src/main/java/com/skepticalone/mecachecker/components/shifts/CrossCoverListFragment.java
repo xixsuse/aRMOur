@@ -4,9 +4,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.TextAppearanceSpan;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.components.ShiftListActivity;
@@ -74,17 +71,16 @@ public class CrossCoverListFragment extends AbstractSinglePaymentItemListFragmen
         return COLUMN_INDEX_PAID;
     }
 
+    @NonNull
     @Override
-    CharSequence getText(@NonNull Cursor cursor) {
-        String dateString = DateTimeUtils.getFullDateString(new DateTime(cursor.getLong(COLUMN_INDEX_DATE)));
-        if (cursor.isNull(COLUMN_INDEX_COMMENT)) {
-            return dateString;
-        } else {
-            SpannableStringBuilder ssb = new SpannableStringBuilder(dateString + '\n');
-            ssb.setSpan(new TextAppearanceSpan(getActivity(), R.style.TextAppearance_AppCompat_Body1), ssb.length(), ssb.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            ssb.append(cursor.getString(COLUMN_INDEX_COMMENT));
-            return ssb;
-        }
+    String getFirstLine(@NonNull Cursor cursor) {
+        return DateTimeUtils.getFullDateString(new DateTime(cursor.getLong(COLUMN_INDEX_DATE)));
+    }
+
+    @Nullable
+    @Override
+    String getSecondLine(@NonNull Cursor cursor) {
+        return cursor.isNull(COLUMN_INDEX_COMMENT) ? null : cursor.getString(COLUMN_INDEX_COMMENT);
     }
 
 }

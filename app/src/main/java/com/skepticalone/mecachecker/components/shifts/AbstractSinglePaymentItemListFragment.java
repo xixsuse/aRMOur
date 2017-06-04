@@ -2,11 +2,16 @@ package com.skepticalone.mecachecker.components.shifts;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 public abstract class AbstractSinglePaymentItemListFragment extends AbstractPaymentItemListFragment {
 
-    abstract CharSequence getText(@NonNull Cursor cursor);
+    @NonNull
+    abstract String getFirstLine(@NonNull Cursor cursor);
+
+    @Nullable
+    abstract String getSecondLine(@NonNull Cursor cursor);
 
     @Override
     final void onViewHolderCreated(ListItemViewHolder holder) {
@@ -16,7 +21,7 @@ public abstract class AbstractSinglePaymentItemListFragment extends AbstractPaym
     @Override
     final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
         super.bindViewHolderToCursor(holder, cursor);
-        holder.text.setText(getText(cursor));
+        holder.setText(getFirstLine(cursor), getSecondLine(cursor));
     }
 
 }

@@ -6,9 +6,6 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.TextAppearanceSpan;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.components.ShiftListActivity;
@@ -107,15 +104,13 @@ public class AdditionalShiftsListFragment extends AbstractPaymentItemListFragmen
     void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
         super.bindViewHolderToCursor(holder, cursor);
         Interval shift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-        SpannableStringBuilder ssb = new SpannableStringBuilder(DateTimeUtils.getFullDateString(shift.getStart()) + '\n');
-        ssb.setSpan(new TextAppearanceSpan(getActivity(), R.style.TextAppearance_AppCompat_Body1), ssb.length(), ssb.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        ssb.append(DateTimeUtils.getTimeSpanString(shift));
-        if (!cursor.isNull(COLUMN_INDEX_COMMENT)) {
-            ssb.append('\n').append(cursor.getString(COLUMN_INDEX_COMMENT));
-        }
-        holder.text.setText(ssb);
         ShiftType shiftType = shiftTypeCalculator.getShiftType(shift, getActivity());
         holder.primaryIcon.setImageResource(getShiftTypeIcon(shiftType));
+        holder.setText(
+                DateTimeUtils.getFullDateString(shift.getStart()),
+                DateTimeUtils.getTimeSpanString(shift),
+                cursor.isNull(COLUMN_INDEX_COMMENT) ? null : cursor.getString(COLUMN_INDEX_COMMENT)
+        );
     }
 
 }

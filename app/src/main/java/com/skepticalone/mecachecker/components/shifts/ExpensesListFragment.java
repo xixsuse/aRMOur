@@ -68,9 +68,16 @@ public class ExpensesListFragment extends AbstractSinglePaymentItemListFragment 
         return null;
     }
 
+    @NonNull
     @Override
-    CharSequence getText(@NonNull Cursor cursor) {
+    String getFirstLine(@NonNull Cursor cursor) {
         return cursor.getString(COLUMN_INDEX_TITLE);
+    }
+
+    @Nullable
+    @Override
+    String getSecondLine(@NonNull Cursor cursor) {
+        return null;
     }
 
 }
