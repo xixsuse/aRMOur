@@ -1,18 +1,12 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
-import com.skepticalone.mecachecker.util.DateTimeUtils;
-
-import org.joda.time.LocalTime;
 
 abstract public class AbstractShiftListFragment extends LayoutManagerFragment {
 
@@ -39,42 +33,19 @@ abstract public class AbstractShiftListFragment extends LayoutManagerFragment {
         inflater.inflate(R.menu.shift_list_menu, menu);
     }
 
-    abstract void addShift(ShiftType shiftType, @NonNull LocalTime startTime, @NonNull LocalTime endTime);
+    abstract void addShift(ShiftType shiftType);
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        switch (itemId) {
+        switch (item.getItemId()) {
             case R.id.add_normal_day:
+                addShift(ShiftType.NORMAL_DAY);
+                return true;
             case R.id.add_long_day:
+                addShift(ShiftType.LONG_DAY);
+                return true;
             case R.id.add_night_shift:
-                int startKeyId, defaultStartId, endKeyId, defaultEndId;
-                ShiftType shiftType;
-                if (itemId == R.id.add_normal_day) {
-                    shiftType = ShiftType.NORMAL_DAY;
-                    startKeyId = R.string.key_start_normal_day;
-                    defaultStartId = R.integer.default_start_normal_day;
-                    endKeyId = R.string.key_end_normal_day;
-                    defaultEndId = R.integer.default_end_normal_day;
-                } else if (itemId == R.id.add_long_day) {
-                    shiftType = ShiftType.LONG_DAY;
-                    startKeyId = R.string.key_start_long_day;
-                    defaultStartId = R.integer.default_start_long_day;
-                    endKeyId = R.string.key_end_long_day;
-                    defaultEndId = R.integer.default_end_long_day;
-                } else {
-                    shiftType = ShiftType.NIGHT_SHIFT;
-                    startKeyId = R.string.key_start_night_shift;
-                    defaultStartId = R.integer.default_start_night_shift;
-                    endKeyId = R.string.key_end_night_shift;
-                    defaultEndId = R.integer.default_end_night_shift;
-                }
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                int startTotalMinutes = preferences.getInt(getString(startKeyId), getResources().getInteger(defaultStartId));
-                LocalTime startTime = new LocalTime(DateTimeUtils.calculateHours(startTotalMinutes), DateTimeUtils.calculateMinutes(startTotalMinutes));
-                int endTotalMinutes = preferences.getInt(getString(endKeyId), getResources().getInteger(defaultEndId));
-                LocalTime endTime = new LocalTime(DateTimeUtils.calculateHours(endTotalMinutes), DateTimeUtils.calculateMinutes(endTotalMinutes));
-                addShift(shiftType, startTime, endTime);
+                addShift(ShiftType.NIGHT_SHIFT);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

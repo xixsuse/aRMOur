@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,18 +9,19 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.Interval;
+import org.joda.time.LocalTime;
 
+public class ShiftTypeCalculator {
 
-abstract class ShiftTypeAwareFragment extends BaseFragment {
-
-    String
+    private final String
             normalDayStartKey,
             normalDayEndKey,
             longDayStartKey,
             longDayEndKey,
             nightShiftStartKey,
             nightShiftEndKey;
-    int
+
+    private final int
             normalDayStartDefault,
             normalDayEndDefault,
             longDayStartDefault,
@@ -28,10 +29,7 @@ abstract class ShiftTypeAwareFragment extends BaseFragment {
             nightShiftStartDefault,
             nightShiftEndDefault;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Resources resources = context.getResources();
+    public ShiftTypeCalculator(Resources resources) {
         normalDayStartKey = resources.getString(R.string.key_start_normal_day);
         normalDayEndKey = resources.getString(R.string.key_end_normal_day);
         longDayStartKey = resources.getString(R.string.key_start_long_day);
@@ -46,10 +44,10 @@ abstract class ShiftTypeAwareFragment extends BaseFragment {
         nightShiftEndDefault = resources.getInteger(R.integer.default_end_night_shift);
     }
 
-    ShiftType getShiftType(Interval shift) {
+    public ShiftType getShiftType(Interval shift, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         int startTotalMinutes = shift.getStart().getMinuteOfDay(),
                 endTotalMinutes = shift.getEnd().getMinuteOfDay();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (
                 startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
                         endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault)
@@ -68,6 +66,41 @@ abstract class ShiftTypeAwareFragment extends BaseFragment {
         } else {
             return ShiftType.OTHER;
         }
+    }
+
+    private LocalTime getStartOrEndTime(String key, int defaultTotalMinutes, SharedPreferences preferences) {
+        int totalMinutes = preferences.getInt(key, defaultTotalMinutes);
+        return new LocalTime(DateTimeUtils.calculateHours(totalMinutes), DateTimeUtils.calculateMinutes(totalMinutes));
+    }
+
+    private LocalTime getStartOrEndTime(ShiftType shiftType, boolean start, SharedPreferences preferences) {
+        String key;
+        int defaultTotalMinutes;
+        switch (shiftType) {
+            case NORMAL_DAY:
+                key = start ? normalDayStartKey : normalDayEndKey;
+                defaultTotalMinutes = start ? normalDayStartDefault : normalDayEndDefault;
+                break;
+            case LONG_DAY:
+                key = start ? longDayStartKey : longDayEndKey;
+                defaultTotalMinutes = start ? longDayStartDefault : longDayEndDefault;
+                break;
+            case NIGHT_SHIFT:
+                key = start ? nightShiftStartKey : nightShiftEndKey;
+                defaultTotalMinutes = start ? nightShiftStartDefault : nightShiftEndDefault;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        return getStartOrEndTime(key, defaultTotalMinutes, preferences);
+    }
+
+    public LocalTime getStartTime(ShiftType shiftType, SharedPreferences preferences) {
+        return getStartOrEndTime(shiftType, true, preferences);
+    }
+
+    public LocalTime getEndTime(ShiftType shiftType, SharedPreferences preferences) {
+        return getStartOrEndTime(shiftType, false, preferences);
     }
 
 }

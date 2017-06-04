@@ -10,7 +10,7 @@ import android.view.View;
 import com.skepticalone.mecachecker.R;
 
 
-public abstract class LayoutManagerFragment extends ShiftTypeAwareFragment {
+public abstract class LayoutManagerFragment extends BaseFragment {
 
     RecyclerView.LayoutManager mLayoutManager;
 

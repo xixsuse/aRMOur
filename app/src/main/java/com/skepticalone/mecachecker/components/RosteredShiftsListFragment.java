@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +23,6 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
-import org.joda.time.LocalTime;
 
 public class RosteredShiftsListFragment extends AbstractShiftListFragment {
 
@@ -68,14 +66,15 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
     }
 
     @Override
-    void addShift(ShiftType shiftType, @NonNull LocalTime startTime, @NonNull LocalTime endTime) {
+    void addShift(ShiftType shiftType) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         DateTime minStart;
         if (mCursor != null && mCursor.moveToLast()) {
             minStart = mCursor.getRosteredShift().getEnd().plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
         } else {
             minStart = new DateTime().withTimeAtStartOfDay();
         }
-        DateTime newStart = minStart.withTime(startTime);
+        DateTime newStart = minStart.withTime(shiftTypeCalculator.getStartTime(shiftType, preferences));
         int skipWeekendsKeyId, defaultSkipWeekendsId;
         switch (shiftType) {
             case NORMAL_DAY:
@@ -101,7 +100,7 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
         ContentValues values = new ContentValues();
         values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newStart.getMillis());
 
-        DateTime newEnd = newStart.withTime(endTime);
+        DateTime newEnd = newStart.withTime(shiftTypeCalculator.getEndTime(shiftType, preferences));
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
@@ -145,27 +144,30 @@ public class RosteredShiftsListFragment extends AbstractShiftListFragment {
             if (mCursor != null && mCursor.moveToPosition(position)) {
                 Interval rosteredShift = mCursor.getRosteredShift();
                 holder.primaryTextView.setText(DateTimeUtils.getFullDateString(rosteredShift.getStart()));
-                int startTotalMinutes = rosteredShift.getStart().getMinuteOfDay(), endTotalMinutes = rosteredShift.getEnd().getMinuteOfDay();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                holder.primaryIconView.setImageResource(
-                        startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                                endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
-                                R.drawable.ic_normal_day_black_24dp :
-                                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
-                                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
-                                        R.drawable.ic_long_day_black_24dp :
-                                        startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                                                endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
-                                                R.drawable.ic_night_shift_black_24dp :
-                                                R.drawable.ic_custom_shift_black_24dp
-                );
                 Interval loggedShift = mCursor.getLoggedShift();
                 if (loggedShift == null) {
                     holder.secondaryTextView.setText(DateTimeUtils.getTimeSpanString(rosteredShift));
-//                    holder.secondaryTextView.setText(getString(R.string.time_span_format, rosteredShift.getStartMillis(), rosteredShift.getEndMillis()));
                 } else {
                     holder.secondaryTextView.setText(DateTimeUtils.getDoubleTimeSpanString(rosteredShift, loggedShift));
                 }
+                int iconResource;
+                switch (shiftTypeCalculator.getShiftType(rosteredShift, getActivity())) {
+                    case NORMAL_DAY:
+                        iconResource = R.drawable.ic_normal_day_black_24dp;
+                        break;
+                    case LONG_DAY:
+                        iconResource = R.drawable.ic_long_day_black_24dp;
+                        break;
+                    case NIGHT_SHIFT:
+                        iconResource = R.drawable.ic_night_shift_black_24dp;
+                        break;
+                    case OTHER:
+                        iconResource = R.drawable.ic_custom_shift_black_24dp;
+                        break;
+                    default:
+                        throw new IllegalStateException();
+                }
+                holder.primaryIconView.setImageResource(iconResource);
                 boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(mCursor.getIntervalBetweenShifts()) ||
                         AppConstants.exceedsDurationOverDay(mCursor.getDurationOverDay()) ||
                         AppConstants.exceedsDurationOverWeek(mCursor.getDurationOverWeek()) ||

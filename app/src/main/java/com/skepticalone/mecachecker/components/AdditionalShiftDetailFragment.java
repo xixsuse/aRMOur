@@ -31,7 +31,7 @@ import org.joda.time.Interval;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
+public class AdditionalShiftDetailFragment extends BaseFragment {
 
     private static final String[] PROJECTION = {
             Contract.AdditionalShifts._ID,
@@ -54,6 +54,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
     private long mShiftId;
     private Interval mShift;
     private View mPaidLayout;
+
     private TextView
             mDateView,
             mStartTimeView,
@@ -189,7 +190,7 @@ public class AdditionalShiftDetailFragment extends ShiftTypeAwareFragment {
                 }
             });
             Interval shift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-            ShiftType shiftType = getShiftType(shift);
+            ShiftType shiftType = shiftTypeCalculator.getShiftType(shift, getActivity());
             int shiftTypeStringId, shiftTypeDrawableId;
             if (shiftType == ShiftType.NORMAL_DAY) {
                 shiftTypeDrawableId = R.drawable.ic_normal_day_black_24dp;

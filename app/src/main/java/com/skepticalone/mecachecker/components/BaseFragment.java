@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -12,7 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skepticalone.mecachecker.util.ShiftTypeCalculator;
+
 public abstract class BaseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    ShiftTypeCalculator shiftTypeCalculator;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        shiftTypeCalculator = new ShiftTypeCalculator(context.getResources());
+    }
 
     @Nullable
     @Override

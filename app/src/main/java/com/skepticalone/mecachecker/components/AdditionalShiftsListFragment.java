@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.LocalTime;
 
 public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
 
@@ -59,19 +57,20 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
     }
 
     @Override
-    void addShift(ShiftType shiftType, @NonNull LocalTime startTime, @NonNull LocalTime endTime) {
+    void addShift(ShiftType shiftType) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         DateTime minStart = new DateTime().withTimeAtStartOfDay();
         if (mCursor != null && mCursor.moveToLast()) {
             DateTime lastShiftEnd = new DateTime(mCursor.getLong(COLUMN_INDEX_END));
             if (lastShiftEnd.isAfter(minStart)) minStart = lastShiftEnd;
         }
-        DateTime newStart = minStart.withTime(startTime);
+        DateTime newStart = minStart.withTime(shiftTypeCalculator.getStartTime(shiftType, preferences));
         while (newStart.isBefore(minStart)) {
             newStart = newStart.plusDays(1);
         }
         ContentValues values = new ContentValues();
         values.put(Contract.AdditionalShifts.COLUMN_NAME_START, newStart.getMillis());
-        DateTime newEnd = newStart.withTime(endTime);
+        DateTime newEnd = newStart.withTime(shiftTypeCalculator.getEndTime(shiftType, preferences));
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
@@ -147,20 +146,24 @@ public class AdditionalShiftsListFragment extends AbstractShiftListFragment {
                             mCursor.getString(COLUMN_INDEX_COMMENT) + '\n' + timeSpanString
                     );
                 }
-                int startTotalMinutes = currentShift.getStart().getMinuteOfDay(), endTotalMinutes = currentShift.getEnd().getMinuteOfDay();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                holder.primaryIconView.setImageResource(
-                        startTotalMinutes == preferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                                endTotalMinutes == preferences.getInt(normalDayEndKey, normalDayEndDefault) ?
-                                R.drawable.ic_normal_day_black_24dp :
-                                startTotalMinutes == preferences.getInt(longDayStartKey, longDayStartDefault) &&
-                                        endTotalMinutes == preferences.getInt(longDayEndKey, longDayEndDefault) ?
-                                        R.drawable.ic_long_day_black_24dp :
-                                        startTotalMinutes == preferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                                                endTotalMinutes == preferences.getInt(nightShiftEndKey, nightShiftEndDefault) ?
-                                                R.drawable.ic_night_shift_black_24dp :
-                                                R.drawable.ic_custom_shift_black_24dp
-                );
+                int iconResource;
+                switch (shiftTypeCalculator.getShiftType(currentShift, getActivity())) {
+                    case NORMAL_DAY:
+                        iconResource = R.drawable.ic_normal_day_black_24dp;
+                        break;
+                    case LONG_DAY:
+                        iconResource = R.drawable.ic_long_day_black_24dp;
+                        break;
+                    case NIGHT_SHIFT:
+                        iconResource = R.drawable.ic_night_shift_black_24dp;
+                        break;
+                    case OTHER:
+                        iconResource = R.drawable.ic_custom_shift_black_24dp;
+                        break;
+                    default:
+                        throw new IllegalStateException();
+                }
+                holder.primaryIconView.setImageResource(iconResource);
                 holder.secondaryIconView.setImageResource(mCursor.isNull(COLUMN_INDEX_PAID) ? mCursor.isNull(COLUMN_INDEX_CLAIMED) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
             }
         }

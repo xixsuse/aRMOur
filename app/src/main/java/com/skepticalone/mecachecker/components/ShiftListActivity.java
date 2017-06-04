@@ -14,7 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.expenses.ExpensesListFragment;
+import com.skepticalone.mecachecker.components.shifts.CrossCoverListFragment;
+import com.skepticalone.mecachecker.components.shifts.ExpensesListFragment;
 import com.skepticalone.mecachecker.components.summary.SummaryActivity;
 
 public class ShiftListActivity extends AppCompatActivity implements
