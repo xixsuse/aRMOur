@@ -7,12 +7,8 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,7 +20,7 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
 
-abstract class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+abstract class ListFragment extends BaseFragment {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
 
@@ -66,14 +62,6 @@ abstract class ItemListFragment extends Fragment implements LoaderManager.Loader
         return recyclerView;
     }
 
-    @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //noinspection ConstantConditions
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
-        getLoaderManager().initLoader(getLoaderId(), null, this);
-    }
-
     @MenuRes
     abstract int getMenu();
 
@@ -82,11 +70,6 @@ abstract class ItemListFragment extends Fragment implements LoaderManager.Loader
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(getMenu(), menu);
     }
-
-    @StringRes
-    abstract int getTitle();
-
-    abstract int getLoaderId();
 
     abstract Uri getContentUri();
 

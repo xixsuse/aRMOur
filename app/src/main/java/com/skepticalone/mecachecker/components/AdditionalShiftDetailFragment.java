@@ -20,7 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.shifts.ShiftListActivity;
+import com.skepticalone.mecachecker.components.shifts.MainActivity;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
@@ -152,7 +152,7 @@ public class AdditionalShiftDetailFragment extends BaseFragment {
 
     @Override
     public int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_ADDITIONAL_DETAIL;
+        return MainActivity.LOADER_ID_ADDITIONAL_DETAIL;
     }
 
     @Override

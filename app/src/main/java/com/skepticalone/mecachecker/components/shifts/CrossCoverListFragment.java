@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.components.shifts;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -33,8 +34,15 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
             COLUMN_INDEX_PAID = 3,
             COLUMN_INDEX_COMMENT = 4;
 
+    private Listener mListener;
     @Nullable
     private Instant mLastCrossCover = null;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (Listener) context;
+    }
 
     @Override
     int getTitle() {
@@ -43,7 +51,7 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
 
     @Override
     int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_CROSS_COVER_LIST;
+        return MainActivity.LOADER_ID_CROSS_COVER_LIST;
     }
 
     @Override
@@ -116,7 +124,11 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
 
     @Override
     void onItemClicked(long id) {
-        // TODO: 5/06/17
+        mListener.onCrossCoverClicked(id);
+    }
+
+    interface Listener {
+        void onCrossCoverClicked(long id);
     }
 
 }

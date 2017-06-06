@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.R;
 public class ShiftDetailActivity extends AppCompatActivity implements ShiftOverlapListener {
 
     public static final long NO_ID = -1L;
-    public static final String SHIFT_ID = "SHIFT_ID";
+    public static final String SHIFT_ID = "ITEM_ID";
     public static final String IS_CROSS_COVER = "IS_CROSS_COVER";
     static final String PICKER_FRAGMENT = "PICKER_FRAGMENT";
     static final String HOURLY_RATE_FRAGMENT = "HOURLY_RATE_FRAGMENT";

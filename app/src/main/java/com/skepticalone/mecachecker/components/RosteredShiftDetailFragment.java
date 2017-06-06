@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.components.shifts.ShiftListActivity;
+import com.skepticalone.mecachecker.components.shifts.MainActivity;
 import com.skepticalone.mecachecker.data.Compliance;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
@@ -36,7 +36,7 @@ public class RosteredShiftDetailFragment extends AbstractShiftDetailFragment {
 
     @Override
     public int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_ROSTERED_DETAIL;
+        return MainActivity.LOADER_ID_ROSTERED_DETAIL;
     }
 
     @Override

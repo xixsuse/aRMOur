@@ -19,7 +19,7 @@ import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
-abstract class ShiftTypeAwareItemListFragment extends ItemListFragment {
+abstract class ShiftTypeAwareItemListFragment extends ListFragment {
 
     private ShiftTypeCalculator mShiftTypeCalculator;
 

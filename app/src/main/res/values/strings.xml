@@ -17,6 +17,8 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="shift_type">Shift type</string>
+    <string name="title_shift_list">Shifts</string>
+    <string name="shift">Shift</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
     <string name="logged_shifts">Logged shifts</string>
@@ -25,6 +27,7 @@
     <string name="cross_cover">Cross cover</string>
     <string name="cross_cover_shifts">Cross cover shifts</string>
     <string name="expenses">Expenses</string>
+    <string name="expense">Expense</string>
     <string name="number">Number</string>
     <string name="number_format">%d</string>
     <string name="hours_format">%.1f</string>
@@ -42,9 +45,6 @@
     <string name="total">Total</string>
     <string name="comment">Comment</string>
     <string name="shift_type_duration_format">%1$s (%2$s)</string>
-    <string name="title_shift_list">Shifts</string>
-    <string name="title_shift_detail">Shift Detail</string>
-    <string name="title_expense_detail">Expense Detail</string>
     <string name="not_applicable">N/A</string>
     <string name="time_between_shifts">Time between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>

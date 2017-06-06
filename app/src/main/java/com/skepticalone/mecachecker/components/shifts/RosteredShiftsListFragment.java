@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.components.shifts;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -22,6 +23,14 @@ import org.joda.time.Interval;
 
 public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
+    private Listener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (Listener) context;
+    }
+
     @Override
     int getTitle() {
         return R.string.rostered_shifts;
@@ -29,7 +38,7 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
     @Override
     int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_ROSTERED_LIST;
+        return MainActivity.LOADER_ID_ROSTERED_LIST;
     }
 
     @Override
@@ -124,6 +133,11 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
     @Override
     void onItemClicked(long id) {
-        // TODO: 5/06/17  
+        mListener.onRosteredShiftClicked(id);
     }
+
+    interface Listener {
+        void onRosteredShiftClicked(long id);
+    }
+
 }

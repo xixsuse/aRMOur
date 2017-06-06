@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/title"
                 android:inputType="textAutoCorrect|textCapSentences"
-                tools:text="My title of payment" />
+                tools:text="Payment title" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

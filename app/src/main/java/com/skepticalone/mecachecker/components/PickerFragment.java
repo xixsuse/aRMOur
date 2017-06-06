@@ -25,7 +25,7 @@ import org.joda.time.LocalTime;
 
 public class PickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String SHIFT_ID = "SHIFT_ID";
+    private static final String SHIFT_ID = "ITEM_ID";
     private static final String SHIFT_START = "SHIFT_START";
     private static final String SHIFT_END = "SHIFT_END";
     private static final String LOGGED_SHIFT_START = "LOGGED_SHIFT_START";

@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components.shifts;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -26,6 +27,14 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
             COLUMN_INDEX_PAID = 3,
             COLUMN_INDEX_COMMENT = 4;
 
+    private Listener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (Listener) context;
+    }
+
     @Override
     int getTitle() {
         return R.string.expenses;
@@ -33,7 +42,7 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
 
     @Override
     int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_EXPENSES_LIST;
+        return MainActivity.LOADER_ID_EXPENSES_LIST;
     }
 
     @Override
@@ -86,13 +95,18 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
 
     @Override
     void addItem() {
-        // TODO: 5/06/17
-//        startActivity(new Intent(getActivity(), ExpenseDetailActivity.class));
+        mListener.addExpense();
     }
 
     @Override
     void onItemClicked(long id) {
-        // TODO: 5/06/17
+        mListener.onExpenseClicked(id);
+    }
+
+    interface Listener {
+        void onExpenseClicked(long id);
+
+        void addExpense();
     }
 
 }

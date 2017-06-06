@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.components.shifts;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -34,6 +35,14 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
             COLUMN_INDEX_PAID = 4,
             COLUMN_INDEX_COMMENT = 5;
 
+    private Listener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (Listener) context;
+    }
+
     @Override
     int getTitle() {
         return R.string.additional_shifts;
@@ -41,7 +50,7 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
 
     @Override
     int getLoaderId() {
-        return ShiftListActivity.LOADER_ID_ADDITIONAL_LIST;
+        return MainActivity.LOADER_ID_ADDITIONAL_LIST;
     }
 
     @Override
@@ -110,6 +119,10 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
 
     @Override
     void onItemClicked(long id) {
-        // TODO: 5/06/17  
+        mListener.onAdditionalShiftClicked(id);
+    }
+
+    interface Listener {
+        void onAdditionalShiftClicked(long id);
     }
 }

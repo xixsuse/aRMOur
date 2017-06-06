@@ -17,8 +17,12 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.components.SettingsActivity;
 import com.skepticalone.mecachecker.components.summary.SummaryActivity;
 
-public class ShiftListActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        RosteredShiftsListFragment.Listener,
+        AdditionalShiftsListFragment.Listener,
+        CrossCoverListFragment.Listener,
+        ExpensesListFragment.Listener {
 
     public static final int
             LOADER_ID_ROSTERED_LIST = 1,
@@ -100,4 +104,32 @@ public class ShiftListActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void onItemClicked(int itemType, long id) {
+        startActivity(DetailActivity.getIntent(this, itemType, id));
+    }
+
+    @Override
+    public void onRosteredShiftClicked(long id) {
+        onItemClicked(DetailActivity.ITEM_TYPE_ROSTERED_SHIFT, id);
+    }
+
+    @Override
+    public void onAdditionalShiftClicked(long id) {
+        onItemClicked(DetailActivity.ITEM_TYPE_ADDITIONAL_SHIFT, id);
+    }
+
+    @Override
+    public void onCrossCoverClicked(long id) {
+        onItemClicked(DetailActivity.ITEM_TYPE_CROSS_COVER, id);
+    }
+
+    @Override
+    public void onExpenseClicked(long id) {
+        onItemClicked(DetailActivity.ITEM_TYPE_EXPENSE, id);
+    }
+
+    @Override
+    public void addExpense() {
+        // TODO: 7/06/17  
+    }
 }

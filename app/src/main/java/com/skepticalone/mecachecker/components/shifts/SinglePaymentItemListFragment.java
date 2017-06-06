@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 
-abstract class SinglePaymentItemListFragment extends ItemListFragment {
+abstract class SinglePaymentItemListFragment extends ListFragment {
 
     abstract int getColumnIndexClaimed();
 

@@ -19,7 +19,7 @@ import java.math.RoundingMode;
 
 public class HourlyRateEditFragment extends DialogFragment {
 
-    private static final String SHIFT_ID = "SHIFT_ID";
+    private static final String SHIFT_ID = "ITEM_ID";
     private static final String HOURLY_RATE = "HOURLY_RATE";
 
     public static HourlyRateEditFragment create(long shiftId, int hourlyRate) {
