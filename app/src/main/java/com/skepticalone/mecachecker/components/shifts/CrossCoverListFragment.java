@@ -15,6 +15,7 @@ import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.Instant;
 
 public class CrossCoverListFragment extends SinglePaymentItemListFragment {
@@ -117,9 +118,22 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
     @Override
     void addItem() {
         ContentValues values = new ContentValues();
-        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, (mLastCrossCover == null ? new DateTime() : mLastCrossCover.toDateTime().plusDays(1)).withTimeAtStartOfDay().getMillis());
+        DateTime date = new DateTime().withTimeAtStartOfDay();
+        if (mLastCrossCover != null) {
+            DateTime lastShiftPlusOneDay = mLastCrossCover.toDateTime().plusDays(1).withTimeAtStartOfDay();
+            if (lastShiftPlusOneDay.isAfter(date)) {
+                date = lastShiftPlusOneDay;
+            }
+        }
+        while (date.getDayOfWeek() >= DateTimeConstants.SATURDAY) {
+            // no cross cover out of hours by default
+            date = date.plusDays(1);
+        }
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, date.getMillis());
         values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_cross_cover_payment), getResources().getInteger(R.integer.default_cross_cover_payment)));
-        getActivity().getContentResolver().insert(Provider.crossCoverShiftsUri, values);
+        if (getActivity().getContentResolver().insert(Provider.crossCoverShiftsUri, values) != null) {
+            scrollToEndAtNextLoad();
+        }
     }
 
     @Override

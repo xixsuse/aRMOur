@@ -23,6 +23,8 @@ import com.skepticalone.mecachecker.data.ShiftType;
 abstract class ListFragment extends BaseFragment {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
+    private RecyclerView mRecyclerView;
+    private boolean mScrollToEndAtNextLoad = false;
 
     @DrawableRes
     static int getShiftTypeIcon(ShiftType shiftType) {
@@ -54,12 +56,12 @@ abstract class ListFragment extends BaseFragment {
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
-        recyclerView.addItemDecoration(
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        mRecyclerView.addItemDecoration(
                 new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
         );
-        recyclerView.setAdapter(mAdapter);
-        return recyclerView;
+        mRecyclerView.setAdapter(mAdapter);
+        return mRecyclerView;
     }
 
     @MenuRes
@@ -83,9 +85,17 @@ abstract class ListFragment extends BaseFragment {
         return new CursorLoader(getActivity(), getContentUri(), getProjection(), null, null, getSortOrder());
     }
 
+    final void scrollToEndAtNextLoad() {
+        mScrollToEndAtNextLoad = true;
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        if (mScrollToEndAtNextLoad) {
+            mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+            mScrollToEndAtNextLoad = false;
+        }
     }
 
     @Override

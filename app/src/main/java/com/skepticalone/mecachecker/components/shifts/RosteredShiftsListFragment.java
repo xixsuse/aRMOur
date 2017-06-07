@@ -128,7 +128,9 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
         ContentValues values = new ContentValues();
         values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newShift.getStartMillis());
         values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newShift.getEndMillis());
-        getActivity().getContentResolver().insert(Provider.rosteredShiftsUri, values);
+        if (getActivity().getContentResolver().insert(Provider.rosteredShiftsUri, values) != null) {
+            scrollToEndAtNextLoad();
+        }
     }
 
     @Override

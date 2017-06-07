@@ -114,7 +114,9 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
                 .getDefaultSharedPreferences(getActivity())
                 .getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate))
         );
-        getActivity().getContentResolver().insert(Provider.additionalShiftsUri, values);
+        if (getActivity().getContentResolver().insert(Provider.additionalShiftsUri, values) != null) {
+            scrollToEndAtNextLoad();
+        }
     }
 
     @Override
