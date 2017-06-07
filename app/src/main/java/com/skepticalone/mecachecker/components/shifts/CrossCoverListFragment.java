@@ -65,6 +65,7 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
         return Provider.crossCoverShiftUri(id);
     }
 
+    @Nullable
     @Override
     String[] getProjection() {
         return PROJECTION;

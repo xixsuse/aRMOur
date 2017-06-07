@@ -7,9 +7,9 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +23,7 @@ import com.skepticalone.mecachecker.data.ShiftType;
 abstract class ListFragment extends BaseFragment {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
-    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
     private boolean mScrollToEndAtNextLoad = false;
 
     @DrawableRes
@@ -56,12 +56,15 @@ abstract class ListFragment extends BaseFragment {
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
-        mRecyclerView.addItemDecoration(
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        mLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        recyclerView.addItemDecoration(
                 new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
         );
-        mRecyclerView.setAdapter(mAdapter);
-        return mRecyclerView;
+        recyclerView.setAdapter(mAdapter);
+        return recyclerView;
     }
 
     @MenuRes
@@ -73,18 +76,6 @@ abstract class ListFragment extends BaseFragment {
         inflater.inflate(getMenu(), menu);
     }
 
-    abstract Uri getContentUri();
-
-    abstract String[] getProjection();
-
-    @Nullable
-    abstract String getSortOrder();
-
-    @Override
-    public final Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), getContentUri(), getProjection(), null, null, getSortOrder());
-    }
-
     final void scrollToEndAtNextLoad() {
         mScrollToEndAtNextLoad = true;
     }
@@ -93,7 +84,7 @@ abstract class ListFragment extends BaseFragment {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
         if (mScrollToEndAtNextLoad) {
-            mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+            mLayoutManager.scrollToPosition(mAdapter.getItemCount() - 1);
             mScrollToEndAtNextLoad = false;
         }
     }
@@ -114,7 +105,7 @@ abstract class ListFragment extends BaseFragment {
 
     abstract Uri getItemUri(long id);
 
-    private final class CursorAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
+    private final class CursorAdapter extends ListItemViewAdapter {
 
         @Nullable
         private Cursor mCursor = null;
@@ -137,8 +128,8 @@ abstract class ListFragment extends BaseFragment {
         }
 
         @Override
-        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-            final ListItemViewHolder viewHolder = new ListItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
+        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final ListItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -79,6 +79,10 @@ public final class DateTimeUtils {
         }
     }
 
+    public static String getDateTimeString(DateTime dateTime) {
+        return dateTimeFormatter.print(dateTime);
+    }
+
     public static String getDateTimeString(long instant) {
         return dateTimeFormatter.print(instant);
     }

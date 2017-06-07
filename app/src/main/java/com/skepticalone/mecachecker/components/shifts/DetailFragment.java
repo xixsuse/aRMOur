@@ -5,15 +5,19 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.skepticalone.mecachecker.R;
 
 abstract class DetailFragment extends BaseFragment {
     static final long NO_ID = -1L;
     static final String ITEM_ID = "ITEM_ID";
 
+    private final Adapter mAdapter = new Adapter();
     private long mItemId;
 
     static Bundle createArguments(long id) {
@@ -43,21 +47,56 @@ abstract class DetailFragment extends BaseFragment {
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(String.valueOf(getItemId()));
-        return textView;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
+        );
+        recyclerView.setAdapter(mAdapter);
+        return recyclerView;
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+    public final void onLoaderReset(Loader<Cursor> loader) {
+        useCursor(null);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public final void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        useCursor(data);
+        mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    abstract void useCursor(@Nullable Cursor cursor);
+
+    abstract void onBindViewHolder(ListItemViewHolder holder, int position);
+
+    abstract int getItemCount();
+
+    private final class Adapter extends ListItemViewAdapter {
+
+//        static final int ITEM_VIEW_TYPE_TEXT, ITEM_VIEW_TYPE_SWITCH;
+//
+//        @Override
+//        public int getItemViewType(int position) {
+//            return super.getItemViewType(position);
+//        }
+
+        @Override
+        public void onBindViewHolder(ListItemViewHolder holder, int position) {
+            DetailFragment.this.onBindViewHolder(holder, position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return DetailFragment.this.getItemCount();
+        }
+
+        @Override
+        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ListItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+            viewHolder.secondaryIcon.setImageResource(R.drawable.ic_pencil_black_24dp);
+            return viewHolder;
+        }
     }
 }

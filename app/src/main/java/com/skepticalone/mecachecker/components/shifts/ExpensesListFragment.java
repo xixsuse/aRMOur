@@ -70,15 +70,10 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
         return Provider.expenseUri(id);
     }
 
+    @Nullable
     @Override
     String[] getProjection() {
         return PROJECTION;
-    }
-
-    @Nullable
-    @Override
-    String getSortOrder() {
-        return null;
     }
 
     @NonNull

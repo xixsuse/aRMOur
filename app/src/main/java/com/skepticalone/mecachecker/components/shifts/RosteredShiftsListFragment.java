@@ -51,14 +51,9 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
         return Provider.rosteredShiftUri(id);
     }
 
-    @Override
-    String[] getProjection() {
-        return null;
-    }
-
     @Nullable
     @Override
-    String getSortOrder() {
+    String[] getProjection() {
         return null;
     }
 

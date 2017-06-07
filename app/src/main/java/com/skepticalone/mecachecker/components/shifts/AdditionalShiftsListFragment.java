@@ -63,6 +63,7 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
         return Provider.additionalShiftUri(id);
     }
 
+    @Nullable
     @Override
     String[] getProjection() {
         return PROJECTION;
