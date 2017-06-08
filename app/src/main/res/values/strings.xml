@@ -45,6 +45,7 @@
     <string name="paid">Paid</string>
     <string name="total">Total</string>
     <string name="comment">Comment</string>
+    <string name="save">Save</string>
     <string name="shift_type_duration_format">%1$s (%2$s)</string>
     <string name="not_applicable">N/A</string>
     <string name="time_between_shifts">Time between shifts</string>

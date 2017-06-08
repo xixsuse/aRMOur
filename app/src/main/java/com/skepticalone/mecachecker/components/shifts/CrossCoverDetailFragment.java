@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 
 public class CrossCoverDetailFragment extends DetailFragment {
 
+    public static final String COMMENT_DIALOG = "COMMENT_DIALOG";
     private static final String[] PROJECTION = {
             Contract.CrossCoverShifts.COLUMN_NAME_DATE,
             Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT,
@@ -25,14 +27,12 @@ public class CrossCoverDetailFragment extends DetailFragment {
             Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
             Contract.CrossCoverShifts.COLUMN_NAME_PAID
     };
-
     private static final int
             COLUMN_INDEX_DATE = 0,
             COLUMN_INDEX_PAYMENT = 1,
             COLUMN_INDEX_COMMENT = 2,
             COLUMN_INDEX_CLAIMED = 3,
             COLUMN_INDEX_PAID = 4;
-
     private static final int
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_PAYMENT = 1,
@@ -40,7 +40,6 @@ public class CrossCoverDetailFragment extends DetailFragment {
             ROW_NUMBER_CLAIMED = 3,
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
-
     private boolean mLoaded = false;
     private DateTime mDate;
     private BigDecimal mPayment;
@@ -107,35 +106,45 @@ public class CrossCoverDetailFragment extends DetailFragment {
         return MainActivity.LOADER_ID_CROSS_COVER_DETAIL;
     }
 
-    private void onBindViewHolder(ListItemViewHolder holder, @DrawableRes int primaryIcon, @StringRes int key, @Nullable String value) {
+    private void onBindViewHolder(ListItemViewHolder holder, @DrawableRes int primaryIcon, @StringRes int key, @Nullable String value, @Nullable View.OnClickListener listener) {
         holder.primaryIcon.setImageResource(primaryIcon);
         holder.setText(getString(key), value);
+        holder.itemView.setOnClickListener(listener);
     }
 
     @Override
     void onBindPlainViewHolder(PlainListItemViewHolder holder, int position) {
         int primaryIcon, key;
         String value;
+        View.OnClickListener listener;
         switch (position) {
             case ROW_NUMBER_DATE:
                 primaryIcon = R.drawable.ic_calendar_black_24dp;
                 key = R.string.date;
                 value = DateTimeUtils.getFullDateString(mDate);
+                listener = null;
                 break;
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
                 key = R.string.payment;
                 value = getString(R.string.currency_format, mPayment);
+                listener = null;
                 break;
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;
                 key = R.string.comment;
                 value = mComment;
+                listener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CommentDialogFragment.newInstance(mComment, getContentUri(), Contract.CrossCoverShifts.COLUMN_NAME_COMMENT).show(getFragmentManager(), COMMENT_DIALOG);
+                    }
+                };
                 break;
             default:
                 throw new IllegalStateException();
         }
-        onBindViewHolder(holder, primaryIcon, key, value);
+        onBindViewHolder(holder, primaryIcon, key, value, listener);
     }
 
     @Override
