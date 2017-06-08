@@ -3,8 +3,10 @@ package com.skepticalone.mecachecker.components.shifts;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.view.View;
+import android.support.annotation.StringRes;
+import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
@@ -85,17 +87,26 @@ public class CrossCoverDetailFragment extends DetailFragment {
         }
     }
 
-    private void update(String column, DateTime dateTime) {
+    private void update(String column, boolean isChecked) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(column, dateTime == null ? System.currentTimeMillis() : null);
+        contentValues.put(column, isChecked ? System.currentTimeMillis() : null);
         getActivity().getContentResolver().update(getContentUri(), contentValues, null, null);
     }
 
     @Override
-    void onBindViewHolder(ListItemViewHolder holder, int position) {
-        int key, primaryIcon;
+    int getLoaderId() {
+        return MainActivity.LOADER_ID_CROSS_COVER_DETAIL;
+    }
+
+    private void onBindViewHolder(ListItemViewHolder holder, @DrawableRes int primaryIcon, @StringRes int key, @Nullable String value) {
+        holder.primaryIcon.setImageResource(primaryIcon);
+        holder.setText(getString(key), value);
+    }
+
+    @Override
+    void onBindPlainViewHolder(PlainListItemViewHolder holder, int position) {
+        int primaryIcon, key;
         String value;
-        View.OnClickListener listener = null;
         switch (position) {
             case ROW_NUMBER_DATE:
                 primaryIcon = R.drawable.ic_calendar_black_24dp;
@@ -112,37 +123,80 @@ public class CrossCoverDetailFragment extends DetailFragment {
                 key = R.string.comment;
                 value = mComment;
                 break;
+            default:
+                throw new IllegalStateException();
+        }
+        onBindViewHolder(holder, primaryIcon, key, value);
+    }
+
+    @Override
+    void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position) {
+        int primaryIcon, key;
+        String value;
+        switch (position) {
             case ROW_NUMBER_CLAIMED:
-                primaryIcon = R.drawable.ic_check_box_half_black_24dp;
                 key = R.string.claimed;
-                value = mClaimed == null ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mClaimed);
+                holder.switchControl.setOnCheckedChangeListener(null);
+                if (mClaimed == null) {
+                    primaryIcon = 0;
+                    value = getString(R.string.not_applicable);
+                    holder.switchControl.setChecked(false);
+                } else {
+                    primaryIcon = R.drawable.ic_check_box_half_black_24dp;
+                    value = DateTimeUtils.getDateTimeString(mClaimed);
+                    holder.switchControl.setChecked(true);
+                }
                 if (mPaid == null) {
-                    listener = new View.OnClickListener() {
+                    holder.switchControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
-                        public void onClick(View v) {
-                            update(Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED, mClaimed);
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            update(Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED, isChecked);
                         }
-                    };
+                    });
+                    holder.switchControl.setEnabled(true);
+                } else {
+                    holder.switchControl.setEnabled(false);
                 }
                 break;
             case ROW_NUMBER_PAID:
-                primaryIcon = R.drawable.ic_check_box_full_black_24dp;
                 key = R.string.paid;
-                value = mPaid == null ? getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(mPaid);
-                listener = new View.OnClickListener() {
+                holder.switchControl.setOnCheckedChangeListener(null);
+                if (mPaid == null) {
+                    primaryIcon = 0;
+                    value = getString(R.string.not_applicable);
+                    holder.switchControl.setChecked(false);
+                } else {
+                    primaryIcon = R.drawable.ic_check_box_full_black_24dp;
+                    value = DateTimeUtils.getDateTimeString(mPaid);
+                    holder.switchControl.setChecked(true);
+                }
+                holder.switchControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onClick(View v) {
-                        update(Contract.CrossCoverShifts.COLUMN_NAME_PAID, mPaid);
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        update(Contract.CrossCoverShifts.COLUMN_NAME_PAID, isChecked);
                     }
-                };
+                });
+                holder.switchControl.setEnabled(true);
                 break;
             default:
                 throw new IllegalStateException();
         }
-        holder.primaryIcon.setImageResource(primaryIcon);
-        holder.setText(getString(key), value);
-        holder.secondaryIcon.setVisibility(listener == null ? View.GONE : View.VISIBLE);
-        holder.itemView.setOnClickListener(listener);
+        onBindViewHolder(holder, primaryIcon, key, value);
+    }
+
+    @Override
+    boolean isSwitchType(int position) {
+        switch (position) {
+            case ROW_NUMBER_DATE:
+            case ROW_NUMBER_PAYMENT:
+            case ROW_NUMBER_COMMENT:
+                return false;
+            case ROW_NUMBER_CLAIMED:
+            case ROW_NUMBER_PAID:
+                return true;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     @Override

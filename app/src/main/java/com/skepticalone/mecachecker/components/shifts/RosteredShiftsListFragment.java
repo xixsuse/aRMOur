@@ -73,7 +73,7 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
     }
 
     @Override
-    void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor unwrappedCursor) {
+    void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor unwrappedCursor) {
         Compliance.Wrapper cursor = (Compliance.Wrapper) unwrappedCursor;
         Interval rosteredShift = cursor.getRosteredShift(), loggedShift = cursor.getLoggedShift();
         holder.primaryIcon.setImageResource(getShiftTypeIcon(getShiftType(rosteredShift)));

@@ -39,11 +39,6 @@ abstract class DetailFragment extends BaseFragment {
         return mItemId;
     }
 
-    @Override
-    int getLoaderId() {
-        return 0;
-    }
-
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,22 +64,37 @@ abstract class DetailFragment extends BaseFragment {
 
     abstract void useCursor(@Nullable Cursor cursor);
 
-    abstract void onBindViewHolder(ListItemViewHolder holder, int position);
+    abstract void onBindPlainViewHolder(PlainListItemViewHolder holder, int position);
+
+    abstract void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position);
 
     abstract int getItemCount();
 
-    private final class Adapter extends ListItemViewAdapter {
+    abstract boolean isSwitchType(int position);
 
-//        static final int ITEM_VIEW_TYPE_TEXT, ITEM_VIEW_TYPE_SWITCH;
-//
-//        @Override
-//        public int getItemViewType(int position) {
-//            return super.getItemViewType(position);
-//        }
+    private final class Adapter extends RecyclerView.Adapter<ListItemViewHolder> {
+
+        private static final int
+                PLAIN_VIEW_TYPE = 1,
+                SWITCH_VIEW_TYPE = 2;
 
         @Override
         public void onBindViewHolder(ListItemViewHolder holder, int position) {
-            DetailFragment.this.onBindViewHolder(holder, position);
+            switch (holder.getItemViewType()) {
+                case PLAIN_VIEW_TYPE:
+                    onBindPlainViewHolder((PlainListItemViewHolder) holder, position);
+                    break;
+                case SWITCH_VIEW_TYPE:
+                    onBindSwitchViewHolder((SwitchListItemViewHolder) holder, position);
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return isSwitchType(position) ? SWITCH_VIEW_TYPE : PLAIN_VIEW_TYPE;
         }
 
         @Override
@@ -94,9 +104,16 @@ abstract class DetailFragment extends BaseFragment {
 
         @Override
         public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ListItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-            viewHolder.secondaryIcon.setImageResource(R.drawable.ic_pencil_black_24dp);
-            return viewHolder;
+            switch (viewType) {
+                case PLAIN_VIEW_TYPE:
+                    PlainListItemViewHolder plainListItemViewHolder = new PlainListItemViewHolder(parent);
+                    plainListItemViewHolder.secondaryIcon.setImageResource(R.drawable.ic_pencil_black_24dp);
+                    return plainListItemViewHolder;
+                case SWITCH_VIEW_TYPE:
+                    return new SwitchListItemViewHolder(parent);
+                default:
+                    throw new IllegalStateException();
+            }
         }
     }
 }

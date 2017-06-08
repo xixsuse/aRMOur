@@ -23,6 +23,11 @@ public class AdditionalShiftDetailFragment extends DetailFragment {
     }
 
     @Override
+    int getLoaderId() {
+        return 0;
+    }
+
+    @Override
     Uri getContentUri() {
         return null;
     }
@@ -39,12 +44,22 @@ public class AdditionalShiftDetailFragment extends DetailFragment {
     }
 
     @Override
-    void onBindViewHolder(ListItemViewHolder holder, int position) {
+    void onBindPlainViewHolder(PlainListItemViewHolder holder, int position) {
+
+    }
+
+    @Override
+    void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position) {
 
     }
 
     @Override
     int getItemCount() {
         return 0;
+    }
+
+    @Override
+    boolean isSwitchType(int position) {
+        return false;
     }
 }

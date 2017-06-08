@@ -96,16 +96,16 @@ abstract class ListFragment extends BaseFragment {
 
     abstract int getColumnIndexId();
 
-    abstract void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor);
+    abstract void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor);
 
-    void onViewHolderCreated(ListItemViewHolder holder) {
+    void onViewHolderCreated(PlainListItemViewHolder holder) {
     }
 
     abstract void onItemClicked(long id);
 
     abstract Uri getItemUri(long id);
 
-    private final class CursorAdapter extends ListItemViewAdapter {
+    private final class CursorAdapter extends RecyclerView.Adapter<PlainListItemViewHolder> {
 
         @Nullable
         private Cursor mCursor = null;
@@ -128,8 +128,8 @@ abstract class ListFragment extends BaseFragment {
         }
 
         @Override
-        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final ListItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        public PlainListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final PlainListItemViewHolder viewHolder = new PlainListItemViewHolder(parent);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,7 +147,7 @@ abstract class ListFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(ListItemViewHolder holder, int position) {
+        public void onBindViewHolder(PlainListItemViewHolder holder, int position) {
             assert mCursor != null;
             mCursor.moveToPosition(position);
             bindViewHolderToCursor(holder, mCursor);

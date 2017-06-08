@@ -38,12 +38,12 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
     abstract String getSecondLine(@NonNull Cursor cursor);
 
     @Override
-    final void onViewHolderCreated(ListItemViewHolder holder) {
+    final void onViewHolderCreated(PlainListItemViewHolder holder) {
         holder.primaryIcon.setVisibility(View.GONE);
     }
 
     @Override
-    final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
+    final void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor) {
         holder.setText(getFirstLine(cursor), getSecondLine(cursor));
         holder.secondaryIcon.setImageResource(getClaimStatusIcon(cursor, getColumnIndexClaimed(), getColumnIndexPaid()));
     }

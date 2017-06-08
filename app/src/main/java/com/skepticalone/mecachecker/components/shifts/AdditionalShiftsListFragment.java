@@ -81,7 +81,7 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
     }
 
     @Override
-    void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
+    void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor) {
         Interval shift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
         holder.primaryIcon.setImageResource(getShiftTypeIcon(getShiftType(shift)));
         holder.setText(
