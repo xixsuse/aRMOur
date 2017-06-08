@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
@@ -67,6 +66,16 @@ public class CrossCoverDetailFragment extends DetailFragment {
     @Override
     Uri getContentUri() {
         return Provider.crossCoverShiftUri(getItemId());
+    }
+
+    @Override
+    String getColumnNameClaimed() {
+        return Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED;
+    }
+
+    @Override
+    String getColumnNamePaid() {
+        return Contract.CrossCoverShifts.COLUMN_NAME_PAID;
     }
 
     @Nullable
@@ -131,57 +140,16 @@ public class CrossCoverDetailFragment extends DetailFragment {
 
     @Override
     void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position) {
-        int primaryIcon, key;
-        String value;
         switch (position) {
             case ROW_NUMBER_CLAIMED:
-                key = R.string.claimed;
-                holder.switchControl.setOnCheckedChangeListener(null);
-                if (mClaimed == null) {
-                    primaryIcon = 0;
-                    value = getString(R.string.not_applicable);
-                    holder.switchControl.setChecked(false);
-                } else {
-                    primaryIcon = R.drawable.ic_check_box_half_black_24dp;
-                    value = DateTimeUtils.getDateTimeString(mClaimed);
-                    holder.switchControl.setChecked(true);
-                }
-                if (mPaid == null) {
-                    holder.switchControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            update(Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED, isChecked);
-                        }
-                    });
-                    holder.switchControl.setEnabled(true);
-                } else {
-                    holder.switchControl.setEnabled(false);
-                }
-                break;
+                holder.bindClaimed(getActivity(), mClaimed, mPaid == null);
+                return;
             case ROW_NUMBER_PAID:
-                key = R.string.paid;
-                holder.switchControl.setOnCheckedChangeListener(null);
-                if (mPaid == null) {
-                    primaryIcon = 0;
-                    value = getString(R.string.not_applicable);
-                    holder.switchControl.setChecked(false);
-                } else {
-                    primaryIcon = R.drawable.ic_check_box_full_black_24dp;
-                    value = DateTimeUtils.getDateTimeString(mPaid);
-                    holder.switchControl.setChecked(true);
-                }
-                holder.switchControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        update(Contract.CrossCoverShifts.COLUMN_NAME_PAID, isChecked);
-                    }
-                });
-                holder.switchControl.setEnabled(true);
-                break;
+                holder.bindPaid(getActivity(), mPaid);
+                return;
             default:
                 throw new IllegalStateException();
         }
-        onBindViewHolder(holder, primaryIcon, key, value);
     }
 
     @Override
@@ -203,4 +171,5 @@ public class CrossCoverDetailFragment extends DetailFragment {
     int getItemCount() {
         return mLoaded ? ROW_COUNT - (mClaimed == null ? 1 : 0) : 0;
     }
+
 }

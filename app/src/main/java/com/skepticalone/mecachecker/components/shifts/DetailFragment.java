@@ -68,6 +68,10 @@ abstract class DetailFragment extends BaseFragment {
 
     abstract void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position);
 
+    abstract String getColumnNameClaimed();
+
+    abstract String getColumnNamePaid();
+
     abstract int getItemCount();
 
     abstract boolean isSwitchType(int position);
@@ -110,7 +114,7 @@ abstract class DetailFragment extends BaseFragment {
                     plainListItemViewHolder.secondaryIcon.setImageResource(R.drawable.ic_pencil_black_24dp);
                     return plainListItemViewHolder;
                 case SWITCH_VIEW_TYPE:
-                    return new SwitchListItemViewHolder(parent);
+                    return new SwitchListItemViewHolder(parent, getContentUri(), getColumnNameClaimed(), getColumnNamePaid());
                 default:
                     throw new IllegalStateException();
             }

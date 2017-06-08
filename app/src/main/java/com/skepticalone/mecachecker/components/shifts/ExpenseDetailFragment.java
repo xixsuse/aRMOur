@@ -32,6 +32,16 @@ public class ExpenseDetailFragment extends DetailFragment {
         return null;
     }
 
+    @Override
+    String getColumnNameClaimed() {
+        return null;
+    }
+
+    @Override
+    String getColumnNamePaid() {
+        return null;
+    }
+
     @Nullable
     @Override
     String[] getProjection() {
