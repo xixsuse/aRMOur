@@ -64,9 +64,6 @@ abstract class DetailFragment extends BaseFragment {
 
     abstract void useCursor(@Nullable Cursor cursor);
 
-    abstract void onBindPlainViewHolder(PlainListItemViewHolder holder, int position);
-
-    abstract void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position);
 
     abstract String getColumnNameClaimed();
 
@@ -75,6 +72,16 @@ abstract class DetailFragment extends BaseFragment {
     abstract int getItemCount();
 
     abstract boolean isSwitchType(int position);
+
+    void onViewHolderCreated(PlainListItemViewHolder holder) {
+    }
+
+    void onViewHolderCreated(SwitchListItemViewHolder holder) {
+    }
+
+    abstract void onBindViewHolder(PlainListItemViewHolder holder, int position);
+
+    abstract void onBindViewHolder(SwitchListItemViewHolder holder, int position);
 
     private final class Adapter extends RecyclerView.Adapter<ListItemViewHolder> {
 
@@ -86,10 +93,12 @@ abstract class DetailFragment extends BaseFragment {
         public void onBindViewHolder(ListItemViewHolder holder, int position) {
             switch (holder.getItemViewType()) {
                 case PLAIN_VIEW_TYPE:
-                    onBindPlainViewHolder((PlainListItemViewHolder) holder, position);
+                    DetailFragment.this.onBindViewHolder((PlainListItemViewHolder) holder, position);
+                    onViewHolderCreated((PlainListItemViewHolder) holder);
                     break;
                 case SWITCH_VIEW_TYPE:
-                    onBindSwitchViewHolder((SwitchListItemViewHolder) holder, position);
+                    DetailFragment.this.onBindViewHolder((SwitchListItemViewHolder) holder, position);
+                    onViewHolderCreated((SwitchListItemViewHolder) holder);
                     break;
                 default:
                     throw new IllegalStateException();

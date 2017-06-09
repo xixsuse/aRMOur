@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 
 public class CrossCoverDetailFragment extends DetailFragment {
 
-    public static final String COMMENT_DIALOG = "COMMENT_DIALOG";
     private static final String[] PROJECTION = {
             Contract.CrossCoverShifts.COLUMN_NAME_DATE,
             Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT,
@@ -40,8 +39,33 @@ public class CrossCoverDetailFragment extends DetailFragment {
             ROW_NUMBER_CLAIMED = 3,
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
+    private static final String DATE_DIALOG = "DATE_DIALOG";
+    private static final String PAYMENT_DIALOG = "PAYMENT_DIALOG";
+    private static final String COMMENT_DIALOG = "COMMENT_DIALOG";
     private boolean mLoaded = false;
     private DateTime mDate;
+    private final View.OnClickListener
+            mDateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MidnightDatePickerDialogFragment.newInstance(mDate.toLocalDate(), getContentUri(), Contract.CrossCoverShifts.COLUMN_NAME_DATE)
+                    .show(getFragmentManager(), DATE_DIALOG);
+        }
+    },
+            mPaymentListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MoneyDialogFragment.newInstance(mPayment, R.string.payment, getContentUri(), Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT)
+                            .show(getFragmentManager(), PAYMENT_DIALOG);
+                }
+            },
+            mCommentListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CommentDialogFragment.newInstance(mComment, getContentUri(), Contract.CrossCoverShifts.COLUMN_NAME_COMMENT)
+                            .show(getFragmentManager(), COMMENT_DIALOG);
+                }
+            };
     private BigDecimal mPayment;
     @Nullable
     private String mComment;
@@ -106,6 +130,11 @@ public class CrossCoverDetailFragment extends DetailFragment {
         return MainActivity.LOADER_ID_CROSS_COVER_DETAIL;
     }
 
+    @Override
+    void onViewHolderCreated(PlainListItemViewHolder holder) {
+        holder.secondaryIcon.setVisibility(View.GONE);
+    }
+
     private void onBindViewHolder(ListItemViewHolder holder, @DrawableRes int primaryIcon, @StringRes int key, @Nullable String value, @Nullable View.OnClickListener listener) {
         holder.primaryIcon.setImageResource(primaryIcon);
         holder.setText(getString(key), value);
@@ -113,7 +142,7 @@ public class CrossCoverDetailFragment extends DetailFragment {
     }
 
     @Override
-    void onBindPlainViewHolder(PlainListItemViewHolder holder, int position) {
+    void onBindViewHolder(PlainListItemViewHolder holder, int position) {
         int primaryIcon, key;
         String value;
         View.OnClickListener listener;
@@ -122,24 +151,19 @@ public class CrossCoverDetailFragment extends DetailFragment {
                 primaryIcon = R.drawable.ic_calendar_black_24dp;
                 key = R.string.date;
                 value = DateTimeUtils.getFullDateString(mDate);
-                listener = null;
+                listener = mDateListener;
                 break;
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
                 key = R.string.payment;
                 value = getString(R.string.currency_format, mPayment);
-                listener = null;
+                listener = mPaymentListener;
                 break;
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;
                 key = R.string.comment;
                 value = mComment;
-                listener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CommentDialogFragment.newInstance(mComment, getContentUri(), Contract.CrossCoverShifts.COLUMN_NAME_COMMENT).show(getFragmentManager(), COMMENT_DIALOG);
-                    }
-                };
+                listener = mCommentListener;
                 break;
             default:
                 throw new IllegalStateException();
@@ -148,7 +172,7 @@ public class CrossCoverDetailFragment extends DetailFragment {
     }
 
     @Override
-    void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position) {
+    void onBindViewHolder(SwitchListItemViewHolder holder, int position) {
         switch (position) {
             case ROW_NUMBER_CLAIMED:
                 holder.bindClaimed(getActivity(), mClaimed, mPaid == null);

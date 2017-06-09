@@ -20,7 +20,7 @@ class CurrencyPreference extends DialogPreference {
 
     CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setDialogLayoutResource(R.layout.currency_input);
+        setDialogLayoutResource(R.layout.input_money);
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
     }
@@ -56,7 +56,7 @@ class CurrencyPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
             try {
-                mValue = (new BigDecimal(mEditText.getText().toString())).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue();
+                mValue = new BigDecimal(mEditText.getText().toString()).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue();
                 persistInt(mValue);
             } catch (NumberFormatException e) {
                 // do nothing

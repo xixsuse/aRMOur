@@ -54,12 +54,12 @@ public class RosteredShiftDetailFragment extends DetailFragment {
     }
 
     @Override
-    void onBindPlainViewHolder(PlainListItemViewHolder holder, int position) {
+    void onBindViewHolder(PlainListItemViewHolder holder, int position) {
 
     }
 
     @Override
-    void onBindSwitchViewHolder(SwitchListItemViewHolder holder, int position) {
+    void onBindViewHolder(SwitchListItemViewHolder holder, int position) {
 
     }
 
