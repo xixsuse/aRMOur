@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.text.InputType;
 
 import com.skepticalone.mecachecker.R;
 
@@ -26,12 +27,15 @@ public class MoneyDialogFragment extends EditTextDialogFragment {
     }
 
     @Override
-    void save() {
+    int getInputType() {
+        return InputType.TYPE_NUMBER_FLAG_DECIMAL;
+    }
+
+    @Override
+    void save(@NonNull String trimmedTextWithLength) {
         ContentValues values = new ContentValues();
-        String text = getText();
-        if (text == null) return;
         values.put(getArguments().getString(COLUMN_NAME),
-                new BigDecimal(text).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue());
+                new BigDecimal(trimmedTextWithLength).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue());
         Uri contentUri = getArguments().getParcelable(CONTENT_URI);
         assert contentUri != null;
         getActivity().getContentResolver().update(contentUri, values, null, null);

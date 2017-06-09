@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.components.shifts;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
@@ -32,11 +33,13 @@ public class RosteredShiftDetailFragment extends DetailFragment {
         return null;
     }
 
+    @NonNull
     @Override
     String getColumnNameClaimed() {
         return null;
     }
 
+    @NonNull
     @Override
     String getColumnNamePaid() {
         return null;

@@ -36,8 +36,11 @@ abstract public class EditTextDialogFragment extends DialogFragment implements D
     public void onAttach(Context context) {
         super.onAttach(context);
         editText = (EditText) LayoutInflater.from(context).inflate(getArguments().getInt(LAYOUT_ID), null, false);
+        editText.setInputType(getInputType());
         editText.setText(getArguments().getString(TEXT));
     }
+
+    abstract int getInputType();
 
     @NonNull
     @Override
@@ -53,15 +56,13 @@ abstract public class EditTextDialogFragment extends DialogFragment implements D
     @Override
     public final void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            save();
+            String trimmedText = editText.getText().toString().trim();
+            if (trimmedText.length() > 0) {
+                save(trimmedText);
+            }
         }
     }
 
-    abstract void save();
+    abstract void save(@NonNull String trimmedTextWithLength);
 
-    @Nullable
-    String getText() {
-        String text = editText.getText().toString().trim();
-        return text.length() == 0 ? null : text;
-    }
 }

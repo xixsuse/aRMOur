@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components.shifts;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -90,7 +91,12 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
 
     @Override
     void addItem() {
-        mListener.addExpense();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Expenses.COLUMN_NAME_TITLE, "New item");
+        values.put(Contract.Expenses.COLUMN_NAME_PAYMENT, 7900);
+        if (getActivity().getContentResolver().insert(Provider.expensesUri, values) != null) {
+            scrollToEndAtNextLoad();
+        }
     }
 
     @Override
@@ -100,8 +106,6 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
 
     interface Listener {
         void onExpenseClicked(long id);
-
-        void addExpense();
     }
 
 }

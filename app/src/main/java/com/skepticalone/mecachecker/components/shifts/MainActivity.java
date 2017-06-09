@@ -128,8 +128,4 @@ public class MainActivity extends AppCompatActivity implements
         onItemClicked(DetailActivity.ITEM_TYPE_EXPENSE, id);
     }
 
-    @Override
-    public void addExpense() {
-        // TODO: 7/06/17  
-    }
 }
