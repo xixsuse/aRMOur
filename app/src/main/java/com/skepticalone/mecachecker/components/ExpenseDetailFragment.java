@@ -8,32 +8,33 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 
-public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment implements DateData.Callbacks {
+public class ExpenseDetailFragment extends SinglePaymentItemDetailFragment implements TitleData.Callbacks {
 
     private static final String[] PROJECTION = {
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE,
-            Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT,
-            Contract.CrossCoverShifts.COLUMN_NAME_COMMENT,
-            Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
-            Contract.CrossCoverShifts.COLUMN_NAME_PAID
+            Contract.Expenses.COLUMN_NAME_TITLE,
+            Contract.Expenses.COLUMN_NAME_PAYMENT,
+            Contract.Expenses.COLUMN_NAME_COMMENT,
+            Contract.Expenses.COLUMN_NAME_CLAIMED,
+            Contract.Expenses.COLUMN_NAME_PAID
     };
+
     private static final int
-            COLUMN_INDEX_DATE = 0,
+            COLUMN_INDEX_TITLE = 0,
             COLUMN_INDEX_PAYMENT = 1,
             COLUMN_INDEX_COMMENT = 2,
             COLUMN_INDEX_CLAIMED = 3,
             COLUMN_INDEX_PAID = 4,
-            ROW_NUMBER_DATE = 0,
+            ROW_NUMBER_TITLE = 0,
             ROW_NUMBER_PAYMENT = 1,
             ROW_NUMBER_COMMENT = 2,
             ROW_NUMBER_CLAIMED = 3,
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
 
-    private final DateData mDateData = new DateData(this);
+    private final TitleData mTitleData = new TitleData(this);
 
-    static CrossCoverDetailFragment create(long id) {
-        CrossCoverDetailFragment fragment = new CrossCoverDetailFragment();
+    static ExpenseDetailFragment create(long id) {
+        ExpenseDetailFragment fragment = new ExpenseDetailFragment();
         fragment.setArguments(createArguments(id));
         return fragment;
     }
@@ -41,22 +42,22 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     @NonNull
     @Override
     AbstractData getData() {
-        return mDateData;
+        return mTitleData;
     }
 
     @Override
     int getTitle() {
-        return R.string.cross_cover;
+        return R.string.expense;
     }
 
     @Override
     int getLoaderId() {
-        return LifecycleConstants.LOADER_ID_CROSS_COVER_DETAIL;
+        return LifecycleConstants.LOADER_ID_EXPENSES_DETAIL;
     }
 
     @Override
     public Uri getContentUri() {
-        return Provider.crossCoverShiftUri(getItemId());
+        return Provider.expenseUri(getItemId());
     }
 
     @Nullable
@@ -67,37 +68,37 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
 
     @NonNull
     @Override
-    public String getColumnNameStart() {
-        return Contract.CrossCoverShifts.COLUMN_NAME_DATE;
+    public String getColumnNameTitle() {
+        return Contract.Expenses.COLUMN_NAME_TITLE;
     }
 
     @NonNull
     @Override
     public String getColumnNameMoney() {
-        return Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT;
+        return Contract.Expenses.COLUMN_NAME_PAYMENT;
     }
 
     @NonNull
     @Override
     public String getColumnNameComment() {
-        return Contract.CrossCoverShifts.COLUMN_NAME_COMMENT;
+        return Contract.Expenses.COLUMN_NAME_COMMENT;
     }
 
     @NonNull
     @Override
     public String getColumnNameClaimed() {
-        return Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED;
+        return Contract.Expenses.COLUMN_NAME_CLAIMED;
     }
 
     @NonNull
     @Override
     public String getColumnNamePaid() {
-        return Contract.CrossCoverShifts.COLUMN_NAME_PAID;
+        return Contract.Expenses.COLUMN_NAME_PAID;
     }
 
     @Override
-    public int getColumnIndexStart() {
-        return COLUMN_INDEX_DATE;
+    public int getColumnIndexTitle() {
+        return COLUMN_INDEX_TITLE;
     }
 
     @Override
@@ -121,8 +122,8 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    public int getRowNumberStart() {
-        return ROW_NUMBER_DATE;
+    public int getRowNumberTitle() {
+        return ROW_NUMBER_TITLE;
     }
 
     @Override

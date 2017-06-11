@@ -12,12 +12,12 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".components.summary.SummaryActivity"
+            android:name=".summary.SummaryActivity"
             android:label="@string/summary"
-            android:parentActivityName=".components.shifts.MainActivity"
+            android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".components.shifts.MainActivity"
+            android:name=".components.MainActivity"
             android:label="@string/title_shift_list"
             android:launchMode="singleTop">
             <intent-filter>
@@ -26,13 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".components.shifts.DetailActivity"
-            android:parentActivityName=".components.shifts.MainActivity"
+            android:name=".components.DetailActivity"
+            android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".components.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".components.shifts.MainActivity"
+            android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme" />
         <provider
             android:name=".data.Provider"

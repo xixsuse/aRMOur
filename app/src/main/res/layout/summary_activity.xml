@@ -2,7 +2,7 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/summary_fragment"
-    android:name="com.skepticalone.mecachecker.components.summary.SummaryFragment"
+    android:name="com.skepticalone.mecachecker.summary.SummaryFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout="@layout/summary_fragment" />

@@ -116,12 +116,8 @@ public final class DateTimeUtils {
         );
     }
 
-    public static String getPeriodString(Period period) {
-        return periodFormatter.print(period);
-    }
-
     public static String getShiftTypeWithDurationString(String shiftType, Period shift) {
-        return getQualifiedString(shiftType, getPeriodString(shift));
+        return getQualifiedString(shiftType, periodFormatter.print(shift));
     }
 
 }
