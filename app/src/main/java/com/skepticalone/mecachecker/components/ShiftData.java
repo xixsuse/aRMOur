@@ -9,30 +9,32 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 class ShiftData extends AbstractData {
 
     private final Callbacks mCallbacks;
+    private Interval mShift;
     private final View.OnClickListener
             mDateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO: 11/06/17
+            mCallbacks.showDialogFragment(getShiftDatePickerDialogFragment(mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
         }
     },
             mStartListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 11/06/17
+                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(true, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
                 }
             },
             mEndListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 11/06/17
+                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(false, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
                 }
             };
-    private Interval mShift;
 
     ShiftData(Callbacks callbacks) {
         mCallbacks = callbacks;
@@ -62,6 +64,14 @@ class ShiftData extends AbstractData {
             holder.bind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
         } else return false;
         return true;
+    }
+
+    private ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
+        return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), date, start, end, mCallbacks.getColumnNameStart(), mCallbacks.getColumnNameEnd());
+    }
+
+    private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, date, start, end, mCallbacks.getColumnNameStart(), mCallbacks.getColumnNameEnd());
     }
 
     interface Callbacks extends Shift, HasContentUri, ShowsDialog {

@@ -18,7 +18,7 @@ final class DateData extends AbstractData {
         @Override
         public void onClick(View v) {
             mCallbacks.showDialogFragment(
-                    MidnightDatePickerDialogFragment.newInstance(mStart.toLocalDate(), mCallbacks.getContentUri(), mCallbacks.getColumnNameStart()),
+                    MidnightDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), mStart.toLocalDate(), mCallbacks.getColumnNameStart()),
                     LifecycleConstants.DATE_DIALOG
             );
         }
