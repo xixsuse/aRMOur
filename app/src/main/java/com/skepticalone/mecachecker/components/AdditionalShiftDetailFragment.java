@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -10,6 +11,10 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
+import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+
+import org.joda.time.Interval;
 
 public class AdditionalShiftDetailFragment extends DetailFragment implements ShiftData.Callbacks, PaymentData.Callbacks {
 
@@ -31,18 +36,31 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
-            ROW_NUMBER_RATE = 3,
-            ROW_NUMBER_COMMENT = 4,
-            ROW_NUMBER_CLAIMED = 5,
-            ROW_NUMBER_PAID = 6,
-            ROW_COUNT = 7;
+            ROW_NUMBER_SHIFT_TYPE = 3,
+            ROW_NUMBER_RATE = 4,
+            ROW_NUMBER_COMMENT = 5,
+            ROW_NUMBER_CLAIMED = 6,
+            ROW_NUMBER_PAID = 7,
+            ROW_COUNT = 8;
     private final ShiftData mShiftData = new ShiftData(this);
     private final PaymentData mPaymentData = new PaymentData(this);
+    private ShiftTypeUtil.Calculator mCalculator;
 
     static AdditionalShiftDetailFragment create(long id) {
         AdditionalShiftDetailFragment fragment = new AdditionalShiftDetailFragment();
         fragment.setArguments(createArguments(id));
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCalculator = new ShiftTypeUtil.Calculator(context);
+    }
+
+    @Override
+    public ShiftType getShiftType(Interval shift) {
+        return mCalculator.getShiftType(shift);
     }
 
     @Override
@@ -145,6 +163,11 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     @Override
     public int getRowNumberEnd() {
         return ROW_NUMBER_END;
+    }
+
+    @Override
+    public int getRowNumberShiftType() {
+        return ROW_NUMBER_SHIFT_TYPE;
     }
 
     @Override

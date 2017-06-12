@@ -20,7 +20,7 @@ class CurrencyPreference extends DialogPreference {
 
     CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setDialogLayoutResource(R.layout.input_money);
+        setDialogLayoutResource(R.layout.edit_text);
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
     }

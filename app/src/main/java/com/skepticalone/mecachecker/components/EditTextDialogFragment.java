@@ -1,11 +1,11 @@
 package com.skepticalone.mecachecker.components;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -21,21 +21,20 @@ abstract public class EditTextDialogFragment extends DialogFragment implements D
     private static final String TAG = "EditTextDialogFragment";
     private static final String TEXT = "TEXT";
     private static final String TITLE_ID = "TITLE_ID";
-    private static final String LAYOUT_ID = "LAYOUT_ID";
     private EditText editText;
 
-    static Bundle getArgs(@StringRes int title, @LayoutRes int layout, @Nullable String text) {
+    static Bundle getArgs(@StringRes int title, @Nullable String text) {
         Bundle args = new Bundle();
         args.putInt(TITLE_ID, title);
-        args.putInt(LAYOUT_ID, layout);
         args.putString(TEXT, text);
         return args;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        editText = (EditText) LayoutInflater.from(context).inflate(getArguments().getInt(LAYOUT_ID), null, false);
+        editText = (EditText) LayoutInflater.from(context).inflate(R.layout.edit_text, null, false);
         editText.setInputType(getInputType());
         editText.setText(getArguments().getString(TEXT));
     }

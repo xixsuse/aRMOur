@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -8,6 +9,10 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
+import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+
+import org.joda.time.Interval;
 
 public class RosteredShiftDetailFragment extends DetailFragment implements ShiftData.Callbacks {
 
@@ -21,13 +26,26 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Shift
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
-            ROW_COUNT = 3;
+            ROW_NUMBER_SHIFT_TYPE = 3,
+            ROW_COUNT = 4;
     private final ShiftData mShiftData = new ShiftData(this);
+    private ShiftTypeUtil.Calculator mCalculator;
 
     static RosteredShiftDetailFragment create(long id) {
         RosteredShiftDetailFragment fragment = new RosteredShiftDetailFragment();
         fragment.setArguments(createArguments(id));
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCalculator = new ShiftTypeUtil.Calculator(context);
+    }
+
+    @Override
+    public ShiftType getShiftType(Interval shift) {
+        return mCalculator.getShiftType(shift);
     }
 
     @Override
@@ -86,6 +104,11 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Shift
     @Override
     public int getRowNumberEnd() {
         return ROW_NUMBER_END;
+    }
+
+    @Override
+    public int getRowNumberShiftType() {
+        return ROW_NUMBER_SHIFT_TYPE;
     }
 
     @Override

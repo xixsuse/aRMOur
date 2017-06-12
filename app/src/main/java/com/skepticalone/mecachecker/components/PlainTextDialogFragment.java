@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.InputType;
 
-import com.skepticalone.mecachecker.R;
-
 public class PlainTextDialogFragment extends EditTextDialogFragment {
 
     private static final String CONTENT_URI = "CONTENT_URI";
@@ -17,7 +15,7 @@ public class PlainTextDialogFragment extends EditTextDialogFragment {
 
     public static PlainTextDialogFragment newInstance(@Nullable String text, @StringRes int title, @NonNull Uri contentUri, @NonNull String columnName) {
         PlainTextDialogFragment fragment = new PlainTextDialogFragment();
-        Bundle args = getArgs(title, R.layout.input_string, text);
+        Bundle args = getArgs(title, text);
         args.putParcelable(CONTENT_URI, contentUri);
         args.putString(COLUMN_NAME, columnName);
         fragment.setArguments(args);

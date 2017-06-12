@@ -6,7 +6,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.ShiftTypeUtil;
 
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
@@ -35,6 +37,7 @@ class ShiftData extends AbstractData {
                     mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(false, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
                 }
             };
+    private ShiftType mShiftType;
 
     ShiftData(Callbacks callbacks) {
         mCallbacks = callbacks;
@@ -43,11 +46,18 @@ class ShiftData extends AbstractData {
     @Override
     public void readFromPositionedCursor(@NonNull Cursor cursor) {
         mShift = new Interval(cursor.getLong(mCallbacks.getColumnIndexStart()), cursor.getLong(mCallbacks.getColumnIndexEnd()));
+        mShiftType = mCallbacks.getShiftType(mShift);
+
     }
 
     @Override
     boolean isSwitchType(int position) throws IllegalStateException {
-        if (position == mCallbacks.getRowNumberDate() || position == mCallbacks.getRowNumberStart() || position == mCallbacks.getRowNumberEnd()) {
+        if (
+                position == mCallbacks.getRowNumberDate() ||
+                        position == mCallbacks.getRowNumberStart() ||
+                        position == mCallbacks.getRowNumberEnd() ||
+                        position == mCallbacks.getRowNumberShiftType()
+                ) {
             return false;
         } else {
             throw new IllegalStateException();
@@ -62,6 +72,8 @@ class ShiftData extends AbstractData {
             holder.bind(context, R.drawable.ic_play_arrow_black_24dp, R.string.start, DateTimeUtils.getTimeString(mShift, true, null), mStartListener);
         } else if (position == mCallbacks.getRowNumberEnd()) {
             holder.bind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
+        } else if (position == mCallbacks.getRowNumberShiftType()) {
+            holder.bind(context, ShiftTypeUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftTypeUtil.getShiftTypeTitle(mShiftType)), null);
         } else return false;
         return true;
     }

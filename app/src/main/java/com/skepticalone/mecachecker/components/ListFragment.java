@@ -18,29 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftType;
 
 abstract class ListFragment extends BaseFragment {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
     private LinearLayoutManager mLayoutManager;
     private boolean mScrollToEndAtNextLoad = false;
-
-    @DrawableRes
-    static int getShiftTypeIcon(ShiftType shiftType) {
-        switch (shiftType) {
-            case NORMAL_DAY:
-                return R.drawable.ic_normal_day_black_24dp;
-            case LONG_DAY:
-                return R.drawable.ic_long_day_black_24dp;
-            case NIGHT_SHIFT:
-                return R.drawable.ic_night_shift_black_24dp;
-            case OTHER:
-                return R.drawable.ic_custom_shift_black_24dp;
-            default:
-                throw new IllegalStateException();
-        }
-    }
 
     @DrawableRes
     static int getClaimStatusIcon(@NonNull Cursor cursor, int columnIndexClaimed, int columnIndexPaid) {

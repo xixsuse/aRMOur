@@ -60,7 +60,7 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
     }
 
     @NonNull
-    ContentValues getValues(@NonNull LocalTime time, boolean isStart) {
+    private ContentValues getValues(@NonNull LocalTime time, boolean isStart) {
         LocalDate date = new LocalDate(getArguments().getInt(YEAR), getArguments().getInt(MONTH), getArguments().getInt(DAY_OF_MONTH));
         DateTime
                 start = date.toDateTime(isStart ? time : new LocalTime(getArguments().getInt(START_HOUR_OF_DAY), getArguments().getInt(START_MINUTE_OF_HOUR))),

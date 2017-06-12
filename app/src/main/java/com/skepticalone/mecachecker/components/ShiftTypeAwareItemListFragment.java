@@ -1,9 +1,7 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
@@ -11,7 +9,7 @@ import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
-import com.skepticalone.mecachecker.util.ShiftTypeCalculator;
+import com.skepticalone.mecachecker.util.ShiftTypeUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -21,7 +19,7 @@ import org.joda.time.LocalTime;
 
 abstract class ShiftTypeAwareItemListFragment extends ListFragment {
 
-    private ShiftTypeCalculator mShiftTypeCalculator;
+    private ShiftTypeUtil.Calculator mCalculator;
 
     @Nullable
     private Instant mLastShiftEnd = null;
@@ -36,13 +34,12 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
 
     private void addShift(ShiftType shiftType) {
         DateTime earliestStartForNewShift = getEarliestStartForNewShift(mLastShiftEnd);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        DateTime newStart = earliestStartForNewShift.withTime(mShiftTypeCalculator.getStartTime(shiftType, preferences));
+        DateTime newStart = earliestStartForNewShift.withTime(mCalculator.getStartTime(shiftType));
         boolean skipWeekends = shouldSkipWeekendsOnAdding(shiftType);
         while (newStart.isBefore(earliestStartForNewShift) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
             newStart = newStart.plusDays(1);
         }
-        DateTime newEnd = newStart.withTime(mShiftTypeCalculator.getEndTime(shiftType, preferences));
+        DateTime newEnd = newStart.withTime(mCalculator.getEndTime(shiftType));
         if (!newEnd.isAfter(newStart)) {
             newEnd = newEnd.plusDays(1);
         }
@@ -88,19 +85,19 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mShiftTypeCalculator = new ShiftTypeCalculator(context);
+        mCalculator = new ShiftTypeUtil.Calculator(context);
     }
 
     ShiftType getShiftType(Interval shift) {
-        return mShiftTypeCalculator.getShiftType(shift, getActivity());
+        return mCalculator.getShiftType(shift);
     }
 
-    DateTime getNewStart(ShiftType shiftType, DateTime minStart, SharedPreferences preferences) {
-        return minStart.withTime(mShiftTypeCalculator.getStartTime(shiftType, preferences));
+    DateTime getNewStart(ShiftType shiftType, DateTime minStart) {
+        return minStart.withTime(mCalculator.getStartTime(shiftType));
     }
 
-    LocalTime getEndTime(ShiftType shiftType, SharedPreferences preferences) {
-        return mShiftTypeCalculator.getEndTime(shiftType, preferences);
+    LocalTime getEndTime(ShiftType shiftType) {
+        return mCalculator.getEndTime(shiftType);
     }
 
 }
