@@ -10,6 +10,8 @@ import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
+import com.skepticalone.mecachecker.util.AppConstants;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -78,7 +80,7 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
     public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
         Uri contentUri = getArguments().getParcelable(CONTENT_URI);
         assert contentUri != null;
-        LocalTime time = new LocalTime(hourOfDay, minute);
+        LocalTime time = new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minute));
         boolean isStart = getArguments().getBoolean(IS_START);
         getActivity().getContentResolver().update(contentUri, getValues(time, isStart), null, null);
     }

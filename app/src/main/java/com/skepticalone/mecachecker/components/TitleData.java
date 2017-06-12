@@ -21,7 +21,6 @@ class TitleData extends AbstractData {
         }
     };
 
-
     TitleData(Callbacks callbacks) {
         mCallbacks = callbacks;
     }

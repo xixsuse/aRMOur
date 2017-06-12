@@ -14,21 +14,28 @@ import com.skepticalone.mecachecker.util.ShiftTypeUtil;
 
 import org.joda.time.Interval;
 
-public class RosteredShiftDetailFragment extends DetailFragment implements ShiftData.Callbacks {
+public class RosteredShiftDetailFragment extends DetailFragment implements LoggedShiftData.Callbacks {
 
     private static final String[] PROJECTION = {
             Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
             Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END,
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_START,
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_END
     };
     private final static int
             COLUMN_INDEX_START = 0,
             COLUMN_INDEX_END = 1,
+            COLUMN_INDEX_LOGGED_START = 2,
+            COLUMN_INDEX_LOGGED_END = 3,
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_COUNT = 4;
-    private final ShiftData mShiftData = new ShiftData(this);
+            ROW_NUMBER_LOGGED_START = 4,
+            ROW_NUMBER_LOGGED_END = 5,
+            ROW_COUNT = 6;
+
+    private final LoggedShiftData mShiftData = new LoggedShiftData(this);
     private ShiftTypeUtil.Calculator mCalculator;
 
     static RosteredShiftDetailFragment create(long id) {
@@ -75,6 +82,18 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Shift
         return Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END;
     }
 
+    @NonNull
+    @Override
+    public String getColumnNameLoggedStart() {
+        return Contract.RosteredShifts.COLUMN_NAME_LOGGED_START;
+    }
+
+    @NonNull
+    @Override
+    public String getColumnNameLoggedEnd() {
+        return Contract.RosteredShifts.COLUMN_NAME_LOGGED_END;
+    }
+
     @Nullable
     @Override
     String[] getProjection() {
@@ -89,6 +108,16 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Shift
     @Override
     public int getColumnIndexEnd() {
         return COLUMN_INDEX_END;
+    }
+
+    @Override
+    public int getColumnIndexLoggedStart() {
+        return COLUMN_INDEX_LOGGED_START;
+    }
+
+    @Override
+    public int getColumnIndexLoggedEnd() {
+        return COLUMN_INDEX_LOGGED_END;
     }
 
     @Override
@@ -109,6 +138,16 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Shift
     @Override
     public int getRowNumberShiftType() {
         return ROW_NUMBER_SHIFT_TYPE;
+    }
+
+    @Override
+    public int getRowNumberLoggedStart() {
+        return ROW_NUMBER_LOGGED_START;
+    }
+
+    @Override
+    public int getRowNumberLoggedEnd() {
+        return ROW_NUMBER_LOGGED_END;
     }
 
     @Override
