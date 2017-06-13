@@ -2,8 +2,10 @@ package com.skepticalone.mecachecker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
@@ -12,7 +14,7 @@ import com.skepticalone.mecachecker.data.ShiftType;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
-public class ShiftTypeUtil {
+public class ShiftUtil {
 
     @StringRes
     public static int getShiftTypeTitle(ShiftType shiftType) {
@@ -44,6 +46,11 @@ public class ShiftTypeUtil {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @DrawableRes
+    public static int getClaimStatusIcon(@NonNull Cursor cursor, int columnIndexClaimed, int columnIndexPaid) {
+        return cursor.isNull(columnIndexPaid) ? cursor.isNull(columnIndexClaimed) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
     }
 
     public static class Calculator {

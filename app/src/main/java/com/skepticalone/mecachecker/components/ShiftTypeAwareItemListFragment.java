@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -19,7 +19,7 @@ import org.joda.time.LocalTime;
 
 abstract class ShiftTypeAwareItemListFragment extends ListFragment {
 
-    private ShiftTypeUtil.Calculator mCalculator;
+    private ShiftUtil.Calculator mCalculator;
 
     @Nullable
     private Instant mLastShiftEnd = null;
@@ -85,7 +85,7 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCalculator = new ShiftTypeUtil.Calculator(context);
+        mCalculator = new ShiftUtil.Calculator(context);
     }
 
     ShiftType getShiftType(Interval shift) {

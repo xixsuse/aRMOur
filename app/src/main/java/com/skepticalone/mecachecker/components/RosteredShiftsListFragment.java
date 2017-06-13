@@ -16,7 +16,7 @@ import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
@@ -77,7 +77,7 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
     void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor unwrappedCursor) {
         Compliance.Wrapper cursor = (Compliance.Wrapper) unwrappedCursor;
         Interval rosteredShift = cursor.getRosteredShift(), loggedShift = cursor.getLoggedShift();
-        holder.primaryIcon.setImageResource(ShiftTypeUtil.getShiftTypeIcon(getShiftType(rosteredShift)));
+        holder.primaryIcon.setImageResource(ShiftUtil.getShiftTypeIcon(getShiftType(rosteredShift)));
         holder.setText(
                 DateTimeUtils.getFullDateString(rosteredShift.getStart()),
                 DateTimeUtils.getTimeSpanString(rosteredShift),

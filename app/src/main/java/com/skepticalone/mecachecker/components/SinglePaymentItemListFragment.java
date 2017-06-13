@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 
+import static com.skepticalone.mecachecker.util.ShiftUtil.getClaimStatusIcon;
+
 abstract class SinglePaymentItemListFragment extends ListFragment {
 
     abstract int getColumnIndexClaimed();

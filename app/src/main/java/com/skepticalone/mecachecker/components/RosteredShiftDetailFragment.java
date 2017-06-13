@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.Interval;
 
@@ -36,7 +36,7 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
             ROW_COUNT = 6;
 
     private final LoggedShiftData mShiftData = new LoggedShiftData(this);
-    private ShiftTypeUtil.Calculator mCalculator;
+    private ShiftUtil.Calculator mCalculator;
 
     static RosteredShiftDetailFragment create(long id) {
         RosteredShiftDetailFragment fragment = new RosteredShiftDetailFragment();
@@ -47,7 +47,7 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCalculator = new ShiftTypeUtil.Calculator(context);
+        mCalculator = new ShiftUtil.Calculator(context);
     }
 
     @Override

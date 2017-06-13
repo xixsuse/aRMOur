@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.Interval;
 
@@ -45,7 +45,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
 
     private final ShiftData mShiftData = new ShiftData(this);
     private final PaymentData mPaymentData = new PaymentData(this);
-    private ShiftTypeUtil.Calculator mCalculator;
+    private ShiftUtil.Calculator mCalculator;
 
     static AdditionalShiftDetailFragment create(long id) {
         AdditionalShiftDetailFragment fragment = new AdditionalShiftDetailFragment();
@@ -56,7 +56,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCalculator = new ShiftTypeUtil.Calculator(context);
+        mCalculator = new ShiftUtil.Calculator(context);
     }
 
     @Override

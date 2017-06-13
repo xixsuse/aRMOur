@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
 import com.skepticalone.mecachecker.behaviours.Shift;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
@@ -80,7 +80,7 @@ class ShiftData extends AbstractData {
         } else if (position == mCallbacks.getRowNumberEnd()) {
             holder.bind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
         } else if (position == mCallbacks.getRowNumberShiftType()) {
-            holder.bind(context, ShiftTypeUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftTypeUtil.getShiftTypeTitle(mShiftType)), null);
+            holder.bind(context, ShiftUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftUtil.getShiftTypeTitle(mShiftType)), null);
         } else return false;
         return true;
     }

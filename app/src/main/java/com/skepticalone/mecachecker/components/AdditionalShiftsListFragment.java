@@ -12,11 +12,13 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
-import com.skepticalone.mecachecker.util.ShiftTypeUtil;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
+
+import static com.skepticalone.mecachecker.util.ShiftUtil.getClaimStatusIcon;
 
 public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
@@ -84,7 +86,7 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
     @Override
     void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor) {
         Interval shift = new Interval(cursor.getLong(COLUMN_INDEX_START), cursor.getLong(COLUMN_INDEX_END));
-        holder.primaryIcon.setImageResource(ShiftTypeUtil.getShiftTypeIcon(getShiftType(shift)));
+        holder.primaryIcon.setImageResource(ShiftUtil.getShiftTypeIcon(getShiftType(shift)));
         holder.setText(
                 DateTimeUtils.getFullDateString(shift.getStart()),
                 DateTimeUtils.getTimeSpanString(shift),

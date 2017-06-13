@@ -1,9 +1,9 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,14 +25,9 @@ abstract class ListFragment extends BaseFragment {
     private LinearLayoutManager mLayoutManager;
     private boolean mScrollToEndAtNextLoad = false;
 
-    @DrawableRes
-    static int getClaimStatusIcon(@NonNull Cursor cursor, int columnIndexClaimed, int columnIndexPaid) {
-        return cursor.isNull(columnIndexPaid) ? cursor.isNull(columnIndexClaimed) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
-    }
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         setHasOptionsMenu(true);
     }
 
