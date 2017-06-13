@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.components;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,10 +15,8 @@ abstract class SinglePaymentItemDetailFragment extends DetailFragment implements
     @NonNull
     abstract AbstractData getData();
 
-    abstract int getRowCountIfPaid();
-
     @Override
-    public final int getMoneyTitle() {
+    public final int getMoneyDescriptor() {
         return R.string.payment;
     }
 
@@ -32,25 +31,21 @@ abstract class SinglePaymentItemDetailFragment extends DetailFragment implements
         getData().readFromPositionedCursor(cursor);
     }
 
+    @Nullable
     @Override
-    final int getRowCountIfLoaded() {
-        return mPaymentData.getAdjustedRowCount(getRowCountIfPaid());
+    final ViewHolderType getViewHolderType(int position) {
+        return AbstractData.getViewHolderType(position, mPaymentData, getData());
     }
 
     @Override
-    final boolean isSwitchType(int position) {
-        return AbstractData.isSwitchType(position, mPaymentData, getData());
-    }
-
-    @Override
-    final PlainListItemViewHolder onCreatePlainListItemViewHolder(ViewGroup parent) {
-        PlainListItemViewHolder holder = super.onCreatePlainListItemViewHolder(parent);
+    final PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
+        PlainListItemViewHolder holder = super.createPlainListItemViewHolder(parent);
         holder.secondaryIcon.setVisibility(View.GONE);
         return holder;
     }
 
     @Override
-    final SwitchListItemViewHolder onCreateSwitchListItemViewHolder(ViewGroup parent) {
+    final SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
         return new SwitchListItemViewHolder(parent, mPaymentData);
     }
 
@@ -61,7 +56,7 @@ abstract class SinglePaymentItemDetailFragment extends DetailFragment implements
 
     @Override
     final boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position) {
-        return mPaymentData.bindToHolder(getActivity(), holder, position);
+        return mPaymentData.bindToHolder(getActivity(), holder, position) || getData().bindToHolder(getActivity(), holder, position);
     }
 
 }

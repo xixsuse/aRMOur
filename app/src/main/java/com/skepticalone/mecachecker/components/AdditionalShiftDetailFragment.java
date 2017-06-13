@@ -42,6 +42,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
             ROW_NUMBER_CLAIMED = 6,
             ROW_NUMBER_PAID = 7,
             ROW_COUNT = 8;
+
     private final ShiftData mShiftData = new ShiftData(this);
     private final PaymentData mPaymentData = new PaymentData(this);
     private ShiftTypeUtil.Calculator mCalculator;
@@ -80,7 +81,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
 
     @NonNull
     @Override
-    public String getColumnNameStart() {
+    public String getColumnNameStartOrDate() {
         return Contract.AdditionalShifts.COLUMN_NAME_START;
     }
 
@@ -121,7 +122,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     }
 
     @Override
-    public int getColumnIndexStart() {
+    public int getColumnIndexStartOrDate() {
         return COLUMN_INDEX_START;
     }
 
@@ -191,7 +192,12 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     }
 
     @Override
-    public int getMoneyTitle() {
+    int getRowCountIfLoaded() {
+        return ROW_COUNT;
+    }
+
+    @Override
+    public int getMoneyDescriptor() {
         return R.string.hourly_rate;
     }
 
@@ -206,25 +212,21 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
         mPaymentData.readFromPositionedCursor(cursor);
     }
 
+    @Nullable
     @Override
-    int getRowCountIfLoaded() {
-        return mPaymentData.getAdjustedRowCount(ROW_COUNT);
+    ViewHolderType getViewHolderType(int position) {
+        return AbstractData.getViewHolderType(position, mShiftData, mPaymentData);
     }
 
     @Override
-    boolean isSwitchType(int position) {
-        return AbstractData.isSwitchType(position, mShiftData, mPaymentData);
-    }
-
-    @Override
-    PlainListItemViewHolder onCreatePlainListItemViewHolder(ViewGroup parent) {
-        PlainListItemViewHolder holder = super.onCreatePlainListItemViewHolder(parent);
+    PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
+        PlainListItemViewHolder holder = super.createPlainListItemViewHolder(parent);
         holder.secondaryIcon.setVisibility(View.GONE);
         return holder;
     }
 
     @Override
-    SwitchListItemViewHolder onCreateSwitchListItemViewHolder(ViewGroup parent) {
+    SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
         return new SwitchListItemViewHolder(parent, mPaymentData);
     }
 
@@ -235,7 +237,7 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
 
     @Override
     boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position) {
-        return mPaymentData.bindToHolder(getActivity(), holder, position);
+        return mShiftData.bindToHolder(getActivity(), holder, position) || mPaymentData.bindToHolder(getActivity(), holder, position);
     }
 
 }

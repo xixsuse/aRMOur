@@ -67,7 +67,7 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
 
     @NonNull
     @Override
-    public String getColumnNameStart() {
+    public String getColumnNameStartOrDate() {
         return Contract.CrossCoverShifts.COLUMN_NAME_DATE;
     }
 
@@ -96,7 +96,7 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    public int getColumnIndexStart() {
+    public int getColumnIndexStartOrDate() {
         return COLUMN_INDEX_DATE;
     }
 
@@ -121,7 +121,7 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    public int getRowNumberStart() {
+    public int getRowNumberDate() {
         return ROW_NUMBER_DATE;
     }
 
@@ -146,7 +146,7 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    int getRowCountIfPaid() {
+    int getRowCountIfLoaded() {
         return ROW_COUNT;
     }
 

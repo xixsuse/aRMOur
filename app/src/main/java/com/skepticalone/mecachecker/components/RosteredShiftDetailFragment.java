@@ -72,7 +72,7 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
 
     @NonNull
     @Override
-    public String getColumnNameStart() {
+    public String getColumnNameStartOrDate() {
         return Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START;
     }
 
@@ -101,7 +101,7 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
     }
 
     @Override
-    public int getColumnIndexStart() {
+    public int getColumnIndexStartOrDate() {
         return COLUMN_INDEX_START;
     }
 
@@ -160,9 +160,10 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
         mShiftData.readFromPositionedCursor(cursor);
     }
 
+    @Nullable
     @Override
-    boolean isSwitchType(int position) {
-        return AbstractData.isSwitchType(position, mShiftData);
+    ViewHolderType getViewHolderType(int position) {
+        return AbstractData.getViewHolderType(position, mShiftData);
     }
 
     @Override
@@ -172,6 +173,6 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
 
     @Override
     boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position) {
-        return false;
+        return mShiftData.bindToHolder(getActivity(), holder, position);
     }
 }

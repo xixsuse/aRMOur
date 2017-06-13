@@ -1,8 +1,8 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.behaviours;
 
 import android.support.annotation.NonNull;
 
-interface HasTitle {
+public interface WithTitle {
 
     @NonNull
     String getColumnNameTitle();

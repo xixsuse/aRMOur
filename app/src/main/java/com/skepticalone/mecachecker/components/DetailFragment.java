@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -15,8 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
 
-abstract class DetailFragment extends BaseFragment implements ShowsDialog, CanUpdate {
+import static com.skepticalone.mecachecker.components.ViewHolderType.PLAIN;
+import static com.skepticalone.mecachecker.components.ViewHolderType.SWITCH;
+
+abstract class DetailFragment extends BaseFragment implements DetailFragmentBehaviour {
 
     static final long NO_ID = -1L;
     static final String ITEM_ID = "ITEM_ID";
@@ -74,17 +79,19 @@ abstract class DetailFragment extends BaseFragment implements ShowsDialog, CanUp
 
     abstract int getRowCountIfLoaded();
 
-    abstract boolean isSwitchType(int position);
+    @Nullable
+    abstract ViewHolderType getViewHolderType(int position);
 
     abstract boolean bindPlainListItemViewHolder(PlainListItemViewHolder holder, int position);
 
     abstract boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position);
 
-    PlainListItemViewHolder onCreatePlainListItemViewHolder(ViewGroup parent) {
+    @CallSuper
+    PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
         return new PlainListItemViewHolder(parent);
     }
 
-    SwitchListItemViewHolder onCreateSwitchListItemViewHolder(ViewGroup parent) {
+    SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
         throw new IllegalStateException();
     }
 
@@ -111,28 +118,36 @@ abstract class DetailFragment extends BaseFragment implements ShowsDialog, CanUp
 
         @Override
         public final int getItemViewType(int position) {
-            return isSwitchType(position) ? SWITCH_VIEW_TYPE : PLAIN_VIEW_TYPE;
-//            return AbstractData.isSwitchType(position, getAllData()) ? SWITCH_VIEW_TYPE : PLAIN_VIEW_TYPE;
+            ViewHolderType type = getViewHolderType(position);
+            if (type == PLAIN) return PLAIN_VIEW_TYPE;
+            if (type == SWITCH) return SWITCH_VIEW_TYPE;
+            throw new IllegalStateException();
         }
 
         @Override
         public final ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType == PLAIN_VIEW_TYPE) {
-                return onCreatePlainListItemViewHolder(parent);
-            } else if (viewType == SWITCH_VIEW_TYPE) {
-                return onCreateSwitchListItemViewHolder(parent);
-            } else {
-                throw new IllegalStateException();
+            switch (viewType) {
+                case PLAIN_VIEW_TYPE:
+                    return createPlainListItemViewHolder(parent);
+                case SWITCH_VIEW_TYPE:
+                    return createSwitchListItemViewHolder(parent);
+                default:
+                    throw new IllegalStateException();
             }
         }
 
         @Override
         public final void onBindViewHolder(ListItemViewHolder holder, int position) {
-            int viewType = holder.getItemViewType();
-            if (
-                    (viewType == PLAIN_VIEW_TYPE && bindPlainListItemViewHolder((PlainListItemViewHolder) holder, position)) ||
-                            (viewType == SWITCH_VIEW_TYPE && bindSwitchListItemViewHolder((SwitchListItemViewHolder) holder, position))
-                    ) return;
+            switch (holder.getItemViewType()) {
+                case PLAIN_VIEW_TYPE:
+                    if (bindPlainListItemViewHolder((PlainListItemViewHolder) holder, position))
+                        return;
+                    break;
+                case SWITCH_VIEW_TYPE:
+                    if (bindSwitchListItemViewHolder((SwitchListItemViewHolder) holder, position))
+                        return;
+                    break;
+            }
             throw new IllegalStateException();
         }
 

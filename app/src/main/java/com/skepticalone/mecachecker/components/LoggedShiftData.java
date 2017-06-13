@@ -6,13 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.behaviours.LoggableShift;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.Interval;
 
 class LoggedShiftData extends ShiftData {
 
-    private Logged mCallbacks;
+    private LoggableShift mCallbacks;
+
     @Nullable
     private Interval mLoggedShift;
 
@@ -27,9 +29,14 @@ class LoggedShiftData extends ShiftData {
         mLoggedShift = (cursor.isNull(mCallbacks.getColumnIndexLoggedStart()) || cursor.isNull(mCallbacks.getColumnIndexLoggedEnd())) ? null : new Interval(cursor.getLong(mCallbacks.getColumnIndexLoggedStart()), cursor.getLong(mCallbacks.getColumnIndexLoggedEnd()));
     }
 
+    @Nullable
     @Override
-    boolean isSwitchType(int position) throws IllegalStateException {
-        return !(position == mCallbacks.getRowNumberLoggedStart() || position == mCallbacks.getRowNumberLoggedEnd()) && super.isSwitchType(position);
+    ViewHolderType getViewHolderType(int position) {
+        ViewHolderType type = super.getViewHolderType(position);
+        if (type == null && (position == mCallbacks.getRowNumberLoggedStart() || position == mCallbacks.getRowNumberLoggedEnd())) {
+            type = ViewHolderType.PLAIN;
+        }
+        return type;
     }
 
     @Override
@@ -42,6 +49,6 @@ class LoggedShiftData extends ShiftData {
         return true;
     }
 
-    interface Callbacks extends ShiftData.Callbacks, Logged {
+    interface Callbacks extends ShiftData.Callbacks, LoggableShift {
     }
 }

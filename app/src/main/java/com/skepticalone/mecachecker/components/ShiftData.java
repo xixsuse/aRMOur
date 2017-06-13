@@ -2,10 +2,14 @@ package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
+import com.skepticalone.mecachecker.behaviours.Shift;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftTypeUtil;
@@ -43,27 +47,30 @@ class ShiftData extends AbstractData {
         mCallbacks = callbacks;
     }
 
+    @CallSuper
     @Override
     public void readFromPositionedCursor(@NonNull Cursor cursor) {
-        mShift = new Interval(cursor.getLong(mCallbacks.getColumnIndexStart()), cursor.getLong(mCallbacks.getColumnIndexEnd()));
+        mShift = new Interval(cursor.getLong(mCallbacks.getColumnIndexStartOrDate()), cursor.getLong(mCallbacks.getColumnIndexEnd()));
         mShiftType = mCallbacks.getShiftType(mShift);
-
     }
 
+    @CallSuper
+    @Nullable
     @Override
-    boolean isSwitchType(int position) throws IllegalStateException {
+    ViewHolderType getViewHolderType(int position) {
         if (
                 position == mCallbacks.getRowNumberDate() ||
                         position == mCallbacks.getRowNumberStart() ||
                         position == mCallbacks.getRowNumberEnd() ||
                         position == mCallbacks.getRowNumberShiftType()
                 ) {
-            return false;
+            return ViewHolderType.PLAIN;
         } else {
-            throw new IllegalStateException();
+            return null;
         }
     }
 
+    @CallSuper
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberDate()) {
@@ -79,13 +86,13 @@ class ShiftData extends AbstractData {
     }
 
     private ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), date, start, end, mCallbacks.getColumnNameStart(), mCallbacks.getColumnNameEnd());
+        return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
     private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, date, start, end, mCallbacks.getColumnNameStart(), mCallbacks.getColumnNameEnd());
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
-    interface Callbacks extends Shift, HasContentUri, ShowsDialog {
+    interface Callbacks extends DetailFragmentBehaviour, Shift {
     }
 }

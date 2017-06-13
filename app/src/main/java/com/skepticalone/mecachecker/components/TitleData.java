@@ -3,9 +3,12 @@ package com.skepticalone.mecachecker.components;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
+import com.skepticalone.mecachecker.behaviours.WithTitle;
 
 class TitleData extends AbstractData {
 
@@ -30,12 +33,13 @@ class TitleData extends AbstractData {
         mTitle = cursor.getString(mCallbacks.getColumnIndexTitle());
     }
 
+    @Nullable
     @Override
-    boolean isSwitchType(int position) throws IllegalStateException {
+    ViewHolderType getViewHolderType(int position) {
         if (position == mCallbacks.getColumnIndexTitle()) {
-            return false;
+            return ViewHolderType.PLAIN;
         } else {
-            throw new IllegalStateException();
+            return null;
         }
     }
 
@@ -47,6 +51,6 @@ class TitleData extends AbstractData {
         return true;
     }
 
-    interface Callbacks extends HasTitle, HasContentUri, ShowsDialog {
+    interface Callbacks extends DetailFragmentBehaviour, WithTitle {
     }
 }

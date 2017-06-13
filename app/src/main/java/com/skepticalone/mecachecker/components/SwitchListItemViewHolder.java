@@ -14,11 +14,8 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 import org.joda.time.DateTime;
 
 class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundButton.OnCheckedChangeListener {
-    private static final String TAG = "SwitchListItemVH";
     private final Switch switchControl;
     private final Callbacks mCallbacks;
-    //    private final Uri mUri;
-//    private final String mClaimedColumnName, mPaidColumnName;
     private boolean mIsPaidSwitch;
 
     SwitchListItemViewHolder(ViewGroup parent, Callbacks callbacks) {
@@ -26,17 +23,11 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
         mCallbacks = callbacks;
         switchControl = itemView.findViewById(R.id.switch_control);
         switchControl.setOnCheckedChangeListener(this);
-//        mUri = uri;
-//        mClaimedColumnName = claimedColumnName;
-//        mPaidColumnName = paidColumnName;
     }
 
     private void bind(Context context, @Nullable DateTime dateTime, @StringRes int key, @DrawableRes int primaryIconRes, boolean enableToggle) {
         bind(context, dateTime == null ? 0 : primaryIconRes, key, dateTime == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(dateTime), null);
-//        primaryIcon.setImageResource(dateTime == null ? 0 : primaryIconRes);
-//        setText(context.getString(key), dateTime == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(dateTime));
         if (switchControl.isChecked() == (dateTime == null)) {
-//            Log.i(TAG, "bind: need to manually set switch to " + String.valueOf(dateTime != null));
             switchControl.setOnCheckedChangeListener(null);
             switchControl.setChecked(dateTime != null);
             switchControl.setOnCheckedChangeListener(this);
@@ -44,22 +35,19 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
         switchControl.setEnabled(enableToggle);
     }
 
-    void bindClaimed(Context context, @Nullable DateTime claimed, boolean enableToggle) {
+    void bindClaimed(Context context, @Nullable DateTime claimed, @Nullable DateTime paid) {
         mIsPaidSwitch = false;
-        bind(context, claimed, R.string.claimed, R.drawable.ic_check_box_half_black_24dp, enableToggle);
+        bind(context, claimed, R.string.claimed, R.drawable.ic_check_box_half_black_24dp, paid == null);
     }
 
-    void bindPaid(Context context, @Nullable DateTime paid) {
+    void bindPaid(Context context, @Nullable DateTime claimed, @Nullable DateTime paid) {
         mIsPaidSwitch = true;
-        bind(context, paid, R.string.paid, R.drawable.ic_check_box_full_black_24dp, true);
+        bind(context, paid, R.string.paid, R.drawable.ic_check_box_full_black_24dp, claimed != null);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         mCallbacks.onCheckedChanged(mIsPaidSwitch, isChecked);
-//        ContentValues values = new ContentValues();
-//        values.put(mIsPaidSwitch ? mPaidColumnName : mClaimedColumnName, isChecked ? System.currentTimeMillis() : null);
-//        buttonView.getContext().getContentResolver().update(mUri, values, null, null);
     }
 
     interface Callbacks {

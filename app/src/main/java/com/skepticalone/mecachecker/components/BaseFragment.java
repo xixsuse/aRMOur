@@ -10,8 +10,10 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
+import com.skepticalone.mecachecker.behaviours.BaseFragmentBehaviour;
 
-abstract class BaseFragment extends Fragment implements HasContentUri, LoaderManager.LoaderCallbacks<Cursor> {
+
+abstract class BaseFragment extends Fragment implements BaseFragmentBehaviour, LoaderManager.LoaderCallbacks<Cursor> {
 
     @StringRes
     abstract int getTitle();
