@@ -34,10 +34,8 @@ abstract class ListFragment extends BaseFragment {
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_list, container, false);
         mLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        mLayoutManager.setReverseLayout(true);
-        mLayoutManager.setStackFromEnd(true);
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL)
         );

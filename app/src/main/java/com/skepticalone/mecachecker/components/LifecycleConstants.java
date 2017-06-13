@@ -12,6 +12,7 @@ final class LifecycleConstants {
             LOADER_ID_EXPENSES_DETAIL = 8;
     static final String
             LIST_FRAGMENT = "LIST_FRAGMENT",
+            DETAIL_FRAGMENT = "DETAIL_FRAGMENT",
             TITLE_DIALOG = "TITLE_DIALOG",
             MONEY_DIALOG = "MONEY_DIALOG",
             COMMENT_DIALOG = "COMMENT_DIALOG",

@@ -22,18 +22,23 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".components.DetailActivity"
-            android:parentActivityName=".components.MainActivity"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".components.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.skepticalone.mecachecker.components.MainActivity" />
+        </activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme" />
+
         <provider
             android:name=".data.Provider"
             android:authorities="com.skepticalone.mecachecker.provider"
