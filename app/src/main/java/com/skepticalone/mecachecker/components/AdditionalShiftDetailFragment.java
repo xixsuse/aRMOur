@@ -188,12 +188,14 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
 
     @Override
     public int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
+        return mPaymentData.isClaimed() ? ROW_NUMBER_PAID : NO_ROW_NUMBER;
     }
 
     @Override
     int getRowCountIfLoaded() {
-        return ROW_COUNT;
+        int rowCount = ROW_COUNT;
+        if (!mPaymentData.isClaimed()) rowCount--;
+        return rowCount;
     }
 
     @Override

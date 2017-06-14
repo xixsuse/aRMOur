@@ -12,6 +12,22 @@ abstract class SinglePaymentItemDetailFragment extends DetailFragment implements
 
     private final PaymentData mPaymentData = new PaymentData(this);
 
+    abstract int getRowCountIfClaimed();
+
+    abstract int getRowNumberPaidIfClaimed();
+
+    @Override
+    final int getRowCountIfLoaded() {
+        int rowCount = getRowCountIfClaimed();
+        if (!mPaymentData.isClaimed()) rowCount--;
+        return rowCount;
+    }
+
+    @Override
+    public final int getRowNumberPaid() {
+        return mPaymentData.isClaimed() ? getRowNumberPaidIfClaimed() : NO_ROW_NUMBER;
+    }
+
     @NonNull
     abstract AbstractData getData();
 

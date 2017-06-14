@@ -142,12 +142,12 @@ public class ExpenseDetailFragment extends SinglePaymentItemDetailFragment imple
     }
 
     @Override
-    public int getRowNumberPaid() {
+    int getRowNumberPaidIfClaimed() {
         return ROW_NUMBER_PAID;
     }
 
     @Override
-    int getRowCountIfLoaded() {
+    int getRowCountIfClaimed() {
         return ROW_COUNT;
     }
 

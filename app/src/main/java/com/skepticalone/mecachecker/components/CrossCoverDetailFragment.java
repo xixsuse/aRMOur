@@ -141,12 +141,12 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    public int getRowNumberPaid() {
+    int getRowNumberPaidIfClaimed() {
         return ROW_NUMBER_PAID;
     }
 
     @Override
-    int getRowCountIfLoaded() {
+    int getRowCountIfClaimed() {
         return ROW_COUNT;
     }
 

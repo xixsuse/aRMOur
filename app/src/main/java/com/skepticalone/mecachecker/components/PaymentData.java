@@ -48,12 +48,16 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
         mCallbacks = callbacks;
     }
 
+    boolean isClaimed() {
+        return mClaimed != null;
+    }
+
     @Override
     public void readFromPositionedCursor(@NonNull Cursor cursor) {
         mPayment = BigDecimal.valueOf(cursor.getInt(mCallbacks.getColumnIndexMoney()), 2);
         mComment = cursor.isNull(mCallbacks.getColumnIndexComment()) ? null : cursor.getString(mCallbacks.getColumnIndexComment());
         mClaimed = cursor.isNull(mCallbacks.getColumnIndexClaimed()) ? null : new DateTime(cursor.getLong(mCallbacks.getColumnIndexClaimed()));
-        mPaid = (mClaimed == null || cursor.isNull(mCallbacks.getColumnIndexPaid())) ? null : new DateTime(cursor.getLong(mCallbacks.getColumnIndexPaid()));
+        mPaid = (!isClaimed() || cursor.isNull(mCallbacks.getColumnIndexPaid())) ? null : new DateTime(cursor.getLong(mCallbacks.getColumnIndexPaid()));
     }
 
     @Nullable
@@ -83,7 +87,7 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
         if (position == mCallbacks.getRowNumberClaimed()) {
             holder.bindClaimed(context, mClaimed, mPaid);
         } else if (position == mCallbacks.getRowNumberPaid()) {
-            holder.bindPaid(context, mClaimed, mPaid);
+            holder.bindPaid(context, mPaid);
         } else return false;
         return true;
     }

@@ -40,9 +40,9 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
         bind(context, claimed, R.string.claimed, R.drawable.ic_check_box_half_black_24dp, paid == null);
     }
 
-    void bindPaid(Context context, @Nullable DateTime claimed, @Nullable DateTime paid) {
+    void bindPaid(Context context, @Nullable DateTime paid) {
         mIsPaidSwitch = true;
-        bind(context, paid, R.string.paid, R.drawable.ic_check_box_full_black_24dp, claimed != null);
+        bind(context, paid, R.string.paid, R.drawable.ic_check_box_full_black_24dp, true);
     }
 
     @Override
