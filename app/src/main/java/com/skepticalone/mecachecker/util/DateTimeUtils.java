@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -114,6 +115,14 @@ public final class DateTimeUtils {
                 timeFormatter.print(new LocalTime(calculateHours(startTotalMinutes), calculateMinutes(startTotalMinutes))),
                 timeFormatter.print(new LocalTime(calculateHours(endTotalMinutes), calculateMinutes(endTotalMinutes)))
         );
+    }
+
+    public static String getPeriodString(Duration duration) {
+        return periodFormatter.print(duration.toPeriod());
+    }
+
+    public static String getPeriodString(Interval interval) {
+        return periodFormatter.print(interval.toPeriod());
     }
 
     public static String getShiftTypeWithDurationString(String shiftType, Period shift) {

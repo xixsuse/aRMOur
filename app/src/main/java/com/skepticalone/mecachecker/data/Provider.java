@@ -225,6 +225,7 @@ public final class Provider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ROSTERED_SHIFT:
+            case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
             case ADDITIONAL_SHIFT:
@@ -256,6 +257,7 @@ public final class Provider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ROSTERED_SHIFT:
+            case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
             case ADDITIONAL_SHIFT:

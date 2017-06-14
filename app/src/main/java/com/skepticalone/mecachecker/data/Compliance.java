@@ -18,11 +18,11 @@ public final class Compliance {
 
     public final static int
             COLUMN_INDEX_ID = 0,
-            COLUMN_INDEX_ROSTERED_END = 2;
-    private final static int
             COLUMN_INDEX_ROSTERED_START = 1,
+            COLUMN_INDEX_ROSTERED_END = 2,
             COLUMN_INDEX_LOGGED_START = 3,
-            COLUMN_INDEX_LOGGED_END = 4,
+            COLUMN_INDEX_LOGGED_END = 4;
+    private final static int
             COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 5,
             COLUMN_INDEX_DURATION_OVER_DAY = 6,
             COLUMN_INDEX_DURATION_OVER_WEEK = 7,

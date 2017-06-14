@@ -18,5 +18,6 @@ final class LifecycleConstants {
             COMMENT_DIALOG = "COMMENT_DIALOG",
             DATE_DIALOG = "DATE_DIALOG",
             START_DIALOG = "START_DIALOG",
-            END_DIALOG = "END_DIALOG";
+            END_DIALOG = "END_DIALOG",
+            MESSAGE_DIALOG = "MESSAGE_DIALOG";
 }
