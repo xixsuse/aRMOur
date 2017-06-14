@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 public interface LoggableShift extends Shift {
 
+    int getRowNumberLoggedSwitch();
+
     @NonNull
     String getColumnNameLoggedStart();
 

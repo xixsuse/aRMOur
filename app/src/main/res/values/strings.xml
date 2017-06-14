@@ -5,6 +5,7 @@
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
+    <string name="logged">Logged</string>
     <string name="logged_start">Logged start</string>
     <string name="logged_end">Logged end</string>
     <string name="normal_day">Normal day</string>

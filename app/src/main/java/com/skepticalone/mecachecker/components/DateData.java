@@ -16,7 +16,7 @@ import org.joda.time.DateTime;
 final class DateData extends AbstractData {
     private final Callbacks mCallbacks;
     private DateTime mStart;
-
+    @NonNull
     private final View.OnClickListener mDateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -49,7 +49,7 @@ final class DateData extends AbstractData {
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberDate()) {
-            holder.bind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mStart), mDateListener);
+            holder.rootBind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mStart), mDateListener);
         } else return false;
         return true;
     }

@@ -14,6 +14,7 @@ class TitleData extends AbstractData {
 
     private final Callbacks mCallbacks;
     private String mTitle;
+    @NonNull
     private final View.OnClickListener mTitleListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -46,7 +47,7 @@ class TitleData extends AbstractData {
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberTitle()) {
-            holder.bind(context, R.drawable.ic_title_black_24dp, R.string.title, mTitle, mTitleListener);
+            holder.rootBind(context, R.drawable.ic_title_black_24dp, R.string.title, mTitle, mTitleListener);
         } else return false;
         return true;
     }

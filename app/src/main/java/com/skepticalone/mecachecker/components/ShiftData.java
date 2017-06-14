@@ -14,6 +14,7 @@ import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -22,6 +23,7 @@ class ShiftData extends AbstractData {
 
     private final Callbacks mCallbacks;
     private Interval mShift;
+    @NonNull
     private final View.OnClickListener
             mDateListener = new View.OnClickListener() {
         @Override
@@ -32,19 +34,29 @@ class ShiftData extends AbstractData {
             mStartListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(true, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
+                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(true), LifecycleConstants.DATE_DIALOG);
                 }
             },
             mEndListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(false, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
+                    mCallbacks.showDialogFragment(getShiftTimePickerDialogFragment(false), LifecycleConstants.DATE_DIALOG);
                 }
             };
     private ShiftType mShiftType;
 
     ShiftData(Callbacks callbacks) {
         mCallbacks = callbacks;
+    }
+
+    @NonNull
+    DateTime getShiftStart() {
+        return mShift.getStart();
+    }
+
+    @NonNull
+    DateTime getShiftEnd() {
+        return mShift.getEnd();
     }
 
     @CallSuper
@@ -58,12 +70,7 @@ class ShiftData extends AbstractData {
     @Nullable
     @Override
     ViewHolderType getViewHolderType(int position) {
-        if (
-                position == mCallbacks.getRowNumberDate() ||
-                        position == mCallbacks.getRowNumberStart() ||
-                        position == mCallbacks.getRowNumberEnd() ||
-                        position == mCallbacks.getRowNumberShiftType()
-                ) {
+        if (position == mCallbacks.getRowNumberDate() || position == mCallbacks.getRowNumberStart() || position == mCallbacks.getRowNumberEnd() || position == mCallbacks.getRowNumberShiftType()) {
             return ViewHolderType.PLAIN;
         } else {
             return null;
@@ -74,23 +81,25 @@ class ShiftData extends AbstractData {
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberDate()) {
-            holder.bind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mShift.getStart()), mDateListener);
+            holder.rootBind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mShift.getStart()), mDateListener);
         } else if (position == mCallbacks.getRowNumberStart()) {
-            holder.bind(context, R.drawable.ic_play_arrow_black_24dp, R.string.start, DateTimeUtils.getTimeString(mShift, true, null), mStartListener);
+            holder.rootBind(context, R.drawable.ic_play_arrow_black_24dp, R.string.start, DateTimeUtils.getTimeString(mShift, true, null), mStartListener);
         } else if (position == mCallbacks.getRowNumberEnd()) {
-            holder.bind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
+            holder.rootBind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
         } else if (position == mCallbacks.getRowNumberShiftType()) {
-            holder.bind(context, ShiftUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftUtil.getShiftTypeTitle(mShiftType)), null);
+            holder.rootBind(context, ShiftUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftUtil.getShiftTypeTitle(mShiftType)), null);
         } else return false;
         return true;
     }
 
-    private ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
+    @NonNull
+    ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
         return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
-    private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
+    @NonNull
+    private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart) {
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime(), mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
     interface Callbacks extends DetailFragmentBehaviour, Shift {

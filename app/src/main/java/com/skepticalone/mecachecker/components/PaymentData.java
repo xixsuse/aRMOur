@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callbacks {
 
     private final Callbacks mCallbacks;
-
     private BigDecimal mPayment;
+    @NonNull
     private final View.OnClickListener
             mPaymentListener = new View.OnClickListener() {
         @Override
@@ -75,9 +75,9 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
     @Override
     boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberMoney()) {
-            holder.bind(context, mCallbacks.getMoneyIcon(), mCallbacks.getMoneyDescriptor(), context.getString(R.string.currency_format, mPayment), mPaymentListener);
+            holder.rootBind(context, mCallbacks.getMoneyIcon(), mCallbacks.getMoneyDescriptor(), context.getString(R.string.currency_format, mPayment), mPaymentListener);
         } else if (position == mCallbacks.getRowNumberComment()) {
-            holder.bind(context, R.drawable.ic_comment_black_24dp, R.string.comment, mComment, mCommentListener);
+            holder.rootBind(context, R.drawable.ic_comment_black_24dp, R.string.comment, mComment, mCommentListener);
         } else return false;
         return true;
     }
@@ -85,7 +85,7 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
     @Override
     boolean bindToHolder(Context context, SwitchListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberClaimed()) {
-            holder.bindClaimed(context, mClaimed, mPaid);
+            holder.bindClaimed(context, mClaimed, mPaid != null);
         } else if (position == mCallbacks.getRowNumberPaid()) {
             holder.bindPaid(context, mPaid);
         } else return false;
@@ -93,9 +93,20 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
     }
 
     @Override
-    public void onCheckedChanged(boolean isPaidSwitch, boolean isChecked) {
+    public void onCheckedChanged(SwitchListItemViewHolder.SwitchType switchType, boolean isChecked) {
+        String columnName;
+        switch (switchType) {
+            case PAID:
+                columnName = mCallbacks.getColumnNamePaid();
+                break;
+            case CLAIMED:
+                columnName = mCallbacks.getColumnNameClaimed();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(isPaidSwitch ? mCallbacks.getColumnNamePaid() : mCallbacks.getColumnNameClaimed(), isChecked ? System.currentTimeMillis() : null);
+        contentValues.put(columnName, isChecked ? System.currentTimeMillis() : null);
         mCallbacks.update(contentValues);
     }
 

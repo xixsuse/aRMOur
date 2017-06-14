@@ -38,7 +38,7 @@ abstract class ListItemViewHolder extends RecyclerView.ViewHolder {
         this(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
     }
 
-    void bind(Context context, @DrawableRes int primaryIconRes, @StringRes int keyRes, @Nullable String value, @Nullable View.OnClickListener listener) {
+    void rootBind(Context context, @DrawableRes int primaryIconRes, @StringRes int keyRes, @Nullable String value, @Nullable View.OnClickListener listener) {
         primaryIcon.setImageResource(primaryIconRes);
         setText(context.getString(keyRes), value);
         itemView.setOnClickListener(listener);

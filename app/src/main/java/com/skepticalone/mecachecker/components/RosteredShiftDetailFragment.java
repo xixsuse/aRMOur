@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
@@ -14,7 +15,7 @@ import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.Interval;
 
-public class RosteredShiftDetailFragment extends DetailFragment implements LoggedShiftData.Callbacks {
+public class RosteredShiftDetailFragment extends DetailFragment implements RosteredShiftData.Callbacks {
 
     private static final String[] PROJECTION = {
             Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START,
@@ -31,11 +32,12 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_NUMBER_LOGGED_START = 4,
-            ROW_NUMBER_LOGGED_END = 5,
-            ROW_COUNT = 6;
+            ROW_NUMBER_LOGGED_SWITCH = 4,
+            ROW_NUMBER_LOGGED_START = 5,
+            ROW_NUMBER_LOGGED_END = 6,
+            ROW_COUNT = 7;
 
-    private final LoggedShiftData mShiftData = new LoggedShiftData(this);
+    private final RosteredShiftData mShiftData = new RosteredShiftData(this);
     private ShiftUtil.Calculator mCalculator;
 
     static RosteredShiftDetailFragment create(long id) {
@@ -141,18 +143,23 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
     }
 
     @Override
+    public int getRowNumberLoggedSwitch() {
+        return ROW_NUMBER_LOGGED_SWITCH;
+    }
+
+    @Override
     public int getRowNumberLoggedStart() {
-        return ROW_NUMBER_LOGGED_START;
+        return mShiftData.isLogged() ? ROW_NUMBER_LOGGED_START : NO_ROW_NUMBER;
     }
 
     @Override
     public int getRowNumberLoggedEnd() {
-        return ROW_NUMBER_LOGGED_END;
+        return mShiftData.isLogged() ? ROW_NUMBER_LOGGED_END : NO_ROW_NUMBER;
     }
 
     @Override
     int getRowCountIfLoaded() {
-        return ROW_COUNT;
+        return mShiftData.isLogged() ? ROW_COUNT : (ROW_COUNT - 2);
     }
 
     @Override
@@ -164,6 +171,11 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Logge
     @Override
     ViewHolderType getViewHolderType(int position) {
         return AbstractData.getViewHolderType(position, mShiftData);
+    }
+
+    @Override
+    SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
+        return new SwitchListItemViewHolder(parent, mShiftData);
     }
 
     @Override

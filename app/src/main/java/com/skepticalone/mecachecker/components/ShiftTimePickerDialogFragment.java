@@ -32,7 +32,7 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
             COLUMN_NAME_START = "COLUMN_NAME_START",
             COLUMN_NAME_END = "COLUMN_NAME_END";
 
-    public static ShiftTimePickerDialogFragment newInstance(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
+    static Bundle getArgs(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
         Bundle args = new Bundle();
         args.putParcelable(CONTENT_URI, contentUri);
         args.putBoolean(IS_START, isStart);
@@ -45,8 +45,12 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
         args.putInt(END_MINUTE_OF_HOUR, end.getMinuteOfHour());
         args.putString(COLUMN_NAME_START, columnNameStart);
         args.putString(COLUMN_NAME_END, columnNameEnd);
+        return args;
+    }
+
+    public static ShiftTimePickerDialogFragment newInstance(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
         ShiftTimePickerDialogFragment fragment = new ShiftTimePickerDialogFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(getArgs(contentUri, isStart, date, start, end, columnNameStart, columnNameEnd));
         return fragment;
     }
 
@@ -54,16 +58,18 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         boolean isStart = getArguments().getBoolean(IS_START);
-        return new TimePickerDialog(getActivity(), this,
+        LocalTime time = new LocalTime(
                 getArguments().getInt(isStart ? START_HOUR_OF_DAY : END_HOUR_OF_DAY),
-                getArguments().getInt(isStart ? START_MINUTE_OF_HOUR : END_MINUTE_OF_HOUR),
-                DateFormat.is24HourFormat(getActivity())
+                getArguments().getInt(isStart ? START_MINUTE_OF_HOUR : END_MINUTE_OF_HOUR)
         );
+        return new TimePickerDialog(getActivity(), this, time.getHourOfDay(), time.getMinuteOfHour(), DateFormat.is24HourFormat(getActivity()));
     }
 
-    @NonNull
-    private ContentValues getValues(@NonNull LocalTime time, boolean isStart) {
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
         LocalDate date = new LocalDate(getArguments().getInt(YEAR), getArguments().getInt(MONTH), getArguments().getInt(DAY_OF_MONTH));
+        LocalTime time = new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minute));
+        boolean isStart = getArguments().getBoolean(IS_START);
         DateTime
                 start = date.toDateTime(isStart ? time : new LocalTime(getArguments().getInt(START_HOUR_OF_DAY), getArguments().getInt(START_MINUTE_OF_HOUR))),
                 end = date.toDateTime(isStart ? new LocalTime(getArguments().getInt(END_HOUR_OF_DAY), getArguments().getInt(END_MINUTE_OF_HOUR)) : time);
@@ -73,15 +79,8 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
         ContentValues values = new ContentValues();
         values.put(getArguments().getString(COLUMN_NAME_START), start.getMillis());
         values.put(getArguments().getString(COLUMN_NAME_END), end.getMillis());
-        return values;
-    }
-
-    @Override
-    public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
         Uri contentUri = getArguments().getParcelable(CONTENT_URI);
         assert contentUri != null;
-        LocalTime time = new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minute));
-        boolean isStart = getArguments().getBoolean(IS_START);
-        getActivity().getContentResolver().update(contentUri, getValues(time, isStart), null, null);
+        getActivity().getContentResolver().update(contentUri, values, null, null);
     }
 }
