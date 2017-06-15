@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.skepticalone.mecachecker.R;
 
-public class DetailActivity extends AppCompatActivity implements PickerDialogFragment.Callbacks {
+public class DetailActivity extends CoordinatorActivity {
     private static final String ITEM_TYPE = "ITEM_TYPE", ITEM_ID = "ITEM_ID";
     private static final int NO_ITEM_TYPE = 0;
     private static final long NO_ID = -1L;
@@ -25,6 +25,13 @@ public class DetailActivity extends AppCompatActivity implements PickerDialogFra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.detail_activity);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+        setCoordinatorLayout(coordinatorLayout);
+        Toolbar toolbar = coordinatorLayout.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
             long id = getIntent().getLongExtra(ITEM_ID, NO_ID);
             if (id == NO_ID) {
@@ -48,14 +55,9 @@ public class DetailActivity extends AppCompatActivity implements PickerDialogFra
                     throw new IllegalStateException();
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, fragment, LifecycleConstants.DETAIL_FRAGMENT)
+                    .replace(R.id.detail_fragment_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
                     .commit();
         }
-    }
-
-    @Override
-    public void onOverlappingShifts() {
-        Toast.makeText(this, R.string.overlapping_shifts, Toast.LENGTH_SHORT).show();
     }
 
 }

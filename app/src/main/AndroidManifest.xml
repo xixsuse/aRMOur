@@ -12,34 +12,28 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".summary.SummaryActivity"
-            android:label="@string/summary"
-            android:parentActivityName=".components.MainActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".components.MainActivity"
             android:label="@string/title_shift_list"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".components.DetailActivity"
-            android:parentActivityName=".components.MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.skepticalone.mecachecker.components.MainActivity" />
+            android:parentActivityName=".components.MainActivity">
         </activity>
+        <activity
+            android:name=".summary.SummaryActivity"
+            android:label="@string/summary"
+            android:parentActivityName=".components.MainActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".components.MainActivity"
             android:theme="@style/AppTheme" />
-
         <provider
             android:name=".data.Provider"
             android:authorities="com.skepticalone.mecachecker.provider"

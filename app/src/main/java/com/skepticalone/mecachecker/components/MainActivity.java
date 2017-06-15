@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,15 +22,13 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.settings.SettingsActivity;
 import com.skepticalone.mecachecker.summary.SummaryActivity;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends CoordinatorActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        PickerDialogFragment.Callbacks,
         RosteredShiftsListFragment.Listener,
         AdditionalShiftsListFragment.Listener,
         CrossCoverListFragment.Listener,
         ExpensesListFragment.Listener {
 
-    private View mCoordinatorView;
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean mTwoPane;
 
@@ -42,13 +40,14 @@ public class MainActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = drawer.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        mCoordinatorView = drawer.findViewById(R.id.coordinator);
-        Toolbar toolbar = mCoordinatorView.findViewById(R.id.toolbar);
+        CoordinatorLayout coordinatorLayout = drawer.findViewById(R.id.coordinator);
+        setCoordinatorLayout(coordinatorLayout);
+        Toolbar toolbar = coordinatorLayout.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(mDrawerToggle);
-        FloatingActionButton fab = mCoordinatorView.findViewById(R.id.fab);
+        FloatingActionButton fab = coordinatorLayout.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
                         .setAction("Action", null).show();
             }
         });
-        mTwoPane = findViewById(R.id.detail_container) != null;
+        mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.rostered);
             getSupportFragmentManager().beginTransaction()
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showDetailFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.detail_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
+                .replace(R.id.detail_fragment_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
                 .commit();
     }
 
@@ -154,10 +153,5 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             startDetailActivity(LifecycleConstants.ITEM_TYPE_EXPENSE, id);
         }
-    }
-
-    @Override
-    public void onOverlappingShifts() {
-        Snackbar.make(mCoordinatorView, R.string.overlapping_shifts, Snackbar.LENGTH_SHORT);
     }
 }
