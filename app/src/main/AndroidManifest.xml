@@ -28,7 +28,8 @@
         </activity>
         <activity
             android:name=".components.DetailActivity"
-            android:parentActivityName=".components.MainActivity">
+            android:parentActivityName=".components.MainActivity"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.skepticalone.mecachecker.components.MainActivity" />

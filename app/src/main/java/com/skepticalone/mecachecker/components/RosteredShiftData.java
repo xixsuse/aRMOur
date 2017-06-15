@@ -61,9 +61,9 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberLoggedStart()) {
-            holder.rootBind(context, R.drawable.ic_play_arrow_grey_24dp, R.string.logged_start, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift, true, getShiftStart()), mLoggedStartListener);
+            holder.rootBind(context, R.drawable.ic_clipboard_play_black_24dp, R.string.logged_start, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift.getStart(), getShiftDate()), mLoggedStartListener);
         } else if (position == mCallbacks.getRowNumberLoggedEnd()) {
-            holder.rootBind(context, R.drawable.ic_stop_grey_24dp, R.string.logged_end, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift, false, getShiftStart()), mLoggedEndListener);
+            holder.rootBind(context, R.drawable.ic_clipboard_stop_black_24dp, R.string.logged_end, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift.getEnd(), getShiftDate()), mLoggedEndListener);
         } else return super.bindToHolder(context, holder, position);
         return true;
     }
@@ -81,8 +81,8 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
         if (switchType == SwitchListItemViewHolder.SwitchType.LOGGED) {
             ContentValues contentValues = new ContentValues();
             if (isChecked) {
-                contentValues.put(mCallbacks.getColumnNameLoggedStart(), getShiftStart().getMillis());
-                contentValues.put(mCallbacks.getColumnNameLoggedEnd(), getShiftEnd().getMillis());
+                contentValues.put(mCallbacks.getColumnNameLoggedStart(), getShiftStartMillis());
+                contentValues.put(mCallbacks.getColumnNameLoggedEnd(), getShiftEndMillis());
             } else {
                 contentValues.putNull(mCallbacks.getColumnNameLoggedStart());
                 contentValues.putNull(mCallbacks.getColumnNameLoggedEnd());
@@ -117,7 +117,7 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
     @NonNull
     private ShiftTimePickerDialogFragment getLoggedShiftTimePickerDialogFragment(boolean isStart) {
         assert mLoggedShift != null;
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, mLoggedShift.getStart().toLocalDate(), mLoggedShift.getStart().toLocalTime(), mLoggedShift.getEnd().toLocalTime(), mCallbacks.getColumnNameLoggedStart(), mCallbacks.getColumnNameLoggedEnd());
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, getShiftDate(), mLoggedShift.getStart().toLocalTime(), mLoggedShift.getEnd().toLocalTime(), mCallbacks.getColumnNameLoggedStart(), mCallbacks.getColumnNameLoggedEnd());
     }
 
     interface Callbacks extends ShiftData.Callbacks, LoggableShift {

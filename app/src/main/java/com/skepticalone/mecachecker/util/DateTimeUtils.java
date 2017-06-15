@@ -1,13 +1,12 @@
 package com.skepticalone.mecachecker.util;
 
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
@@ -67,18 +66,43 @@ public final class DateTimeUtils {
         return timeFormatter.print(getTime(totalMinutes));
     }
 
-    public static String getTimeString(Interval shift, boolean isStart, @Nullable DateTime startOfRosteredShift) {
-        DateTime time = isStart ? shift.getStart() : shift.getEnd();
-        if (
-                isStart ?
-                        (startOfRosteredShift == null || startOfRosteredShift.withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())) :
-                        (startOfRosteredShift == null ? shift.getStart() : startOfRosteredShift).withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())
-                ) {
-            return timeFormatter.print(time);
-        } else {
-            return getQualifiedString(timeFormatter.print(time), dayFormatter.print(time));
-        }
+    public static String getTimeString(DateTime time) {
+        return timeFormatter.print(time);
     }
+
+    public static String getTimeString(DateTime time, LocalDate date) {
+        return time.toLocalDate().isEqual(date) ? getTimeString(time) : getQualifiedString(getTimeString(time), dayFormatter.print(time));
+    }
+
+//    public static String getTimeString(Interval shift, boolean isStart, @Nullable DateTime startOfRosteredShift) {
+//        DateTime time = isStart ? shift.getStart() : shift.getEnd();
+//        if (isStart) {
+//            if (startOfRosteredShift == null) {
+//                return timeFormatter.print(time);
+//            } else {
+//                return getTimeString(time, startOfRosteredShift)
+//            }
+//        }
+//        if (
+//                isStart ?
+//                        (startOfRosteredShift == null || startOfRosteredShift.withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())) :
+//                        (startOfRosteredShift == null ? shift.getStart() : startOfRosteredShift).withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())
+//                ) {
+//            return timeFormatter.print(time);
+//        } else {
+//            return getQualifiedString(timeFormatter.print(time), dayFormatter.print(time));
+//        }
+//
+//        if (
+//                isStart ?
+//                        (startOfRosteredShift == null || startOfRosteredShift.withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())) :
+//                        (startOfRosteredShift == null ? shift.getStart() : startOfRosteredShift).withTimeAtStartOfDay().isEqual(time.withTimeAtStartOfDay())
+//                ) {
+//            return timeFormatter.print(time);
+//        } else {
+//            return getQualifiedString(timeFormatter.print(time), dayFormatter.print(time));
+//        }
+//    }
 
     public static String getDateTimeString(DateTime dateTime) {
         return dateTimeFormatter.print(dateTime);
@@ -96,16 +120,12 @@ public final class DateTimeUtils {
         return start + " - " + end;
     }
 
-    public static String getDateSpanString(Interval shift) {
-        return getSpanString(dateFormatter.print(shift.getStart()), dateFormatter.print(shift.getEnd()));
+    public static String getDateSpanString(LocalDate date1, LocalDate date2) {
+        return getSpanString(dateFormatter.print(date1), dateFormatter.print(date2));
     }
 
     public static String getTimeSpanString(Interval shift) {
-        return getSpanString(timeFormatter.print(shift.getStart()), timeFormatter.print(shift.getEnd()));
-    }
-
-    public static String getDoubleTimeSpanString(Interval rosteredShift, Interval loggedShift) {
-        return getQualifiedString(getTimeSpanString(rosteredShift), getTimeSpanString(loggedShift));
+        return getSpanString(timeFormatter.print(shift.getStart()), getTimeString(shift.getEnd(), shift.getStart().toLocalDate()));
     }
 
     public static String getTimeSpanString(SharedPreferences sharedPreferences, String startKey, String endKey) {
@@ -121,12 +141,8 @@ public final class DateTimeUtils {
         return periodFormatter.print(duration.toPeriod());
     }
 
-    public static String getPeriodString(Interval interval) {
-        return periodFormatter.print(interval.toPeriod());
-    }
-
-    public static String getShiftTypeWithDurationString(String shiftType, Period shift) {
-        return getQualifiedString(shiftType, periodFormatter.print(shift));
+    public static String getShiftTypeWithDurationString(String shiftType, Interval shift) {
+        return getQualifiedString(shiftType, periodFormatter.print(shift.toPeriod()));
     }
 
 }

@@ -32,7 +32,7 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
             COLUMN_NAME_START = "COLUMN_NAME_START",
             COLUMN_NAME_END = "COLUMN_NAME_END";
 
-    static Bundle getArgs(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
+    public static ShiftTimePickerDialogFragment newInstance(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
         Bundle args = new Bundle();
         args.putParcelable(CONTENT_URI, contentUri);
         args.putBoolean(IS_START, isStart);
@@ -45,12 +45,8 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
         args.putInt(END_MINUTE_OF_HOUR, end.getMinuteOfHour());
         args.putString(COLUMN_NAME_START, columnNameStart);
         args.putString(COLUMN_NAME_END, columnNameEnd);
-        return args;
-    }
-
-    public static ShiftTimePickerDialogFragment newInstance(@NonNull Uri contentUri, boolean isStart, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull String columnNameStart, @NonNull String columnNameEnd) {
         ShiftTimePickerDialogFragment fragment = new ShiftTimePickerDialogFragment();
-        fragment.setArguments(getArgs(contentUri, isStart, date, start, end, columnNameStart, columnNameEnd));
+        fragment.setArguments(args);
         return fragment;
     }
 

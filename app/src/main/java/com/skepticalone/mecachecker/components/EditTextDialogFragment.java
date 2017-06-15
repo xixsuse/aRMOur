@@ -21,12 +21,19 @@ abstract public class EditTextDialogFragment extends DialogFragment implements D
     private static final String TAG = "EditTextDialogFragment";
     private static final String TEXT = "TEXT";
     private static final String TITLE_ID = "TITLE_ID";
+    private static final String HINT = "HINT";
     private EditText editText;
 
     static Bundle getArgs(@StringRes int title, @Nullable String text) {
         Bundle args = new Bundle();
         args.putInt(TITLE_ID, title);
         args.putString(TEXT, text);
+        return args;
+    }
+
+    static Bundle getArgs(@StringRes int title, @Nullable String text, @StringRes int hint) {
+        Bundle args = getArgs(title, text);
+        args.putInt(HINT, hint);
         return args;
     }
 
@@ -37,6 +44,9 @@ abstract public class EditTextDialogFragment extends DialogFragment implements D
         editText = (EditText) LayoutInflater.from(context).inflate(R.layout.edit_text, null, false);
         editText.setInputType(getInputType());
         editText.setText(getArguments().getString(TEXT));
+        if (getArguments().containsKey(HINT)) {
+            editText.setHint(getArguments().getInt(HINT));
+        }
     }
 
     abstract int getInputType();

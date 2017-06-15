@@ -5,7 +5,6 @@
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
-    <string name="logged">Logged</string>
     <string name="logged_start">Logged start</string>
     <string name="logged_end">Logged end</string>
     <string name="normal_day">Normal day</string>
@@ -22,7 +21,6 @@
     <string name="cancel">Cancel</string>
     <string name="shift_type">Shift type</string>
     <string name="title_shift_list">Shifts</string>
-    <string name="shift">Shift</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
     <string name="logged_shifts">Logged shifts</string>
@@ -46,10 +44,8 @@
     <string name="unclaimed">Unclaimed</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>
-    <string name="total">Total</string>
     <string name="comment">Comment</string>
     <string name="save">Save</string>
-    <string name="shift_type_duration_format">%1$s (%2$s)</string>
     <string name="not_applicable">N/A</string>
     <string name="time_between_shifts">Time between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>
@@ -62,12 +58,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="shift_categories">Shift categories</string>
     <string name="log_hours">Log hours</string>
-    <string name="remove_log">Remove log</string>
     <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
     <string name="meca_maximum_hours_over_day" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %d hours in any day.</string>
     <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %1$d hours in any consecutive seven days.\n\n(13.4.1) Where an employee is rostered on duty in excess of %1$d hours in any seven day period then a penalty payment of $550 shall apply for that period.</string>
     <string name="meca_maximum_hours_over_fortnight" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is required to work in excess of %1$d hours in a period of 14 consecutive days the employer shall pay a penalty of $1000 to the employee. Any penalty shall apply only once in respect of any particular 7 day period.</string>
     <string name="meca_consecutive_weekends">(13.5.1) Employees shall have every second weekend completely free from duties.</string>
-    <string name="title_item_list">Items</string>
-    <string name="title_item_detail">Item Detail</string>
 </resources>

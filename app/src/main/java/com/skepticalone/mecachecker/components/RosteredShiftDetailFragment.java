@@ -188,8 +188,7 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Roste
 
     @Override
     public int getRowNumberLastWeekendWorked() {
-        if (!mComplianceData.isWeekend()) return NO_ROW_NUMBER;
-        return mShiftData.isLogged() ? ROW_NUMBER_LAST_WEEKEND_WORKED : (ROW_NUMBER_LAST_WEEKEND_WORKED - 2);
+        return mComplianceData.isWeekend() ? mShiftData.isLogged() ? ROW_NUMBER_LAST_WEEKEND_WORKED : (ROW_NUMBER_LAST_WEEKEND_WORKED - 2) : NO_ROW_NUMBER;
     }
 
     @Override

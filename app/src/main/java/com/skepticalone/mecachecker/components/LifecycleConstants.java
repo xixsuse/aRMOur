@@ -9,7 +9,12 @@ final class LifecycleConstants {
             LOADER_ID_CROSS_COVER_LIST = 5,
             LOADER_ID_CROSS_COVER_DETAIL = 6,
             LOADER_ID_EXPENSES_LIST = 7,
-            LOADER_ID_EXPENSES_DETAIL = 8;
+            LOADER_ID_EXPENSES_DETAIL = 8,
+            ITEM_TYPE_ROSTERED_SHIFT = 1,
+            ITEM_TYPE_ADDITIONAL_SHIFT = 2,
+            ITEM_TYPE_CROSS_COVER = 3,
+            ITEM_TYPE_EXPENSE = 4;
+
     static final String
             LIST_FRAGMENT = "LIST_FRAGMENT",
             DETAIL_FRAGMENT = "DETAIL_FRAGMENT",

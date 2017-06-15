@@ -60,7 +60,7 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
     }
 
     void bindLogged(Context context, boolean isLogged) {
-        bind(context, SwitchType.LOGGED, R.drawable.ic_content_clipboard_black_24dp, R.string.logged, null, isLogged, true);
+        bind(context, SwitchType.LOGGED, R.drawable.ic_clipboard_black_24dp, R.string.log_hours, null, isLogged, true);
     }
 
     @Override

@@ -83,12 +83,12 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
                 DateTimeUtils.getTimeSpanString(rosteredShift),
                 loggedShift == null ? null : getString(R.string.logged_format, DateTimeUtils.getTimeSpanString(loggedShift))
         );
-        boolean error = AppConstants.hasInsufficientIntervalBetweenShifts(cursor.getIntervalBetweenShifts()) ||
+        boolean error = AppConstants.hasInsufficientDurationBetweenShifts(cursor.getDurationBetweenShifts()) ||
                 AppConstants.exceedsDurationOverDay(cursor.getDurationOverDay()) ||
                 AppConstants.exceedsDurationOverWeek(cursor.getDurationOverWeek()) ||
                 AppConstants.exceedsDurationOverFortnight(cursor.getDurationOverFortnight()) ||
                 cursor.consecutiveWeekendsWorked();
-        holder.secondaryIcon.setImageResource(error ? R.drawable.ic_warning_red_24dp : R.drawable.ic_check_black_24dp);
+        holder.secondaryIcon.setImageResource(error ? R.drawable.ic_cancel_red_24dp : R.drawable.ic_check_black_24dp);
     }
 
     @Override

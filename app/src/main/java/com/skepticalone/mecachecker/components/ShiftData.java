@@ -14,7 +14,6 @@ import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -23,12 +22,13 @@ class ShiftData extends AbstractData {
 
     private final Callbacks mCallbacks;
     private Interval mShift;
+    private LocalDate mDate;
     @NonNull
     private final View.OnClickListener
             mDateListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mCallbacks.showDialogFragment(getShiftDatePickerDialogFragment(mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
+            mCallbacks.showDialogFragment(getShiftDatePickerDialogFragment(mDate, mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime()), LifecycleConstants.DATE_DIALOG);
         }
     },
             mStartListener = new View.OnClickListener() {
@@ -50,19 +50,23 @@ class ShiftData extends AbstractData {
     }
 
     @NonNull
-    DateTime getShiftStart() {
-        return mShift.getStart();
+    LocalDate getShiftDate() {
+        return mDate;
     }
 
-    @NonNull
-    DateTime getShiftEnd() {
-        return mShift.getEnd();
+    long getShiftStartMillis() {
+        return mShift.getStartMillis();
+    }
+
+    long getShiftEndMillis() {
+        return mShift.getEndMillis();
     }
 
     @CallSuper
     @Override
     public void readFromPositionedCursor(@NonNull Cursor cursor) {
         mShift = new Interval(cursor.getLong(mCallbacks.getColumnIndexStartOrDate()), cursor.getLong(mCallbacks.getColumnIndexEnd()));
+        mDate = mShift.getStart().toLocalDate();
         mShiftType = mCallbacks.getShiftType(mShift);
     }
 
@@ -83,11 +87,11 @@ class ShiftData extends AbstractData {
         if (position == mCallbacks.getRowNumberDate()) {
             holder.rootBind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mShift.getStart()), mDateListener);
         } else if (position == mCallbacks.getRowNumberStart()) {
-            holder.rootBind(context, R.drawable.ic_play_arrow_black_24dp, R.string.start, DateTimeUtils.getTimeString(mShift, true, null), mStartListener);
+            holder.rootBind(context, R.drawable.ic_play_black_24dp, R.string.start, DateTimeUtils.getTimeString(mShift.getStart()), mStartListener);
         } else if (position == mCallbacks.getRowNumberEnd()) {
-            holder.rootBind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift, false, null), mEndListener);
+            holder.rootBind(context, R.drawable.ic_stop_black_24dp, R.string.end, DateTimeUtils.getTimeString(mShift.getEnd(), getShiftDate()), mEndListener);
         } else if (position == mCallbacks.getRowNumberShiftType()) {
-            holder.rootBind(context, ShiftUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, context.getString(ShiftUtil.getShiftTypeTitle(mShiftType)), null);
+            holder.rootBind(context, ShiftUtil.getShiftTypeIcon(mShiftType), R.string.shift_type, DateTimeUtils.getShiftTypeWithDurationString(context.getString(ShiftUtil.getShiftTypeTitle(mShiftType)), mShift), null);
         } else return false;
         return true;
     }
@@ -99,7 +103,7 @@ class ShiftData extends AbstractData {
 
     @NonNull
     private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart) {
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, mShift.getStart().toLocalDate(), mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime(), mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, mDate, mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime(), mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
     interface Callbacks extends DetailFragmentBehaviour, Shift {

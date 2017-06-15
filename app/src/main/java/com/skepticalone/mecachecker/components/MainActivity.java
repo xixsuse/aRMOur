@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
                         .setAction("Action", null).show();
             }
         });
-        if (findViewById(R.id.item_detail_container) != null) {
+        if (findViewById(R.id.detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
@@ -93,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment oldDetailFragment = getSupportFragmentManager().findFragmentByTag(LifecycleConstants.DETAIL_FRAGMENT);
-            if (oldDetailFragment != null) transaction.remove(oldDetailFragment);
             Fragment newListFragment;
             if (id == R.id.rostered) {
                 newListFragment = new RosteredShiftsListFragment();
@@ -106,8 +103,11 @@ public class MainActivity extends AppCompatActivity implements
             } else if (id == R.id.expenses) {
                 newListFragment = new ExpensesListFragment();
             } else throw new IllegalStateException();
-            transaction.replace(R.id.list_fragment_container, newListFragment, LifecycleConstants.LIST_FRAGMENT)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_fragment_container, newListFragment, LifecycleConstants.LIST_FRAGMENT);
+            Fragment oldDetailFragment = getSupportFragmentManager().findFragmentByTag(LifecycleConstants.DETAIL_FRAGMENT);
+            if (oldDetailFragment != null) transaction.remove(oldDetailFragment);
+            transaction.commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showDetailFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.item_detail_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
+                .replace(R.id.detail_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
                 .commit();
     }
 
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             showDetailFragment(RosteredShiftDetailFragment.create(id));
         } else {
-            startDetailActivity(DetailActivity.ITEM_TYPE_ROSTERED_SHIFT, id);
+            startDetailActivity(LifecycleConstants.ITEM_TYPE_ROSTERED_SHIFT, id);
         }
     }
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             showDetailFragment(AdditionalShiftDetailFragment.create(id));
         } else {
-            startDetailActivity(DetailActivity.ITEM_TYPE_ADDITIONAL_SHIFT, id);
+            startDetailActivity(LifecycleConstants.ITEM_TYPE_ADDITIONAL_SHIFT, id);
         }
     }
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             showDetailFragment(CrossCoverDetailFragment.create(id));
         } else {
-            startDetailActivity(DetailActivity.ITEM_TYPE_CROSS_COVER, id);
+            startDetailActivity(LifecycleConstants.ITEM_TYPE_CROSS_COVER, id);
         }
     }
 
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mTwoPane) {
             showDetailFragment(ExpenseDetailFragment.create(id));
         } else {
-            startDetailActivity(DetailActivity.ITEM_TYPE_EXPENSE, id);
+            startDetailActivity(LifecycleConstants.ITEM_TYPE_EXPENSE, id);
         }
     }
 

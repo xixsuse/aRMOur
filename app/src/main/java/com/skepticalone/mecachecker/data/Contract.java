@@ -6,6 +6,18 @@ public final class Contract {
     private Contract() {
     }
 
+    private static String createTrigger(boolean insert, String tableName, String columnNameStart, String columnNameEnd) {
+        return "CREATE TRIGGER " + tableName + (insert ? "_insert_trigger " : "_update_trigger ") +
+                "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + tableName + " BEGIN " +
+                "SELECT CASE WHEN EXISTS (" +
+                "SELECT " + BaseColumns._ID + " FROM " + tableName + " WHERE " +
+                (insert ? "" : (BaseColumns._ID + " != OLD." + BaseColumns._ID + " AND ")) +
+                columnNameStart + " < NEW." + columnNameEnd + " AND " +
+                "NEW." + columnNameStart + " < " + columnNameEnd +
+                ") THEN RAISE (ABORT, 'Overlapping shifts') END; " +
+                "END";
+    }
+
     public static class RosteredShifts implements BaseColumns {
         public static final String
                 COLUMN_NAME_ROSTERED_START = "rostered_start",
@@ -26,23 +38,9 @@ public final class Contract {
                         COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END + "))" +
                         ")",
                 SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_ROSTERED_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_ROSTERED_START + ")",
-                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
-                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
+                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true, TABLE_NAME, COLUMN_NAME_ROSTERED_START, COLUMN_NAME_ROSTERED_END),
+                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false, TABLE_NAME, COLUMN_NAME_ROSTERED_START, COLUMN_NAME_ROSTERED_END),
                 SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-        private static String createTrigger(boolean insert) {
-            return "CREATE TRIGGER " + TABLE_NAME + (insert ? "_insert_trigger " : "_update_trigger ") +
-                    "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
-                    "SELECT CASE WHEN EXISTS (" +
-                    "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
-                    (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
-                    "((" + COLUMN_NAME_ROSTERED_START + " < NEW." + COLUMN_NAME_ROSTERED_END + " AND " +
-                    "NEW." + COLUMN_NAME_ROSTERED_START + " < " + COLUMN_NAME_ROSTERED_END + ") OR (" +
-                    COLUMN_NAME_LOGGED_START + " < NEW." + COLUMN_NAME_LOGGED_END + " AND " +
-                    "NEW." + COLUMN_NAME_LOGGED_START + " < " + COLUMN_NAME_LOGGED_END +
-                    "))) THEN RAISE (ABORT, 'Overlapping shifts') END; " +
-                    "END";
-        }
     }
 
     public static class AdditionalShifts implements BaseColumns {
@@ -70,21 +68,9 @@ public final class Contract {
                         "CHECK (length(" + COLUMN_NAME_COMMENT + ") > 0)" +
                         ")",
                 SQL_CREATE_INDEX_START = "CREATE INDEX " + COLUMN_NAME_START + "_index ON " + TABLE_NAME + " (" + COLUMN_NAME_START + ")",
-                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true),
-                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false),
+                SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true, TABLE_NAME, COLUMN_NAME_START, COLUMN_NAME_END),
+                SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false, TABLE_NAME, COLUMN_NAME_START, COLUMN_NAME_END),
                 SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-        private static String createTrigger(boolean insert) {
-            return "CREATE TRIGGER " + TABLE_NAME + (insert ? "_insert_trigger " : "_update_trigger ") +
-                    "BEFORE " + (insert ? "INSERT" : "UPDATE") + " ON " + TABLE_NAME + " BEGIN " +
-                    "SELECT CASE WHEN EXISTS (" +
-                    "SELECT " + _ID + " FROM " + TABLE_NAME + " WHERE " +
-                    (insert ? "" : (_ID + " != OLD." + _ID + " AND ")) +
-                    COLUMN_NAME_START + " < NEW." + COLUMN_NAME_END + " AND " +
-                    "NEW." + COLUMN_NAME_START + " < " + COLUMN_NAME_END +
-                    ") THEN RAISE (ABORT, 'Overlapping shifts') END; " +
-                    "END";
-        }
     }
 
     public static class CrossCoverShifts implements BaseColumns {

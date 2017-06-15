@@ -21,7 +21,7 @@ public class MoneyDialogFragment extends EditTextDialogFragment {
 
     public static MoneyDialogFragment newInstance(@NonNull BigDecimal money, @StringRes int title, @NonNull Uri contentUri, @NonNull String columnName) {
         MoneyDialogFragment fragment = new MoneyDialogFragment();
-        Bundle args = getArgs(title, money.toPlainString());
+        Bundle args = getArgs(title, money.toPlainString(), R.string.currency_input_hint);
         args.putParcelable(CONTENT_URI, contentUri);
         args.putString(COLUMN_NAME, columnName);
         fragment.setArguments(args);

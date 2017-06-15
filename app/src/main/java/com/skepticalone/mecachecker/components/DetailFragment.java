@@ -23,10 +23,9 @@ import static com.skepticalone.mecachecker.components.ViewHolderType.SWITCH;
 
 abstract class DetailFragment extends BaseFragment implements DetailFragmentBehaviour {
 
-    static final long NO_ID = -1L;
     static final int NO_ROW_NUMBER = -1;
-    static final String ITEM_ID = "ITEM_ID";
-
+    private static final long NO_ID = -1L;
+    private static final String ITEM_ID = "ITEM_ID";
     private final Adapter mAdapter = new Adapter();
     private long mItemId;
     private boolean mLoaded = false;

@@ -12,6 +12,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 
 public final class Compliance {
 
@@ -23,15 +24,13 @@ public final class Compliance {
             COLUMN_INDEX_LOGGED_START = 3,
             COLUMN_INDEX_LOGGED_END = 4;
     private final static int
-            COLUMN_INDEX_LAST_SHIFT_ROSTERED_END = 5,
+            COLUMN_INDEX_DURATION_SINCE_LAST_SHIFT = 5,
             COLUMN_INDEX_DURATION_OVER_DAY = 6,
             COLUMN_INDEX_DURATION_OVER_WEEK = 7,
             COLUMN_INDEX_DURATION_OVER_FORTNIGHT = 8,
-            COLUMN_INDEX_CURRENT_WEEKEND_START = 9,
-            COLUMN_INDEX_CURRENT_WEEKEND_END = 10,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 11,
-            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END = 12,
-            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 13;
+            COLUMN_INDEX_IS_WEEKEND = 9,
+            COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START = 10,
+            COLUMN_INDEX_CONSECUTIVE_WEEKENDS_WORKED = 11;
 
     private static final String[] RAW_PROJECTION = new String[]{
 
@@ -42,14 +41,12 @@ public final class Compliance {
             Contract.RosteredShifts.COLUMN_NAME_LOGGED_END,
     },
             EXTRA_COLUMN_NAMES = new String[]{
-                    "LAST_SHIFT_ROSTERED_END",
+                    "DURATION_SINCE_LAST_SHIFT",
                     "DURATION_OVER_DAY",
                     "DURATION_OVER_WEEK",
                     "DURATION_OVER_FORTNIGHT",
-                    "CURRENT_WEEKEND_START",
-                    "CURRENT_WEEKEND_END",
+                    "IS_WEEKEND",
                     "PREVIOUS_WEEKEND_WORKED_START",
-                    "PREVIOUS_WEEKEND_WORKED_END",
                     "CONSECUTIVE_WEEKENDS_WORKED"
             },
             MATRIX_COLUMN_NAMES;
@@ -84,21 +81,19 @@ public final class Compliance {
             Interval loggedShift = (initialCursor.isNull(COLUMN_INDEX_LOGGED_START) || initialCursor.isNull(COLUMN_INDEX_LOGGED_END)) ?
                     null :
                     new Interval(initialCursor.getLong(COLUMN_INDEX_LOGGED_START), initialCursor.getLong(COLUMN_INDEX_LOGGED_END));
+            Interval currentWeekend = getWeekend(currentShift);
             MatrixCursor.RowBuilder builder = newCursor.newRow()
                     .add(id)
                     .add(currentShift.getStartMillis())
                     .add(currentShift.getEndMillis())
                     .add(loggedShift == null ? null : loggedShift.getStartMillis())
                     .add(loggedShift == null ? null : loggedShift.getEndMillis())
-                    .add(initialCursor.moveToPrevious() ? initialCursor.getLong(COLUMN_INDEX_ROSTERED_END) : null)
+                    .add(initialCursor.moveToPrevious() ? (currentShift.getStartMillis() - initialCursor.getLong(COLUMN_INDEX_ROSTERED_END)) : null)
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusDays(1).toInstant()).getMillis())
                     .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(1).toInstant()).getMillis())
-                    .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis());
-            Interval currentWeekend = getWeekend(currentShift);
+                    .add(getDurationSince(initialCursor, i, currentShift.getEnd().minusWeeks(2).toInstant()).getMillis())
+                    .add(currentWeekend == null ? 0 : 1);
             if (currentWeekend != null) {
-                builder
-                        .add(currentWeekend.getStartMillis())
-                        .add(currentWeekend.getEndMillis());
                 Interval previousWeekend = new Interval(currentWeekend.getStart().minusWeeks(1), currentWeekend.getEnd().minusWeeks(1));
                 initialCursor.moveToPosition(i);
                 while (initialCursor.moveToPrevious()) {
@@ -106,7 +101,6 @@ public final class Compliance {
                     if (weekendWorked != null && !currentWeekend.equals(weekendWorked)) {
                         builder
                                 .add(weekendWorked.getStartMillis())
-                                .add(weekendWorked.getEndMillis())
                                 .add(weekendWorked.isEqual(previousWeekend) ? 1 : 0);
                         break;
                     }
@@ -160,8 +154,8 @@ public final class Compliance {
         }
 
         @Nullable
-        public Interval getIntervalBetweenShifts() {
-            return isNull(COLUMN_INDEX_LAST_SHIFT_ROSTERED_END) ? null : new Interval(getLong(COLUMN_INDEX_LAST_SHIFT_ROSTERED_END), getLong(COLUMN_INDEX_ROSTERED_START));
+        public Duration getDurationBetweenShifts() {
+            return isNull(COLUMN_INDEX_DURATION_SINCE_LAST_SHIFT) ? null : new Duration(getLong(COLUMN_INDEX_DURATION_SINCE_LAST_SHIFT));
         }
 
         @NonNull
@@ -179,20 +173,13 @@ public final class Compliance {
             return new Duration(getLong(COLUMN_INDEX_DURATION_OVER_FORTNIGHT));
         }
 
-        @Nullable
-        public Interval getCurrentWeekend() {
-            if (isNull(COLUMN_INDEX_CURRENT_WEEKEND_START) || isNull(COLUMN_INDEX_CURRENT_WEEKEND_END)) {
-                return null;
-            }
-            return new Interval(getLong(COLUMN_INDEX_CURRENT_WEEKEND_START), getLong(COLUMN_INDEX_CURRENT_WEEKEND_END));
+        public boolean isWeekend() {
+            return getInt(COLUMN_INDEX_IS_WEEKEND) == 1;
         }
 
         @Nullable
-        public Interval getPreviousWeekend() {
-            if (isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) || isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END)) {
-                return null;
-            }
-            return new Interval(getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START), getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_END));
+        public LocalDate getPreviousWeekend() {
+            return isNull(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START) ? null : new LocalDate(getLong(COLUMN_INDEX_PREVIOUS_WEEKEND_WORKED_START));
         }
 
         public boolean consecutiveWeekendsWorked() {

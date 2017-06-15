@@ -3,7 +3,6 @@ package com.skepticalone.mecachecker.util;
 import android.support.annotation.Nullable;
 
 import org.joda.time.Duration;
-import org.joda.time.Interval;
 
 public final class AppConstants {
 
@@ -26,8 +25,8 @@ public final class AppConstants {
         return minutes - minutes % MINUTES_PER_STEP;
     }
 
-    public static boolean hasInsufficientIntervalBetweenShifts(@Nullable Interval interval) {
-        return interval != null && interval.toDuration().isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
+    public static boolean hasInsufficientDurationBetweenShifts(@Nullable Duration duration) {
+        return duration != null && duration.isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
     }
 
     public static boolean exceedsDurationOverDay(Duration duration) {
