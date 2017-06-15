@@ -6,13 +6,12 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
 import org.joda.time.LocalDate;
 
 
-abstract class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+abstract class DatePickerDialogFragment extends PickerDialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String
             CONTENT_URI = "CONTENT_URI",
@@ -48,6 +47,8 @@ abstract class DatePickerDialogFragment extends DialogFragment implements DatePi
         Uri contentUri = getArguments().getParcelable(CONTENT_URI);
         assert contentUri != null;
         LocalDate date = new LocalDate(year, month + 1, dayOfMonth);
-        getActivity().getContentResolver().update(contentUri, getValues(date), null, null);
+        if (getActivity().getContentResolver().update(contentUri, getValues(date), null, null) != 1) {
+            onOverlappingShifts();
+        }
     }
 }

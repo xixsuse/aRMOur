@@ -81,7 +81,7 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
         holder.setText(
                 DateTimeUtils.getFullDateString(rosteredShift.getStart()),
                 DateTimeUtils.getTimeSpanString(rosteredShift),
-                loggedShift == null ? null : getString(R.string.logged_format, DateTimeUtils.getTimeSpanString(loggedShift))
+                loggedShift == null ? null : DateTimeUtils.getTimeSpanString(loggedShift)
         );
         boolean error = AppConstants.hasInsufficientDurationBetweenShifts(cursor.getDurationBetweenShifts()) ||
                 AppConstants.exceedsDurationOverDay(cursor.getDurationOverDay()) ||

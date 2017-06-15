@@ -26,16 +26,6 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
         switchControl.setOnCheckedChangeListener(this);
     }
 
-//    private void bind(Context context, @DrawableRes int primaryIconRes, @StringRes int key, @NonNull String value, boolean shouldBeChecked, boolean enableToggle) {
-//        rootBind(context, primaryIconRes, key, value, null);
-//        if (switchControl.isChecked() != shouldBeChecked) {
-//            switchControl.setOnCheckedChangeListener(null);
-//            switchControl.setChecked(shouldBeChecked);
-//            switchControl.setOnCheckedChangeListener(this);
-//        }
-//        switchControl.setEnabled(enableToggle);
-//    }
-
     private void bind(Context context, @NonNull SwitchType switchType, @DrawableRes int primaryIconRes, @StringRes int keyRes, @Nullable String value, boolean shouldBeChecked, boolean enableToggle) {
         rootBind(context, primaryIconRes, keyRes, value, null);
         mSwitchType = switchType;
@@ -48,7 +38,7 @@ class SwitchListItemViewHolder extends ListItemViewHolder implements CompoundBut
     }
 
     private void bindPaidOrClaimed(Context context, @NonNull SwitchType switchType, @Nullable DateTime dateTime, @DrawableRes int primaryIconRes, @StringRes int key, boolean enableToggle) {
-        bind(context, switchType, dateTime == null ? 0 : primaryIconRes, key, dateTime == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getDateTimeString(dateTime), dateTime != null, enableToggle);
+        bind(context, switchType, dateTime == null ? 0 : primaryIconRes, key, dateTime == null ? null : DateTimeUtils.getDateTimeString(dateTime), dateTime != null, enableToggle);
     }
 
     void bindClaimed(Context context, @Nullable DateTime claimed, boolean isPaid) {

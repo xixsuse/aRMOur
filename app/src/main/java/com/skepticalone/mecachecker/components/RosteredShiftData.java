@@ -61,9 +61,11 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
     @Override
     public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberLoggedStart()) {
-            holder.rootBind(context, R.drawable.ic_clipboard_play_black_24dp, R.string.logged_start, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift.getStart(), getShiftDate()), mLoggedStartListener);
+            assert mLoggedShift != null;
+            holder.rootBind(context, R.drawable.ic_clipboard_play_black_24dp, R.string.logged_start, DateTimeUtils.getTimeString(mLoggedShift.getStart(), getShiftDate()), mLoggedStartListener);
         } else if (position == mCallbacks.getRowNumberLoggedEnd()) {
-            holder.rootBind(context, R.drawable.ic_clipboard_stop_black_24dp, R.string.logged_end, mLoggedShift == null ? context.getString(R.string.not_applicable) : DateTimeUtils.getTimeString(mLoggedShift.getEnd(), getShiftDate()), mLoggedEndListener);
+            assert mLoggedShift != null;
+            holder.rootBind(context, R.drawable.ic_clipboard_stop_black_24dp, R.string.logged_end, DateTimeUtils.getTimeString(mLoggedShift.getEnd(), getShiftDate()), mLoggedEndListener);
         } else return super.bindToHolder(context, holder, position);
         return true;
     }

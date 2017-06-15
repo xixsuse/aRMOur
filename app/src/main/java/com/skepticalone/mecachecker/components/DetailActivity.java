@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-public class DetailActivity extends AppCompatActivity {
+import com.skepticalone.mecachecker.R;
+
+public class DetailActivity extends AppCompatActivity implements PickerDialogFragment.Callbacks {
     private static final String ITEM_TYPE = "ITEM_TYPE", ITEM_ID = "ITEM_ID";
     private static final int NO_ITEM_TYPE = 0;
     private static final long NO_ID = -1L;
@@ -48,6 +51,11 @@ public class DetailActivity extends AppCompatActivity {
                     .replace(android.R.id.content, fragment, LifecycleConstants.DETAIL_FRAGMENT)
                     .commit();
         }
+    }
+
+    @Override
+    public void onOverlappingShifts() {
+        Toast.makeText(this, R.string.overlapping_shifts, Toast.LENGTH_SHORT).show();
     }
 
 }

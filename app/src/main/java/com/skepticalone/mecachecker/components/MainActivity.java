@@ -24,11 +24,13 @@ import com.skepticalone.mecachecker.summary.SummaryActivity;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
+        PickerDialogFragment.Callbacks,
         RosteredShiftsListFragment.Listener,
         AdditionalShiftsListFragment.Listener,
         CrossCoverListFragment.Listener,
         ExpensesListFragment.Listener {
 
+    private View mCoordinatorView;
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean mTwoPane;
 
@@ -37,15 +39,16 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, true);
         setContentView(R.layout.main_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = drawer.findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        mCoordinatorView = drawer.findViewById(R.id.coordinator);
+        Toolbar toolbar = mCoordinatorView.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(mDrawerToggle);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = mCoordinatorView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,14 +56,7 @@ public class MainActivity extends AppCompatActivity implements
                         .setAction("Action", null).show();
             }
         });
-        if (findViewById(R.id.detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
-//
+        mTwoPane = findViewById(R.id.detail_container) != null;
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.rostered);
             getSupportFragmentManager().beginTransaction()
@@ -160,4 +156,8 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onOverlappingShifts() {
+        Snackbar.make(mCoordinatorView, R.string.overlapping_shifts, Snackbar.LENGTH_SHORT);
+    }
 }

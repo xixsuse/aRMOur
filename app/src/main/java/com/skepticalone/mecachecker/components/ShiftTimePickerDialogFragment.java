@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
@@ -17,7 +16,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 
-public class ShiftTimePickerDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class ShiftTimePickerDialogFragment extends PickerDialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private static final String
             CONTENT_URI = "CONTENT_URI",
@@ -77,6 +76,8 @@ public class ShiftTimePickerDialogFragment extends DialogFragment implements Tim
         values.put(getArguments().getString(COLUMN_NAME_END), end.getMillis());
         Uri contentUri = getArguments().getParcelable(CONTENT_URI);
         assert contentUri != null;
-        getActivity().getContentResolver().update(contentUri, values, null, null);
+        if (getActivity().getContentResolver().update(contentUri, values, null, null) != 1) {
+            onOverlappingShifts();
+        }
     }
 }
