@@ -1,10 +1,8 @@
 package com.skepticalone.mecachecker.components;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
@@ -12,8 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,12 +21,6 @@ abstract class ListFragment extends BaseFragment {
     private LinearLayoutManager mLayoutManager;
     private boolean mScrollToEndAtNextLoad = false;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,15 +31,6 @@ abstract class ListFragment extends BaseFragment {
         );
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
-    }
-
-    @MenuRes
-    abstract int getMenu();
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(getMenu(), menu);
     }
 
     final void scrollToEndAtNextLoad() {

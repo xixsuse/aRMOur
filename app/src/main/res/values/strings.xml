@@ -10,10 +10,6 @@
     <string name="normal_day">Normal day</string>
     <string name="long_day">Long day</string>
     <string name="night_shift">Night shift</string>
-    <string name="add">Add</string>
-    <string name="add_normal_day">Add normal day</string>
-    <string name="add_long_day">Add long day</string>
-    <string name="add_night_shift">Add night shift</string>
     <string name="hours">Hours</string>
     <string name="money">Money</string>
     <string name="custom">Custom</string>

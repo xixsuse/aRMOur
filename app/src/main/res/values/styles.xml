@@ -28,6 +28,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <color name="fabColorNormal">#43A047</color>
+    <color name="fabColorPressed">#2E7D32</color>
+    <color name="fabColorRipple">#1B5E20</color>
+
+    <style name="fab">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fab_colorNormal">@color/fabColorNormal</item>
+        <item name="fab_colorPressed">@color/fabColorPressed</item>
+        <item name="fab_colorRipple">@color/fabColorRipple</item>
+    </style>
+
     <style name="ShiftDetailButton" parent="Widget.AppCompat.Button.Colored" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

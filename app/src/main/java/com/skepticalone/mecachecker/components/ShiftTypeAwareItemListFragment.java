@@ -2,12 +2,12 @@ package com.skepticalone.mecachecker.components;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
-import android.view.MenuItem;
+import android.view.View;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -23,6 +23,8 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
 
     @Nullable
     private Instant mLastShiftEnd = null;
+
+    private Callbacks mCallbacks;
 
     abstract DateTime getEarliestStartForNewShift(@Nullable Instant lastShiftEnd);
 
@@ -61,31 +63,35 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
     }
 
     @Override
-    final int getMenu() {
-        return R.menu.shift_list_menu;
-    }
-
-    @Override
-    public final boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_normal_day:
-                addShift(ShiftType.NORMAL_DAY);
-                return true;
-            case R.id.add_long_day:
-                addShift(ShiftType.LONG_DAY);
-                return true;
-            case R.id.add_night_shift:
-                addShift(ShiftType.NIGHT_SHIFT);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mCalculator = new ShiftUtil.Calculator(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mCallbacks.setFabMenu(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        addShift(ShiftType.NORMAL_DAY);
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        addShift(ShiftType.LONG_DAY);
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        addShift(ShiftType.NIGHT_SHIFT);
+                    }
+                }
+        );
     }
 
     ShiftType getShiftType(Interval shift) {
@@ -100,4 +106,7 @@ abstract class ShiftTypeAwareItemListFragment extends ListFragment {
         return mCalculator.getEndTime(shiftType);
     }
 
+    interface Callbacks {
+        void setFabMenu(@NonNull View.OnClickListener normalDayListener, @NonNull View.OnClickListener longDayListener, @NonNull View.OnClickListener nightShiftListener);
+    }
 }

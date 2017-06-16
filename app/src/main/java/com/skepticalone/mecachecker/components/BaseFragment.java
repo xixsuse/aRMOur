@@ -21,7 +21,7 @@ abstract class BaseFragment extends Fragment implements BaseFragmentBehaviour, L
     abstract int getLoaderId();
 
     @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //noinspection ConstantConditions
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());

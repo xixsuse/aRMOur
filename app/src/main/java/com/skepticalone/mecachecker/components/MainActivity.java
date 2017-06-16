@@ -6,9 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -18,18 +16,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.settings.SettingsActivity;
 import com.skepticalone.mecachecker.summary.SummaryActivity;
 
 public class MainActivity extends CoordinatorActivity implements
         NavigationView.OnNavigationItemSelectedListener,
+        ShiftTypeAwareItemListFragment.Callbacks,
+        SinglePaymentItemListFragment.Callbacks,
         RosteredShiftsListFragment.Listener,
         AdditionalShiftsListFragment.Listener,
         CrossCoverListFragment.Listener,
         ExpensesListFragment.Listener {
 
     private ActionBarDrawerToggle mDrawerToggle;
+    private FloatingActionMenu mFabMenu;
+    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
 
     @Override
@@ -42,19 +46,15 @@ public class MainActivity extends CoordinatorActivity implements
         navigationView.setNavigationItemSelectedListener(this);
         CoordinatorLayout coordinatorLayout = drawer.findViewById(R.id.coordinator);
         setCoordinatorLayout(coordinatorLayout);
+        mFabMenu = coordinatorLayout.findViewById(R.id.fab_menu);
+        mFabNormalDay = coordinatorLayout.findViewById(R.id.fab_normal_day);
+        mFabLongDay = coordinatorLayout.findViewById(R.id.fab_long_day);
+        mFabNightShift = coordinatorLayout.findViewById(R.id.fab_night_shift);
         Toolbar toolbar = coordinatorLayout.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(mDrawerToggle);
-        FloatingActionButton fab = coordinatorLayout.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.rostered);
@@ -62,6 +62,26 @@ public class MainActivity extends CoordinatorActivity implements
                     .add(R.id.list_fragment_container, new RosteredShiftsListFragment(), LifecycleConstants.LIST_FRAGMENT)
                     .commit();
         }
+    }
+
+    @Override
+    public void setFab(@NonNull View.OnClickListener fabListener) {
+        mFabMenu.setOnMenuButtonClickListener(fabListener);
+        mFabMenu.close(true);
+    }
+
+    @Override
+    public void setFabMenu(@NonNull View.OnClickListener normalDayListener, @NonNull View.OnClickListener longDayListener, @NonNull View.OnClickListener nightShiftListener) {
+        mFabMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFabMenu.toggle(true);
+            }
+        });
+        mFabNormalDay.setOnClickListener(normalDayListener);
+        mFabLongDay.setOnClickListener(longDayListener);
+        mFabNightShift.setOnClickListener(nightShiftListener);
+        mFabMenu.close(true);
     }
 
     @Override
@@ -75,6 +95,8 @@ public class MainActivity extends CoordinatorActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mFabMenu.isOpened()) {
+            mFabMenu.close(true);
         } else {
             super.onBackPressed();
         }
@@ -104,6 +126,7 @@ public class MainActivity extends CoordinatorActivity implements
             if (oldDetailFragment != null) transaction.remove(oldDetailFragment);
             transaction.commit();
         }
+        mFabMenu.close(true);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
