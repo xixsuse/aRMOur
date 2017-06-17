@@ -10,6 +10,7 @@ final class LifecycleConstants {
             LOADER_ID_CROSS_COVER_DETAIL = 6,
             LOADER_ID_EXPENSES_LIST = 7,
             LOADER_ID_EXPENSES_DETAIL = 8,
+            ITEM_TYPE_NONE = 0,
             ITEM_TYPE_ROSTERED_SHIFT = 1,
             ITEM_TYPE_ADDITIONAL_SHIFT = 2,
             ITEM_TYPE_CROSS_COVER = 3,
@@ -24,5 +25,10 @@ final class LifecycleConstants {
             DATE_DIALOG = "DATE_DIALOG",
             START_DIALOG = "START_DIALOG",
             END_DIALOG = "END_DIALOG",
-            MESSAGE_DIALOG = "MESSAGE_DIALOG";
+            MESSAGE_DIALOG = "MESSAGE_DIALOG",
+            ITEM_ID = "ITEM_ID",
+            ITEM_TYPE = "ITEM_TYPE";
+
+    static final long NO_ID = -1L;
+
 }

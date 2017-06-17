@@ -15,6 +15,8 @@
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
+    <string name="item_removed">Item removed</string>
+    <string name="undo">Undo</string>
     <string name="shift_type">Shift type</string>
     <string name="title_shift_list">Shifts</string>
     <string name="rostered_shifts">Rostered shifts</string>

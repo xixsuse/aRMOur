@@ -49,12 +49,6 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Roste
     private final ComplianceData mComplianceData = new ComplianceData(this);
     private ShiftUtil.Calculator mCalculator;
 
-    static RosteredShiftDetailFragment create(long id) {
-        RosteredShiftDetailFragment fragment = new RosteredShiftDetailFragment();
-        fragment.setArguments(createArguments(id));
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -77,8 +71,13 @@ public class RosteredShiftDetailFragment extends DetailFragment implements Roste
     }
 
     @Override
-    public Uri getContentUri() {
-        return Provider.rosteredShiftWithComplianceUri(getItemId());
+    public Uri getReadContentUri() {
+        return Provider.uriWithId(Provider.rosteredShiftsWithComplianceUri, getItemId());
+    }
+
+    @Override
+    public Uri getUpdateContentUri() {
+        return Provider.uriWithId(Provider.rosteredShiftsUri, getItemId());
     }
 
     @NonNull

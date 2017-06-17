@@ -32,12 +32,6 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
 
     private final DateData mDateData = new DateData(this);
 
-    static CrossCoverDetailFragment create(long id) {
-        CrossCoverDetailFragment fragment = new CrossCoverDetailFragment();
-        fragment.setArguments(createArguments(id));
-        return fragment;
-    }
-
     @NonNull
     @Override
     AbstractData getData() {
@@ -55,8 +49,8 @@ public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment im
     }
 
     @Override
-    public Uri getContentUri() {
-        return Provider.crossCoverShiftUri(getItemId());
+    public Uri getReadContentUri() {
+        return Provider.uriWithId(Provider.crossCoverShiftsUri, getItemId());
     }
 
     @Nullable

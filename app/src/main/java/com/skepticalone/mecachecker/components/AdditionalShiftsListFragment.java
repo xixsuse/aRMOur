@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -38,14 +37,6 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
             COLUMN_INDEX_PAID = 4,
             COLUMN_INDEX_COMMENT = 5;
 
-    private Listener mListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (Listener) context;
-    }
-
     @Override
     int getTitle() {
         return R.string.additional_shifts;
@@ -57,13 +48,8 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
     }
 
     @Override
-    public Uri getContentUri() {
+    public Uri getReadContentUri() {
         return Provider.additionalShiftsUri;
-    }
-
-    @Override
-    Uri getItemUri(long id) {
-        return Provider.additionalShiftUri(id);
     }
 
     @Nullable
@@ -118,17 +104,12 @@ public class AdditionalShiftsListFragment extends ShiftTypeAwareItemListFragment
                 .getDefaultSharedPreferences(getActivity())
                 .getInt(getString(R.string.key_hourly_rate), getResources().getInteger(R.integer.default_hourly_rate))
         );
-        if (getActivity().getContentResolver().insert(Provider.additionalShiftsUri, values) != null) {
-            scrollToEndAtNextLoad();
-        }
+        insert(values);
     }
 
     @Override
     void onItemClicked(long id) {
-        mListener.onAdditionalShiftClicked(id);
+        listCallbacks.launch(LifecycleConstants.ITEM_TYPE_ADDITIONAL_SHIFT, id);
     }
 
-    interface Listener {
-        void onAdditionalShiftClicked(long id);
-    }
 }

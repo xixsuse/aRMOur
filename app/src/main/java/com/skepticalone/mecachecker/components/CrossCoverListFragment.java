@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -23,27 +22,20 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
     private static final String[] PROJECTION = {
             Contract.CrossCoverShifts._ID,
             Contract.CrossCoverShifts.COLUMN_NAME_DATE,
-            Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
-            Contract.CrossCoverShifts.COLUMN_NAME_PAID,
             Contract.CrossCoverShifts.COLUMN_NAME_COMMENT,
+            Contract.CrossCoverShifts.COLUMN_NAME_CLAIMED,
+            Contract.CrossCoverShifts.COLUMN_NAME_PAID
     };
 
     private static final int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_DATE = 1,
-            COLUMN_INDEX_CLAIMED = 2,
-            COLUMN_INDEX_PAID = 3,
-            COLUMN_INDEX_COMMENT = 4;
+            COLUMN_INDEX_COMMENT = 2,
+            COLUMN_INDEX_CLAIMED = 3,
+            COLUMN_INDEX_PAID = 4;
 
-    private Listener mListener;
     @Nullable
     private Instant mLastCrossCover = null;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (Listener) context;
-    }
 
     @Override
     int getTitle() {
@@ -56,13 +48,8 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
     }
 
     @Override
-    public Uri getContentUri() {
+    public Uri getReadContentUri() {
         return Provider.crossCoverShiftsUri;
-    }
-
-    @Override
-    Uri getItemUri(long id) {
-        return Provider.crossCoverShiftUri(id);
     }
 
     @Nullable
@@ -83,6 +70,11 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
     }
 
     @Override
+    int getColumnIndexComment() {
+        return COLUMN_INDEX_COMMENT;
+    }
+
+    @Override
     int getColumnIndexClaimed() {
         return COLUMN_INDEX_CLAIMED;
     }
@@ -96,12 +88,6 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
     @Override
     String getFirstLine(@NonNull Cursor cursor) {
         return DateTimeUtils.getFullDateString(new DateTime(cursor.getLong(COLUMN_INDEX_DATE)));
-    }
-
-    @Nullable
-    @Override
-    String getSecondLine(@NonNull Cursor cursor) {
-        return cursor.isNull(COLUMN_INDEX_COMMENT) ? null : cursor.getString(COLUMN_INDEX_COMMENT);
     }
 
     @Override
@@ -132,18 +118,12 @@ public class CrossCoverListFragment extends SinglePaymentItemListFragment {
         }
         values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, date.getMillis());
         values.put(Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT, PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.key_cross_cover_payment), getResources().getInteger(R.integer.default_cross_cover_payment)));
-        if (getActivity().getContentResolver().insert(Provider.crossCoverShiftsUri, values) != null) {
-            scrollToEndAtNextLoad();
-        }
+        insert(values);
     }
 
     @Override
     void onItemClicked(long id) {
-        mListener.onCrossCoverClicked(id);
-    }
-
-    interface Listener {
-        void onCrossCoverClicked(long id);
+        listCallbacks.launch(LifecycleConstants.ITEM_TYPE_CROSS_COVER, id);
     }
 
 }

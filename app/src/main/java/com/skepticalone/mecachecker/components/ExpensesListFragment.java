@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -16,25 +15,19 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
     private static final String[] PROJECTION = {
             Contract.Expenses._ID,
             Contract.Expenses.COLUMN_NAME_TITLE,
-            Contract.Expenses.COLUMN_NAME_CLAIMED,
-            Contract.Expenses.COLUMN_NAME_PAID,
             Contract.Expenses.COLUMN_NAME_COMMENT,
+            Contract.Expenses.COLUMN_NAME_CLAIMED,
+            Contract.Expenses.COLUMN_NAME_PAID
     };
+
+    private static final String SORT_ORDER = Contract.Expenses.COLUMN_NAME_PAID + " IS NULL, " + Contract.Expenses.COLUMN_NAME_CLAIMED + " IS NULL, IFNULL(" + Contract.Expenses.COLUMN_NAME_PAID + ", " + Contract.Expenses.COLUMN_NAME_CLAIMED + ")";
 
     private static final int
             COLUMN_INDEX_ID = 0,
             COLUMN_INDEX_TITLE = 1,
-            COLUMN_INDEX_CLAIMED = 2,
-            COLUMN_INDEX_PAID = 3,
-            COLUMN_INDEX_COMMENT = 4;
-
-    private Listener mListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (Listener) context;
-    }
+            COLUMN_INDEX_COMMENT = 2,
+            COLUMN_INDEX_CLAIMED = 3,
+            COLUMN_INDEX_PAID = 4;
 
     @Override
     int getTitle() {
@@ -52,6 +45,11 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
     }
 
     @Override
+    int getColumnIndexComment() {
+        return COLUMN_INDEX_COMMENT;
+    }
+
+    @Override
     int getColumnIndexClaimed() {
         return COLUMN_INDEX_CLAIMED;
     }
@@ -61,14 +59,15 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
         return COLUMN_INDEX_PAID;
     }
 
+    @Nullable
     @Override
-    public Uri getContentUri() {
-        return Provider.expensesUri;
+    String getSortOrder() {
+        return SORT_ORDER;
     }
 
     @Override
-    Uri getItemUri(long id) {
-        return Provider.expenseUri(id);
+    public Uri getReadContentUri() {
+        return Provider.expensesUri;
     }
 
     @Nullable
@@ -83,30 +82,18 @@ public class ExpensesListFragment extends SinglePaymentItemListFragment {
         return cursor.getString(COLUMN_INDEX_TITLE);
     }
 
-    @Nullable
-    @Override
-    String getSecondLine(@NonNull Cursor cursor) {
-        return null;
-    }
-
     @Override
     void addItem() {
         // TODO: 11/06/17 
         ContentValues values = new ContentValues();
         values.put(Contract.Expenses.COLUMN_NAME_TITLE, "New item");
         values.put(Contract.Expenses.COLUMN_NAME_PAYMENT, 7900);
-        if (getActivity().getContentResolver().insert(Provider.expensesUri, values) != null) {
-            scrollToEndAtNextLoad();
-        }
+        insert(values);
     }
 
     @Override
     void onItemClicked(long id) {
-        mListener.onExpenseClicked(id);
-    }
-
-    interface Listener {
-        void onExpenseClicked(long id);
+        listCallbacks.launch(LifecycleConstants.ITEM_TYPE_EXPENSE, id);
     }
 
 }

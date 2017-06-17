@@ -98,12 +98,12 @@ class ShiftData extends AbstractData {
 
     @NonNull
     ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getContentUri(), date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
+        return ShiftDatePickerDialogFragment.newInstance(mCallbacks.getUpdateContentUri(), date, start, end, mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
     @NonNull
     private ShiftTimePickerDialogFragment getShiftTimePickerDialogFragment(boolean isStart) {
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, mDate, mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime(), mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getUpdateContentUri(), isStart, mDate, mShift.getStart().toLocalTime(), mShift.getEnd().toLocalTime(), mCallbacks.getColumnNameStartOrDate(), mCallbacks.getColumnNameEnd());
     }
 
     interface Callbacks extends DetailFragmentBehaviour, Shift {

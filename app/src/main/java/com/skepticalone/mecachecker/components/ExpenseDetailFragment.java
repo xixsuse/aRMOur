@@ -33,12 +33,6 @@ public class ExpenseDetailFragment extends SinglePaymentItemDetailFragment imple
 
     private final TitleData mTitleData = new TitleData(this);
 
-    static ExpenseDetailFragment create(long id) {
-        ExpenseDetailFragment fragment = new ExpenseDetailFragment();
-        fragment.setArguments(createArguments(id));
-        return fragment;
-    }
-
     @NonNull
     @Override
     AbstractData getData() {
@@ -56,8 +50,8 @@ public class ExpenseDetailFragment extends SinglePaymentItemDetailFragment imple
     }
 
     @Override
-    public Uri getContentUri() {
-        return Provider.expenseUri(getItemId());
+    public Uri getReadContentUri() {
+        return Provider.uriWithId(Provider.expensesUri, getItemId());
     }
 
     @Nullable

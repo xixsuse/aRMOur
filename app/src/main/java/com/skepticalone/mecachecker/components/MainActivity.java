@@ -1,12 +1,14 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -24,12 +26,9 @@ import com.skepticalone.mecachecker.summary.SummaryActivity;
 
 public class MainActivity extends CoordinatorActivity implements
         NavigationView.OnNavigationItemSelectedListener,
+        ListFragment.Callbacks,
         ShiftTypeAwareItemListFragment.Callbacks,
-        SinglePaymentItemListFragment.Callbacks,
-        RosteredShiftsListFragment.Listener,
-        AdditionalShiftsListFragment.Listener,
-        CrossCoverListFragment.Listener,
-        ExpensesListFragment.Listener {
+        SinglePaymentItemListFragment.Callbacks {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private FloatingActionMenu mFabMenu;
@@ -44,13 +43,12 @@ public class MainActivity extends CoordinatorActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = drawer.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        CoordinatorLayout coordinatorLayout = drawer.findViewById(R.id.coordinator);
-        setCoordinatorLayout(coordinatorLayout);
-        mFabMenu = coordinatorLayout.findViewById(R.id.fab_menu);
-        mFabNormalDay = coordinatorLayout.findViewById(R.id.fab_normal_day);
-        mFabLongDay = coordinatorLayout.findViewById(R.id.fab_long_day);
-        mFabNightShift = coordinatorLayout.findViewById(R.id.fab_night_shift);
-        Toolbar toolbar = coordinatorLayout.findViewById(R.id.toolbar);
+        mCoordinatorLayout = drawer.findViewById(R.id.coordinator);
+        mFabMenu = mCoordinatorLayout.findViewById(R.id.fab_menu);
+        mFabNormalDay = mCoordinatorLayout.findViewById(R.id.fab_normal_day);
+        mFabLongDay = mCoordinatorLayout.findViewById(R.id.fab_long_day);
+        mFabNightShift = mCoordinatorLayout.findViewById(R.id.fab_night_shift);
+        Toolbar toolbar = mCoordinatorLayout.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -111,19 +109,28 @@ public class MainActivity extends CoordinatorActivity implements
             startActivity(new Intent(this, SettingsActivity.class));
         } else {
             Fragment newListFragment;
-            if (id == R.id.rostered) {
-                newListFragment = new RosteredShiftsListFragment();
-            } else if (id == R.id.additional) {
-                newListFragment = new AdditionalShiftsListFragment();
-            } else if (id == R.id.cross_cover) {
-                newListFragment = new CrossCoverListFragment();
-            } else if (id == R.id.expenses) {
-                newListFragment = new ExpensesListFragment();
-            } else throw new IllegalStateException();
+            switch (id) {
+                case R.id.rostered:
+                    newListFragment = new RosteredShiftsListFragment();
+                    break;
+                case R.id.additional:
+                    newListFragment = new AdditionalShiftsListFragment();
+                    break;
+                case R.id.cross_cover:
+                    newListFragment = new CrossCoverListFragment();
+                    break;
+                case R.id.expenses:
+                    newListFragment = new ExpensesListFragment();
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.list_fragment_container, newListFragment, LifecycleConstants.LIST_FRAGMENT);
             Fragment oldDetailFragment = getSupportFragmentManager().findFragmentByTag(LifecycleConstants.DETAIL_FRAGMENT);
-            if (oldDetailFragment != null) transaction.remove(oldDetailFragment);
+            if (oldDetailFragment != null) {
+                transaction.remove(oldDetailFragment);
+            }
             transaction.commit();
         }
         mFabMenu.close(true);
@@ -132,49 +139,32 @@ public class MainActivity extends CoordinatorActivity implements
         return true;
     }
 
-    private void showDetailFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.detail_fragment_container, fragment, LifecycleConstants.DETAIL_FRAGMENT)
-                .commit();
-    }
-
-    private void startDetailActivity(int itemType, long id) {
-        startActivity(DetailActivity.getIntent(this, itemType, id));
-    }
-
     @Override
-    public void onRosteredShiftClicked(long id) {
+    public void launch(int itemType, long itemId) {
         if (mTwoPane) {
-            showDetailFragment(RosteredShiftDetailFragment.create(id));
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.detail_fragment_container, DetailFragment.create(itemType, itemId), LifecycleConstants.DETAIL_FRAGMENT)
+                    .commit();
         } else {
-            startDetailActivity(LifecycleConstants.ITEM_TYPE_ROSTERED_SHIFT, id);
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(LifecycleConstants.ITEM_TYPE, itemType);
+            intent.putExtra(LifecycleConstants.ITEM_ID, itemId);
+            startActivity(intent);
         }
     }
 
     @Override
-    public void onAdditionalShiftClicked(long id) {
-        if (mTwoPane) {
-            showDetailFragment(AdditionalShiftDetailFragment.create(id));
-        } else {
-            startDetailActivity(LifecycleConstants.ITEM_TYPE_ADDITIONAL_SHIFT, id);
-        }
+    public void makeDeletedSnack(@NonNull final Uri dirUri, @NonNull final ContentValues values) {
+        if (mCoordinatorLayout == null) return;
+        Snackbar
+                .make(mCoordinatorLayout, R.string.item_removed, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getContentResolver().insert(dirUri, values);
+                    }
+                })
+                .show();
     }
 
-    @Override
-    public void onCrossCoverClicked(long id) {
-        if (mTwoPane) {
-            showDetailFragment(CrossCoverDetailFragment.create(id));
-        } else {
-            startDetailActivity(LifecycleConstants.ITEM_TYPE_CROSS_COVER, id);
-        }
-    }
-
-    @Override
-    public void onExpenseClicked(long id) {
-        if (mTwoPane) {
-            showDetailFragment(ExpenseDetailFragment.create(id));
-        } else {
-            startDetailActivity(LifecycleConstants.ITEM_TYPE_EXPENSE, id);
-        }
-    }
 }

@@ -38,7 +38,7 @@ abstract class BaseFragment extends Fragment implements BaseFragmentBehaviour, L
 
     @Override
     public final Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), getContentUri(), getProjection(), null, null, getSortOrder());
+        return new CursorLoader(getActivity(), getReadContentUri(), getProjection(), null, null, getSortOrder());
     }
 
 }

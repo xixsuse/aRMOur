@@ -19,7 +19,7 @@ class TitleData extends AbstractData {
         @Override
         public void onClick(View v) {
             mCallbacks.showDialogFragment(
-                    PlainTextDialogFragment.newInstance(mTitle, R.string.title, mCallbacks.getContentUri(), mCallbacks.getColumnNameTitle()),
+                    PlainTextDialogFragment.newInstance(mTitle, R.string.title, mCallbacks.getUpdateContentUri(), mCallbacks.getColumnNameTitle()),
                     LifecycleConstants.TITLE_DIALOG
             );
         }

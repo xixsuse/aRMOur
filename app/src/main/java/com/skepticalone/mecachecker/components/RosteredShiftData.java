@@ -103,7 +103,7 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
     @Override
     ShiftDatePickerDialogFragment getShiftDatePickerDialogFragment(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
         return RosteredShiftDatePickerDialogFragment.newInstance(
-                mCallbacks.getContentUri(),
+                mCallbacks.getUpdateContentUri(),
                 date,
                 start,
                 end,
@@ -119,7 +119,7 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
     @NonNull
     private ShiftTimePickerDialogFragment getLoggedShiftTimePickerDialogFragment(boolean isStart) {
         assert mLoggedShift != null;
-        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getContentUri(), isStart, getShiftDate(), mLoggedShift.getStart().toLocalTime(), mLoggedShift.getEnd().toLocalTime(), mCallbacks.getColumnNameLoggedStart(), mCallbacks.getColumnNameLoggedEnd());
+        return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getUpdateContentUri(), isStart, getShiftDate(), mLoggedShift.getStart().toLocalTime(), mLoggedShift.getEnd().toLocalTime(), mCallbacks.getColumnNameLoggedStart(), mCallbacks.getColumnNameLoggedEnd());
     }
 
     interface Callbacks extends ShiftData.Callbacks, LoggableShift {

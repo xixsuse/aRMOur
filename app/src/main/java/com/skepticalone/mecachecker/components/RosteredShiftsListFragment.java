@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.components;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -24,14 +23,6 @@ import org.joda.time.Interval;
 
 public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
 
-    private Listener mListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (Listener) context;
-    }
-
     @Override
     int getTitle() {
         return R.string.rostered_shifts;
@@ -43,13 +34,13 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
     }
 
     @Override
-    public Uri getContentUri() {
+    public Uri getReadContentUri() {
         return Provider.rosteredShiftsWithComplianceUri;
     }
 
     @Override
-    Uri getItemUri(long id) {
-        return Provider.rosteredShiftUri(id);
+    public Uri getCreateDeleteContentUri() {
+        return Provider.rosteredShiftsUri;
     }
 
     @Nullable
@@ -124,18 +115,12 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
         ContentValues values = new ContentValues();
         values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_START, newShift.getStartMillis());
         values.put(Contract.RosteredShifts.COLUMN_NAME_ROSTERED_END, newShift.getEndMillis());
-        if (getActivity().getContentResolver().insert(Provider.rosteredShiftsUri, values) != null) {
-            scrollToEndAtNextLoad();
-        }
+        insert(values);
     }
 
     @Override
     void onItemClicked(long id) {
-        mListener.onRosteredShiftClicked(id);
-    }
-
-    interface Listener {
-        void onRosteredShiftClicked(long id);
+        listCallbacks.launch(LifecycleConstants.ITEM_TYPE_ROSTERED_SHIFT, id);
     }
 
 }

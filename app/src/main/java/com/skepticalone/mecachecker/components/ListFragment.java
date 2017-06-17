@@ -1,8 +1,11 @@
 package com.skepticalone.mecachecker.components;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
@@ -14,12 +17,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.behaviours.ListFragmentBehaviour;
+import com.skepticalone.mecachecker.data.Provider;
 
-abstract class ListFragment extends BaseFragment {
+abstract class ListFragment extends BaseFragment implements ListFragmentBehaviour {
 
     private final CursorAdapter mAdapter = new CursorAdapter();
+    Callbacks listCallbacks;
     private LinearLayoutManager mLayoutManager;
     private boolean mScrollToEndAtNextLoad = false;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listCallbacks = (Callbacks) context;
+    }
 
     @Nullable
     @Override
@@ -31,10 +43,6 @@ abstract class ListFragment extends BaseFragment {
         );
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
-    }
-
-    final void scrollToEndAtNextLoad() {
-        mScrollToEndAtNextLoad = true;
     }
 
     @Override
@@ -53,14 +61,29 @@ abstract class ListFragment extends BaseFragment {
 
     abstract int getColumnIndexId();
 
+    @Override
+    public Uri getCreateDeleteContentUri() {
+        return getReadContentUri();
+    }
+
     abstract void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor);
 
     void onViewHolderCreated(PlainListItemViewHolder holder) {
     }
 
+    final void insert(@NonNull ContentValues values) {
+        if (getActivity().getContentResolver().insert(getCreateDeleteContentUri(), values) != null) {
+            mScrollToEndAtNextLoad = true;
+        }
+    }
+
     abstract void onItemClicked(long id);
 
-    abstract Uri getItemUri(long id);
+    interface Callbacks {
+        void makeDeletedSnack(@NonNull Uri dirUri, @NonNull ContentValues values);
+
+        void launch(int itemType, long itemId);
+    }
 
     private final class CursorAdapter extends RecyclerView.Adapter<PlainListItemViewHolder> {
 
@@ -96,7 +119,38 @@ abstract class ListFragment extends BaseFragment {
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    return getActivity().getContentResolver().delete(getItemUri(viewHolder.getItemId()), null, null) > 0;
+                    long itemId = viewHolder.getItemId();
+                    Uri itemUri = Provider.uriWithId(getCreateDeleteContentUri(), itemId);
+                    Cursor c = getActivity().getContentResolver().query(itemUri, null, null, null, null);
+                    if (c == null) return false;
+                    final ContentValues values = new ContentValues();
+                    try {
+                        if (!c.moveToFirst() || c.getCount() != 1) return false;
+                        for (int i = 0, columnCount = c.getColumnCount(); i < columnCount; i++) {
+                            String name = c.getColumnName(i);
+                            if (!name.equals(BaseColumns._ID)) {
+                                switch (c.getType(i)) {
+                                    case Cursor.FIELD_TYPE_NULL:
+                                        values.putNull(name);
+                                        break;
+                                    case Cursor.FIELD_TYPE_INTEGER:
+                                        values.put(name, c.getLong(i));
+                                        break;
+                                    case Cursor.FIELD_TYPE_STRING:
+                                        values.put(name, c.getString(i));
+                                        break;
+                                    default:
+                                        throw new IllegalStateException();
+                                }
+                            }
+                        }
+                    } finally {
+                        c.close();
+                    }
+                    if (getActivity().getContentResolver().delete(itemUri, null, null) == 0)
+                        return false;
+                    listCallbacks.makeDeletedSnack(getCreateDeleteContentUri(), values);
+                    return true;
                 }
             });
             onViewHolderCreated(viewHolder);
@@ -115,5 +169,4 @@ abstract class ListFragment extends BaseFragment {
             return mCursor == null ? 0 : mCursor.getCount();
         }
     }
-
 }

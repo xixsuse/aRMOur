@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.components;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -24,25 +25,41 @@ import static com.skepticalone.mecachecker.components.ViewHolderType.SWITCH;
 abstract class DetailFragment extends BaseFragment implements DetailFragmentBehaviour {
 
     static final int NO_ROW_NUMBER = -1;
-    private static final long NO_ID = -1L;
-    private static final String ITEM_ID = "ITEM_ID";
     private final Adapter mAdapter = new Adapter();
     private long mItemId;
     private boolean mLoaded = false;
 
-    static Bundle createArguments(long id) {
-        Bundle arguments = new Bundle();
-        arguments.putLong(ITEM_ID, id);
-        return arguments;
+    static DetailFragment create(int itemType, long itemId) {
+        DetailFragment fragment;
+        switch (itemType) {
+            case LifecycleConstants.ITEM_TYPE_ROSTERED_SHIFT:
+                fragment = new RosteredShiftDetailFragment();
+                break;
+            case LifecycleConstants.ITEM_TYPE_ADDITIONAL_SHIFT:
+                fragment = new AdditionalShiftDetailFragment();
+                break;
+            case LifecycleConstants.ITEM_TYPE_CROSS_COVER:
+                fragment = new CrossCoverDetailFragment();
+                break;
+            case LifecycleConstants.ITEM_TYPE_EXPENSE:
+                fragment = new ExpenseDetailFragment();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        Bundle args = new Bundle();
+        args.putLong(LifecycleConstants.ITEM_ID, itemId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mItemId = getArguments().getLong(ITEM_ID, NO_ID);
-        if (mItemId == NO_ID) {
+        if (!getArguments().containsKey(LifecycleConstants.ITEM_ID)) {
             throw new IllegalStateException();
         }
+        mItemId = getArguments().getLong(LifecycleConstants.ITEM_ID);
     }
 
     final long getItemId() {
@@ -86,6 +103,11 @@ abstract class DetailFragment extends BaseFragment implements DetailFragmentBeha
 
     abstract boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position);
 
+    @Override
+    public Uri getUpdateContentUri() {
+        return getReadContentUri();
+    }
+
     @CallSuper
     PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
         return new PlainListItemViewHolder(parent);
@@ -102,7 +124,7 @@ abstract class DetailFragment extends BaseFragment implements DetailFragmentBeha
 
     @Override
     public final void update(ContentValues contentValues) {
-        getActivity().getContentResolver().update(getContentUri(), contentValues, null, null);
+        getActivity().getContentResolver().update(getUpdateContentUri(), contentValues, null, null);
     }
 
     private final class Adapter extends RecyclerView.Adapter<ListItemViewHolder> {

@@ -47,12 +47,6 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     private final PaymentData mPaymentData = new PaymentData(this);
     private ShiftUtil.Calculator mCalculator;
 
-    static AdditionalShiftDetailFragment create(long id) {
-        AdditionalShiftDetailFragment fragment = new AdditionalShiftDetailFragment();
-        fragment.setArguments(createArguments(id));
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -75,8 +69,8 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
     }
 
     @Override
-    public Uri getContentUri() {
-        return Provider.additionalShiftUri(getItemId());
+    public Uri getReadContentUri() {
+        return Provider.uriWithId(Provider.additionalShiftsUri, getItemId());
     }
 
     @NonNull

@@ -25,7 +25,7 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
         @Override
         public void onClick(View v) {
             mCallbacks.showDialogFragment(
-                    MoneyDialogFragment.newInstance(mPayment, mCallbacks.getMoneyDescriptor(), mCallbacks.getContentUri(), mCallbacks.getColumnNameMoney()),
+                    MoneyDialogFragment.newInstance(mPayment, mCallbacks.getMoneyDescriptor(), mCallbacks.getUpdateContentUri(), mCallbacks.getColumnNameMoney()),
                     LifecycleConstants.MONEY_DIALOG
             );
         }
@@ -34,7 +34,7 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
                 @Override
                 public void onClick(View v) {
                     mCallbacks.showDialogFragment(
-                            PlainTextDialogFragment.newInstance(mComment, R.string.comment, mCallbacks.getContentUri(), mCallbacks.getColumnNameComment()),
+                            PlainTextDialogFragment.newInstance(mComment, R.string.comment, mCallbacks.getUpdateContentUri(), mCallbacks.getColumnNameComment()),
                             LifecycleConstants.COMMENT_DIALOG
                     );
                 }

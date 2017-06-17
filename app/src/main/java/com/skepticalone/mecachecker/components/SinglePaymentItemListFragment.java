@@ -17,6 +17,8 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
 
     abstract int getColumnIndexPaid();
 
+    abstract int getColumnIndexComment();
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -39,9 +41,6 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
     @NonNull
     abstract String getFirstLine(@NonNull Cursor cursor);
 
-    @Nullable
-    abstract String getSecondLine(@NonNull Cursor cursor);
-
     @Override
     final void onViewHolderCreated(PlainListItemViewHolder holder) {
         holder.primaryIcon.setVisibility(View.GONE);
@@ -49,7 +48,7 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
 
     @Override
     final void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor) {
-        holder.setText(getFirstLine(cursor), getSecondLine(cursor));
+        holder.setText(getFirstLine(cursor), cursor.isNull(getColumnIndexComment()) ? null : cursor.getString(getColumnIndexComment()));
         holder.secondaryIcon.setImageResource(getClaimStatusIcon(cursor, getColumnIndexClaimed(), getColumnIndexPaid()));
     }
 

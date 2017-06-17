@@ -1,4 +1,7 @@
 package com.skepticalone.mecachecker.behaviours;
 
-public interface ListFragmentBehaviour {
+import android.net.Uri;
+
+public interface ListFragmentBehaviour extends BaseFragmentBehaviour {
+    Uri getCreateDeleteContentUri();
 }

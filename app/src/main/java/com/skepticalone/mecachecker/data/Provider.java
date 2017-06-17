@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 public final class Provider extends ContentProvider {
 
@@ -25,26 +24,28 @@ public final class Provider extends ContentProvider {
             CROSS_COVER_SHIFTS_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + Contract.CrossCoverShifts.TABLE_NAME,
             CROSS_COVER_SHIFT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + Contract.CrossCoverShifts.TABLE_NAME,
             EXPENSES_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + PROVIDER_TYPE + Contract.Expenses.TABLE_NAME,
-            EXPENSE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + Contract.Expenses.TABLE_NAME;
+            EXPENSE_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + PROVIDER_TYPE + Contract.Expenses.TABLE_NAME,
+            COMPLIANCE = "_compliance";
     private static final Uri baseContentUri = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
     public static final Uri
             rosteredShiftsUri = baseContentUri.buildUpon().appendPath(Contract.RosteredShifts.TABLE_NAME).build(),
-            rosteredShiftsWithComplianceUri = rosteredShiftsUri.buildUpon().appendPath("compliance").build(),
+            rosteredShiftsWithComplianceUri = baseContentUri.buildUpon().appendPath(Contract.RosteredShifts.TABLE_NAME + COMPLIANCE).build(),
+    //            rosteredShiftsWithComplianceUri = rosteredShiftsUri.buildUpon().appendPath("compliance").build(),
             additionalShiftsUri = baseContentUri.buildUpon().appendPath(Contract.AdditionalShifts.TABLE_NAME).build(),
             crossCoverShiftsUri = baseContentUri.buildUpon().appendPath(Contract.CrossCoverShifts.TABLE_NAME).build(),
-            expensesUri = baseContentUri.buildUpon().appendPath(Contract.Expenses.TABLE_NAME).build(),
-            additionalShiftsDistinctCommentsUri = additionalShiftsUri.buildUpon().appendPath("distinct").build(),
-            crossCoverShiftsDistinctCommentsUri = crossCoverShiftsUri.buildUpon().appendPath("distinct").build();
+            expensesUri = baseContentUri.buildUpon().appendPath(Contract.Expenses.TABLE_NAME).build();
+    //            additionalShiftsDistinctCommentsUri = additionalShiftsUri.buildUpon().appendPath("distinct").build(),
+//            crossCoverShiftsDistinctCommentsUri = crossCoverShiftsUri.buildUpon().appendPath("distinct").build();
     private static final int
             ROSTERED_SHIFTS = 1,
             ROSTERED_SHIFT = 2,
             ROSTERED_SHIFTS_WITH_COMPLIANCE = 3,
             ROSTERED_SHIFT_WITH_COMPLIANCE = 4,
             ADDITIONAL_SHIFTS = 5,
-            ADDITIONAL_SHIFTS_DISTINCT_COMMENTS = 6,
+    //            ADDITIONAL_SHIFTS_DISTINCT_COMMENTS = 6,
             ADDITIONAL_SHIFT = 7,
             CROSS_COVER_SHIFTS = 8,
-            CROSS_COVER_SHIFTS_DISTINCT_COMMENTS = 9,
+    //            CROSS_COVER_SHIFTS_DISTINCT_COMMENTS = 9,
             CROSS_COVER_SHIFT = 10,
             EXPENSES = 11,
             EXPENSE = 12;
@@ -54,13 +55,13 @@ public final class Provider extends ContentProvider {
     static {
         sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME, ROSTERED_SHIFTS);
         sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/#", ROSTERED_SHIFT);
-        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/compliance", ROSTERED_SHIFTS_WITH_COMPLIANCE);
-        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + "/compliance/#", ROSTERED_SHIFT_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + COMPLIANCE, ROSTERED_SHIFTS_WITH_COMPLIANCE);
+        sUriMatcher.addURI(AUTHORITY, Contract.RosteredShifts.TABLE_NAME + COMPLIANCE + "/#", ROSTERED_SHIFT_WITH_COMPLIANCE);
         sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME, ADDITIONAL_SHIFTS);
-        sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME + "/distinct", ADDITIONAL_SHIFTS_DISTINCT_COMMENTS);
+//        sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME + "/distinct", ADDITIONAL_SHIFTS_DISTINCT_COMMENTS);
         sUriMatcher.addURI(AUTHORITY, Contract.AdditionalShifts.TABLE_NAME + "/#", ADDITIONAL_SHIFT);
         sUriMatcher.addURI(AUTHORITY, Contract.CrossCoverShifts.TABLE_NAME, CROSS_COVER_SHIFTS);
-        sUriMatcher.addURI(AUTHORITY, Contract.CrossCoverShifts.TABLE_NAME + "/distinct", CROSS_COVER_SHIFTS_DISTINCT_COMMENTS);
+//        sUriMatcher.addURI(AUTHORITY, Contract.CrossCoverShifts.TABLE_NAME + "/distinct", CROSS_COVER_SHIFTS_DISTINCT_COMMENTS);
         sUriMatcher.addURI(AUTHORITY, Contract.CrossCoverShifts.TABLE_NAME + "/#", CROSS_COVER_SHIFT);
         sUriMatcher.addURI(AUTHORITY, Contract.Expenses.TABLE_NAME, EXPENSES);
         sUriMatcher.addURI(AUTHORITY, Contract.Expenses.TABLE_NAME + "/#", EXPENSE);
@@ -68,29 +69,33 @@ public final class Provider extends ContentProvider {
 
     private DbHelper mDbHelper;
 
-    public static Uri rosteredShiftUri(long shiftId) {
-        return Uri.withAppendedPath(rosteredShiftsUri, Long.toString(shiftId));
+    public static Uri uriWithId(Uri dirUri, long itemId) {
+        return Uri.withAppendedPath(dirUri, Long.toString(itemId));
     }
 
-    public static Uri rosteredShiftWithComplianceUri(long shiftId) {
-        return Uri.withAppendedPath(rosteredShiftsWithComplianceUri, Long.toString(shiftId));
-    }
-
+    //    public static Uri rosteredShiftUri(long shiftId) {
+//        return Uri.withAppendedPath(rosteredShiftsUri, Long.toString(shiftId));
+//    }
+//
+//    public static Uri rosteredShiftWithComplianceUri(long shiftId) {
+//        return Uri.withAppendedPath(rosteredShiftsWithComplianceUri, Long.toString(shiftId));
+//    }
+//
     private static Uri rosteredShiftWithComplianceUri(Uri rosteredShiftUri) {
-        return rosteredShiftWithComplianceUri(Long.valueOf(rosteredShiftUri.getLastPathSegment()));
+        return Provider.uriWithId(Provider.rosteredShiftsWithComplianceUri, Long.valueOf(rosteredShiftUri.getLastPathSegment()));
     }
-
-    public static Uri additionalShiftUri(long shiftId) {
-        return Uri.withAppendedPath(additionalShiftsUri, Long.toString(shiftId));
-    }
-
-    public static Uri crossCoverShiftUri(long shiftId) {
-        return Uri.withAppendedPath(crossCoverShiftsUri, Long.toString(shiftId));
-    }
-
-    public static Uri expenseUri(long id) {
-        return Uri.withAppendedPath(expensesUri, Long.toString(id));
-    }
+//
+//    public static Uri additionalShiftUri(long shiftId) {
+//        return Uri.withAppendedPath(additionalShiftsUri, Long.toString(shiftId));
+//    }
+//
+//    public static Uri crossCoverShiftUri(long shiftId) {
+//        return Uri.withAppendedPath(crossCoverShiftsUri, Long.toString(shiftId));
+//    }
+//
+//    public static Uri expenseUri(long id) {
+//        return Uri.withAppendedPath(expensesUri, Long.toString(id));
+//    }
 
     @Override
     public boolean onCreate() {
@@ -101,7 +106,6 @@ public final class Provider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "query() called with: uri: " + uri);
         String table;
         int match = sUriMatcher.match(uri);
         switch (match) {
@@ -123,7 +127,7 @@ public final class Provider extends ContentProvider {
                 selectionArgs = null;
                 // intentional fallthrough
             case ADDITIONAL_SHIFTS:
-            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
+//            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
                 table = Contract.AdditionalShifts.TABLE_NAME;
                 break;
             case CROSS_COVER_SHIFT:
@@ -131,7 +135,7 @@ public final class Provider extends ContentProvider {
                 selectionArgs = null;
                 // intentional fallthrough
             case CROSS_COVER_SHIFTS:
-            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
+//            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
                 table = Contract.CrossCoverShifts.TABLE_NAME;
                 break;
             case EXPENSE:
@@ -145,12 +149,12 @@ public final class Provider extends ContentProvider {
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
         }
         Cursor cursor = mDbHelper.getReadableDatabase().query(
-                match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS || match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS,
+                false, //match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS || match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS,
                 table,
                 projection,
                 selection,
                 selectionArgs,
-                match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS ? Contract.AdditionalShifts.COLUMN_NAME_COMMENT : match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS ? Contract.CrossCoverShifts.COLUMN_NAME_COMMENT : null,
+                null, //match == ADDITIONAL_SHIFTS_DISTINCT_COMMENTS ? Contract.AdditionalShifts.COLUMN_NAME_COMMENT : match == CROSS_COVER_SHIFTS_DISTINCT_COMMENTS ? Contract.CrossCoverShifts.COLUMN_NAME_COMMENT : null,
                 null,
                 sortOrder,
                 null
@@ -171,12 +175,12 @@ public final class Provider extends ContentProvider {
             case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 return ROSTERED_SHIFT_TYPE;
             case ADDITIONAL_SHIFTS:
-            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
+//            case ADDITIONAL_SHIFTS_DISTINCT_COMMENTS:
                 return ADDITIONAL_SHIFTS_TYPE;
             case ADDITIONAL_SHIFT:
                 return ADDITIONAL_SHIFT_TYPE;
             case CROSS_COVER_SHIFTS:
-            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
+//            case CROSS_COVER_SHIFTS_DISTINCT_COMMENTS:
                 return CROSS_COVER_SHIFTS_TYPE;
             case CROSS_COVER_SHIFT:
                 return CROSS_COVER_SHIFT_TYPE;
@@ -196,16 +200,16 @@ public final class Provider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ROSTERED_SHIFTS:
-                newUri = rosteredShiftUri(mDbHelper.getWritableDatabase().insert(Contract.RosteredShifts.TABLE_NAME, null, values));
+                newUri = uriWithId(rosteredShiftsUri, mDbHelper.getWritableDatabase().insert(Contract.RosteredShifts.TABLE_NAME, null, values));
                 break;
             case ADDITIONAL_SHIFTS:
-                newUri = additionalShiftUri(mDbHelper.getWritableDatabase().insert(Contract.AdditionalShifts.TABLE_NAME, null, values));
+                newUri = uriWithId(additionalShiftsUri, mDbHelper.getWritableDatabase().insert(Contract.AdditionalShifts.TABLE_NAME, null, values));
                 break;
             case CROSS_COVER_SHIFTS:
-                newUri = additionalShiftUri(mDbHelper.getWritableDatabase().insert(Contract.CrossCoverShifts.TABLE_NAME, null, values));
+                newUri = uriWithId(crossCoverShiftsUri, mDbHelper.getWritableDatabase().insert(Contract.CrossCoverShifts.TABLE_NAME, null, values));
                 break;
             case EXPENSES:
-                newUri = expenseUri(mDbHelper.getWritableDatabase().insertOrThrow(Contract.Expenses.TABLE_NAME, null, values));
+                newUri = uriWithId(expensesUri, mDbHelper.getWritableDatabase().insertOrThrow(Contract.Expenses.TABLE_NAME, null, values));
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Uri: " + uri);
@@ -225,7 +229,6 @@ public final class Provider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ROSTERED_SHIFT:
-            case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
             case ADDITIONAL_SHIFT:
@@ -257,7 +260,6 @@ public final class Provider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ROSTERED_SHIFT:
-            case ROSTERED_SHIFT_WITH_COMPLIANCE:
                 tableName = Contract.RosteredShifts.TABLE_NAME;
                 break;
             case ADDITIONAL_SHIFT:
