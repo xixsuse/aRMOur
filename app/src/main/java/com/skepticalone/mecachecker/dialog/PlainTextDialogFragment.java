@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.dialog;
 
 import android.content.ContentValues;
 import android.net.Uri;
@@ -15,7 +15,7 @@ public class PlainTextDialogFragment extends EditTextDialogFragment {
 
     public static PlainTextDialogFragment newInstance(@Nullable String text, @StringRes int title, @NonNull Uri contentUri, @NonNull String columnName) {
         PlainTextDialogFragment fragment = new PlainTextDialogFragment();
-        Bundle args = getArgs(title, text);
+        Bundle args = getArgs(title, text, title);
         args.putParcelable(CONTENT_URI, contentUri);
         args.putString(COLUMN_NAME, columnName);
         fragment.setArguments(args);

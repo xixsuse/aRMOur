@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_padding"
-        app:layout_behavior=".components.LiftBehaviour"
+        app:layout_behavior=".ui.LiftBehaviour"
         app:menu_colorNormal="@color/fabColorNormal"
         app:menu_colorPressed="@color/fabColorPressed"
         app:menu_colorRipple="@color/fabColorRipple">

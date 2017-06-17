@@ -5,13 +5,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.composition.PaymentData;
+import com.skepticalone.mecachecker.composition.ShiftData;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.Interval;
@@ -208,31 +209,8 @@ public class AdditionalShiftDetailFragment extends DetailFragment implements Shi
         mPaymentData.readFromPositionedCursor(cursor);
     }
 
-    @Nullable
     @Override
-    ViewHolderType getViewHolderType(int position) {
-        return AbstractData.getViewHolderType(position, mShiftData, mPaymentData);
-    }
-
-    @Override
-    PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
-        PlainListItemViewHolder holder = super.createPlainListItemViewHolder(parent);
-        holder.secondaryIcon.setVisibility(View.GONE);
-        return holder;
-    }
-
-    @Override
-    SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
-        return new SwitchListItemViewHolder(parent, mPaymentData);
-    }
-
-    @Override
-    boolean bindPlainListItemViewHolder(PlainListItemViewHolder holder, int position) {
-        return mShiftData.bindToHolder(getActivity(), holder, position) || mPaymentData.bindToHolder(getActivity(), holder, position);
-    }
-
-    @Override
-    boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position) {
+    boolean onBindListItemViewHolder(ListItemViewHolder holder, int position) {
         return mShiftData.bindToHolder(getActivity(), holder, position) || mPaymentData.bindToHolder(getActivity(), holder, position);
     }
 

@@ -12,6 +12,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;

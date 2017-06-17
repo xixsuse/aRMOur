@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.composition;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,13 +9,18 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.behaviours.LoggableShift;
+import com.skepticalone.mecachecker.components.ListItemViewHolder;
+import com.skepticalone.mecachecker.dialog.RosteredShiftDatePickerDialogFragment;
+import com.skepticalone.mecachecker.dialog.ShiftDatePickerDialogFragment;
+import com.skepticalone.mecachecker.dialog.ShiftTimePickerDialogFragment;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Callbacks {
+public class RosteredShiftData extends ShiftData implements ListItemViewHolder.SwitchCallbacks {
 
     private final Callbacks mCallbacks;
     @Nullable
@@ -35,7 +40,7 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
                 }
             };
 
-    RosteredShiftData(Callbacks callbacks) {
+    public RosteredShiftData(Callbacks callbacks) {
         super(callbacks);
         mCallbacks = callbacks;
     }
@@ -46,41 +51,35 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
         mLoggedShift = (cursor.isNull(mCallbacks.getColumnIndexLoggedStart()) || cursor.isNull(mCallbacks.getColumnIndexLoggedEnd())) ? null : new Interval(cursor.getLong(mCallbacks.getColumnIndexLoggedStart()), cursor.getLong(mCallbacks.getColumnIndexLoggedEnd()));
     }
 
-    @Nullable
     @Override
-    ViewHolderType getViewHolderType(int position) {
-        if (position == mCallbacks.getRowNumberLoggedStart() || position == mCallbacks.getRowNumberLoggedEnd()) {
-            return ViewHolderType.PLAIN;
-        } else if (position == mCallbacks.getRowNumberLoggedSwitch()) {
-            return ViewHolderType.SWITCH;
-        } else {
-            return super.getViewHolderType(position);
-        }
-    }
-
-    @Override
-    public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
+    public boolean bindToHolder(Context context, ListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberLoggedStart()) {
             assert mLoggedShift != null;
-            holder.rootBind(context, R.drawable.ic_clipboard_play_black_24dp, R.string.logged_start, DateTimeUtils.getTimeString(mLoggedShift.getStart(), getShiftDate()), mLoggedStartListener);
+            holder.bindPlain(
+                    R.drawable.ic_clipboard_play_black_24dp,
+                    context.getString(R.string.logged_start),
+                    DateTimeUtils.getTimeString(mLoggedShift.getStart(), getShiftDate()),
+                    null, 0
+            );
+            holder.itemView.setOnClickListener(mLoggedStartListener);
         } else if (position == mCallbacks.getRowNumberLoggedEnd()) {
             assert mLoggedShift != null;
-            holder.rootBind(context, R.drawable.ic_clipboard_stop_black_24dp, R.string.logged_end, DateTimeUtils.getTimeString(mLoggedShift.getEnd(), getShiftDate()), mLoggedEndListener);
+            holder.bindPlain(
+                    R.drawable.ic_clipboard_stop_black_24dp,
+                    context.getString(R.string.logged_end),
+                    DateTimeUtils.getTimeString(mLoggedShift.getEnd(), getShiftDate()),
+                    null, 0
+            );
+            holder.itemView.setOnClickListener(mLoggedEndListener);
+        } else if (position == mCallbacks.getRowNumberLoggedSwitch()) {
+            holder.bindLogged(context, mLoggedShift != null, this);
         } else return super.bindToHolder(context, holder, position);
         return true;
     }
 
     @Override
-    boolean bindToHolder(Context context, SwitchListItemViewHolder holder, int position) {
-        if (position == mCallbacks.getRowNumberLoggedSwitch()) {
-            holder.bindLogged(context, mLoggedShift != null);
-        } else return super.bindToHolder(context, holder, position);
-        return true;
-    }
-
-    @Override
-    public void onCheckedChanged(SwitchListItemViewHolder.SwitchType switchType, boolean isChecked) {
-        if (switchType == SwitchListItemViewHolder.SwitchType.LOGGED) {
+    public void onCheckedChanged(ListItemViewHolder.SwitchType switchType, boolean isChecked) {
+        if (switchType == ListItemViewHolder.SwitchType.LOGGED) {
             ContentValues contentValues = new ContentValues();
             if (isChecked) {
                 contentValues.put(mCallbacks.getColumnNameLoggedStart(), getShiftStartMillis());
@@ -95,7 +94,7 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
         }
     }
 
-    boolean isLogged() {
+    public boolean isLogged() {
         return mLoggedShift != null;
     }
 
@@ -122,6 +121,6 @@ class RosteredShiftData extends ShiftData implements SwitchListItemViewHolder.Ca
         return ShiftTimePickerDialogFragment.newInstance(mCallbacks.getUpdateContentUri(), isStart, getShiftDate(), mLoggedShift.getStart().toLocalTime(), mLoggedShift.getEnd().toLocalTime(), mCallbacks.getColumnNameLoggedStart(), mCallbacks.getColumnNameLoggedEnd());
     }
 
-    interface Callbacks extends ShiftData.Callbacks, LoggableShift {
+    public interface Callbacks extends ShiftData.Callbacks, LoggableShift {
     }
 }

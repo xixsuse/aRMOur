@@ -1,10 +1,10 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.dialog;
 
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
 
 
-abstract class PickerDialogFragment extends DialogFragment {
+public abstract class PickerDialogFragment extends DialogFragment {
 
     private Callbacks mCallbacks;
 
@@ -18,7 +18,7 @@ abstract class PickerDialogFragment extends DialogFragment {
         mCallbacks.onOverlappingShifts();
     }
 
-    interface Callbacks {
+    public interface Callbacks {
         void onOverlappingShifts();
     }
 

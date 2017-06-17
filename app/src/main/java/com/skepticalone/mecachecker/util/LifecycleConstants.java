@@ -1,7 +1,7 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.util;
 
-final class LifecycleConstants {
-    static final int
+public final class LifecycleConstants {
+    public static final int
             LOADER_ID_ROSTERED_LIST = 1,
             LOADER_ID_ROSTERED_DETAIL = 2,
             LOADER_ID_ADDITIONAL_LIST = 3,
@@ -16,7 +16,7 @@ final class LifecycleConstants {
             ITEM_TYPE_CROSS_COVER = 3,
             ITEM_TYPE_EXPENSE = 4;
 
-    static final String
+    public static final String
             LIST_FRAGMENT = "LIST_FRAGMENT",
             DETAIL_FRAGMENT = "DETAIL_FRAGMENT",
             TITLE_DIALOG = "TITLE_DIALOG",
@@ -29,6 +29,6 @@ final class LifecycleConstants {
             ITEM_ID = "ITEM_ID",
             ITEM_TYPE = "ITEM_TYPE";
 
-    static final long NO_ID = -1L;
+    public static final long NO_ID = -1L;
 
 }

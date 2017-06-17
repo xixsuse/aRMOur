@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.composition.AbstractData;
+import com.skepticalone.mecachecker.composition.DateData;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 public class CrossCoverDetailFragment extends SinglePaymentItemDetailFragment implements DateData.Callbacks {
 

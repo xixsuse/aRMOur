@@ -10,4 +10,4 @@
     app:layoutManager="LinearLayoutManager"
     app:reverseLayout="true"
     app:stackFromEnd="true"
-    tools:listitem="@layout/list_item_plain" />
+    tools:listitem="@layout/list_item" />

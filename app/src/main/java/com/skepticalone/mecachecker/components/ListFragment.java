@@ -66,10 +66,7 @@ abstract class ListFragment extends BaseFragment implements ListFragmentBehaviou
         return getReadContentUri();
     }
 
-    abstract void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor);
-
-    void onViewHolderCreated(PlainListItemViewHolder holder) {
-    }
+    abstract void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor);
 
     final void insert(@NonNull ContentValues values) {
         if (getActivity().getContentResolver().insert(getCreateDeleteContentUri(), values) != null) {
@@ -81,11 +78,10 @@ abstract class ListFragment extends BaseFragment implements ListFragmentBehaviou
 
     interface Callbacks {
         void makeDeletedSnack(@NonNull Uri dirUri, @NonNull ContentValues values);
-
         void launch(int itemType, long itemId);
     }
 
-    private final class CursorAdapter extends RecyclerView.Adapter<PlainListItemViewHolder> {
+    private final class CursorAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
 
         @Nullable
         private Cursor mCursor = null;
@@ -96,20 +92,20 @@ abstract class ListFragment extends BaseFragment implements ListFragmentBehaviou
         }
 
         @Override
-        public long getItemId(int position) {
+        public final long getItemId(int position) {
             assert mCursor != null;
             mCursor.moveToPosition(position);
             return mCursor.getLong(getColumnIndexId());
         }
 
-        private void swapCursor(@Nullable Cursor data) {
+        final void swapCursor(@Nullable Cursor data) {
             mCursor = data;
             notifyDataSetChanged();
         }
 
         @Override
-        public PlainListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final PlainListItemViewHolder viewHolder = new PlainListItemViewHolder(parent);
+        public final ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final ListItemViewHolder viewHolder = new ListItemViewHolder(parent);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -153,19 +149,18 @@ abstract class ListFragment extends BaseFragment implements ListFragmentBehaviou
                     return true;
                 }
             });
-            onViewHolderCreated(viewHolder);
             return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(PlainListItemViewHolder holder, int position) {
+        public final void onBindViewHolder(ListItemViewHolder holder, int position) {
             assert mCursor != null;
             mCursor.moveToPosition(position);
             bindViewHolderToCursor(holder, mCursor);
         }
 
         @Override
-        public int getItemCount() {
+        public final int getItemCount() {
             return mCursor == null ? 0 : mCursor.getCount();
         }
     }

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 public interface WithTitle {
 
+    @SuppressWarnings("SameReturnValue")
     @NonNull
     String getColumnNameTitle();
 

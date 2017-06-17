@@ -42,14 +42,14 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
     abstract String getFirstLine(@NonNull Cursor cursor);
 
     @Override
-    final void onViewHolderCreated(PlainListItemViewHolder holder) {
-        holder.primaryIcon.setVisibility(View.GONE);
-    }
-
-    @Override
-    final void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor cursor) {
-        holder.setText(getFirstLine(cursor), cursor.isNull(getColumnIndexComment()) ? null : cursor.getString(getColumnIndexComment()));
-        holder.secondaryIcon.setImageResource(getClaimStatusIcon(cursor, getColumnIndexClaimed(), getColumnIndexPaid()));
+    final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
+        holder.bindPlain(
+                0,
+                getFirstLine(cursor),
+                cursor.isNull(getColumnIndexComment()) ? null : cursor.getString(getColumnIndexComment()),
+                null,
+                getClaimStatusIcon(cursor, getColumnIndexClaimed(), getColumnIndexPaid())
+        );
     }
 
     interface Callbacks {

@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.dialog.PickerDialogFragment;
 
 
 abstract class CoordinatorActivity extends AppCompatActivity implements PickerDialogFragment.Callbacks {

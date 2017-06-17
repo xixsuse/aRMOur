@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 public class DetailActivity extends CoordinatorActivity {
 

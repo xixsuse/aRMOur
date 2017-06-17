@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -18,9 +17,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
-
-import static com.skepticalone.mecachecker.components.ViewHolderType.PLAIN;
-import static com.skepticalone.mecachecker.components.ViewHolderType.SWITCH;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 abstract class DetailFragment extends BaseFragment implements DetailFragmentBehaviour {
 
@@ -96,25 +93,11 @@ abstract class DetailFragment extends BaseFragment implements DetailFragmentBeha
 
     abstract int getRowCountIfLoaded();
 
-    @Nullable
-    abstract ViewHolderType getViewHolderType(int position);
-
-    abstract boolean bindPlainListItemViewHolder(PlainListItemViewHolder holder, int position);
-
-    abstract boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position);
+    abstract boolean onBindListItemViewHolder(ListItemViewHolder holder, int position);
 
     @Override
     public Uri getUpdateContentUri() {
         return getReadContentUri();
-    }
-
-    @CallSuper
-    PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
-        return new PlainListItemViewHolder(parent);
-    }
-
-    SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
-        throw new IllegalStateException();
     }
 
     @Override
@@ -129,48 +112,19 @@ abstract class DetailFragment extends BaseFragment implements DetailFragmentBeha
 
     private final class Adapter extends RecyclerView.Adapter<ListItemViewHolder> {
 
-        private static final int
-                PLAIN_VIEW_TYPE = 1,
-                SWITCH_VIEW_TYPE = 2;
-
         @Override
         public final int getItemCount() {
             return mLoaded ? getRowCountIfLoaded() : 0;
         }
 
         @Override
-        public final int getItemViewType(int position) {
-            ViewHolderType type = getViewHolderType(position);
-            if (type == PLAIN) return PLAIN_VIEW_TYPE;
-            if (type == SWITCH) return SWITCH_VIEW_TYPE;
-            throw new IllegalStateException();
-        }
-
-        @Override
         public final ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            switch (viewType) {
-                case PLAIN_VIEW_TYPE:
-                    return createPlainListItemViewHolder(parent);
-                case SWITCH_VIEW_TYPE:
-                    return createSwitchListItemViewHolder(parent);
-                default:
-                    throw new IllegalStateException();
-            }
+            return new ListItemViewHolder(parent);
         }
 
         @Override
         public final void onBindViewHolder(ListItemViewHolder holder, int position) {
-            switch (holder.getItemViewType()) {
-                case PLAIN_VIEW_TYPE:
-                    if (bindPlainListItemViewHolder((PlainListItemViewHolder) holder, position))
-                        return;
-                    break;
-                case SWITCH_VIEW_TYPE:
-                    if (bindSwitchListItemViewHolder((SwitchListItemViewHolder) holder, position))
-                        return;
-                    break;
-            }
-            throw new IllegalStateException();
+            if (!onBindListItemViewHolder(holder, position)) throw new IllegalStateException();
         }
 
     }

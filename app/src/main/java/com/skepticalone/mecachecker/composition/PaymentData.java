@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.composition;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,12 +10,16 @@ import android.view.View;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
 import com.skepticalone.mecachecker.behaviours.InvolvesPayment;
+import com.skepticalone.mecachecker.components.ListItemViewHolder;
+import com.skepticalone.mecachecker.dialog.MoneyDialogFragment;
+import com.skepticalone.mecachecker.dialog.PlainTextDialogFragment;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callbacks {
+public class PaymentData extends AbstractData implements ListItemViewHolder.SwitchCallbacks {
 
     private final Callbacks mCallbacks;
     private BigDecimal mPayment;
@@ -44,11 +48,11 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
     @Nullable
     private DateTime mClaimed, mPaid;
 
-    PaymentData(Callbacks callbacks) {
+    public PaymentData(Callbacks callbacks) {
         mCallbacks = callbacks;
     }
 
-    boolean isClaimed() {
+    public boolean isClaimed() {
         return mClaimed != null;
     }
 
@@ -60,40 +64,26 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
         mPaid = (!isClaimed() || cursor.isNull(mCallbacks.getColumnIndexPaid())) ? null : new DateTime(cursor.getLong(mCallbacks.getColumnIndexPaid()));
     }
 
-    @Nullable
     @Override
-    ViewHolderType getViewHolderType(int position) {
-        if (position == mCallbacks.getRowNumberMoney() || position == mCallbacks.getRowNumberComment()) {
-            return ViewHolderType.PLAIN;
-        } else if (position == mCallbacks.getRowNumberClaimed() || position == mCallbacks.getRowNumberPaid()) {
-            return ViewHolderType.SWITCH;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
+    public boolean bindToHolder(Context context, ListItemViewHolder holder, int position) {
+        View.OnClickListener listener = null;
         if (position == mCallbacks.getRowNumberMoney()) {
-            holder.rootBind(context, mCallbacks.getMoneyIcon(), mCallbacks.getMoneyDescriptor(), context.getString(R.string.currency_format, mPayment), mPaymentListener);
+            holder.bindPlain(mCallbacks.getMoneyIcon(), context.getString(mCallbacks.getMoneyDescriptor()), context.getString(R.string.currency_format, mPayment), null, 0);
+            listener = mPaymentListener;
         } else if (position == mCallbacks.getRowNumberComment()) {
-            holder.rootBind(context, R.drawable.ic_comment_black_24dp, R.string.comment, mComment, mCommentListener);
-        } else return false;
-        return true;
-    }
-
-    @Override
-    boolean bindToHolder(Context context, SwitchListItemViewHolder holder, int position) {
-        if (position == mCallbacks.getRowNumberClaimed()) {
-            holder.bindClaimed(context, mClaimed, mPaid != null);
+            holder.bindPlain(R.drawable.ic_comment_black_24dp, context.getString(R.string.comment), mComment, null, 0);
+            listener = mCommentListener;
+        } else if (position == mCallbacks.getRowNumberClaimed()) {
+            holder.bindClaimed(context, mClaimed, this, mPaid != null);
         } else if (position == mCallbacks.getRowNumberPaid()) {
-            holder.bindPaid(context, mPaid);
+            holder.bindPaid(context, mPaid, this);
         } else return false;
+        holder.itemView.setOnClickListener(listener);
         return true;
     }
 
     @Override
-    public void onCheckedChanged(SwitchListItemViewHolder.SwitchType switchType, boolean isChecked) {
+    public void onCheckedChanged(ListItemViewHolder.SwitchType switchType, boolean isChecked) {
         String columnName;
         switch (switchType) {
             case PAID:
@@ -110,6 +100,6 @@ class PaymentData extends AbstractData implements SwitchListItemViewHolder.Callb
         mCallbacks.update(contentValues);
     }
 
-    interface Callbacks extends DetailFragmentBehaviour, InvolvesPayment {
+    public interface Callbacks extends DetailFragmentBehaviour, InvolvesPayment {
     }
 }

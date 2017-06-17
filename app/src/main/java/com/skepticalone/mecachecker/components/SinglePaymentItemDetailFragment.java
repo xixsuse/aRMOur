@@ -2,11 +2,10 @@ package com.skepticalone.mecachecker.components;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.composition.AbstractData;
+import com.skepticalone.mecachecker.composition.PaymentData;
 
 abstract class SinglePaymentItemDetailFragment extends DetailFragment implements PaymentData.Callbacks {
 
@@ -47,31 +46,8 @@ abstract class SinglePaymentItemDetailFragment extends DetailFragment implements
         getData().readFromPositionedCursor(cursor);
     }
 
-    @Nullable
     @Override
-    final ViewHolderType getViewHolderType(int position) {
-        return AbstractData.getViewHolderType(position, mPaymentData, getData());
-    }
-
-    @Override
-    final PlainListItemViewHolder createPlainListItemViewHolder(ViewGroup parent) {
-        PlainListItemViewHolder holder = super.createPlainListItemViewHolder(parent);
-        holder.secondaryIcon.setVisibility(View.GONE);
-        return holder;
-    }
-
-    @Override
-    final SwitchListItemViewHolder createSwitchListItemViewHolder(ViewGroup parent) {
-        return new SwitchListItemViewHolder(parent, mPaymentData);
-    }
-
-    @Override
-    final boolean bindPlainListItemViewHolder(PlainListItemViewHolder holder, int position) {
-        return mPaymentData.bindToHolder(getActivity(), holder, position) || getData().bindToHolder(getActivity(), holder, position);
-    }
-
-    @Override
-    final boolean bindSwitchListItemViewHolder(SwitchListItemViewHolder holder, int position) {
+    boolean onBindListItemViewHolder(ListItemViewHolder holder, int position) {
         return mPaymentData.bindToHolder(getActivity(), holder, position) || getData().bindToHolder(getActivity(), holder, position);
     }
 

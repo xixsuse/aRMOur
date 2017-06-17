@@ -1,19 +1,21 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.composition;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
 import com.skepticalone.mecachecker.behaviours.WithDate;
+import com.skepticalone.mecachecker.components.ListItemViewHolder;
+import com.skepticalone.mecachecker.dialog.MidnightDatePickerDialogFragment;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 import org.joda.time.DateTime;
 
-final class DateData extends AbstractData {
+public final class DateData extends AbstractData {
     private final Callbacks mCallbacks;
     private DateTime mStart;
     @NonNull
@@ -27,7 +29,7 @@ final class DateData extends AbstractData {
         }
     };
 
-    DateData(Callbacks callbacks) {
+    public DateData(Callbacks callbacks) {
         mCallbacks = callbacks;
     }
 
@@ -36,25 +38,16 @@ final class DateData extends AbstractData {
         mStart = new DateTime(cursor.getLong(mCallbacks.getColumnIndexStartOrDate()));
     }
 
-    @Nullable
     @Override
-    ViewHolderType getViewHolderType(int position) {
+    public boolean bindToHolder(Context context, ListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberDate()) {
-            return ViewHolderType.PLAIN;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
-        if (position == mCallbacks.getRowNumberDate()) {
-            holder.rootBind(context, R.drawable.ic_calendar_black_24dp, R.string.date, DateTimeUtils.getFullDateString(mStart), mDateListener);
+            holder.bindPlain(R.drawable.ic_calendar_black_24dp, context.getString(R.string.date), DateTimeUtils.getFullDateString(mStart), null, 0);
+            holder.itemView.setOnClickListener(mDateListener);
         } else return false;
         return true;
     }
 
-    interface Callbacks extends DetailFragmentBehaviour, WithDate {
+    public interface Callbacks extends DetailFragmentBehaviour, WithDate {
     }
 
 }

@@ -23,6 +23,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.settings.SettingsActivity;
 import com.skepticalone.mecachecker.summary.SummaryActivity;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 public class MainActivity extends CoordinatorActivity implements
         NavigationView.OnNavigationItemSelectedListener,

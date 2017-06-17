@@ -35,6 +35,20 @@
         android:paddingTop="20dp"
         tools:text="Monday 27/02/17\nCardiology" />
 
+    <ImageView
+        android:id="@+id/secondary_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_check_black_24dp" />
+
     <Switch
         android:id="@+id/switch_control"
         android:layout_width="wrap_content"
@@ -44,6 +58,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        tools:visibility="gone" />
 
 </LinearLayout>

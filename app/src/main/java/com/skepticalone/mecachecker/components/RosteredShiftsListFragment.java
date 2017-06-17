@@ -15,6 +15,7 @@ import com.skepticalone.mecachecker.data.Provider;
 import com.skepticalone.mecachecker.data.ShiftType;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.DateTime;
@@ -65,21 +66,21 @@ public class RosteredShiftsListFragment extends ShiftTypeAwareItemListFragment {
     }
 
     @Override
-    void bindViewHolderToCursor(PlainListItemViewHolder holder, @NonNull Cursor unwrappedCursor) {
+    void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor unwrappedCursor) {
         Compliance.Wrapper cursor = (Compliance.Wrapper) unwrappedCursor;
         Interval rosteredShift = cursor.getRosteredShift(), loggedShift = cursor.getLoggedShift();
-        holder.primaryIcon.setImageResource(ShiftUtil.getShiftTypeIcon(getShiftType(rosteredShift)));
-        holder.setText(
-                DateTimeUtils.getFullDateString(rosteredShift.getStart()),
-                DateTimeUtils.getTimeSpanString(rosteredShift),
-                loggedShift == null ? null : DateTimeUtils.getTimeSpanString(loggedShift)
-        );
         boolean error = AppConstants.hasInsufficientDurationBetweenShifts(cursor.getDurationBetweenShifts()) ||
                 AppConstants.exceedsDurationOverDay(cursor.getDurationOverDay()) ||
                 AppConstants.exceedsDurationOverWeek(cursor.getDurationOverWeek()) ||
                 AppConstants.exceedsDurationOverFortnight(cursor.getDurationOverFortnight()) ||
                 cursor.consecutiveWeekendsWorked();
-        holder.secondaryIcon.setImageResource(error ? R.drawable.ic_cancel_red_24dp : R.drawable.ic_check_black_24dp);
+        holder.bindPlain(
+                ShiftUtil.getShiftTypeIcon(getShiftType(rosteredShift)),
+                DateTimeUtils.getFullDateString(rosteredShift.getStart()),
+                DateTimeUtils.getTimeSpanString(rosteredShift),
+                loggedShift == null ? null : DateTimeUtils.getTimeSpanString(loggedShift),
+                error ? R.drawable.ic_cancel_red_24dp : R.drawable.ic_check_black_24dp
+        );
     }
 
     @Override

@@ -1,16 +1,18 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.composition;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.behaviours.DetailFragmentBehaviour;
 import com.skepticalone.mecachecker.behaviours.WithTitle;
+import com.skepticalone.mecachecker.components.ListItemViewHolder;
+import com.skepticalone.mecachecker.dialog.PlainTextDialogFragment;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
-class TitleData extends AbstractData {
+public class TitleData extends AbstractData {
 
     private final Callbacks mCallbacks;
     private String mTitle;
@@ -25,7 +27,7 @@ class TitleData extends AbstractData {
         }
     };
 
-    TitleData(Callbacks callbacks) {
+    public TitleData(Callbacks callbacks) {
         mCallbacks = callbacks;
     }
 
@@ -34,24 +36,15 @@ class TitleData extends AbstractData {
         mTitle = cursor.getString(mCallbacks.getColumnIndexTitle());
     }
 
-    @Nullable
     @Override
-    ViewHolderType getViewHolderType(int position) {
-        if (position == mCallbacks.getColumnIndexTitle()) {
-            return ViewHolderType.PLAIN;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean bindToHolder(Context context, PlainListItemViewHolder holder, int position) {
+    public boolean bindToHolder(Context context, ListItemViewHolder holder, int position) {
         if (position == mCallbacks.getRowNumberTitle()) {
-            holder.rootBind(context, R.drawable.ic_title_black_24dp, R.string.title, mTitle, mTitleListener);
+            holder.bindPlain(R.drawable.ic_title_black_24dp, context.getString(R.string.title), mTitle, null, 0);
+            holder.itemView.setOnClickListener(mTitleListener);
         } else return false;
         return true;
     }
 
-    interface Callbacks extends DetailFragmentBehaviour, WithTitle {
+    public interface Callbacks extends DetailFragmentBehaviour, WithTitle {
     }
 }

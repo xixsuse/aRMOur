@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.components;
+package com.skepticalone.mecachecker.dialog;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

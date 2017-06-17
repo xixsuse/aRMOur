@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
+import com.skepticalone.mecachecker.util.LifecycleConstants;
 
 public class ExpensesListFragment extends SinglePaymentItemListFragment {
 

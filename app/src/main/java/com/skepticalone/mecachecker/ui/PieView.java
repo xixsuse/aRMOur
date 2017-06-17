@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.summary;
+package com.skepticalone.mecachecker.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

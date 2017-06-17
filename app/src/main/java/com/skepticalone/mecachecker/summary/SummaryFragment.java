@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.Contract;
 import com.skepticalone.mecachecker.data.Provider;
+import com.skepticalone.mecachecker.ui.PieView;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
