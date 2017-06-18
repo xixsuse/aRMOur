@@ -12,13 +12,14 @@ import com.skepticalone.mecachecker.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class CurrencyPreference extends DialogPreference {
+@SuppressWarnings("WeakerAccess")
+public class CurrencyPreference extends DialogPreference {
 
     private static final int DEFAULT_VALUE = 0;
     private EditText mEditText;
     private int mValue;
 
-    CurrencyPreference(Context context, AttributeSet attrs) {
+    public CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         setDialogLayoutResource(R.layout.edit_text);
         setPositiveButtonText(R.string.set);

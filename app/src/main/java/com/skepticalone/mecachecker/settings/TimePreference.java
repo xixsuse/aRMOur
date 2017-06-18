@@ -12,7 +12,8 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
-class TimePreference extends DialogPreference {
+@SuppressWarnings("WeakerAccess")
+public class TimePreference extends DialogPreference {
 
     private int mTotalMinutes;
     private TimePicker mTimePicker;
