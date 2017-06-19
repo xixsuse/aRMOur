@@ -44,7 +44,7 @@ abstract class SinglePaymentItemListFragment extends ListFragment {
     @Override
     final void bindViewHolderToCursor(ListItemViewHolder holder, @NonNull Cursor cursor) {
         holder.bindPlain(
-                0,
+                null,
                 getFirstLine(cursor),
                 cursor.isNull(getColumnIndexComment()) ? null : cursor.getString(getColumnIndexComment()),
                 null,

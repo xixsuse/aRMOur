@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.TextAppearanceSpan;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
@@ -28,7 +28,7 @@ public class ListItemViewHolder extends RecyclerView.ViewHolder implements Compo
     private final ImageView primaryIcon, secondaryIcon;
     private final TextView text;
     private final TextAppearanceSpan firstLineStyle, secondLineStyle, thirdLineStyle;
-    private final Switch switchControl;
+    private final SwitchCompat switchControl;
     private SwitchType mSwitchType;
     @Nullable
     private SwitchCallbacks mSwitchCallbacks;
@@ -64,14 +64,14 @@ public class ListItemViewHolder extends RecyclerView.ViewHolder implements Compo
     }
 
     private void rootBind(
-            @DrawableRes int primaryIconRes,
+            @Nullable @DrawableRes Integer primaryIconRes,
             @NonNull String firstLine,
             @Nullable String secondLine,
             @Nullable String thirdLine,
             @DrawableRes int secondaryIconRes,
             @Nullable SwitchCallbacks switchCallbacks
     ) {
-        if (primaryIconRes == 0) {
+        if (primaryIconRes == null) {
             primaryIcon.setVisibility(View.GONE);
         } else {
             primaryIcon.setVisibility(View.VISIBLE);
@@ -110,7 +110,7 @@ public class ListItemViewHolder extends RecyclerView.ViewHolder implements Compo
     }
 
     public void bindPlain(
-            @DrawableRes int primaryIconRes,
+            @Nullable @DrawableRes Integer primaryIconRes,
             @NonNull String firstLine,
             @Nullable String secondLine,
             @Nullable String thirdLine,
@@ -118,26 +118,6 @@ public class ListItemViewHolder extends RecyclerView.ViewHolder implements Compo
     ) {
         rootBind(primaryIconRes, firstLine, secondLine, thirdLine, secondaryIconRes, null);
     }
-
-
-//    void setText(@NonNull String firstLine, @Nullable String secondLine) {
-//        setText(firstLine, secondLine, null);
-//    }
-//
-//    void setText(@NonNull String firstLine) {
-//        setText(firstLine, null);
-//    }
-
-//    private void bind(Context context, @NonNull SwitchType switchType, @DrawableRes int primaryIconRes, @StringRes int keyRes, @Nullable String value, boolean shouldBeChecked, boolean enableToggle) {
-//        rootBind(context, primaryIconRes, keyRes, value, null);
-//        mSwitchType = switchType;
-//        if (switchControl.isChecked() != shouldBeChecked) {
-//            switchControl.setOnCheckedChangeListener(null);
-//            switchControl.setChecked(shouldBeChecked);
-//            switchControl.setOnCheckedChangeListener(this);
-//        }
-//        switchControl.setEnabled(enableToggle);
-//    }
 
     private void rootBindSwitchPaidOrClaimed(
             @NonNull Context context,
