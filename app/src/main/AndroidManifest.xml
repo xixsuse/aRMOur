@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".temporary.TemporaryActivity"
+            android:name=".temporary.MainActivity"
             android:label="Temporary activity"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".temporary.DetailActivity"
+            android:label="Temporary detail"
+            android:parentActivityName=".temporary.MainActivity" />
         <!--<activity-->
         <!--android:name=".components.MainActivity"-->
         <!--android:label="@string/title_shift_list"-->
@@ -31,18 +35,18 @@
         <!--</activity>-->
         <!--<activity-->
         <!--android:name=".components.DetailActivity"-->
-        <!--android:parentActivityName=".components.MainActivity">-->
-        <!--</activity>-->
+        <!--android:parentActivityName=".components.MainActivity"/>-->
         <!--<activity-->
         <!--android:name=".summary.SummaryActivity"-->
         <!--android:label="@string/summary"-->
         <!--android:parentActivityName=".components.MainActivity"-->
         <!--android:theme="@style/AppTheme" />-->
-        <!--<activity-->
-        <!--android:name=".settings.SettingsActivity"-->
-        <!--android:label="@string/settings"-->
-        <!--android:parentActivityName=".components.MainActivity"-->
-        <!--android:theme="@style/AppTheme" />-->
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName=".temporary.MainActivity"
+            android:theme="@style/AppTheme" />
+
         <!--<provider-->
         <!--android:name=".data.Provider"-->
         <!--android:authorities="com.skepticalone.mecachecker.provider"-->

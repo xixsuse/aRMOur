@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftType;
 
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;

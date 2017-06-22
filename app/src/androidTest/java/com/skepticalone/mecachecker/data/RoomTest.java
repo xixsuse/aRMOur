@@ -5,6 +5,10 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.skepticalone.mecachecker.db.AppDatabase;
+import com.skepticalone.mecachecker.db.dao.ExpenseDao;
+import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,10 +39,10 @@ public class RoomTest {
 
     @Test
     public void writeExpenseAndReadInList() throws Exception {
-        Expense expense = new Expense("One big expense", BigDecimal.valueOf(4500, 2), "  A happy day   ", null, null);
+        ExpenseEntity expense = new ExpenseEntity("One big expense", BigDecimal.valueOf(4500, 2), "  A happy day   ", null, null);
         mExpenseDao.insertExpense(expense);
-        assertThat(mExpenseDao.getExpenses().size(), is(1));
-        assertThat(mExpenseDao.getExpense(1).getTitle(), is(expense.getTitle()));
+        assertThat(mExpenseDao.getExpenses().getValue().size(), is(1));
+        assertThat(mExpenseDao.getExpense(1).getValue().getTitle(), is(expense.getTitle()));
 //        assertThat(mExpenseDao.getExpense(1).getComment(), is("A happy day"));
     }
 

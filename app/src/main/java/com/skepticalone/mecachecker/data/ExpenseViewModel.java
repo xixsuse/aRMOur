@@ -7,48 +7,55 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 
+import com.skepticalone.mecachecker.db.AppDatabase;
+import com.skepticalone.mecachecker.db.DatabaseInitUtil;
+import com.skepticalone.mecachecker.db.dao.ExpenseDao;
+import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
+
 import java.util.List;
+import java.util.Random;
 
 public class ExpenseViewModel extends AndroidViewModel {
 
-    private static final MutableLiveData ABSENT = new MutableLiveData();
+    private static final MutableLiveData<ExpenseEntity> NO_EXPENSE = new MutableLiveData<>();
+    private static final MutableLiveData<List<ExpenseEntity>> NO_EXPENSES = new MutableLiveData<>();
+    private final LiveData<List<ExpenseEntity>> expenses;
+    private final LiveData<ExpenseEntity> selectedExpense;
+    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    private final Random mRandom = new Random();
 
-    static {
-        //noinspection unchecked
-        ABSENT.setValue(null);
-    }
-
-    private final LiveData<List<Expense>> expenses;
-
-    public ExpenseViewModel(Application application) {
+    public ExpenseViewModel(final Application application) {
         super(application);
-        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
-
-        LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
-        expenses = Transformations.switchMap(
-                databaseCreated,
-                new Function<Boolean, LiveData<List<Expense>>>() {
-                    @Override
-                    public LiveData<List<Expense>> apply(Boolean isDbCreated) {
-                        if (!Boolean.TRUE.equals(isDbCreated)) { // Not needed here, but watch out for null
-                            //noinspection unchecked
-                            return ABSENT;
-                        } else {
-                            //noinspection ConstantConditions
-                            return databaseCreator.getDatabase().expenseDao().getExpenses();
-                        }
-                    }
-                }
-        );
-        databaseCreator.createDb(this.getApplication());
-
+        expenses = getExpenseDao().getExpenses();
+        selectedExpense = Transformations.switchMap(selectedId, new Function<Long, LiveData<ExpenseEntity>>() {
+            @Override
+            public LiveData<ExpenseEntity> apply(Long id) {
+                return id == null ? NO_EXPENSE : getExpenseDao().getExpense(id);
+            }
+        });
     }
 
-    public LiveData<List<Expense>> getExpenses() {
+    private ExpenseDao getExpenseDao() {
+        return AppDatabase.getInstance(getApplication()).expenseDao();
+    }
+
+    public LiveData<List<ExpenseEntity>> getExpenses() {
         return expenses;
     }
 
-    //    public LiveData<List<Expense>> getExpenses() {
+    public LiveData<ExpenseEntity> getSelectedExpense() {
+        return selectedExpense;
+    }
+
+    public void selectExpense(long id) {
+        selectedId.setValue(id);
+    }
+
+    public void addExpense() {
+        getExpenseDao().insertExpense(DatabaseInitUtil.randomExpense(mRandom));
+    }
+
+    //    public LiveData<List<ExpenseEntity>> getExpenses() {
 //        if (expenses == null) {
 //            expenses = new MutableLiveData<>();
 //            loadExpenses();
