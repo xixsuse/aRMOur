@@ -18,26 +18,27 @@ import com.skepticalone.mecachecker.ui.ExpenseDetailAdapter;
 
 public class DetailFragment extends LifecycleFragment {
 
-    private final ExpenseDetailAdapter mAdapter = new ExpenseDetailAdapter();
+    private RecyclerView mRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.recycler_view_detail, container, false);
-        RecyclerView recyclerView = layout.findViewById(R.id.recycler);
-        recyclerView.setAdapter(mAdapter);
-        return layout;
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_detail, container, false);
+        return mRecyclerView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ExpenseViewModel model = ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+        final ExpenseViewModel model = ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+        final ExpenseDetailAdapter adapter = new ExpenseDetailAdapter(model);
+        mRecyclerView.setAdapter(adapter);
         model.getSelectedExpense().observe(this, new Observer<ExpenseEntity>() {
             @Override
             public void onChanged(@Nullable ExpenseEntity expenseEntity) {
-                if (expenseEntity != null) mAdapter.setExpense(expenseEntity);
+                if (expenseEntity != null) adapter.setExpense(expenseEntity);
             }
         });
     }
+
 }

@@ -73,10 +73,17 @@ public class ExpenseEntity implements Expense {
         return claimed;
     }
 
+    public void setClaimed(@Nullable DateTime claimed) {
+        this.claimed = claimed;
+    }
+
     @Nullable
     @Override
     public DateTime getPaid() {
         return paid;
     }
 
+    public void setPaid(@Nullable DateTime paid) {
+        this.paid = paid;
+    }
 }

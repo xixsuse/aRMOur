@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -17,6 +18,7 @@ public class MainActivity extends LifecycleActivity implements ExpenseClickCallb
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private static final String MASTER_TO_DETAIL = "MASTER_TO_DETAIL";
+    private static final String TAG = "MainActivity";
     private FloatingActionMenu mFabMenu;
     private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
@@ -27,7 +29,8 @@ public class MainActivity extends LifecycleActivity implements ExpenseClickCallb
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(this).get(ExpenseViewModel.class);
         setContentView(R.layout.main_activity);
-        mTwoPane = getSupportFragmentManager().findFragmentById(R.id.detail_fragment) != null;
+        mTwoPane = findViewById(R.id.detail_fragment) != null;
+        Log.i(TAG, "onCreate: mTwoPane = " + mTwoPane);
         mFabMenu = findViewById(R.id.fab_menu);
         mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
         mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
@@ -51,4 +54,5 @@ public class MainActivity extends LifecycleActivity implements ExpenseClickCallb
             startActivity(intent);
         }
     }
+
 }

@@ -2,8 +2,6 @@ package com.skepticalone.mecachecker.db;
 
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
 
-import org.joda.time.DateTime;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +38,16 @@ public class DatabaseInitUtil {
     }
 
     private static ExpenseEntity randomExpense(Random rnd, String title, String description) {
-        DateTime claimed = rnd.nextBoolean() ? new DateTime(rnd.nextLong()) : null;
-        DateTime paid = claimed == null ? null : new DateTime(rnd.nextLong());
-        if (paid != null && paid.isBefore(claimed)) paid = null;
+//        DateTime claimed = rnd.nextBoolean() ? new DateTime(rnd.nextLong()) : null;
+//        DateTime paid = claimed == null ? null : new DateTime(rnd.nextLong());
+//        if (paid != null && paid.isBefore(claimed)) paid = null;
 
         return new ExpenseEntity(
                 title,
                 BigDecimal.valueOf(rnd.nextInt(10000), 2),
                 description,
-                claimed,
-                paid
+                null,
+                null
         );
     }
 

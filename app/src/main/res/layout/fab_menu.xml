@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.github.clans.fab.FloatingActionMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="@dimen/standard_padding"
+    app:layout_behavior=".ui.LiftBehaviour"
+    app:menu_colorNormal="@color/fabColorNormal"
+    app:menu_colorPressed="@color/fabColorPressed"
+    app:menu_colorRipple="@color/fabColorRipple">
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_normal_day"
+        style="@style/fab"
+        android:src="@drawable/ic_normal_day_white_24dp" />
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_long_day"
+        style="@style/fab"
+        android:src="@drawable/ic_long_day_white_24dp" />
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_night_shift"
+        style="@style/fab"
+        android:src="@drawable/ic_night_shift_white_24dp" />
+
+</com.github.clans.fab.FloatingActionMenu>

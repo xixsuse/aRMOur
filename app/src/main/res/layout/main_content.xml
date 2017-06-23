@@ -6,35 +6,10 @@
         android:name="com.skepticalone.mecachecker.temporary.ListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.github.clans.fab.FloatingActionMenu
+    <include
         android:id="@+id/fab_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/standard_padding"
-        app:layout_behavior=".ui.LiftBehaviour"
-        app:menu_colorNormal="@color/fabColorNormal"
-        app:menu_colorPressed="@color/fabColorPressed"
-        app:menu_colorRipple="@color/fabColorRipple">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_normal_day"
-            style="@style/fab"
-            android:src="@drawable/ic_normal_day_white_24dp" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_long_day"
-            style="@style/fab"
-            android:src="@drawable/ic_long_day_white_24dp" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_night_shift"
-            style="@style/fab"
-            android:src="@drawable/ic_night_shift_white_24dp" />
-
-    </com.github.clans.fab.FloatingActionMenu>
+        layout="@layout/fab_menu" />
 
 </merge>

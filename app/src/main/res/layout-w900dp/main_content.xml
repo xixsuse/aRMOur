@@ -1,57 +1,33 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/list_fragment"
         android:name="com.skepticalone.mecachecker.temporary.ListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/fab_menu"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.clans.fab.FloatingActionMenu
+    <include
         android:id="@+id/fab_menu"
+        layout="@layout/fab_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/standard_padding"
-        app:layout_behavior=".ui.LiftBehaviour"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/list_fragment"
-        app:layout_constraintRight_toLeftOf="@+id/detail_fragment"
-        app:menu_colorNormal="@color/fabColorNormal"
-        app:menu_colorPressed="@color/fabColorPressed"
-        app:menu_colorRipple="@color/fabColorRipple">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_normal_day"
-            style="@style/fab"
-            android:src="@drawable/ic_normal_day_white_24dp" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_long_day"
-            style="@style/fab"
-            android:src="@drawable/ic_long_day_white_24dp" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_night_shift"
-            style="@style/fab"
-            android:src="@drawable/ic_night_shift_white_24dp" />
-
-    </com.github.clans.fab.FloatingActionMenu>
+        app:layout_constraintRight_toLeftOf="@+id/detail_fragment" />
 
     <fragment
         android:id="@+id/detail_fragment"
         android:name="com.skepticalone.mecachecker.temporary.DetailFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toRightOf="@id/fab_menu"

@@ -11,11 +11,15 @@ import com.skepticalone.mecachecker.db.AppDatabase;
 import com.skepticalone.mecachecker.db.DatabaseInitUtil;
 import com.skepticalone.mecachecker.db.dao.ExpenseDao;
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
+import com.skepticalone.mecachecker.ui.ExpenseDeleteCallback;
+import com.skepticalone.mecachecker.ui.ExpenseUpdateCallback;
+
+import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Random;
 
-public class ExpenseViewModel extends AndroidViewModel {
+public class ExpenseViewModel extends AndroidViewModel implements ExpenseDeleteCallback, ExpenseUpdateCallback {
 
     private static final MutableLiveData<ExpenseEntity> NO_EXPENSE = new MutableLiveData<>();
     private static final MutableLiveData<List<ExpenseEntity>> NO_EXPENSES = new MutableLiveData<>();
@@ -51,11 +55,25 @@ public class ExpenseViewModel extends AndroidViewModel {
         selectedId.setValue(id);
     }
 
+    public void deleteExpense(long id) {
+        getExpenseDao().deleteExpense(id);
+    }
+
     public void addExpense() {
         getExpenseDao().insertExpense(DatabaseInitUtil.randomExpense(mRandom));
     }
 
-    //    public LiveData<List<ExpenseEntity>> getExpenses() {
+    @Override
+    public void setClaimed(long id, boolean claimed) {
+        getExpenseDao().setClaimed(id, claimed ? DateTime.now() : null);
+    }
+
+    @Override
+    public void setPaid(long id, boolean paid) {
+        getExpenseDao().setPaid(id, paid ? DateTime.now() : null);
+    }
+
+//    public LiveData<List<ExpenseEntity>> getExpenses() {
 //        if (expenses == null) {
 //            expenses = new MutableLiveData<>();
 //            loadExpenses();

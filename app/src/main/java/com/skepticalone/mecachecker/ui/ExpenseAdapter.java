@@ -3,12 +3,8 @@ package com.skepticalone.mecachecker.ui;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.Expense;
@@ -16,16 +12,19 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;
 
-public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
+public class ExpenseAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     @NonNull
     private final ExpenseClickCallback mClickCallback;
+    @NonNull
+    private final ExpenseDeleteCallback mExpenseDeleteCallback;
     private List<? extends Expense> mExpenses;
 
-    public ExpenseAdapter(@NonNull ExpenseClickCallback clickCallback) {
+    public ExpenseAdapter(@NonNull ExpenseClickCallback clickCallback, @NonNull ExpenseDeleteCallback expenseDeleteCallback) {
         super();
         setHasStableIds(true);
         mClickCallback = clickCallback;
+        mExpenseDeleteCallback = expenseDeleteCallback;
     }
 
     @Override
@@ -65,8 +64,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     }
 
     @Override
-    public final ExpenseViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        final ExpenseViewHolder viewHolder = new ExpenseViewHolder(parent);
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+        final ItemViewHolder viewHolder = new ItemViewHolder(parent);
         viewHolder.primaryIcon.setVisibility(View.GONE);
         viewHolder.switchControl.setVisibility(View.GONE);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -75,35 +74,27 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
                 mClickCallback.onClick(viewHolder.getItemId());
             }
         });
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mExpenseDeleteCallback.deleteExpense(viewHolder.getItemId());
+                return true;
+            }
+        });
         return viewHolder;
     }
 
 
     @Override
-    public void onBindViewHolder(ExpenseViewHolder holder, int position) {
+    public void onBindViewHolder(ItemViewHolder holder, int position) {
         Expense expense = mExpenses.get(position);
-        holder.text.setText(expense.getTitle());
+        holder.setText(expense.getTitle());
         holder.secondaryIcon.setImageResource(expense.getPaid() == null ? expense.getClaimed() == null ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
     }
 
     @Override
     public final int getItemCount() {
         return mExpenses == null ? 0 : mExpenses.size();
-    }
-
-    static class ExpenseViewHolder extends RecyclerView.ViewHolder {
-
-        private final ImageView primaryIcon, secondaryIcon;
-        private final TextView text;
-        private final SwitchCompat switchControl;
-
-        ExpenseViewHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
-            primaryIcon = itemView.findViewById(R.id.primary_icon);
-            text = itemView.findViewById(R.id.text);
-            secondaryIcon = itemView.findViewById(R.id.secondary_icon);
-            switchControl = itemView.findViewById(R.id.switch_control);
-        }
     }
 
 
