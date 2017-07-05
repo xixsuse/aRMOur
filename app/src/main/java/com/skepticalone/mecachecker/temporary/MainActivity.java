@@ -1,10 +1,10 @@
 package com.skepticalone.mecachecker.temporary;
 
-import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
@@ -14,7 +14,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.ui.ExpenseClickCallback;
 
-public class MainActivity extends LifecycleActivity implements ExpenseClickCallback {
+public class MainActivity extends LifecycleAppCompatActivity implements ExpenseClickCallback {
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private static final String MASTER_TO_DETAIL = "MASTER_TO_DETAIL";
@@ -28,8 +28,7 @@ public class MainActivity extends LifecycleActivity implements ExpenseClickCallb
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(this).get(ExpenseViewModel.class);
-        setContentView(R.layout.main_activity);
-        mTwoPane = findViewById(R.id.detail_fragment) != null;
+        mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         Log.i(TAG, "onCreate: mTwoPane = " + mTwoPane);
         mFabMenu = findViewById(R.id.fab_menu);
         mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
@@ -42,6 +41,21 @@ public class MainActivity extends LifecycleActivity implements ExpenseClickCallb
                 model.addExpense();
             }
         });
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction =
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.list_fragment_container, new ListFragment(), LIST_FRAGMENT);
+            if (mTwoPane) {
+                transaction.add(R.id.detail_fragment_container, new DetailFragment(), DETAIL_FRAGMENT);
+            }
+            transaction.commit();
+        }
+    }
+
+    @Override
+    int getContentViewWithToolbar() {
+        return R.layout.main_activity;
     }
 
     @Override

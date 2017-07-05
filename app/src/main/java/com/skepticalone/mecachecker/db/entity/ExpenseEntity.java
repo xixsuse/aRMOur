@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity(tableName = "expenses")
 public class ExpenseEntity implements Expense {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private long id = 0L;
     @NonNull
     private String title;
     @NonNull

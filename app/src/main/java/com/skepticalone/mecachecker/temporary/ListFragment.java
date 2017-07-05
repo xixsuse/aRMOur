@@ -14,14 +14,13 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.model.Expense;
 import com.skepticalone.mecachecker.ui.ExpenseAdapter;
 import com.skepticalone.mecachecker.ui.ExpenseClickCallback;
 
 import java.util.List;
 
 
-public class ListFragment<T extends Expense> extends LifecycleFragment {
+public class ListFragment extends LifecycleFragment {
 
     private RecyclerView mRecyclerView;
     private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
