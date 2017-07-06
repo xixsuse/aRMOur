@@ -1,87 +1,58 @@
 package com.skepticalone.mecachecker.data;
 
+
 import android.app.Application;
-import android.arch.core.util.Function;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
+import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.db.AppDatabase;
 import com.skepticalone.mecachecker.db.DatabaseInitUtil;
 import com.skepticalone.mecachecker.db.dao.ExpenseDao;
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.ui.ExpenseDeleteCallback;
-import com.skepticalone.mecachecker.ui.ExpenseUpdateCallback;
 
 import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Random;
 
-public class ExpenseViewModel extends AndroidViewModel implements ExpenseDeleteCallback, ExpenseUpdateCallback {
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
+    private static final Random RANDOM = new Random();
+    private final ExpenseDao mExpenseDao;
 
-    private static final MutableLiveData<ExpenseEntity> NO_EXPENSE = new MutableLiveData<>();
-    private static final MutableLiveData<List<ExpenseEntity>> NO_EXPENSES = new MutableLiveData<>();
-    private final LiveData<List<ExpenseEntity>> expenses;
-    private final LiveData<ExpenseEntity> selectedExpense;
-    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
-    private final Random mRandom = new Random();
-
-    public ExpenseViewModel(final Application application) {
+    public ExpenseViewModel(Application application) {
         super(application);
-        expenses = getExpenseDao().getExpenses();
-        selectedExpense = Transformations.switchMap(selectedId, new Function<Long, LiveData<ExpenseEntity>>() {
-            @Override
-            public LiveData<ExpenseEntity> apply(Long id) {
-                return id == null ? NO_EXPENSE : getExpenseDao().getExpense(id);
-            }
-        });
+        mExpenseDao = AppDatabase.getInstance(application).expenseDao();
     }
 
-    private ExpenseDao getExpenseDao() {
-        return AppDatabase.getInstance(getApplication()).expenseDao();
+    @Override
+    public LiveData<List<ExpenseEntity>> getItems() {
+        return mExpenseDao.getExpenses();
     }
 
-    public LiveData<List<ExpenseEntity>> getExpenses() {
-        return expenses;
+    @Override
+    LiveData<ExpenseEntity> getItem(long id) {
+        return mExpenseDao.getExpense(id);
     }
 
-    public LiveData<ExpenseEntity> getSelectedExpense() {
-        return selectedExpense;
-    }
-
-    public void selectExpense(long id) {
-        selectedId.setValue(id);
-    }
-
-    public void deleteExpense(long id) {
-        getExpenseDao().deleteExpense(id);
+    @Override
+    public void deleteItem(long id) {
+        mExpenseDao.deleteExpense(id);
     }
 
     public void addExpense() {
-        getExpenseDao().insertExpense(DatabaseInitUtil.randomExpense(mRandom));
+        mExpenseDao.insertExpense(DatabaseInitUtil.randomExpense(RANDOM));
     }
 
-    @Override
+    public void setTitle(long id, @NonNull String title) {
+        mExpenseDao.setTitle(id, title);
+    }
+
     public void setClaimed(long id, boolean claimed) {
-        getExpenseDao().setClaimed(id, claimed ? DateTime.now() : null);
+        mExpenseDao.setClaimed(id, claimed ? DateTime.now() : null);
     }
 
-    @Override
     public void setPaid(long id, boolean paid) {
-        getExpenseDao().setPaid(id, paid ? DateTime.now() : null);
+        mExpenseDao.setPaid(id, paid ? DateTime.now() : null);
     }
-
-//    public LiveData<List<ExpenseEntity>> getExpenses() {
-//        if (expenses == null) {
-//            expenses = new MutableLiveData<>();
-//            loadExpenses();
-//        }
-//        return expenses;
-//    }
-//    private void loadExpenses() {
-//        // TODO: 18/06/17: do async operation to fetch expenses
-//    }
 
 }

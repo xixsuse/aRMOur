@@ -1,8 +1,7 @@
-package com.skepticalone.mecachecker.ui;
+package com.skepticalone.mecachecker.ui.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
@@ -12,7 +11,8 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-public class ExpenseDetailAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+public class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
+
     private static final int
             ROW_NUMBER_TITLE = 0,
             ROW_NUMBER_PAYMENT = 1,
@@ -20,42 +20,42 @@ public class ExpenseDetailAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             ROW_NUMBER_CLAIMED = 3,
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
-    private final ExpenseUpdateCallback mDetailCallback;
-    private Expense mExpense;
 
-    public ExpenseDetailAdapter(ExpenseUpdateCallback callback) {
+    private final Callbacks mCallbacks;
+
+    public ExpenseDetailAdapter(Callbacks callbacks) {
         super();
-        mDetailCallback = callback;
+        mCallbacks = callbacks;
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final ItemViewHolder holder = new ItemViewHolder(parent);
-        holder.secondaryIcon.setVisibility(View.GONE);
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
+    void bindViewHolder(@NonNull final Expense expense, ItemViewHolder holder, int position) {
         int primaryIcon;
         boolean switchVisible = false, switchChecked = false;
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = null;
+        View.OnClickListener onClickListener = null;
         switch (position) {
             case ROW_NUMBER_TITLE:
                 primaryIcon = R.drawable.ic_title_black_24dp;
-                holder.setText(R.string.title, mExpense.getTitle());
+                holder.setText(R.string.title, expense.getTitle());
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changeTitle(expense.getId(), expense.getTitle());
+                    }
+                };
                 break;
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
-                holder.setText(R.string.payment, R.string.currency_format, mExpense.getPayment());
+                holder.setText(R.string.payment, R.string.currency_format, expense.getPayment());
                 break;
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;
-                holder.setText(R.string.comment, mExpense.getComment());
+                holder.setText(R.string.comment, expense.getComment());
                 break;
             case ROW_NUMBER_CLAIMED:
                 switchVisible = true;
-                DateTime claimed = mExpense.getClaimed();
+                DateTime claimed = expense.getClaimed();
                 if (claimed == null) {
                     primaryIcon = 0;
                     holder.setText(R.string.claimed, R.string.not_applicable);
@@ -64,16 +64,16 @@ public class ExpenseDetailAdapter extends RecyclerView.Adapter<ItemViewHolder> {
                     holder.setText(R.string.claimed, DateTimeUtils.getDateTimeString(claimed));
                     switchChecked = true;
                 }
-                onCheckedChangeListener = mExpense.getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
+                onCheckedChangeListener = expense.getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean claimed) {
-                        mDetailCallback.setClaimed(mExpense.getId(), claimed);
+                        mCallbacks.setClaimed(expense.getId(), claimed);
                     }
                 } : null;
                 break;
             case ROW_NUMBER_PAID:
                 switchVisible = true;
-                final DateTime paid = mExpense.getPaid();
+                final DateTime paid = expense.getPaid();
                 if (paid == null) {
                     primaryIcon = 0;
                     holder.setText(R.string.paid, R.string.not_applicable);
@@ -82,10 +82,10 @@ public class ExpenseDetailAdapter extends RecyclerView.Adapter<ItemViewHolder> {
                     holder.setText(R.string.paid, DateTimeUtils.getDateTimeString(paid));
                     switchChecked = true;
                 }
-                onCheckedChangeListener = mExpense.getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
+                onCheckedChangeListener = expense.getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean paid) {
-                        mDetailCallback.setPaid(mExpense.getId(), paid);
+                        mCallbacks.setPaid(expense.getId(), paid);
                     }
                 };
                 break;
@@ -104,32 +104,37 @@ public class ExpenseDetailAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             holder.switchControl.setVisibility(View.GONE);
         }
         holder.switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
+        holder.itemView.setOnClickListener(onClickListener);
     }
 
     @Override
-    public int getItemCount() {
-        return mExpense == null ? 0 : ROW_COUNT;
+    int getRowCount(@NonNull Expense item) {
+        return ROW_COUNT;
     }
 
-    public void setExpense(final Expense expense) {
-        if (mExpense == null) {
-            notifyItemRangeInserted(0, ROW_COUNT);
-        } else {
-            if (!Comparators.equalStrings(mExpense.getTitle(), expense.getTitle())) {
-                notifyItemChanged(ROW_NUMBER_TITLE);
-            }
-            if (!Comparators.equalBigDecimals(mExpense.getPayment(), expense.getPayment())) {
-                notifyItemChanged(ROW_NUMBER_PAYMENT);
-            }
-            if (!Comparators.equalStrings(mExpense.getComment(), expense.getComment())) {
-                notifyItemChanged(ROW_NUMBER_COMMENT);
-            }
-            if (!Comparators.equalDateTimes(mExpense.getClaimed(), expense.getClaimed()) || !Comparators.equalDateTimes(mExpense.getPaid(), expense.getPaid())) {
-                notifyItemChanged(ROW_NUMBER_CLAIMED);
-                notifyItemChanged(ROW_NUMBER_PAID);
-            }
+    @Override
+    void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
+        if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
+            notifyItemChanged(ROW_NUMBER_TITLE);
         }
-        mExpense = expense;
+        if (!Comparators.equalBigDecimals(oldExpense.getPayment(), newExpense.getPayment())) {
+            notifyItemChanged(ROW_NUMBER_PAYMENT);
+        }
+        if (!Comparators.equalStrings(oldExpense.getComment(), newExpense.getComment())) {
+            notifyItemChanged(ROW_NUMBER_COMMENT);
+        }
+        if (!Comparators.equalDateTimes(oldExpense.getClaimed(), newExpense.getClaimed()) || !Comparators.equalDateTimes(oldExpense.getPaid(), newExpense.getPaid())) {
+            notifyItemChanged(ROW_NUMBER_CLAIMED);
+            notifyItemChanged(ROW_NUMBER_PAID);
+        }
+    }
+
+    public interface Callbacks {
+        void setClaimed(long id, boolean claimed);
+
+        void setPaid(long id, boolean paid);
+
+        void changeTitle(long id, @NonNull String currentTitle);
     }
 
 }

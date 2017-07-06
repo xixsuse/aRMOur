@@ -13,31 +13,26 @@ import java.math.BigDecimal;
 
 @Entity(tableName = "expenses")
 public class ExpenseEntity implements Expense {
+    @NonNull
+    private final String title;
+    @NonNull
+    private final BigDecimal payment;
+    @Nullable
+    private final String comment;
     @PrimaryKey(autoGenerate = true)
     private long id = 0L;
-    @NonNull
-    private String title;
-    @NonNull
-    private BigDecimal payment;
     @Nullable
-    private String comment;
+    private DateTime claimed = null;
     @Nullable
-    private DateTime claimed;
-    @Nullable
-    private DateTime paid;
+    private DateTime paid = null;
 
     public ExpenseEntity(
             @NonNull String title,
             @NonNull BigDecimal payment,
-            @Nullable String comment,
-            @Nullable DateTime claimed,
-            @Nullable DateTime paid
-    ) {
+            @Nullable String comment) {
         this.title = title;
         this.payment = payment;
         this.comment = comment;
-        this.claimed = claimed;
-        this.paid = claimed == null ? null : paid;
     }
 
     @Override

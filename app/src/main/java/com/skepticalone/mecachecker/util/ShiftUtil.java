@@ -13,7 +13,7 @@ import com.skepticalone.mecachecker.R;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
-public class ShiftUtil {
+class ShiftUtil {
 
     @StringRes
     public static int getShiftTypeTitle(ShiftType shiftType) {

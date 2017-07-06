@@ -14,8 +14,8 @@ public class DatabaseInitUtil {
     private static final String[] SECOND = new String[]{
             "Three-headed Monkey", "Rubber Chicken", "Pint of Grog", "Monocle"};
     private static final String[] DESCRIPTION = new String[]{
-            "is finally here", "is recommended by Stan S. Stanman",
-            "is the best bv sold product on Mêlée Island", "is \uD83D\uDCAF", "is ❤️", "is fine"};
+            "is finally here", "is recommended by Stan S. Stan",
+            "is the best bv sold product on Milk Island", "is \uD83D\uDCAF", "is ❤️", "is fine"};
 //    private static final String[] COMMENTS = new String[]{
 //            "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6",
 //    };
@@ -45,10 +45,7 @@ public class DatabaseInitUtil {
         return new ExpenseEntity(
                 title,
                 BigDecimal.valueOf(rnd.nextInt(10000), 2),
-                description,
-                null,
-                null
-        );
+                description);
     }
 
     public static ExpenseEntity randomExpense(Random rnd) {

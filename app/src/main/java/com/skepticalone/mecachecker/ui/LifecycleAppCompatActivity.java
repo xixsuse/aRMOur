@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.temporary;
+package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -27,8 +27,13 @@ abstract class LifecycleAppCompatActivity extends AppCompatActivity implements L
         setContentView(getContentViewWithToolbar());
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getDisplayHomeAsUpEnabled());
     }
 
     @LayoutRes
     abstract int getContentViewWithToolbar();
+
+    abstract boolean getDisplayHomeAsUpEnabled();
+
 }

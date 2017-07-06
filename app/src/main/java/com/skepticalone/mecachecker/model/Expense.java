@@ -7,9 +7,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-public interface Expense {
-
-    long getId();
+public interface Expense extends Item {
 
     @NonNull
     String getTitle();

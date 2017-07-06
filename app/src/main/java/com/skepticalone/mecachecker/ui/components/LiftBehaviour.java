@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui;
+package com.skepticalone.mecachecker.ui.components;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

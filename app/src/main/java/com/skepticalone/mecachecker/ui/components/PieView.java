@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui;
+package com.skepticalone.mecachecker.ui.components;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -69,7 +69,7 @@ public class PieView extends View {
         }
     }
 
-    public void set(long one, long two, long three) {
+    private void set(long one, long two, long three) {
         this.one = one;
         this.two = two;
         this.three = three;

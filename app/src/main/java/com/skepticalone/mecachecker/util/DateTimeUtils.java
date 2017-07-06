@@ -66,11 +66,11 @@ public final class DateTimeUtils {
         return timeFormatter.print(getTime(totalMinutes));
     }
 
-    public static String getTimeString(DateTime time) {
+    private static String getTimeString(DateTime time) {
         return timeFormatter.print(time);
     }
 
-    public static String getTimeString(DateTime time, LocalDate date) {
+    private static String getTimeString(DateTime time, LocalDate date) {
         return time.toLocalDate().isEqual(date) ? getTimeString(time) : getQualifiedString(getTimeString(time), dayFormatter.print(time));
     }
 

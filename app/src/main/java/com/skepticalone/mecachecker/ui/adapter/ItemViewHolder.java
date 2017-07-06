@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui;
+package com.skepticalone.mecachecker.ui.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

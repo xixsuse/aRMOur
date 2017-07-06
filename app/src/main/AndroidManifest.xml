@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".temporary.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="Temporary activity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,9 +21,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".temporary.DetailActivity"
+            android:name=".ui.DetailActivity"
             android:label="Temporary detail"
-            android:parentActivityName=".temporary.MainActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--<activity-->
         <!--android:name=".components.MainActivity"-->
@@ -45,7 +45,7 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/settings"
-            android:parentActivityName=".temporary.MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <!--<provider-->
         <!--android:name=".data.Provider"-->
