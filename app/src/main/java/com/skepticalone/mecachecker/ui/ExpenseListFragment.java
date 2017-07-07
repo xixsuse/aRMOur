@@ -34,7 +34,7 @@ public class ExpenseListFragment extends ListFragment<Expense, ExpenseEntity, Ex
         menu.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getViewModel().addExpense();
+                getViewModel().addRandomExpense();
             }
         });
     }

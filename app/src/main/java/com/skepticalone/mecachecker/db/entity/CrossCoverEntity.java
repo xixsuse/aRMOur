@@ -5,48 +5,48 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.model.Expense;
+import com.skepticalone.mecachecker.model.CrossCover;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
-@Entity(tableName = "expenses")
-public class ExpenseEntity implements Expense {
+@Entity(tableName = "cross_cover")
+public class CrossCoverEntity implements CrossCover {
 //    @Ignore
 //    public static final String
-//            SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `expenses` (" +
-//                    "`id` INTEGER PRIMARY KEY, " +
-//                    "`title` TEXT NOT NULL, " +
-//                    "`payment` INTEGER NOT NULL, " +
-//                    "`comment` TEXT DEFAULT NULL, " +
-//                    "`claimed` INTEGER DEFAULT NULL, " +
-//                    "`paid` INTEGER DEFAULT NULL, " +
-//                    "CHECK (length(`title`) > 0), " +
-//                    "CHECK (`paid` IS NULL OR `claimed` IS NOT NULL), " +
-//                    "CHECK (`claimed` <= `paid`), " +
-//                    "CHECK (length(`comment`) > 0)" +
-//                    ")",
-//            SQL_DROP_TABLE = "DROP TABLE IF EXISTS `expenses`";
+//            SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `cross_cover` (" +
+//            "`id` INTEGER PRIMARY KEY, " +
+//            "`date` INTEGER NOT NULL, " +
+//            "`payment` INTEGER NOT NULL, " +
+//            "`comment` TEXT DEFAULT NULL, " +
+//            "`claimed` INTEGER DEFAULT NULL, " +
+//            "`paid` INTEGER DEFAULT NULL, " +
+//            "CHECK (`paid` IS NULL OR `claimed` IS NOT NULL), " +
+//            "CHECK (`claimed` <= `paid`), " +
+//            "CHECK (length(`comment`) > 0)" +
+//            ")",
+//            SQL_DROP_TABLE = "DROP TABLE IF EXISTS `cross_cover`";
 
     @NonNull
-    private final String title;
+    private final LocalDate date;
     @NonNull
     private final BigDecimal payment;
     @Nullable
     private final String comment;
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private long id = 0L;
     @Nullable
     private DateTime claimed = null;
     @Nullable
     private DateTime paid = null;
 
-    public ExpenseEntity(
-            @NonNull String title,
+    public CrossCoverEntity(
+            @NonNull LocalDate date,
             @NonNull BigDecimal payment,
             @Nullable String comment) {
-        this.title = title;
+        this.date = date;
         this.payment = payment;
         this.comment = comment;
     }
@@ -62,8 +62,8 @@ public class ExpenseEntity implements Expense {
 
     @NonNull
     @Override
-    public String getTitle() {
-        return title;
+    public LocalDate getDate() {
+        return date;
     }
 
     @NonNull

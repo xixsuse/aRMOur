@@ -10,7 +10,9 @@ import com.skepticalone.mecachecker.model.Expense;
 import com.skepticalone.mecachecker.ui.adapter.ExpenseDetailAdapter;
 import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
-public class ExpenseDetailFragment extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel, ExpenseDetailAdapter> implements ExpenseDetailAdapter.Callbacks, PlainTextDialogFragment.Callbacks {
+public class ExpenseDetailFragment
+        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel, ExpenseDetailAdapter>
+        implements ExpenseDetailAdapter.Callbacks, PlainTextDialogFragment.Callbacks {
 
     private final ExpenseDetailAdapter mAdapter = new ExpenseDetailAdapter(this);
 

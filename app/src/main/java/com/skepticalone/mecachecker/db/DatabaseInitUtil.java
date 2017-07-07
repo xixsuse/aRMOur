@@ -1,6 +1,9 @@
 package com.skepticalone.mecachecker.db;
 
+import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
+
+import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -8,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DatabaseInitUtil {
+    private static final Random RANDOM = new Random();
 
     private static final String[] FIRST = new String[]{
             "Special edition", "New", "Cheap", "Quality", "Used"};
@@ -29,31 +33,34 @@ public class DatabaseInitUtil {
     }
 
     private static void generateData(List<ExpenseEntity> expenses) {
-        Random rnd = new Random();
         for (int i = 0; i < FIRST.length; i++) {
             for (int j = 0; j < SECOND.length; j++) {
-                expenses.add(randomExpense(rnd, i, j));
+                expenses.add(randomExpense(i, j));
             }
         }
     }
 
-    private static ExpenseEntity randomExpense(Random rnd, String title, String description) {
-//        DateTime claimed = rnd.nextBoolean() ? new DateTime(rnd.nextLong()) : null;
-//        DateTime paid = claimed == null ? null : new DateTime(rnd.nextLong());
+    public static CrossCoverEntity randomCrossCoverShift() {
+        return new CrossCoverEntity(new LocalDate(2015 + RANDOM.nextInt(3), 1 + RANDOM.nextInt(12), 1 + RANDOM.nextInt(28)), BigDecimal.valueOf(RANDOM.nextInt(10000), 2), "There's #" + RANDOM.nextInt());
+    }
+
+    private static ExpenseEntity randomExpense(String title, String description) {
+//        DateTime claimed = RANDOM.nextBoolean() ? new DateTime(RANDOM.nextLong()) : null;
+//        DateTime paid = claimed == null ? null : new DateTime(RANDOM.nextLong());
 //        if (paid != null && paid.isBefore(claimed)) paid = null;
 
         return new ExpenseEntity(
                 title,
-                BigDecimal.valueOf(rnd.nextInt(10000), 2),
+                BigDecimal.valueOf(RANDOM.nextInt(10000), 2),
                 description);
     }
 
-    public static ExpenseEntity randomExpense(Random rnd) {
-        return randomExpense(rnd, FIRST[rnd.nextInt(FIRST.length)] + " " + SECOND[rnd.nextInt(SECOND.length)], DESCRIPTION[rnd.nextInt(DESCRIPTION.length)]);
+    public static ExpenseEntity randomExpense() {
+        return randomExpense(FIRST[RANDOM.nextInt(FIRST.length)] + " " + SECOND[RANDOM.nextInt(SECOND.length)], DESCRIPTION[RANDOM.nextInt(DESCRIPTION.length)]);
     }
 
-    private static ExpenseEntity randomExpense(Random rnd, int i, int j) {
-        return randomExpense(rnd, FIRST[i] + " " + SECOND[j], DESCRIPTION[j]);
+    private static ExpenseEntity randomExpense(int i, int j) {
+        return randomExpense(FIRST[i] + " " + SECOND[j], DESCRIPTION[j]);
     }
 
     private static void insertData(AppDatabase db, List<ExpenseEntity> expenses) {

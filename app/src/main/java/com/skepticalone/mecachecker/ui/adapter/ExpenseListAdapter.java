@@ -13,11 +13,6 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
     }
 
     @Override
-    boolean areItemsTheSame(@NonNull Expense expense1, @NonNull Expense expense2) {
-        return expense1.getId() == expense2.getId();
-    }
-
-    @Override
     boolean areContentsTheSame(@NonNull Expense expense1, @NonNull Expense expense2) {
         return
                 Comparators.equalStrings(expense1.getTitle(), expense2.getTitle()) &&

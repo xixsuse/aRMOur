@@ -13,10 +13,8 @@ import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
 import org.joda.time.DateTime;
 
 import java.util.List;
-import java.util.Random;
 
-public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
-    private static final Random RANDOM = new Random();
+public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
     private final ExpenseDao mExpenseDao;
 
     public ExpenseViewModel(Application application) {
@@ -39,8 +37,8 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
         mExpenseDao.deleteExpense(id);
     }
 
-    public void addExpense() {
-        mExpenseDao.insertExpense(DatabaseInitUtil.randomExpense(RANDOM));
+    public void addRandomExpense() {
+        mExpenseDao.insertExpense(DatabaseInitUtil.randomExpense());
     }
 
     public void setTitle(long id, @NonNull String title) {

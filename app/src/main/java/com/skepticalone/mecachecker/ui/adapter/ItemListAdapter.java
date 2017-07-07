@@ -35,7 +35,7 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
         if (mItems == null) {
             notifyItemRangeInserted(0, items.size());
         } else {
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
                     return mItems.size();
@@ -48,7 +48,7 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return ItemListAdapter.this.areItemsTheSame(mItems.get(oldItemPosition), items.get(newItemPosition));
+                    return mItems.get(oldItemPosition).getId() == items.get(newItemPosition).getId();
                 }
 
                 @Override
@@ -83,8 +83,6 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
         });
         return viewHolder;
     }
-
-    abstract boolean areItemsTheSame(@NonNull ItemType item1, @NonNull ItemType item2);
 
     abstract boolean areContentsTheSame(@NonNull ItemType item1, @NonNull ItemType item2);
 

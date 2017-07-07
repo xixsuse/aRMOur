@@ -112,7 +112,7 @@ public final class DateTimeUtils {
         return dateTimeFormatter.print(instant);
     }
 
-    public static String getFullDateString(DateTime date) {
+    public static String getFullDateString(LocalDate date) {
         return fullDateFormatter.print(date);
     }
 

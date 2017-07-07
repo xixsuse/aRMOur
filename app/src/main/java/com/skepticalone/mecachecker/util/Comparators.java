@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.util;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
@@ -17,6 +18,10 @@ public final class Comparators {
 
     public static boolean equalStrings(@Nullable final String string1, @Nullable final String string2) {
         return string1 == null ? string2 == null : string1.equals(string2);
+    }
+
+    public static boolean equalLocalDates(@Nullable final LocalDate date1, @Nullable final LocalDate date2) {
+        return date1 == null ? date2 == null : (date2 != null && date1.isEqual(date2));
     }
 
     public static boolean equalDateTimes(@Nullable final DateTime date1, @Nullable final DateTime date2) {

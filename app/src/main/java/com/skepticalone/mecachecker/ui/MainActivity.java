@@ -33,9 +33,9 @@ public class MainActivity extends LifecycleAppCompatActivity implements ListFrag
             FragmentTransaction transaction =
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .add(R.id.list_fragment_container, new ExpenseListFragment(), LIST_FRAGMENT);
+                            .add(R.id.list_fragment_container, new CrossCoverListFragment(), LIST_FRAGMENT);
             if (mTwoPane) {
-                transaction.add(R.id.detail_fragment_container, new ExpenseDetailFragment(), DETAIL_FRAGMENT);
+                transaction.add(R.id.detail_fragment_container, new CrossCoverDetailFragment(), DETAIL_FRAGMENT);
             }
             transaction.commit();
         }

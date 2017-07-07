@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 
@@ -31,6 +32,9 @@ public class DetailActivity extends LifecycleAppCompatActivity {
         super.onCreate(savedInstanceState);
         Class<? extends ItemViewModel> viewModelClass;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
+            case Constants.ITEM_TYPE_CROSS_COVER:
+                viewModelClass = CrossCoverViewModel.class;
+                break;
             case Constants.ITEM_TYPE_EXPENSE:
                 viewModelClass = ExpenseViewModel.class;
                 break;
@@ -40,9 +44,20 @@ public class DetailActivity extends LifecycleAppCompatActivity {
         ItemViewModel model = ViewModelProviders.of(this).get(viewModelClass);
         model.selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
+            DetailFragment detailFragment;
+            switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
+                case Constants.ITEM_TYPE_CROSS_COVER:
+                    detailFragment = new CrossCoverDetailFragment();
+                    break;
+                case Constants.ITEM_TYPE_EXPENSE:
+                    detailFragment = new ExpenseDetailFragment();
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.detail_fragment_container, new ExpenseDetailFragment(), DETAIL_FRAGMENT)
+                    .add(R.id.detail_fragment_container, detailFragment, DETAIL_FRAGMENT)
                     .commit();
         }
     }
