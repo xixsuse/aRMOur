@@ -14,11 +14,11 @@ import com.skepticalone.mecachecker.db.dao.ExpenseDao;
 import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
 
-@Database(entities = {CrossCoverEntity.class, ExpenseEntity.class}, version = 1)
+@Database(entities = {CrossCoverEntity.class, ExpenseEntity.class}, version = 2)
 @TypeConverters({LocalDateConverter.class, DateTimeConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static final String DATABASE_NAME = "database";
+    private static final String DATABASE_NAME = "newDatabase";
     private static AppDatabase DATABASE;
 
     public static AppDatabase getInstance(Context applicationContext) {
@@ -28,6 +28,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
                     // TODO: 21/06/17 remove this
                     .allowMainThreadQueries()
+                    .openHelperFactory(new MyFactory())
 //                    .openHelperFactory(new FrameworkSQLiteOpenHelperFactory(){
 //                        @Override
 //                        public SupportSQLiteOpenHelper create(final SupportSQLiteOpenHelper.Configuration configuration) {

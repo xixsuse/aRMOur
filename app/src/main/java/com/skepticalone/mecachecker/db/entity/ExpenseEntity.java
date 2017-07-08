@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.db.entity;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
@@ -11,35 +12,34 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-@Entity(tableName = "expenses")
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_CLAIMED;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_COMMENT;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_PAID;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_PAYMENT;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_TITLE;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.TABLE_NAME;
+import static com.skepticalone.mecachecker.db.Contract.Expenses._ID;
+
+@Entity(tableName = TABLE_NAME)
 public class ExpenseEntity implements Expense {
-//    @Ignore
-//    public static final String
-//            SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `expenses` (" +
-//                    "`id` INTEGER PRIMARY KEY, " +
-//                    "`title` TEXT NOT NULL, " +
-//                    "`payment` INTEGER NOT NULL, " +
-//                    "`comment` TEXT DEFAULT NULL, " +
-//                    "`claimed` INTEGER DEFAULT NULL, " +
-//                    "`paid` INTEGER DEFAULT NULL, " +
-//                    "CHECK (length(`title`) > 0), " +
-//                    "CHECK (`paid` IS NULL OR `claimed` IS NOT NULL), " +
-//                    "CHECK (`claimed` <= `paid`), " +
-//                    "CHECK (length(`comment`) > 0)" +
-//                    ")",
-//            SQL_DROP_TABLE = "DROP TABLE IF EXISTS `expenses`";
 
     @NonNull
+    @ColumnInfo(name = COLUMN_NAME_TITLE)
     private final String title;
     @NonNull
+    @ColumnInfo(name = COLUMN_NAME_PAYMENT)
     private final BigDecimal payment;
     @Nullable
+    @ColumnInfo(name = COLUMN_NAME_COMMENT)
     private final String comment;
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = _ID)
     private long id = 0L;
     @Nullable
+    @ColumnInfo(name = COLUMN_NAME_CLAIMED)
     private DateTime claimed = null;
     @Nullable
+    @ColumnInfo(name = COLUMN_NAME_PAID)
     private DateTime paid = null;
 
     public ExpenseEntity(

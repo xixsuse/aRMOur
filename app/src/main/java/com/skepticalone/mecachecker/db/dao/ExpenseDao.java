@@ -13,27 +13,69 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_CLAIMED;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_PAID;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.COLUMN_NAME_TITLE;
+import static com.skepticalone.mecachecker.db.Contract.Expenses.TABLE_NAME;
+import static com.skepticalone.mecachecker.db.Contract.Expenses._ID;
+
 @Dao
 public interface ExpenseDao {
     @Insert
     void insertExpense(ExpenseEntity expense);
 
-    @Query("SELECT * FROM expenses ORDER BY paid IS NULL, claimed IS NULL, IFNULL(paid, claimed)")
+    @Query("SELECT * FROM " +
+            TABLE_NAME + " " +
+            "ORDER BY " +
+            COLUMN_NAME_PAID +
+            " IS NULL, " +
+            COLUMN_NAME_CLAIMED +
+            " IS NULL, IFNULL(" +
+            COLUMN_NAME_PAID +
+            ", " +
+            COLUMN_NAME_CLAIMED +
+            ")")
     LiveData<List<ExpenseEntity>> getExpenses();
 
-    @Query("SELECT * FROM expenses WHERE id = :id")
+    @Query("SELECT * FROM " +
+            TABLE_NAME +
+            " WHERE " +
+            _ID +
+            " = :id")
     LiveData<ExpenseEntity> getExpense(long id);
 
-    @Query("UPDATE expenses SET title = :title WHERE id = :id")
+    @Query("UPDATE " +
+            TABLE_NAME +
+            " SET " +
+            COLUMN_NAME_TITLE +
+            " = :title WHERE " +
+            _ID +
+            " = :id")
     void setTitle(long id, @NonNull String title);
 
-    @Query("UPDATE expenses SET claimed = :claimed WHERE id = :id")
+    @Query("UPDATE " +
+            TABLE_NAME +
+            " SET " +
+            COLUMN_NAME_CLAIMED +
+            " = :claimed WHERE " +
+            _ID +
+            " = :id")
     void setClaimed(long id, @Nullable DateTime claimed);
 
-    @Query("UPDATE expenses SET paid = :paid WHERE id = :id")
+    @Query("UPDATE " +
+            TABLE_NAME +
+            " SET " +
+            COLUMN_NAME_PAID +
+            " = :paid WHERE " +
+            _ID +
+            " = :id")
     void setPaid(long id, @Nullable DateTime paid);
 
-    @Query("DELETE FROM expenses WHERE id = :id")
+    @Query("DELETE FROM " +
+            TABLE_NAME +
+            " WHERE " +
+            _ID +
+            " = :id")
     void deleteExpense(long id);
 
 }
