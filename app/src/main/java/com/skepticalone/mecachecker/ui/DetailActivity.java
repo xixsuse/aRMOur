@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.ItemViewModel;
@@ -30,17 +31,22 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int title;
         Class<? extends ItemViewModel> viewModelClass;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
             case Constants.ITEM_TYPE_CROSS_COVER:
+                title = R.string.cross_cover;
                 viewModelClass = CrossCoverViewModel.class;
                 break;
             case Constants.ITEM_TYPE_EXPENSE:
+                title = R.string.expense;
                 viewModelClass = ExpenseViewModel.class;
                 break;
             default:
                 throw new IllegalStateException();
         }
+        //noinspection ConstantConditions
+        getSupportActionBar().setTitle(title);
         ItemViewModel model = ViewModelProviders.of(this).get(viewModelClass);
         model.selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {

@@ -5,8 +5,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +25,9 @@ import com.skepticalone.mecachecker.ui.adapter.ItemListAdapter;
 import java.util.List;
 
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
+    final static String IS_TWO_PANE = "IS_TWO_PANE";
     private final ItemListAdapter<ItemType> mAdapter = onCreateAdapter();
     private ViewModel mModel;
     private Callbacks mCallbacks;
@@ -80,6 +83,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_list, container, false);
         mLayoutManager = recyclerView.getLayoutManager();
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
@@ -92,18 +96,56 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mModel = ViewModelProviders.of(getActivity()).get(getViewModelClass());
-        mModel.getItems().observe(this, new Observer<List<Entity>>() {
-            @Override
-            public void onChanged(@Nullable List<Entity> items) {
-                mAdapter.setItems(items);
-            }
-        });
+        mModel.getItems().observe(this, this);
+        if (getArguments().getBoolean(IS_TWO_PANE, false)) {
+            mModel.getSelectedItem().observe(this, new Observer<Entity>() {
+                @Override
+                public void onChanged(@Nullable Entity entity) {
+                    mAdapter.setSelectedId(entity == null ? -1 : entity.getId());
+                }
+            });
+        }
+//        Transformat.map(mModel.getSelectedItem(), new Function<Entity, Object>() {
+//            @Override
+//            public Object apply(Entity input) {
+//                return null;
+//            }
+//        });ions.map(mModel.getSelectedItem(), new Function<Entity, Object>() {
+//            @Override
+//            public Object apply(Entity input) {
+//                return null;
+//            }
+//        });
+//        Transformations.switchMap(mModel.getSelectedItem(), new Function<Entity, LiveData<? extends Object>>() {
+//            @Override
+//            public LiveData<? extends Object> apply(Entity input) {
+//                return null;
+//            }
+//        })
+//        mModel.getSelectedItem().observe(this, new Observer<Entity>() {
+//            @Override
+//            public void onChanged(@Nullable Entity item) {
+//                mAdapter.setSelectedItem(item);
+//            }
+//        });
+//        FloatingActionMenu menu = ;
+//        if (menu.isOpened())
+//        if (savedInstanceState == null) {
+//            menu.close(false);
+//            menu.hideMenuButton(false);
+//        }
         setupFab(
                 mCallbacks.getFloatingActionMenu(),
                 mCallbacks.getFabNormalDay(),
                 mCallbacks.getFabLongDay(),
                 mCallbacks.getFabNightShift()
         );
+    }
+
+    @Override
+    @CallSuper
+    public void onChanged(@Nullable List<Entity> entities) {
+        mAdapter.setItems(entities);
     }
 
     final ItemViewModel<Entity> getViewModel() {
@@ -126,9 +168,8 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
 
     @Override
     public void onClick(long itemId) {
-        if (!mCallbacks.onItemSelected(getItemType(), itemId)) {
-            mModel.selectItem(itemId);
-        }
+        mModel.selectItem(itemId);
+        mCallbacks.onItemSelected(getItemType(), itemId);
     }
 
     @Override
@@ -137,8 +178,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     }
 
     interface Callbacks {
-        // returns true if activity handled the event
-        boolean onItemSelected(int itemType, long itemId);
+        void onItemSelected(int itemType, long itemId);
 
         FloatingActionMenu getFloatingActionMenu();
 

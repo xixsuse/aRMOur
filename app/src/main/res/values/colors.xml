@@ -3,4 +3,5 @@
     <color name="one">#d07f00</color>
     <color name="two">#07198f</color>
     <color name="three">#82c200</color>
+    <color name="selected">#ffff8d</color>
 </resources>
