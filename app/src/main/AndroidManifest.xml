@@ -13,7 +13,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.MainActivity"
-            android:label="Temporary activity"
+            android:label="Temporary list"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,33 +25,42 @@
             android:label="Temporary detail"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity -->
+        <!-- android:name=".components.MainActivity" -->
+        <!-- android:label="@string/title_shift_list" -->
+        <!-- android:launchMode="singleTop"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <!-- <activity -->
+        <!-- android:name=".components.DetailActivity" -->
+        <!-- android:parentActivityName=".components.MainActivity"/> -->
+        <!-- <activity -->
+        <!-- android:name=".summary.SummaryActivity" -->
+        <!-- android:label="@string/summary" -->
+        <!-- android:parentActivityName=".components.MainActivity" -->
+        <!-- android:theme="@style/AppTheme" /> -->
         <!--<activity-->
-        <!--android:name=".components.MainActivity"-->
-        <!--android:label="@string/title_shift_list"-->
-        <!--android:launchMode="singleTop">-->
+        <!--android:name=".settings.SettingsActivity"-->
+        <!--android:label="@string/settings"-->
+        <!--android:parentActivityName=".ui.MainActivity" />-->
+
+        <!-- <provider -->
+        <!-- android:name=".data.Provider" -->
+        <!-- android:authorities="com.skepticalone.mecachecker.provider" -->
+        <!-- android:exported="false" /> -->
+
+        <!--<activity-->
+        <!--android:name=".ui.BottomActivity"-->
+        <!--android:label="@string/title_activity_bottom">-->
         <!--<intent-filter>-->
         <!--<action android:name="android.intent.action.MAIN" />-->
+
         <!--<category android:name="android.intent.category.LAUNCHER" />-->
         <!--</intent-filter>-->
         <!--</activity>-->
-        <!--<activity-->
-        <!--android:name=".components.DetailActivity"-->
-        <!--android:parentActivityName=".components.MainActivity"/>-->
-        <!--<activity-->
-        <!--android:name=".summary.SummaryActivity"-->
-        <!--android:label="@string/summary"-->
-        <!--android:parentActivityName=".components.MainActivity"-->
-        <!--android:theme="@style/AppTheme" />-->
-        <activity
-            android:name=".settings.SettingsActivity"
-            android:label="@string/settings"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!--<provider-->
-        <!--android:name=".data.Provider"-->
-        <!--android:authorities="com.skepticalone.mecachecker.provider"-->
-        <!--android:exported="false" />-->
-
     </application>
 
 </manifest>
