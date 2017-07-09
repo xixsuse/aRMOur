@@ -27,26 +27,26 @@ public class ExpenseDetailFragment
     }
 
     @Override
-    public void setClaimed(long id, boolean claimed) {
-        getViewModel().setClaimed(id, claimed);
+    public void setClaimed(long itemId, boolean claimed) {
+        getViewModel().setClaimed(itemId, claimed);
     }
 
     @Override
-    public void setPaid(long id, boolean paid) {
-        getViewModel().setPaid(id, paid);
+    public void setPaid(long itemId, boolean paid) {
+        getViewModel().setPaid(itemId, paid);
     }
 
     @Override
-    public void changeTitle(long id, @NonNull String currentTitle) {
-        PlainTextDialogFragment fragment = PlainTextDialogFragment.newInstance(id, currentTitle, R.string.title);
+    public void changeTitle(long itemId, @NonNull String currentTitle) {
+        PlainTextDialogFragment fragment = PlainTextDialogFragment.newInstance(itemId, currentTitle, R.string.title);
         fragment.setTargetFragment(this, 0);
         fragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     @Override
-    public void savePlainText(long expenseId, @Nullable String trimmedTextWithLength) {
+    public void savePlainText(long itemId, @Nullable String trimmedTextWithLength) {
         if (trimmedTextWithLength != null) {
-            getViewModel().setTitle(expenseId, trimmedTextWithLength);
+            getViewModel().setTitle(itemId, trimmedTextWithLength);
         }
     }
 

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.skepticalone.mecachecker">
-
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -22,54 +21,6 @@
         <activity
             android:name=".ui.DetailActivity"
             android:parentActivityName=".ui.MainActivity" />
-        <!-- <activity -->
-        <!-- android:name=".components.MainActivity" -->
-        <!-- android:label="@string/title_shift_list" -->
-        <!-- android:launchMode="singleTop"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-        <!-- <activity -->
-        <!-- android:name=".components.DetailActivity" -->
-        <!-- android:parentActivityName=".components.MainActivity"/> -->
-        <!-- <activity -->
-        <!-- android:name=".summary.SummaryActivity" -->
-        <!-- android:label="@string/summary" -->
-        <!-- android:parentActivityName=".components.MainActivity" -->
-        <!-- android:theme="@style/AppTheme" /> -->
-        <!-- <activity -->
-        <!-- android:name=".settings.SettingsActivity" -->
-        <!-- android:label="@string/settings" -->
-        <!-- android:parentActivityName=".ui.MainActivity" /> -->
-
-
-        <!-- <provider -->
-        <!-- android:name=".data.Provider" -->
-        <!-- android:authorities="com.skepticalone.mecachecker.provider" -->
-        <!-- android:exported="false" /> -->
-
-
-        <!-- <activity -->
-        <!-- android:name=".ui.BottomActivity" -->
-        <!-- android:label="@string/title_activity_bottom"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-        <!--<activity-->
-        <!--android:name=".CoolActivity"-->
-        <!--android:label="@string/title_activity_cool"-->
-        <!--android:theme="@style/AppTheme" />-->
-        <!--<activity android:name=".UncoolActivity" />-->
-        <!--<activity-->
-        <!--android:name=".DirtyActivity"-->
-        <!--android:label="@string/title_activity_dirty"-->
-        <!--android:theme="@style/AppTheme"></activity>-->
     </application>
 
 </manifest>

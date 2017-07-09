@@ -47,7 +47,7 @@ public class PlainTextDialogFragment extends EditTextDialogFragment {
     }
 
     public interface Callbacks {
-        void savePlainText(long expenseId, @Nullable String trimmedTextWithLength);
+        void savePlainText(long itemId, @Nullable String trimmedTextWithLength);
     }
 
 }

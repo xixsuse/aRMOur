@@ -9,24 +9,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
 import com.skepticalone.mecachecker.R;
 
-abstract public class EditTextDialogFragment extends AppCompatDialogFragment implements DialogInterface.OnClickListener {
+abstract public class EditTextDialogFragment extends AbstractDialogFragment implements DialogInterface.OnClickListener {
     private static final String TAG = "EditTextDialogFragment";
-    private static final String ITEM_ID = "ITEM_ID";
     private static final String TEXT = "TEXT";
     private static final String TITLE_ID = "TITLE_ID";
     private static final String HINT = "HINT";
     private EditText editText;
-    private long mItemId;
 
-    static Bundle getArgs(long id, @StringRes int title, @Nullable String text, @StringRes int hint) {
-        Bundle args = new Bundle();
-        args.putLong(ITEM_ID, id);
+    static Bundle getArgs(long itemId, @StringRes int title, @Nullable String text, @StringRes int hint) {
+        Bundle args = getArgs(itemId);
         args.putInt(TITLE_ID, title);
         args.putString(TEXT, text);
         args.putInt(HINT, hint);
@@ -37,7 +33,6 @@ abstract public class EditTextDialogFragment extends AppCompatDialogFragment imp
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mItemId = getArguments().getLong(ITEM_ID);
         editText = (EditText) LayoutInflater.from(context).inflate(R.layout.edit_text, null, false);
         editText.setInputType(getInputType());
         editText.setText(getArguments().getString(TEXT));
@@ -45,10 +40,6 @@ abstract public class EditTextDialogFragment extends AppCompatDialogFragment imp
     }
 
     abstract int getInputType();
-
-    long getItemId() {
-        return mItemId;
-    }
 
     @NonNull
     @Override

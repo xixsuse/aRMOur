@@ -7,10 +7,13 @@ import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.model.CrossCover;
 import com.skepticalone.mecachecker.ui.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.ui.components.DatePickerDialogFragment;
+
+import org.joda.time.LocalDate;
 
 public class CrossCoverDetailFragment
         extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
-        implements CrossCoverDetailAdapter.Callbacks {
+        implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks {
 
     @NonNull
     @Override
@@ -24,13 +27,25 @@ public class CrossCoverDetailFragment
     }
 
     @Override
-    public void setClaimed(long id, boolean claimed) {
-        getViewModel().setClaimed(id, claimed);
+    public void changeDate(long itemId, @NonNull LocalDate currentDate) {
+        DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(itemId, currentDate);
+        fragment.setTargetFragment(this, 0);
+        fragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     @Override
-    public void setPaid(long id, boolean paid) {
-        getViewModel().setPaid(id, paid);
+    public void onDateSet(long itemId, @NonNull LocalDate date) {
+        getViewModel().setDate(itemId, date);
+    }
+
+    @Override
+    public void setClaimed(long itemId, boolean claimed) {
+        getViewModel().setClaimed(itemId, claimed);
+    }
+
+    @Override
+    public void setPaid(long itemId, boolean paid) {
+        getViewModel().setPaid(itemId, paid);
     }
 
 }

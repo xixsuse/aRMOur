@@ -16,8 +16,6 @@ import com.skepticalone.mecachecker.R;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
-    //    private static final String MASTER_TO_DETAIL = "MASTER_TO_DETAIL";
-//    private static final String TAG = "MainActivity";
     private FloatingActionMenu mFabMenu;
     private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
@@ -30,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         navigation.setOnNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemReselectedListener(this);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
-//        Log.i(TAG, "onCreate: mTwoPane = " + mTwoPane);
         mFabMenu = findViewById(R.id.fab_menu);
         mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
         mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
@@ -40,27 +37,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (savedInstanceState == null) {
             navigation.setSelectedItemId(navigation.getSelectedItemId());
         }
-
-//            FragmentTransaction transaction =
-//                    getSupportFragmentManager()
-//                            .beginTransaction()
-//                            .add(R.id.list_fragment_container, new ExpenseListFragment(), LIST_FRAGMENT);
-//            if (mTwoPane) {
-//                transaction.add(R.id.detail_fragment_container, new ExpenseDetailFragment(), DETAIL_FRAGMENT);
-//            }
-//            transaction.commit();
-//        }
     }
-//
-//    @Override
-//    boolean getDisplayHomeAsUpEnabled() {
-//        return false;
-//    }
-//
-//    @Override
-//    int getContentViewWithToolbar() {
-//        return R.layout.main_activity;
-//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -107,14 +84,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void onItemSelected(int itemType, long itemId) {
-//        if (!mTwoPane) {
-////            model.selectItem(expenseId);
-////            ListFragment listFragment = (ListFragment) getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT);
-////            if (listFragment != null) {
-////                listFragment.
-////            }
-////        } else {
-//        }
         if (!mTwoPane) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(DetailActivity.ITEM_TYPE, itemType);

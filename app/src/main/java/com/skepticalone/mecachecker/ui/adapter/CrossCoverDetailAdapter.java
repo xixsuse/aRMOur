@@ -10,6 +10,7 @@ import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
 
@@ -60,12 +61,12 @@ public class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
             case ROW_NUMBER_DATE:
                 primaryIcon = R.drawable.ic_calendar_black_24dp;
                 holder.setText(R.string.date, DateTimeUtils.getFullDateString(crossCover.getDate()));
-//                onClickListener = new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mCallbacks.setDate(crossCover.getId(), crossCover.getTitle());
-//                    }
-//                };
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changeDate(crossCover.getId(), crossCover.getDate());
+                    }
+                };
                 break;
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
@@ -130,7 +131,7 @@ public class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
     }
 
     public interface Callbacks extends PayableCallbacks {
-//        void changeDate(long id, @NonNull LocalDate currentDate);
+        void changeDate(long id, @NonNull LocalDate currentDate);
     }
 
 }
