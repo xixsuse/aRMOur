@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.db;
+package com.skepticalone.mecachecker.data;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.SupportSQLiteOpenHelper;

@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,19 +17,21 @@ import com.skepticalone.mecachecker.model.Item;
 import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>, Adapter extends ItemDetailAdapter<ItemType>> extends LifecycleFragment {
+abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment {
 
     static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
+    private final ItemDetailAdapter<ItemType> mAdapter = onCreateAdapter();
     private ViewModel mModel;
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_detail, container, false);
-        recyclerView.setAdapter(getAdapter());
+        recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
 
-    abstract Adapter getAdapter();
+    @NonNull
+    abstract ItemDetailAdapter<ItemType> onCreateAdapter();
 
     abstract Class<ViewModel> getViewModelClass();
 
@@ -43,7 +46,7 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         mModel.getSelectedItem().observe(this, new Observer<Entity>() {
                     @Override
                     public void onChanged(@Nullable Entity entity) {
-                        if (entity != null) getAdapter().setItem(entity);
+                        if (entity != null) mAdapter.setItem(entity);
                     }
                 }
         );

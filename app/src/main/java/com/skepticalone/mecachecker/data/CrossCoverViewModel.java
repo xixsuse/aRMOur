@@ -4,11 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.db.AppDatabase;
-import com.skepticalone.mecachecker.db.DatabaseInitUtil;
-import com.skepticalone.mecachecker.db.dao.CrossCoverDao;
-import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -38,10 +33,15 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
         crossCoverDao.deleteCrossCoverShift(id);
     }
 
-    public void addRandomCrossCoverShift() {
-        crossCoverDao.insertCrossCoverShift(DatabaseInitUtil.randomCrossCoverShift());
+    @Override
+    public void addItem(CrossCoverEntity crossCoverShift) {
+        crossCoverDao.insertCrossCoverShift(crossCoverShift);
     }
 
+    @Override
+    CrossCoverEntity generateRandomItem() {
+        return DatabaseInitUtil.randomCrossCoverShift();
+    }
 
     public void setDate(long id, @NonNull LocalDate date) {
         crossCoverDao.setDate(id, date);

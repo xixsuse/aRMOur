@@ -5,11 +5,6 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.db.AppDatabase;
-import com.skepticalone.mecachecker.db.DatabaseInitUtil;
-import com.skepticalone.mecachecker.db.dao.ExpenseDao;
-import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
-
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -37,8 +32,9 @@ public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
         mExpenseDao.deleteExpense(id);
     }
 
-    public void addRandomExpense() {
-        mExpenseDao.insertExpense(DatabaseInitUtil.randomExpense());
+    @Override
+    public void addItem(ExpenseEntity expense) {
+        mExpenseDao.insertExpense(expense);
     }
 
     public void setTitle(long id, @NonNull String title) {
@@ -53,4 +49,8 @@ public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
         mExpenseDao.setPaid(id, paid ? DateTime.now() : null);
     }
 
+    @Override
+    ExpenseEntity generateRandomItem() {
+        return DatabaseInitUtil.randomExpense();
+    }
 }

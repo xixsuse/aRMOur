@@ -1,19 +1,21 @@
 package com.skepticalone.mecachecker.ui;
 
+import android.support.annotation.NonNull;
+
+import com.skepticalone.mecachecker.data.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
-import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.model.CrossCover;
 import com.skepticalone.mecachecker.ui.adapter.CrossCoverDetailAdapter;
+import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 
 public class CrossCoverDetailFragment
-        extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel, CrossCoverDetailAdapter>
+        extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
         implements CrossCoverDetailAdapter.Callbacks {
 
-    private final CrossCoverDetailAdapter mAdapter = new CrossCoverDetailAdapter(this);
-
+    @NonNull
     @Override
-    CrossCoverDetailAdapter getAdapter() {
-        return mAdapter;
+    ItemDetailAdapter<CrossCover> onCreateAdapter() {
+        return new CrossCoverDetailAdapter(this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.db.converter;
+package com.skepticalone.mecachecker.data;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
-public class LocalDateConverter {
+class LocalDateConverter {
 
     @TypeConverter
     public static long dateToMillis(@NonNull LocalDate date) {

@@ -43,4 +43,12 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
 
     public abstract void deleteItem(long id);
 
+    public abstract void addItem(Entity item);
+
+    public final void addRandomItem() {
+        addItem(generateRandomItem());
+    }
+
+    abstract Entity generateRandomItem();
+
 }

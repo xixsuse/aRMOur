@@ -8,4 +8,4 @@
 /build
 /captures
 .externalNativeBuild
-/app/schemas/com.skepticalone.mecachecker.db.AppDatabase/*.json
+/app/schemas/com.skepticalone.mecachecker.data.AppDatabase/*.json

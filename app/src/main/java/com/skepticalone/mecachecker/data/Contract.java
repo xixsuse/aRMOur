@@ -1,8 +1,8 @@
-package com.skepticalone.mecachecker.db;
+package com.skepticalone.mecachecker.data;
 
 import android.provider.BaseColumns;
 
-public final class Contract {
+final class Contract {
     private Contract() {
     }
 
@@ -76,15 +76,14 @@ public final class Contract {
 //                SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 //    }
 //
-    public static class CrossCoverShifts implements BaseColumns {
-        public static final String
+    static class CrossCoverShifts implements BaseColumns {
+        static final String
                 TABLE_NAME = "cross_cover",
                 COLUMN_NAME_DATE = "date",
                 COLUMN_NAME_PAYMENT = "payment",
                 COLUMN_NAME_CLAIMED = "claimed",
                 COLUMN_NAME_PAID = "paid",
-                COLUMN_NAME_COMMENT = "comment";
-        static final String
+                COLUMN_NAME_COMMENT = "comment",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME +
                 " (" +
@@ -101,15 +100,14 @@ public final class Contract {
                 SQL_DROP_TABLE = dropTable(TABLE_NAME);
     }
 
-    public static class Expenses implements BaseColumns {
-        public static final String
+    static class Expenses implements BaseColumns {
+        static final String
                 TABLE_NAME = "expenses",
                 COLUMN_NAME_TITLE = "title",
                 COLUMN_NAME_PAYMENT = "payment",
                 COLUMN_NAME_CLAIMED = "claimed",
                 COLUMN_NAME_PAID = "paid",
-                COLUMN_NAME_COMMENT = "comment";
-        static final String
+                COLUMN_NAME_COMMENT = "comment",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME +
                 " (" +

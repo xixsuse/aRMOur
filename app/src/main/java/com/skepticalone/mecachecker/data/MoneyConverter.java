@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.db.converter;
+package com.skepticalone.mecachecker.data;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class MoneyConverter {
+class MoneyConverter {
 
     private static final int MONEY_SCALE = 2;
 

@@ -1,11 +1,11 @@
-package com.skepticalone.mecachecker.db.converter;
+package com.skepticalone.mecachecker.data;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
-public class DateTimeConverter {
+class DateTimeConverter {
 
     @TypeConverter
     @Nullable

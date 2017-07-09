@@ -1,32 +1,25 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.view.View;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
+import android.support.annotation.NonNull;
+
+import com.skepticalone.mecachecker.data.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
-import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.model.CrossCover;
 import com.skepticalone.mecachecker.ui.adapter.CrossCoverListAdapter;
+import com.skepticalone.mecachecker.ui.adapter.ItemListAdapter;
 
-public class CrossCoverListFragment extends ListFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel, CrossCoverListAdapter> {
+public class CrossCoverListFragment extends SingleAddListFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel> {
 
-    private final CrossCoverListAdapter mAdapter = new CrossCoverListAdapter(this);
-
+    @NonNull
     @Override
-    CrossCoverListAdapter getAdapter() {
-        return mAdapter;
+    ItemListAdapter<CrossCover> onCreateAdapter() {
+        return new CrossCoverListAdapter(this);
     }
 
     @Override
-    void setupFab(FloatingActionMenu menu, FloatingActionButton fabNormalDay, FloatingActionButton fabLongDay, FloatingActionButton fabNightShift) {
-        menu.setOnMenuButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getViewModel().addRandomCrossCoverShift();
-            }
-        });
-
+    int getItemType() {
+        return Constants.ITEM_TYPE_CROSS_COVER;
     }
 
     @Override
@@ -34,8 +27,4 @@ public class CrossCoverListFragment extends ListFragment<CrossCover, CrossCoverE
         return CrossCoverViewModel.class;
     }
 
-    @Override
-    int getItemType() {
-        return Constants.ITEM_TYPE_CROSS_COVER;
-    }
 }

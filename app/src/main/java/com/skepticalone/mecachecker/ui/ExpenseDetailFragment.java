@@ -4,21 +4,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ExpenseEntity;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
-import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.model.Expense;
 import com.skepticalone.mecachecker.ui.adapter.ExpenseDetailAdapter;
+import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
 public class ExpenseDetailFragment
-        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel, ExpenseDetailAdapter>
+        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
         implements ExpenseDetailAdapter.Callbacks, PlainTextDialogFragment.Callbacks {
 
-    private final ExpenseDetailAdapter mAdapter = new ExpenseDetailAdapter(this);
-
+    @NonNull
     @Override
-    ExpenseDetailAdapter getAdapter() {
-        return mAdapter;
+    ItemDetailAdapter<Expense> onCreateAdapter() {
+        return new ExpenseDetailAdapter(this);
     }
 
     @Override

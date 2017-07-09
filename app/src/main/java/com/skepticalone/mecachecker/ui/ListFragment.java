@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,8 +23,9 @@ import com.skepticalone.mecachecker.ui.adapter.ItemListAdapter;
 import java.util.List;
 
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>, Adapter extends ItemListAdapter<ItemType>> extends LifecycleFragment implements ItemListAdapter.Callbacks {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks {
 
+    private final ItemListAdapter<ItemType> mAdapter = onCreateAdapter();
     private ViewModel mModel;
     private Callbacks mCallbacks;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -65,6 +67,9 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
 
     };
 
+    @NonNull
+    abstract ItemListAdapter<ItemType> onCreateAdapter();
+
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
@@ -75,11 +80,9 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_list, container, false);
         mLayoutManager = recyclerView.getLayoutManager();
-        recyclerView.setAdapter(getAdapter());
+        recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
-
-    abstract Adapter getAdapter();
 
     abstract void setupFab(FloatingActionMenu menu, FloatingActionButton fabNormalDay, FloatingActionButton fabLongDay, FloatingActionButton fabNightShift);
 
@@ -91,8 +94,8 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mModel = ViewModelProviders.of(getActivity()).get(getViewModelClass());
         mModel.getItems().observe(this, new Observer<List<Entity>>() {
             @Override
-            public void onChanged(@Nullable List<Entity> entities) {
-                getAdapter().setItems(entities);
+            public void onChanged(@Nullable List<Entity> items) {
+                mAdapter.setItems(items);
             }
         });
         setupFab(
@@ -103,20 +106,20 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         );
     }
 
-    final ViewModel getViewModel() {
+    final ItemViewModel<Entity> getViewModel() {
         return mModel;
     }
 
     @Override
     public final void onStart() {
         super.onStart();
-        getAdapter().registerAdapterDataObserver(mObserver);
+        mAdapter.registerAdapterDataObserver(mObserver);
     }
 
     @Override
     public final void onStop() {
         super.onStop();
-        getAdapter().unregisterAdapterDataObserver(mObserver);
+        mAdapter.unregisterAdapterDataObserver(mObserver);
     }
 
     abstract int getItemType();

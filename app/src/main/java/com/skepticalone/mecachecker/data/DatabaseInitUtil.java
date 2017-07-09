@@ -1,7 +1,4 @@
-package com.skepticalone.mecachecker.db;
-
-import com.skepticalone.mecachecker.db.entity.CrossCoverEntity;
-import com.skepticalone.mecachecker.db.entity.ExpenseEntity;
+package com.skepticalone.mecachecker.data;
 
 import org.joda.time.LocalDate;
 
@@ -10,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DatabaseInitUtil {
+class DatabaseInitUtil {
     private static final Random RANDOM = new Random();
 
     private static final String[] FIRST = new String[]{
