@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import org.joda.time.DateTime;
@@ -28,29 +29,47 @@ public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
     }
 
     @Override
-    public void deleteItem(long id) {
+    public void deleteItemSync(long id) {
         mExpenseDao.deleteExpense(id);
     }
 
     @Override
-    public void addItem(ExpenseEntity expense) {
+    void insertItemSync(@NonNull ExpenseEntity expense) {
         mExpenseDao.insertExpense(expense);
-    }
-
-    public void setTitle(long id, @NonNull String title) {
-        mExpenseDao.setTitle(id, title);
-    }
-
-    public void setClaimed(long id, boolean claimed) {
-        mExpenseDao.setClaimed(id, claimed ? DateTime.now() : null);
-    }
-
-    public void setPaid(long id, boolean paid) {
-        mExpenseDao.setPaid(id, paid ? DateTime.now() : null);
     }
 
     @Override
     ExpenseEntity generateRandomItem() {
         return DatabaseInitUtil.randomExpense();
+    }
+
+    @MainThread
+    public void setTitle(final long id, @NonNull final String title) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mExpenseDao.setTitle(id, title);
+            }
+        }).start();
+    }
+
+    @MainThread
+    public void setClaimed(final long id, final boolean claimed) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mExpenseDao.setClaimed(id, claimed ? DateTime.now() : null);
+            }
+        }).start();
+    }
+
+    @MainThread
+    public void setPaid(final long id, final boolean paid) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mExpenseDao.setPaid(id, paid ? DateTime.now() : null);
+            }
+        }).start();
     }
 }

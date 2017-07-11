@@ -2,7 +2,10 @@ package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.database.sqlite.SQLiteConstraintException;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -10,6 +13,7 @@ import org.joda.time.LocalDate;
 import java.util.List;
 
 public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
+    private static final String TAG = "CrossCoverViewModel";
 
     private final CrossCoverDao crossCoverDao;
 
@@ -29,12 +33,12 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
     }
 
     @Override
-    public void deleteItem(long id) {
+    public void deleteItemSync(long id) {
         crossCoverDao.deleteCrossCoverShift(id);
     }
 
     @Override
-    public void addItem(CrossCoverEntity crossCoverShift) {
+    void insertItemSync(@NonNull CrossCoverEntity crossCoverShift) {
         crossCoverDao.insertCrossCoverShift(crossCoverShift);
     }
 
@@ -43,15 +47,37 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
         return DatabaseInitUtil.randomCrossCoverShift();
     }
 
-    public void setDate(long id, @NonNull LocalDate date) {
-        crossCoverDao.setDate(id, date);
+    @MainThread
+    public void setDate(final long id, @NonNull final LocalDate date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    crossCoverDao.setDate(id, date);
+                } catch (SQLiteConstraintException e) {
+                    Log.e(TAG, "setDate: ", e);
+                }
+            }
+        }).start();
     }
 
-    public void setClaimed(long id, boolean claimed) {
-        crossCoverDao.setClaimed(id, claimed ? DateTime.now() : null);
+    @MainThread
+    public void setClaimed(final long id, final boolean claimed) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                crossCoverDao.setClaimed(id, claimed ? DateTime.now() : null);
+            }
+        }).start();
     }
 
-    public void setPaid(long id, boolean paid) {
-        crossCoverDao.setPaid(id, paid ? DateTime.now() : null);
+    @MainThread
+    public void setPaid(final long id, final boolean paid) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                crossCoverDao.setPaid(id, paid ? DateTime.now() : null);
+            }
+        }).start();
     }
 }

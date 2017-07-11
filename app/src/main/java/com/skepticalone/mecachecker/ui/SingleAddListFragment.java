@@ -39,7 +39,7 @@ abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemT
     }
 
     final void addItem() {
-        getViewModel().addRandomItem();
+        getViewModel().insertRandomItem();
     }
 
 }

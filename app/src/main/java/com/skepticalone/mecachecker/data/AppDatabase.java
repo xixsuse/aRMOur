@@ -18,8 +18,6 @@ abstract class AppDatabase extends RoomDatabase {
         if (DATABASE == null) {
             DATABASE = Room
                     .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
-                    // TODO: 21/06/17 remove this
-                    .allowMainThreadQueries()
                     .openHelperFactory(new HelperFactory())
                     .build();
         }

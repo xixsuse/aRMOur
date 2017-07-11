@@ -6,6 +6,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.model.Item;
 
@@ -41,14 +44,77 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
 
     abstract LiveData<Entity> getItem(long id);
 
-    public abstract void deleteItem(long id);
+    @WorkerThread
+    abstract void insertItemSync(@NonNull Entity item);
 
-    public abstract void addItem(Entity item);
-
-    public final void addRandomItem() {
-        addItem(generateRandomItem());
+    @MainThread
+    public final void insertItem(@NonNull final Entity item) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                insertItemSync(item);
+            }
+        }).start();
     }
 
     abstract Entity generateRandomItem();
+
+    @MainThread
+    public final void insertRandomItem() {
+        // TODO: 11/07/17 remove this method
+        insertItem(generateRandomItem());
+    }
+
+    @WorkerThread
+    abstract void deleteItemSync(long id);
+
+    @MainThread
+    public final void deleteItem(final long id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                deleteItemSync(id);
+            }
+        }).start();
+    }
+
+//
+//    abstract static class CreateTask<T> extends AsyncTask<T, Void, Boolean> {
+//
+//        @SafeVarargs
+//        @Override
+//        protected final Boolean doInBackground(T... items) {
+//            try {
+//                for (T item : items) {
+//                    insertItem(item);
+//                }
+//                return true;
+//            } catch (SQLiteConstraintException e) {
+//                return false;
+//            }
+//        }
+//
+//        @WorkerThread
+//        abstract void insertItem(T item);
+//    }
+//
+//    abstract static class DeleteTask extends AsyncTask<Long, Void, Boolean> {
+//
+//        @Override
+//        final protected Boolean doInBackground(Long... itemIds) {
+//            try {
+//                for (long itemId : itemIds) {
+//                    deleteItem(itemId);
+//                }
+//                return true;
+//            } catch (SQLiteConstraintException e) {
+//                return false;
+//            }
+//        }
+//
+//        @WorkerThread
+//        abstract void deleteItem(long itemId);
+//
+//    }
 
 }

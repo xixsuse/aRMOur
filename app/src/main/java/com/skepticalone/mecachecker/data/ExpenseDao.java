@@ -5,8 +5,10 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.provider.BaseColumns;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 import org.joda.time.DateTime;
 
@@ -14,9 +16,12 @@ import java.util.List;
 
 @Dao
 interface ExpenseDao {
+
+    @WorkerThread
     @Insert
     void insertExpense(ExpenseEntity expense);
 
+    @MainThread
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME + " " +
             "ORDER BY " +
@@ -30,6 +35,7 @@ interface ExpenseDao {
             ")")
     LiveData<List<ExpenseEntity>> getExpenses();
 
+    @MainThread
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME +
             " WHERE " +
@@ -37,6 +43,7 @@ interface ExpenseDao {
             " = :id")
     LiveData<ExpenseEntity> getExpense(long id);
 
+    @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
@@ -46,6 +53,7 @@ interface ExpenseDao {
             " = :id")
     void setTitle(long id, @NonNull String title);
 
+    @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
@@ -55,6 +63,7 @@ interface ExpenseDao {
             " = :id")
     void setClaimed(long id, @Nullable DateTime claimed);
 
+    @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
@@ -64,6 +73,7 @@ interface ExpenseDao {
             " = :id")
     void setPaid(long id, @Nullable DateTime paid);
 
+    @WorkerThread
     @Query("DELETE FROM " +
             Contract.Expenses.TABLE_NAME +
             " WHERE " +
