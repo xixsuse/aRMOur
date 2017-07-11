@@ -6,9 +6,12 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.skepticalone.mecachecker.model.Item;
 
@@ -16,12 +19,14 @@ import java.util.List;
 
 public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel {
 
+    public static final String DISPLAY_ERROR = "com.skepticalone.mecachecker.DISPLAY_ERROR";
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private final LiveData<Entity> selectedItem;
+    private final LocalBroadcastManager mLocalBroadcastManager;
 
-    ItemViewModel(final Application application) {
+    ItemViewModel(Application application) {
         super(application);
         selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
             @Override
@@ -30,6 +35,7 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
                 return id == null ? NO_ITEM : getItem(id);
             }
         });
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(application);
     }
 
     public final LiveData<Entity> getSelectedItem() {
@@ -76,6 +82,37 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
                 deleteItemSync(id);
             }
         }).start();
+    }
+
+    interface SQLiteTask {
+        @WorkerThread
+        void runSQLiteTask() throws SQLiteConstraintException;
+
+        @NonNull
+        String getErrorMessage();
+    }
+
+    final class SQLiteThread extends Thread {
+
+        private final SQLiteTask task;
+
+        SQLiteThread(SQLiteTask task) {
+            super();
+            this.task = task;
+        }
+
+        @Override
+        public final void run() {
+            try {
+                task.runSQLiteTask();
+            } catch (SQLiteConstraintException e) {
+                Intent intent = new Intent();
+                intent.setAction(DISPLAY_ERROR);
+                intent.putExtra(Intent.EXTRA_TEXT, task.getErrorMessage());
+                mLocalBroadcastManager.sendBroadcast(intent);
+            }
+        }
+
     }
 
 //

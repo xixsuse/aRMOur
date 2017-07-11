@@ -72,4 +72,5 @@ public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
             }
         }).start();
     }
+
 }

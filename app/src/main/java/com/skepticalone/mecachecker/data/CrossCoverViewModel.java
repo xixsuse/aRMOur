@@ -5,7 +5,8 @@ import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import com.skepticalone.mecachecker.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -16,10 +17,12 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
     private static final String TAG = "CrossCoverViewModel";
 
     private final CrossCoverDao crossCoverDao;
+    private final String errorMessage;
 
     CrossCoverViewModel(Application application) {
         super(application);
         crossCoverDao = AppDatabase.getInstance(application).crossCoverDao();
+        errorMessage = application.getString(R.string.cross_cover_already_exists_date);
     }
 
     @Override
@@ -49,15 +52,18 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
 
     @MainThread
     public void setDate(final long id, @NonNull final LocalDate date) {
-        new Thread(new Runnable() {
+        new SQLiteThread(new SQLiteTask() {
             @Override
-            public void run() {
-                try {
-                    crossCoverDao.setDate(id, date);
-                } catch (SQLiteConstraintException e) {
-                    Log.e(TAG, "setDate: ", e);
-                }
+            public void runSQLiteTask() throws SQLiteConstraintException {
+                crossCoverDao.setDate(id, date);
             }
+
+            @NonNull
+            @Override
+            public String getErrorMessage() {
+                return errorMessage;
+            }
+
         }).start();
     }
 

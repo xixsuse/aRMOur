@@ -51,6 +51,7 @@
     <string name="last_weekend_worked">Last weekend worked</string>
     <string name="invalid_format">Invalid format</string>
     <string name="overlapping_shifts">Overlapping shifts!</string>
+    <string name="cross_cover_already_exists_date">Cross cover already exists for this date</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="shift_categories">Shift categories</string>
