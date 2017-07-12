@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,15 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 import com.skepticalone.mecachecker.ui.adapter.ItemListAdapter;
 
 import java.util.List;
-
 
 abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
@@ -79,20 +77,23 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mCallbacks = (Callbacks) context;
     }
 
+    @LayoutRes
+    abstract int getLayout();
+
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.list_fragment, container, false);
+        View layout = inflater.inflate(getLayout(), container, false);
+        RecyclerView recyclerView = layout.findViewById(R.id.recycler);
         mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-        return recyclerView;
+        return layout;
     }
-
-    abstract void setupFab(FloatingActionMenu menu, FloatingActionButton fabNormalDay, FloatingActionButton fabLongDay, FloatingActionButton fabNightShift);
 
     abstract Class<ViewModel> getViewModelClass();
 
     @Override
+    @CallSuper
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mModel = ViewModelProviders.of(getActivity()).get(getViewModelClass());
@@ -105,12 +106,6 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
                 }
             });
         }
-        setupFab(
-                mCallbacks.getFloatingActionMenu(),
-                mCallbacks.getFabNormalDay(),
-                mCallbacks.getFabLongDay(),
-                mCallbacks.getFabNightShift()
-        );
     }
 
     @Override
@@ -150,13 +145,5 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
 
     interface Callbacks {
         void onItemSelected(int itemType, long itemId);
-
-        FloatingActionMenu getFloatingActionMenu();
-
-        FloatingActionButton getFabNormalDay();
-
-        FloatingActionButton getFabLongDay();
-
-        FloatingActionButton getFabNightShift();
     }
 }
