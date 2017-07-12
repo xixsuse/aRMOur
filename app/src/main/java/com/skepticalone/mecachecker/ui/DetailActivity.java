@@ -3,30 +3,24 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends CoordinatorActivity {
 
     static final String ITEM_TYPE = "ITEM_TYPE";
     static final String ITEM_ID = "ITEM_ID";
     private static final int NO_ITEM_TYPE = 0;
     private static final String DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private static final long NO_ID = -1L;
-//
-//    @Override
-//    int getContentViewWithToolbar() {
-//        return R.layout.detail_activity;
-//    }
-//
-//    @Override
-//    boolean getDisplayHomeAsUpEnabled() {
-//        return true;
-//    }
+
+    @Override
+    int getContentView() {
+        return R.layout.detail_activity;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
             }
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(android.R.id.content, detailFragment, DETAIL_FRAGMENT)
+                    .add(R.id.coordinator, detailFragment, DETAIL_FRAGMENT)
                     .commit();
         }
     }

@@ -6,12 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.skepticalone.mecachecker.R;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
+public class MainActivity extends CoordinatorActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     //    private FloatingActionMenu mFabMenu;
@@ -19,9 +18,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private boolean mTwoPane;
 
     @Override
+    int getContentView() {
+        return R.layout.main_activity;
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemReselectedListener(this);
@@ -32,9 +35,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 //        mFabNightShift = mFabMenu.findViewById(R.id.fab_night_shift);
 //        mFabMenu.close(false);
 //        mFabMenu.hideMenuButton(false);
-        if (savedInstanceState == null) {
-            navigation.setSelectedItemId(navigation.getSelectedItemId());
-        }
+//        if (savedInstanceState == null) {
+//            navigation.setSelectedItemId(navigation.getSelectedItemId());
+//        } else if (mTwoPane) {
+//            getSupportFragmentManager().findFragmentByTag()
+//        }
+        navigation.setSelectedItemId(navigation.getSelectedItemId());
     }
 
     @Override
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void onNavigationItemReselected(@NonNull MenuItem item) {
-        if (getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT) == null || (mTwoPane && getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT) == null)) {
             onNavigationItemSelected(item);
         }
     }
