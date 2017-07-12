@@ -71,6 +71,12 @@ public class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
                 holder.setText(R.string.payment, R.string.currency_format, crossCover.getPayment());
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changePayment(crossCover.getId(), crossCover.getPayment());
+                    }
+                };
                 break;
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;

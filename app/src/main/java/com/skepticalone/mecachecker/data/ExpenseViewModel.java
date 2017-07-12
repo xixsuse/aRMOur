@@ -9,34 +9,35 @@ import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
-    private final ExpenseDao mExpenseDao;
+    private final ExpenseDao expenseDao;
 
     public ExpenseViewModel(Application application) {
         super(application);
-        mExpenseDao = AppDatabase.getInstance(application).expenseDao();
+        expenseDao = AppDatabase.getInstance(application).expenseDao();
     }
 
     @Override
     public LiveData<List<ExpenseEntity>> getItems() {
-        return mExpenseDao.getExpenses();
+        return expenseDao.getExpenses();
     }
 
     @Override
     LiveData<ExpenseEntity> getItem(long id) {
-        return mExpenseDao.getExpense(id);
+        return expenseDao.getExpense(id);
     }
 
     @Override
     public void deleteItemSync(long id) {
-        mExpenseDao.deleteExpense(id);
+        expenseDao.deleteExpense(id);
     }
 
     @Override
     void insertItemSync(@NonNull ExpenseEntity expense) {
-        mExpenseDao.insertExpense(expense);
+        expenseDao.insertExpense(expense);
     }
 
     @Override
@@ -45,18 +46,23 @@ public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
     }
 
     @Override
+    void setPaymentSync(long id, @NonNull BigDecimal payment) {
+        expenseDao.setPayment(id, payment);
+    }
+
+    @Override
     void setCommentSync(long id, @Nullable String comment) {
-        mExpenseDao.setComment(id, comment);
+        expenseDao.setComment(id, comment);
     }
 
     @Override
     void setClaimedSync(long id, @Nullable DateTime claimed) {
-        mExpenseDao.setClaimed(id, claimed);
+        expenseDao.setClaimed(id, claimed);
     }
 
     @Override
     void setPaidSync(long id, @Nullable DateTime paid) {
-        mExpenseDao.setPaid(id, paid);
+        expenseDao.setPaid(id, paid);
     }
 
     @MainThread
@@ -64,7 +70,7 @@ public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mExpenseDao.setTitle(id, title);
+                expenseDao.setTitle(id, title);
             }
         }).start();
     }

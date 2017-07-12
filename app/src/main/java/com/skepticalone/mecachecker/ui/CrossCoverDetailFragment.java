@@ -30,9 +30,7 @@ public class CrossCoverDetailFragment
 
     @Override
     public void changeDate(long itemId, @NonNull LocalDate currentDate) {
-        DatePickerDialogFragment fragment = DatePickerDialogFragment.newInstance(itemId, currentDate);
-        fragment.setTargetFragment(this, 0);
-        fragment.show(getFragmentManager(), DIALOG_FRAGMENT);
+        showDialogFragment(DatePickerDialogFragment.newInstance(itemId, currentDate));
     }
 
     @Override

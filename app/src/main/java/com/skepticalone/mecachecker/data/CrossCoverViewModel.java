@@ -12,6 +12,7 @@ import com.skepticalone.mecachecker.R;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity> {
@@ -49,6 +50,11 @@ public class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity> {
     @Override
     CrossCoverEntity generateRandomItem() {
         return DatabaseInitUtil.randomCrossCoverShift();
+    }
+
+    @Override
+    void setPaymentSync(long id, @NonNull BigDecimal payment) {
+        crossCoverDao.setPayment(id, payment);
     }
 
     @Override

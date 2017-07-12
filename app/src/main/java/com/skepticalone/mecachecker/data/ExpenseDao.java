@@ -12,6 +12,7 @@ import android.support.annotation.WorkerThread;
 
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
@@ -52,6 +53,16 @@ interface ExpenseDao {
             BaseColumns._ID +
             " = :id")
     void setTitle(long id, @NonNull String title);
+
+    @WorkerThread
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
+            Contract.Expenses.COLUMN_NAME_PAYMENT +
+            " = :payment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPayment(long id, @NonNull BigDecimal payment);
 
     @WorkerThread
     @Query("UPDATE " +

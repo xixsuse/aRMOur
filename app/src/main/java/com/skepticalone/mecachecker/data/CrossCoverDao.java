@@ -13,6 +13,7 @@ import android.support.annotation.WorkerThread;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
@@ -46,6 +47,16 @@ interface CrossCoverDao {
             BaseColumns._ID +
             " = :id")
     void setDate(long id, @NonNull LocalDate date);
+
+    @WorkerThread
+    @Query("UPDATE " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " SET " +
+            Contract.CrossCoverShifts.COLUMN_NAME_PAYMENT +
+            " = :payment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPayment(long id, @NonNull BigDecimal payment);
 
     @WorkerThread
     @Query("UPDATE " +

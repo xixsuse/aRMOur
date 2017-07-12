@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 
 abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment {
 
-    static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
+    private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private final ItemDetailAdapter<ItemType> mAdapter = onCreateAdapter();
     private final IntentFilter mErrorIntentFilter = new IntentFilter(ItemViewModel.DISPLAY_ERROR);
     private SnackbarCallbacks mSnackbarCallbacks;
@@ -88,4 +89,8 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mErrorReceiver);
     }
 
+    void showDialogFragment(AppCompatDialogFragment dialogFragment) {
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
+    }
 }

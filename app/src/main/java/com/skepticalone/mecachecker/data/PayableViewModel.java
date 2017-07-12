@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
@@ -9,9 +10,21 @@ import com.skepticalone.mecachecker.model.PayableItem;
 
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
+
 public abstract class PayableViewModel<Entity extends PayableItem> extends ItemViewModel<Entity> {
     PayableViewModel(Application application) {
         super(application);
+    }
+
+    @MainThread
+    public final void setPayment(final long id, @NonNull final BigDecimal payment) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setPaymentSync(id, payment);
+            }
+        }).start();
     }
 
     @MainThread
@@ -43,6 +56,9 @@ public abstract class PayableViewModel<Entity extends PayableItem> extends ItemV
             }
         }).start();
     }
+
+    @WorkerThread
+    abstract void setPaymentSync(long id, @NonNull BigDecimal payment);
 
     @WorkerThread
     abstract void setCommentSync(long id, @Nullable String comment);

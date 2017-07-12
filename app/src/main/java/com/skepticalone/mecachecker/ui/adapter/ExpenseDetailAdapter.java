@@ -48,6 +48,12 @@ public class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
             case ROW_NUMBER_PAYMENT:
                 primaryIcon = R.drawable.ic_dollar_black_24dp;
                 holder.setText(R.string.payment, R.string.currency_format, expense.getPayment());
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changePayment(expense.getId(), expense.getPayment());
+                    }
+                };
                 break;
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;

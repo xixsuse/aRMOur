@@ -12,7 +12,7 @@ class MoneyConverter {
 
     @TypeConverter
     public static int moneyToCents(@NonNull BigDecimal money) {
-        return money.setScale(MONEY_SCALE, RoundingMode.HALF_UP).intValue();
+        return money.setScale(MONEY_SCALE, RoundingMode.HALF_UP).unscaledValue().intValue();
     }
 
     @TypeConverter
