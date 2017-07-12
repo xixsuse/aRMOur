@@ -10,37 +10,39 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 
-
 abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment {
 
     static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private final ItemDetailAdapter<ItemType> mAdapter = onCreateAdapter();
-    private final IntentFilter mIntentFilter = new IntentFilter(ItemViewModel.DISPLAY_ERROR);
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final IntentFilter mErrorIntentFilter = new IntentFilter(ItemViewModel.DISPLAY_ERROR);
+    private ViewModel mModel;
+    private CoordinatorLayout mCoordinatorLayout;
+    private final BroadcastReceiver mErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, intent.getStringExtra(Intent.EXTRA_TEXT), Toast.LENGTH_SHORT).show();
+            Snackbar.make(mCoordinatorLayout, intent.getStringExtra(Intent.EXTRA_TEXT), Snackbar.LENGTH_LONG).show();
         }
     };
-    private ViewModel mModel;
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_detail, container, false);
+        mCoordinatorLayout = (CoordinatorLayout) inflater.inflate(R.layout.detail_fragment, container, false);
+        RecyclerView recyclerView = mCoordinatorLayout.findViewById(R.id.recycler);
         recyclerView.setAdapter(mAdapter);
-        return recyclerView;
+        return mCoordinatorLayout;
     }
 
     @NonNull
@@ -68,13 +70,13 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, mIntentFilter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mErrorReceiver, mErrorIntentFilter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mErrorReceiver);
     }
 
 }

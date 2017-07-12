@@ -81,7 +81,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view_list, container, false);
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.list_fragment, container, false);
         mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
@@ -105,35 +105,6 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
                 }
             });
         }
-//        Transformat.map(mModel.getSelectedItem(), new Function<Entity, Object>() {
-//            @Override
-//            public Object apply(Entity input) {
-//                return null;
-//            }
-//        });ions.map(mModel.getSelectedItem(), new Function<Entity, Object>() {
-//            @Override
-//            public Object apply(Entity input) {
-//                return null;
-//            }
-//        });
-//        Transformations.switchMap(mModel.getSelectedItem(), new Function<Entity, LiveData<? extends Object>>() {
-//            @Override
-//            public LiveData<? extends Object> apply(Entity input) {
-//                return null;
-//            }
-//        })
-//        mModel.getSelectedItem().observe(this, new Observer<Entity>() {
-//            @Override
-//            public void onChanged(@Nullable Entity item) {
-//                mAdapter.setSelectedItem(item);
-//            }
-//        });
-//        FloatingActionMenu menu = ;
-//        if (menu.isOpened())
-//        if (savedInstanceState == null) {
-//            menu.close(false);
-//            menu.hideMenuButton(false);
-//        }
         setupFab(
                 mCallbacks.getFloatingActionMenu(),
                 mCallbacks.getFabNormalDay(),
