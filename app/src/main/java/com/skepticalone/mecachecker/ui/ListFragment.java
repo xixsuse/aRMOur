@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
@@ -77,20 +78,18 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mCallbacks = (Callbacks) context;
     }
 
-    @LayoutRes
-    abstract int getLayout();
-
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(getLayout(), container, false);
-        RecyclerView recyclerView = layout.findViewById(R.id.recycler);
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.list_recycler, container, false);
         mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-        return layout;
+        return recyclerView;
     }
 
     abstract Class<ViewModel> getViewModelClass();
+
+    abstract void setupFab(FabCallbacks callbacks);
 
     @Override
     @CallSuper
@@ -106,6 +105,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
                 }
             });
         }
+        setupFab(mCallbacks);
     }
 
     @Override
@@ -143,7 +143,19 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mModel.deleteItem(itemId);
     }
 
-    interface Callbacks {
+    interface FabCallbacks {
+        FloatingActionMenu getFloatingActionMenu();
+
+        FloatingActionButton getFabNormalDay();
+
+        FloatingActionButton getFabLongDay();
+
+        FloatingActionButton getFabNightShift();
+
+        FloatingActionButton getFabAdd();
+    }
+
+    interface Callbacks extends FabCallbacks {
         void onItemSelected(int itemType, long itemId);
     }
 }

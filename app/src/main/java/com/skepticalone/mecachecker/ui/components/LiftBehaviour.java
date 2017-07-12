@@ -19,6 +19,12 @@ public class LiftBehaviour<V extends View> extends CoordinatorLayout.Behavior<Vi
     }
 
     @Override
+    public void onDependentViewRemoved(CoordinatorLayout parent, View child, View dependency) {
+        super.onDependentViewRemoved(parent, child, dependency);
+        child.setTranslationY(0);
+    }
+
+    @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
         float translationY = Math.min(0, dependency.getTranslationY() - dependency.getHeight());
         child.setTranslationY(translationY);

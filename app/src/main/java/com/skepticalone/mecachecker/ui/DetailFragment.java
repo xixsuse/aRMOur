@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,12 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
     private final BroadcastReceiver mErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mSnackbarCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT));
+            mSnackbarCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("Callbacks", "onClick: cone");
+                }
+            });
         }
     };
     private ViewModel mModel;
@@ -43,7 +49,7 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.detail_fragment, container, false);
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.detail_recycler, container, false);
         recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }

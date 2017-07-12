@@ -7,7 +7,7 @@
     <include layout="@layout/list_recycler" />
 
     <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/add_button"
+        android:id="@+id/fab_add"
         style="@style/fab"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_padding"

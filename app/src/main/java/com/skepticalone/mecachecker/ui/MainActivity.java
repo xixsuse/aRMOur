@@ -8,13 +8,15 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 
 public class MainActivity extends CoordinatorActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
-    //    private FloatingActionMenu mFabMenu;
-//    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
+    private FloatingActionMenu mFabMenu;
+    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift, mFabAdd;
     private boolean mTwoPane;
 
     @Override
@@ -29,12 +31,14 @@ public class MainActivity extends CoordinatorActivity implements BottomNavigatio
         navigation.setOnNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemReselectedListener(this);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
-//        mFabMenu = findViewById(R.id.fab_menu);
-//        mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
-//        mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
-//        mFabNightShift = mFabMenu.findViewById(R.id.fab_night_shift);
-//        mFabMenu.close(false);
-//        mFabMenu.hideMenuButton(false);
+        mFabMenu = findViewById(R.id.fab_menu);
+        mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
+        mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
+        mFabNightShift = mFabMenu.findViewById(R.id.fab_night_shift);
+        mFabAdd = findViewById(R.id.fab_add);
+        mFabMenu.close(false);
+        mFabMenu.hideMenu(false);
+        mFabAdd.hide(false);
 //        if (savedInstanceState == null) {
 //            navigation.setSelectedItemId(navigation.getSelectedItemId());
 //        } else if (mTwoPane) {
@@ -94,5 +98,30 @@ public class MainActivity extends CoordinatorActivity implements BottomNavigatio
             intent.putExtra(DetailActivity.ITEM_ID, itemId);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public FloatingActionMenu getFloatingActionMenu() {
+        return mFabMenu;
+    }
+
+    @Override
+    public FloatingActionButton getFabNormalDay() {
+        return mFabNormalDay;
+    }
+
+    @Override
+    public FloatingActionButton getFabLongDay() {
+        return mFabLongDay;
+    }
+
+    @Override
+    public FloatingActionButton getFabNightShift() {
+        return mFabNightShift;
+    }
+
+    @Override
+    public FloatingActionButton getFabAdd() {
+        return mFabAdd;
     }
 }

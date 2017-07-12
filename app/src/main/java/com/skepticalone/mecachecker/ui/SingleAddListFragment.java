@@ -1,11 +1,9 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 
@@ -16,21 +14,15 @@ abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemT
     private FloatingActionButton mFab;
 
     @Override
-    final int getLayout() {
-        return R.layout.single_add_list_fragment;
-    }
-
-    @Override
-    public final void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mFab = view.findViewById(R.id.add_button);
+    void setupFab(FabCallbacks callbacks) {
+        callbacks.getFloatingActionMenu().hideMenu(true);
+        mFab = callbacks.getFabAdd();
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addItem();
             }
         });
-        mFab.hide(false);
     }
 
     @Override
