@@ -51,10 +51,10 @@ public class CrossCoverViewModel extends SingleAddPayableViewModel<CrossCoverEnt
     @NonNull
     @Override
     CrossCoverEntity generateNewItemSync() {
-        CrossCoverEntity lastCrossCoverShift = crossCoverDao.getLastCrossCoverShift();
         LocalDate newDate = new LocalDate();
-        if (lastCrossCoverShift != null) {
-            LocalDate earliestShiftDate = lastCrossCoverShift.getDate().plusDays(1);
+        LocalDate lastCrossCoverShiftDate = crossCoverDao.getLastCrossCoverShiftDate();
+        if (lastCrossCoverShiftDate != null) {
+            LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
             if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
         }
         return new CrossCoverEntity(

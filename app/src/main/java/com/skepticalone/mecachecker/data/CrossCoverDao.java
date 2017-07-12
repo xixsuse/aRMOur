@@ -39,13 +39,13 @@ interface CrossCoverDao {
     LiveData<CrossCoverEntity> getCrossCoverShift(long id);
 
     @WorkerThread
-    @Query("SELECT * FROM " +
+    @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.CrossCoverShifts.COLUMN_NAME_DATE +
             " DESC LIMIT 1")
     @Nullable
-    CrossCoverEntity getLastCrossCoverShift();
+    LocalDate getLastCrossCoverShiftDate();
 
     @WorkerThread
     @Query("UPDATE " +
