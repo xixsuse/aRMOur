@@ -53,24 +53,6 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
     @WorkerThread
     abstract void insertItemSync(@NonNull Entity item);
 
-    @MainThread
-    public final void insertItem(@NonNull final Entity item) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                insertItemSync(item);
-            }
-        }).start();
-    }
-
-    abstract Entity generateRandomItem();
-
-    @MainThread
-    public final void insertRandomItem() {
-        // TODO: 11/07/17 remove this method
-        insertItem(generateRandomItem());
-    }
-
     @WorkerThread
     abstract void deleteItemSync(long id);
 

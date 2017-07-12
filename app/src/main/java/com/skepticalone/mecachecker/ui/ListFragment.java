@@ -114,7 +114,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mAdapter.setItems(entities);
     }
 
-    final ItemViewModel<Entity> getViewModel() {
+    final ViewModel getViewModel() {
         return mModel;
     }
 

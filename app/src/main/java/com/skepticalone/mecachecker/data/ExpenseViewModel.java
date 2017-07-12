@@ -7,17 +7,21 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.mecachecker.R;
+
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
+public class ExpenseViewModel extends SingleAddPayableViewModel<ExpenseEntity> {
+    private final String newExpenseTitle;
     private final ExpenseDao expenseDao;
 
     public ExpenseViewModel(Application application) {
         super(application);
         expenseDao = AppDatabase.getInstance(application).expenseDao();
+        newExpenseTitle = application.getString(R.string.new_expense_title);
     }
 
     @Override
@@ -40,9 +44,10 @@ public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
         expenseDao.insertExpense(expense);
     }
 
+    @NonNull
     @Override
-    ExpenseEntity generateRandomItem() {
-        return DatabaseInitUtil.randomExpense();
+    ExpenseEntity generateNewItemSync() {
+        return new ExpenseEntity(newExpenseTitle, BigDecimal.ZERO, null);
     }
 
     @Override

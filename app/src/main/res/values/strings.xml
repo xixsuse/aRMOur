@@ -28,6 +28,7 @@
     <string name="cross_cover_shifts">Cross cover shifts</string>
     <string name="expenses">Expenses</string>
     <string name="expense">Expense</string>
+    <string name="new_expense_title">New expense</string>
     <string name="number">Number</string>
     <string name="number_format">%d</string>
     <string name="hours_format">%.1f</string>

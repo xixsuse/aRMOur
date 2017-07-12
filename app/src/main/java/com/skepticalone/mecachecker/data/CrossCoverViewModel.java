@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
+import android.preference.PreferenceManager;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +16,7 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity> {
+public class CrossCoverViewModel extends SingleAddPayableViewModel<CrossCoverEntity> {
     private static final String TAG = "CrossCoverViewModel";
 
     private final CrossCoverDao crossCoverDao;
@@ -47,9 +48,20 @@ public class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity> {
         crossCoverDao.insertCrossCoverShift(crossCoverShift);
     }
 
+    @NonNull
     @Override
-    CrossCoverEntity generateRandomItem() {
-        return DatabaseInitUtil.randomCrossCoverShift();
+    CrossCoverEntity generateNewItemSync() {
+        CrossCoverEntity lastCrossCoverShift = crossCoverDao.getLastCrossCoverShift();
+        LocalDate newDate = new LocalDate();
+        if (lastCrossCoverShift != null) {
+            LocalDate earliestShiftDate = lastCrossCoverShift.getDate().plusDays(1);
+            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+        }
+        return new CrossCoverEntity(
+                newDate,
+                MoneyConverter.centsToMoney(PreferenceManager.getDefaultSharedPreferences(this.getApplication()).getInt(getApplication().getString(R.string.key_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
+                null
+        );
     }
 
     @Override
