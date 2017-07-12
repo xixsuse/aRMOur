@@ -75,6 +75,12 @@ public class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;
                 holder.setText(R.string.comment, crossCover.getComment());
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changeComment(crossCover.getId(), crossCover.getComment());
+                    }
+                };
                 break;
             case ROW_NUMBER_CLAIMED:
                 switchVisible = true;

@@ -25,7 +25,7 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
     @Override
     void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder) {
-        holder.setText(expense.getTitle());
+        holder.setText(expense.getTitle(), expense.getComment());
         holder.secondaryIcon.setImageResource(expense.getPaid() == null ? expense.getClaimed() == null ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
     }
 

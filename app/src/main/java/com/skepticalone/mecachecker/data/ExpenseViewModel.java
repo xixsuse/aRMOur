@@ -5,12 +5,13 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
 import java.util.List;
 
-public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
+public class ExpenseViewModel extends PayableViewModel<ExpenseEntity> {
     private final ExpenseDao mExpenseDao;
 
     public ExpenseViewModel(Application application) {
@@ -43,32 +44,27 @@ public class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
         return DatabaseInitUtil.randomExpense();
     }
 
+    @Override
+    void setCommentSync(long id, @Nullable String comment) {
+        mExpenseDao.setComment(id, comment);
+    }
+
+    @Override
+    void setClaimedSync(long id, @Nullable DateTime claimed) {
+        mExpenseDao.setClaimed(id, claimed);
+    }
+
+    @Override
+    void setPaidSync(long id, @Nullable DateTime paid) {
+        mExpenseDao.setPaid(id, paid);
+    }
+
     @MainThread
     public void setTitle(final long id, @NonNull final String title) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 mExpenseDao.setTitle(id, title);
-            }
-        }).start();
-    }
-
-    @MainThread
-    public void setClaimed(final long id, final boolean claimed) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mExpenseDao.setClaimed(id, claimed ? DateTime.now() : null);
-            }
-        }).start();
-    }
-
-    @MainThread
-    public void setPaid(final long id, final boolean paid) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mExpenseDao.setPaid(id, paid ? DateTime.now() : null);
             }
         }).start();
     }

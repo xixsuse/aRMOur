@@ -1,7 +1,11 @@
 package com.skepticalone.mecachecker.ui.adapter;
 
-interface PayableCallbacks {
-    void setClaimed(long id, boolean claimed);
+import android.support.annotation.Nullable;
 
-    void setPaid(long id, boolean paid);
+public interface PayableCallbacks {
+    void changeComment(long itemId, @Nullable String currentComment);
+
+    void setClaimed(long itemId, boolean claimed);
+
+    void setPaid(long itemId, boolean paid);
 }

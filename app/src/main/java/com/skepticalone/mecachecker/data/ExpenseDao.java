@@ -57,6 +57,16 @@ interface ExpenseDao {
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
+            Contract.Expenses.COLUMN_NAME_COMMENT +
+            " = :comment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setComment(long id, @Nullable String comment);
+
+    @WorkerThread
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
             Contract.Expenses.COLUMN_NAME_CLAIMED +
             " = :claimed WHERE " +
             BaseColumns._ID +

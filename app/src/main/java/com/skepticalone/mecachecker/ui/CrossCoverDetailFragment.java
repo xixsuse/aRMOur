@@ -14,7 +14,7 @@ import com.skepticalone.mecachecker.ui.components.DatePickerDialogFragment;
 import org.joda.time.LocalDate;
 
 public class CrossCoverDetailFragment
-        extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
+        extends SinglePaymentDetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
         implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks {
 
     @NonNull
@@ -42,16 +42,6 @@ public class CrossCoverDetailFragment
         } catch (SQLiteConstraintException e) {
             Toast.makeText(getActivity(), "Date overlaps!", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void setClaimed(long itemId, boolean claimed) {
-        getViewModel().setClaimed(itemId, claimed);
-    }
-
-    @Override
-    public void setPaid(long itemId, boolean paid) {
-        getViewModel().setPaid(itemId, paid);
     }
 
 }

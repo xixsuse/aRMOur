@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 
@@ -13,7 +14,7 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
+public class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity> {
     private static final String TAG = "CrossCoverViewModel";
 
     private final CrossCoverDao crossCoverDao;
@@ -50,6 +51,21 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
         return DatabaseInitUtil.randomCrossCoverShift();
     }
 
+    @Override
+    void setCommentSync(long id, @Nullable String comment) {
+        crossCoverDao.setComment(id, comment);
+    }
+
+    @Override
+    void setClaimedSync(long id, @Nullable DateTime claimed) {
+        crossCoverDao.setClaimed(id, claimed);
+    }
+
+    @Override
+    void setPaidSync(long id, @Nullable DateTime paid) {
+        crossCoverDao.setPaid(id, paid);
+    }
+
     @MainThread
     public void setDate(final long id, @NonNull final LocalDate date) {
         new SQLiteThread(new SQLiteTask() {
@@ -67,23 +83,4 @@ public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
         }).start();
     }
 
-    @MainThread
-    public void setClaimed(final long id, final boolean claimed) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                crossCoverDao.setClaimed(id, claimed ? DateTime.now() : null);
-            }
-        }).start();
-    }
-
-    @MainThread
-    public void setPaid(final long id, final boolean paid) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                crossCoverDao.setPaid(id, paid ? DateTime.now() : null);
-            }
-        }).start();
-    }
 }

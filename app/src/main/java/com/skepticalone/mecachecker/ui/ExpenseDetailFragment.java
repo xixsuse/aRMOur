@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
 public class ExpenseDetailFragment
-        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
+        extends SinglePaymentDetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
         implements ExpenseDetailAdapter.Callbacks, PlainTextDialogFragment.Callbacks {
 
     @NonNull
@@ -27,25 +27,15 @@ public class ExpenseDetailFragment
     }
 
     @Override
-    public void setClaimed(long itemId, boolean claimed) {
-        getViewModel().setClaimed(itemId, claimed);
-    }
-
-    @Override
-    public void setPaid(long itemId, boolean paid) {
-        getViewModel().setPaid(itemId, paid);
-    }
-
-    @Override
     public void changeTitle(long itemId, @NonNull String currentTitle) {
-        PlainTextDialogFragment fragment = PlainTextDialogFragment.newInstance(itemId, currentTitle, R.string.title);
-        fragment.setTargetFragment(this, 0);
-        fragment.show(getFragmentManager(), DIALOG_FRAGMENT);
+        changeString(itemId, currentTitle, R.string.title, true);
     }
 
     @Override
-    public void savePlainText(long itemId, @Nullable String trimmedTextWithLength) {
-        if (trimmedTextWithLength != null) {
+    public void savePlainText(long itemId, @Nullable String trimmedTextWithLength, boolean isTitle) {
+        if (!isTitle) {
+            super.savePlainText(itemId, trimmedTextWithLength, false);
+        } else if (trimmedTextWithLength != null) {
             getViewModel().setTitle(itemId, trimmedTextWithLength);
         }
     }

@@ -46,13 +46,16 @@ class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     void setText(@StringRes int firstLine, @Nullable String secondLine) {
-        setText(text.getContext().getString(firstLine), secondLine, null);
+        setText(text.getContext().getString(firstLine), secondLine);
     }
 
     void setText(@NonNull String firstLine) {
-        setText(firstLine, null, null);
+        setText(firstLine, null);
     }
 
+    void setText(@NonNull String firstLine, @Nullable String secondLine) {
+        setText(firstLine, secondLine, null);
+    }
     private void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(firstLine);
         ssb.setSpan(firstLineStyle, 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

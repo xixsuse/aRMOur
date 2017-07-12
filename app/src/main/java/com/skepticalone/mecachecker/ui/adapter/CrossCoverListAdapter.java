@@ -26,7 +26,7 @@ public class CrossCoverListAdapter extends ItemListAdapter<CrossCover> {
 
     @Override
     void bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder) {
-        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()));
+        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), crossCover.getComment());
         holder.secondaryIcon.setImageResource(crossCover.getPaid() == null ? crossCover.getClaimed() == null ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp);
     }
 }

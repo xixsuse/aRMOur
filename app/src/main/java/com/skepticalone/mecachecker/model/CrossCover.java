@@ -1,5 +1,5 @@
 package com.skepticalone.mecachecker.model;
 
-public interface CrossCover extends Item, HasDate, Payable {
+public interface CrossCover extends PayableItem, HasDate {
 
 }

@@ -52,6 +52,12 @@ public class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
             case ROW_NUMBER_COMMENT:
                 primaryIcon = R.drawable.ic_comment_black_24dp;
                 holder.setText(R.string.comment, expense.getComment());
+                onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.changeComment(expense.getId(), expense.getComment());
+                    }
+                };
                 break;
             case ROW_NUMBER_CLAIMED:
                 switchVisible = true;

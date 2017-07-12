@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-interface Payable {
+public interface PayableItem extends Item {
 
     @NonNull
     BigDecimal getPayment();

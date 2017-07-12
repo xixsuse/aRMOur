@@ -10,15 +10,15 @@ import android.util.Log;
 public class PlainTextDialogFragment extends EditTextDialogFragment {
 
     //    private static final String CONTENT_URI = "CONTENT_URI";
-//    private static final String COLUMN_NAME = "COLUMN_NAME";
+    private static final String IS_TITLE = "IS_TITLE";
     private static final String TAG = "PlainTextDialogFragment";
     private Callbacks mCallbacks;
 
-    public static PlainTextDialogFragment newInstance(long id, @Nullable String text, @StringRes int title) {
+    public static PlainTextDialogFragment newInstance(long id, @Nullable String text, @StringRes int title, boolean isTitle) {
         // } @NonNull Uri contentUri, @NonNull String columnName) {
         PlainTextDialogFragment fragment = new PlainTextDialogFragment();
         Bundle args = getArgs(id, title, text, title);
-//        args.putParcelable(CONTENT_URI, contentUri);
+        args.putBoolean(IS_TITLE, isTitle);
 //        args.putString(COLUMN_NAME, columnName);
         fragment.setArguments(args);
         return fragment;
@@ -38,7 +38,7 @@ public class PlainTextDialogFragment extends EditTextDialogFragment {
     @Override
     void save(@Nullable String trimmedTextWithLength) {
         Log.i(TAG, "save: " + trimmedTextWithLength);
-        mCallbacks.savePlainText(getItemId(), trimmedTextWithLength);
+        mCallbacks.savePlainText(getItemId(), trimmedTextWithLength, getArguments().getBoolean(IS_TITLE, false));
 //        ContentValues values = new ContentValues();
 //        values.put(getArguments().getString(COLUMN_NAME), trimmedTextWithLength);
 //        Uri contentUri = getArguments().getParcelable(CONTENT_URI);
@@ -46,8 +46,12 @@ public class PlainTextDialogFragment extends EditTextDialogFragment {
 //        getActivity().getContentResolver().update(contentUri, values, null, null);
     }
 
+    public enum Type {
+        Title
+    }
+
     public interface Callbacks {
-        void savePlainText(long itemId, @Nullable String trimmedTextWithLength);
+        void savePlainText(long itemId, @Nullable String trimmedTextWithLength, boolean isTitle);
     }
 
 }
