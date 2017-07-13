@@ -59,8 +59,12 @@ public class CrossCoverViewModel extends SingleAddPayableViewModel<CrossCoverEnt
         }
         return new CrossCoverEntity(
                 newDate,
-                MoneyConverter.centsToMoney(PreferenceManager.getDefaultSharedPreferences(this.getApplication()).getInt(getApplication().getString(R.string.key_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
-                null
+                new PaymentData(
+                        MoneyConverter.centsToMoney(PreferenceManager.getDefaultSharedPreferences(this.getApplication()).getInt(getApplication().getString(R.string.key_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
+                        null,
+                        null,
+                        null
+                )
         );
     }
 

@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.ui.adapter;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -9,7 +10,9 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +34,43 @@ class ItemViewHolder extends RecyclerView.ViewHolder {
         firstLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Subhead);
         secondLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Body1);
         thirdLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Small);
+    }
+
+    private void setup(
+            @DrawableRes int icon,
+            @Nullable View.OnClickListener onClickListener,
+            boolean switchVisible,
+            boolean switchChecked,
+            @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener
+    ) {
+        primaryIcon.setImageResource(icon);
+        if (switchVisible) {
+            if (switchControl.isChecked() != switchChecked) {
+                switchControl.setOnCheckedChangeListener(null);
+                switchControl.setChecked(switchChecked);
+            }
+            switchControl.setEnabled(onCheckedChangeListener != null);
+            switchControl.setVisibility(View.VISIBLE);
+        } else {
+            switchControl.setVisibility(View.GONE);
+        }
+        switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
+        itemView.setOnClickListener(onClickListener);
+    }
+
+    void setupPlain(
+            @DrawableRes int icon,
+            @Nullable View.OnClickListener onClickListener
+    ) {
+        setup(icon, onClickListener, false, false, null);
+    }
+
+    void setupSwitch(
+            @DrawableRes int icon,
+            boolean switchChecked,
+            @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener
+    ) {
+        setup(icon, null, true, switchChecked, onCheckedChangeListener);
     }
 
     void setText(@StringRes int firstLine) {

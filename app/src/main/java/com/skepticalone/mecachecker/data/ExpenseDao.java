@@ -6,8 +6,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.provider.BaseColumns;
 import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import org.joda.time.DateTime;
@@ -26,13 +24,13 @@ interface ExpenseDao {
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME + " " +
             "ORDER BY " +
-            Contract.Expenses.COLUMN_NAME_PAID +
+            Contract.COLUMN_NAME_PAID +
             " IS NULL, " +
-            Contract.Expenses.COLUMN_NAME_CLAIMED +
+            Contract.COLUMN_NAME_CLAIMED +
             " IS NULL, IFNULL(" +
-            Contract.Expenses.COLUMN_NAME_PAID +
+            Contract.COLUMN_NAME_PAID +
             ", " +
-            Contract.Expenses.COLUMN_NAME_CLAIMED +
+            Contract.COLUMN_NAME_CLAIMED +
             ")")
     LiveData<List<ExpenseEntity>> getExpenses();
 
@@ -52,47 +50,47 @@ interface ExpenseDao {
             " = :title WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setTitle(long id, @NonNull String title);
+    void setTitle(long id, String title);
 
     @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
-            Contract.Expenses.COLUMN_NAME_PAYMENT +
+            Contract.COLUMN_NAME_PAYMENT +
             " = :payment WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setPayment(long id, @NonNull BigDecimal payment);
+    void setPayment(long id, BigDecimal payment);
 
     @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
-            Contract.Expenses.COLUMN_NAME_COMMENT +
+            Contract.COLUMN_NAME_COMMENT +
             " = :comment WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setComment(long id, @Nullable String comment);
+    void setComment(long id, String comment);
 
     @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
-            Contract.Expenses.COLUMN_NAME_CLAIMED +
+            Contract.COLUMN_NAME_CLAIMED +
             " = :claimed WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setClaimed(long id, @Nullable DateTime claimed);
+    void setClaimed(long id, DateTime claimed);
 
     @WorkerThread
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
             " SET " +
-            Contract.Expenses.COLUMN_NAME_PAID +
+            Contract.COLUMN_NAME_PAID +
             " = :paid WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setPaid(long id, @Nullable DateTime paid);
+    void setPaid(long id, DateTime paid);
 
     @WorkerThread
     @Query("DELETE FROM " +

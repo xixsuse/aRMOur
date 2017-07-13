@@ -8,13 +8,13 @@ import android.support.annotation.StringRes;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.PayableViewModel;
 import com.skepticalone.mecachecker.model.PayableItem;
-import com.skepticalone.mecachecker.ui.adapter.PayableCallbacks;
+import com.skepticalone.mecachecker.ui.adapter.PayableItemDetailAdapter;
 import com.skepticalone.mecachecker.ui.components.MoneyDialogFragment;
 import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
 import java.math.BigDecimal;
 
-abstract class SinglePaymentDetailFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends PayableViewModel<Entity>> extends DetailFragment<ItemType, Entity, ViewModel> implements PayableCallbacks, MoneyDialogFragment.Callbacks, PlainTextDialogFragment.Callbacks {
+abstract class SinglePaymentDetailFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends PayableViewModel<Entity>> extends DetailFragment<ItemType, Entity, ViewModel> implements PayableItemDetailAdapter.Callbacks, MoneyDialogFragment.Callbacks, PlainTextDialogFragment.Callbacks {
 
     @Override
     public final void changePayment(long itemId, @NonNull BigDecimal payment) {

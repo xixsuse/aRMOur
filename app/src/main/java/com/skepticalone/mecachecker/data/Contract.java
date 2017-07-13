@@ -3,6 +3,12 @@ package com.skepticalone.mecachecker.data;
 import android.provider.BaseColumns;
 
 final class Contract {
+    static final String
+            COLUMN_NAME_PAYMENT = "payment",
+            COLUMN_NAME_CLAIMED = "claimed",
+            COLUMN_NAME_PAID = "paid",
+            COLUMN_NAME_COMMENT = "comment";
+
     private Contract() {
     }
 
@@ -80,10 +86,6 @@ final class Contract {
         static final String
                 TABLE_NAME = "cross_cover",
                 COLUMN_NAME_DATE = "date",
-                COLUMN_NAME_PAYMENT = "payment",
-                COLUMN_NAME_CLAIMED = "claimed",
-                COLUMN_NAME_PAID = "paid",
-                COLUMN_NAME_COMMENT = "comment",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME +
                 " (" +
@@ -104,10 +106,6 @@ final class Contract {
         static final String
                 TABLE_NAME = "expenses",
                 COLUMN_NAME_TITLE = "title",
-                COLUMN_NAME_PAYMENT = "payment",
-                COLUMN_NAME_CLAIMED = "claimed",
-                COLUMN_NAME_PAID = "paid",
-                COLUMN_NAME_COMMENT = "comment",
                 SQL_CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME +
                 " (" +
