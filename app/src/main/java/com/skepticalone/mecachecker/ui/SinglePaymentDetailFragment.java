@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.adapter.PayableItemDetailAdapter;
 import com.skepticalone.mecachecker.data.PayableViewModel;
+import com.skepticalone.mecachecker.dialog.MoneyDialogFragment;
+import com.skepticalone.mecachecker.dialog.PlainTextDialogFragment;
 import com.skepticalone.mecachecker.model.PayableItem;
-import com.skepticalone.mecachecker.ui.adapter.PayableItemDetailAdapter;
-import com.skepticalone.mecachecker.ui.components.MoneyDialogFragment;
-import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
 import java.math.BigDecimal;
 

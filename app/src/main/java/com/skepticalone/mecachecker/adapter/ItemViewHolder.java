@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui.adapter;
+package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;

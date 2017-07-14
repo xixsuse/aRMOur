@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui.adapter;
+package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.model.Item;
+import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;
 
@@ -89,7 +90,7 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
 
     @CallSuper
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         final ItemViewHolder viewHolder = new ItemViewHolder(parent);
         viewHolder.primaryIcon.setVisibility(View.GONE);
         viewHolder.switchControl.setVisibility(View.GONE);
@@ -109,7 +110,10 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
         return viewHolder;
     }
 
-    abstract boolean areContentsTheSame(@NonNull ItemType item1, @NonNull ItemType item2);
+    @CallSuper
+    boolean areContentsTheSame(@NonNull ItemType item1, @NonNull ItemType item2) {
+        return Comparators.equalStrings(item1.getComment(), item2.getComment());
+    }
 
     abstract void bindViewHolder(@NonNull ItemType item, ItemViewHolder holder);
 

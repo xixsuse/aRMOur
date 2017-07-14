@@ -19,9 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
-import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
 
 abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment {
 

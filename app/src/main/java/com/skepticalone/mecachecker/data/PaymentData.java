@@ -25,21 +25,21 @@ public final class PaymentData {
     @Nullable
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
     private final DateTime paid;
-
-    @Nullable
-    @ColumnInfo(name = Contract.COLUMN_NAME_COMMENT)
-    private final String comment;
+//
+//    @Nullable
+//    @ColumnInfo(name = Contract.COLUMN_NAME_COMMENT)
+//    private final String comment;
 
     PaymentData(
             @NonNull BigDecimal payment,
             @Nullable DateTime claimed,
-            @Nullable DateTime paid,
-            @Nullable String comment
+            @Nullable DateTime paid
+//            @Nullable String comment
     ) {
         this.payment = payment;
         this.claimed = claimed;
         this.paid = claimed == null ? null : paid;
-        this.comment = comment;
+//        this.comment = comment;
     }
 
     @NonNull
@@ -56,11 +56,11 @@ public final class PaymentData {
     public DateTime getPaid() {
         return paid;
     }
-
-    @Nullable
-    public String getComment() {
-        return comment;
-    }
+//
+//    @Nullable
+//    public String getComment() {
+//        return comment;
+//    }
 
     @DrawableRes
     public int getIcon() {
@@ -74,8 +74,9 @@ public final class PaymentData {
             return
                     Comparators.equalBigDecimals(payment, other.payment) &&
                             Comparators.equalDateTimes(claimed, other.claimed) &&
-                            Comparators.equalDateTimes(paid, other.paid) &&
-                            Comparators.equalStrings(comment, other.comment);
+                            Comparators.equalDateTimes(paid, other.paid);
+//            &&
+//                            Comparators.equalStrings(comment, other.comment);
         }
         return false;
     }

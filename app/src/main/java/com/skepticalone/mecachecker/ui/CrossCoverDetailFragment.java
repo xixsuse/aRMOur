@@ -4,12 +4,12 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
+import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
+import com.skepticalone.mecachecker.dialog.DatePickerDialogFragment;
 import com.skepticalone.mecachecker.model.CrossCover;
-import com.skepticalone.mecachecker.ui.adapter.CrossCoverDetailAdapter;
-import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.ui.components.DatePickerDialogFragment;
 
 import org.joda.time.LocalDate;
 

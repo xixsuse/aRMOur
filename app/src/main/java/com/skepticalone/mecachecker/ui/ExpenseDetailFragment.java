@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
+import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.ExpenseEntity;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
+import com.skepticalone.mecachecker.dialog.PlainTextDialogFragment;
 import com.skepticalone.mecachecker.model.Expense;
-import com.skepticalone.mecachecker.ui.adapter.ExpenseDetailAdapter;
-import com.skepticalone.mecachecker.ui.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.ui.components.PlainTextDialogFragment;
 
 public class ExpenseDetailFragment
         extends SinglePaymentDetailFragment<Expense, ExpenseEntity, ExpenseViewModel>

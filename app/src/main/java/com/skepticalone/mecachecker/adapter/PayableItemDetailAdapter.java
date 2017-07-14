@@ -1,8 +1,7 @@
-package com.skepticalone.mecachecker.ui.adapter;
+package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -20,13 +19,11 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
     private final Callbacks mCallbacks;
 
     PayableItemDetailAdapter(Callbacks callbacks) {
-        super();
+        super(callbacks);
         mCallbacks = callbacks;
     }
 
     abstract int getRowNumberPayment();
-
-    abstract int getRowNumberComment();
 
     abstract int getRowNumberClaimed();
 
@@ -35,11 +32,9 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
     @Override
     @CallSuper
     void onItemUpdated(@NonNull ItemType oldItem, @NonNull ItemType newItem) {
+        super.onItemUpdated(oldItem, newItem);
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
             notifyItemChanged(getRowNumberPayment());
-        }
-        if (!Comparators.equalStrings(oldItem.getPaymentData().getComment(), newItem.getPaymentData().getComment())) {
-            notifyItemChanged(getRowNumberComment());
         }
         if (!Comparators.equalDateTimes(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalDateTimes(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
             notifyItemChanged(getRowNumberClaimed());
@@ -58,14 +53,6 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
                 }
             });
             holder.setText(R.string.payment, R.string.currency_format, item.getPaymentData().getPayment());
-        } else if (position == getRowNumberComment()) {
-            holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mCallbacks.changeComment(item.getId(), item.getPaymentData().getComment());
-                }
-            });
-            holder.setText(R.string.comment, item.getPaymentData().getComment());
         } else if (position == getRowNumberClaimed()) {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -97,14 +84,12 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
                 holder.setText(R.string.paid, DateTimeUtils.getDateTimeString(paid));
             }
         } else {
-            throw new IllegalStateException();
+            super.bindViewHolder(item, holder, position);
         }
     }
 
-    public interface Callbacks {
+    public interface Callbacks extends ItemDetailAdapter.Callbacks {
         void changePayment(long itemId, @NonNull BigDecimal payment);
-
-        void changeComment(long itemId, @Nullable String currentComment);
 
         void setClaimed(long itemId, boolean claimed);
 

@@ -18,9 +18,9 @@ import android.view.ViewGroup;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
-import com.skepticalone.mecachecker.ui.adapter.ItemListAdapter;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.ui.components;
+package com.skepticalone.mecachecker.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
