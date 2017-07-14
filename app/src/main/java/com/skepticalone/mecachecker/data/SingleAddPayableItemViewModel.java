@@ -7,9 +7,9 @@ import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.model.PayableItem;
 
-public abstract class SingleAddPayableViewModel<Entity extends PayableItem> extends PayableViewModel<Entity> {
+public abstract class SingleAddPayableItemViewModel<Entity extends PayableItem> extends PayableItemViewModel<Entity> {
 
-    SingleAddPayableViewModel(Application application) {
+    SingleAddPayableItemViewModel(Application application) {
         super(application);
     }
 

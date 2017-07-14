@@ -12,8 +12,8 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-public abstract class PayableViewModel<Entity extends PayableItem> extends ItemViewModel<Entity> {
-    PayableViewModel(Application application) {
+public abstract class PayableItemViewModel<Entity extends PayableItem> extends ItemViewModel<Entity> {
+    PayableItemViewModel(Application application) {
         super(application);
     }
 

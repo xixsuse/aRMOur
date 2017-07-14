@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ExpenseViewModel extends SingleAddPayableViewModel<ExpenseEntity> {
+public class ExpenseViewModel extends SingleAddPayableItemViewModel<ExpenseEntity> {
     private final String newExpenseTitle;
     private final ExpenseDao expenseDao;
 
@@ -49,8 +49,9 @@ public class ExpenseViewModel extends SingleAddPayableViewModel<ExpenseEntity> {
     ExpenseEntity generateNewItemSync() {
         return new ExpenseEntity(
                 null,
-                newExpenseTitle,
-                new PaymentData(BigDecimal.ZERO, null, null));
+                new PaymentData(MoneyConverter.centsToMoney(5000), null, null),
+                newExpenseTitle
+        );
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class CrossCoverViewModel extends SingleAddPayableViewModel<CrossCoverEntity> {
+public class CrossCoverViewModel extends SingleAddPayableItemViewModel<CrossCoverEntity> {
     private static final String TAG = "CrossCoverViewModel";
 
     private final CrossCoverDao crossCoverDao;
@@ -59,12 +59,12 @@ public class CrossCoverViewModel extends SingleAddPayableViewModel<CrossCoverEnt
         }
         return new CrossCoverEntity(
                 null,
-                newDate,
                 new PaymentData(
                         MoneyConverter.centsToMoney(PreferenceManager.getDefaultSharedPreferences(this.getApplication()).getInt(getApplication().getString(R.string.key_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
                         null,
                         null
-                )
+                ),
+                newDate
         );
     }
 
