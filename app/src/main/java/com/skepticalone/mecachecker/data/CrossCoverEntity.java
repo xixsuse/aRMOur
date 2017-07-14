@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.data;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
@@ -11,21 +12,31 @@ import com.skepticalone.mecachecker.model.CrossCover;
 import org.joda.time.LocalDate;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
-public class CrossCoverEntity extends PayableItemEntity implements CrossCover {
+public class CrossCoverEntity extends ItemEntity implements CrossCover {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     private final LocalDate date;
+    @NonNull
+    @Embedded
+    private final PaymentData paymentData;
     CrossCoverEntity(
-            @Nullable String comment,
+            @NonNull LocalDate date,
             @NonNull PaymentData paymentData,
-            @NonNull LocalDate date
+            @Nullable String comment
     ) {
-        super(comment, paymentData);
+        super(comment);
         this.date = date;
+        this.paymentData = paymentData;
     }
     @NonNull
     @Override
     public LocalDate getDate() {
         return date;
+    }
+
+    @NonNull
+    @Override
+    public PaymentData getPaymentData() {
+        return paymentData;
     }
 }

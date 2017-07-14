@@ -58,13 +58,11 @@ public class CrossCoverViewModel extends SingleAddPayableItemViewModel<CrossCove
             if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
         }
         return new CrossCoverEntity(
-                null,
-                new PaymentData(
+                newDate, new PaymentData(
                         MoneyConverter.centsToMoney(PreferenceManager.getDefaultSharedPreferences(this.getApplication()).getInt(getApplication().getString(R.string.key_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
                         null,
                         null
-                ),
-                newDate
+        ), null
         );
     }
 

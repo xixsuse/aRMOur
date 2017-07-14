@@ -49,8 +49,7 @@ public class ExpenseViewModel extends SingleAddPayableItemViewModel<ExpenseEntit
     ExpenseEntity generateNewItemSync() {
         return new ExpenseEntity(
                 null,
-                new PaymentData(MoneyConverter.centsToMoney(5000), null, null),
-                newExpenseTitle
+                newExpenseTitle, new PaymentData(MoneyConverter.centsToMoney(5000), null, null)
         );
     }
 
