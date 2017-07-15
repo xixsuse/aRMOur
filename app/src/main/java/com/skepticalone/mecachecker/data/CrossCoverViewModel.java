@@ -15,9 +15,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class CrossCoverViewModel extends AndroidViewModel
-        implements CrossCoverCallbacks, PayableViewModel {
+        implements CrossCoverModel, PayableViewModel {
 
-    private final CrossCoverCallbacks crossCoverCallbacks;
+    private final CrossCoverModel crossCoverCallbacks;
     private final PayableViewModel payableViewModel;
 
     CrossCoverViewModel(Application application) {
@@ -85,7 +85,7 @@ public final class CrossCoverViewModel extends AndroidViewModel
         payableViewModel.setPaid(id, paid);
     }
 
-    static final class CrossCoverComposition extends ItemComposition<CrossCoverEntity> implements CrossCoverCallbacks {
+    static final class CrossCoverComposition extends ModelComposition<CrossCoverEntity> implements CrossCoverModel {
 
         private final CrossCoverDao dao;
         private final String newCrossCoverPaymentKey;

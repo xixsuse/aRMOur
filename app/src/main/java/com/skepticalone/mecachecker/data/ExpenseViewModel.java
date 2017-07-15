@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class ExpenseViewModel extends AndroidViewModel
-        implements ExpenseCallbacks, PayableViewModel {
+        implements ExpenseModel, PayableViewModel {
 
-    private final ExpenseCallbacks expenseCallbacks;
+    private final ExpenseModel expenseCallbacks;
     private final PayableViewModel payableViewModel;
 
     public ExpenseViewModel(Application application) {
@@ -83,7 +83,7 @@ public final class ExpenseViewModel extends AndroidViewModel
         payableViewModel.setPaid(id, paid);
     }
 
-    static final class ExpenseComposition extends ItemComposition<ExpenseEntity> implements ExpenseCallbacks {
+    static final class ExpenseComposition extends ModelComposition<ExpenseEntity> implements ExpenseModel {
 
         private final ExpenseDao dao;
         private final String expenseTitle;

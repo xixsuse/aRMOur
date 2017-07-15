@@ -8,7 +8,7 @@ import com.skepticalone.mecachecker.util.ShiftType;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-public interface ShiftCallbacks {
+public interface ShiftModel {
 
     @MainThread
     void addNewShift(@NonNull ShiftType shiftType);

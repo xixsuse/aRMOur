@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface ExpenseDao extends ItemDao<ExpenseEntity>, PayableItemDao {
+interface ExpenseDao extends ItemDao<ExpenseEntity>, PayableDao {
 
     @Override
     @Insert

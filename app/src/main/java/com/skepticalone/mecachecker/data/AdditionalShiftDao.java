@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface AdditionalShiftDao extends ItemDao<AdditionalShiftEntity>, ShiftDao, PayableItemDao {
+interface AdditionalShiftDao extends ItemDao<AdditionalShiftEntity>, ShiftDao, PayableDao {
 
     @Override
     @Insert

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
 
-public interface CrossCoverCallbacks extends ItemCallbacks<CrossCoverEntity>, SingleAddCallbacks {
+public interface CrossCoverModel extends Model<CrossCoverEntity>, SingleAddModel {
 
     @MainThread
     void setDate(long id, @NonNull LocalDate date);

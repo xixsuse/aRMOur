@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableItemDao {
+interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableDao {
 
     @Override
     @Insert

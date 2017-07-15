@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.PayableItem;
+import com.skepticalone.mecachecker.model.Payable;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-final class PayableDetailHelper<ItemType extends PayableItem> {
+final class PayableDetailHelper<ItemType extends Payable> {
 
     private final PayableDetailFragmentCallbacks mFragmentCallbacks;
     private final int rowNumberPayment, rowNumberClaimed, rowNumberPaid;
@@ -29,7 +29,7 @@ final class PayableDetailHelper<ItemType extends PayableItem> {
         this.rowNumberPaid = rowNumberPaid;
     }
 
-    void onItemUpdated(@NonNull PayableItem oldItem, @NonNull PayableItem newItem, RecyclerView.Adapter adapter) {
+    void onItemUpdated(@NonNull Payable oldItem, @NonNull Payable newItem, RecyclerView.Adapter adapter) {
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
             adapter.notifyItemChanged(rowNumberPayment);
         }

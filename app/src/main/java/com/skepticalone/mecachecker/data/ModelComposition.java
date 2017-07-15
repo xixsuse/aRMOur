@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ItemComposition<Entity extends Item> extends Composition implements ItemCallbacks<Entity> {
+abstract class ModelComposition<Entity extends Item> extends Composition implements Model<Entity> {
 
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
@@ -20,7 +20,7 @@ abstract class ItemComposition<Entity extends Item> extends Composition implemen
     private final LiveData<Entity> selectedItem;
     private final ItemDao<Entity> dao;
 
-    ItemComposition(Application application, ItemDao<Entity> dao) {
+    ModelComposition(Application application, ItemDao<Entity> dao) {
         super(application);
         this.dao = dao;
         selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {

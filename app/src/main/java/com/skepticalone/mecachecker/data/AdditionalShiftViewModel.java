@@ -18,59 +18,59 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class AdditionalShiftViewModel extends AndroidViewModel
-        implements AdditionalShiftCallbacks, PayableViewModel {
+        implements AdditionalShiftModel, PayableViewModel {
 
-    private final AdditionalShiftCallbacks additionalShiftCallbacks;
+    private final AdditionalShiftModel additionalShiftModel;
     private final PayableViewModel payableViewModel;
 
     AdditionalShiftViewModel(Application application) {
         super(application);
         AdditionalShiftDao additionalShiftDao = AppDatabase.getInstance(application).additionalShiftDao();
-        additionalShiftCallbacks = new AdditionalShiftComposition(application, additionalShiftDao);
+        additionalShiftModel = new AdditionalShiftComposition(application, additionalShiftDao);
         payableViewModel = new PayableComposition(application, additionalShiftDao);
     }
 
     @Override
     public void addNewShift(@NonNull ShiftType shiftType) {
-        additionalShiftCallbacks.addNewShift(shiftType);
+        additionalShiftModel.addNewShift(shiftType);
     }
 
     @NonNull
     @Override
     public LiveData<List<AdditionalShiftEntity>> getItems() {
-        return additionalShiftCallbacks.getItems();
+        return additionalShiftModel.getItems();
     }
 
     @NonNull
     @Override
     public LiveData<AdditionalShiftEntity> getItem(long id) {
-        return additionalShiftCallbacks.getItem(id);
+        return additionalShiftModel.getItem(id);
     }
 
     @Override
     public void selectItem(long id) {
-        additionalShiftCallbacks.selectItem(id);
+        additionalShiftModel.selectItem(id);
     }
 
     @NonNull
     @Override
     public LiveData<AdditionalShiftEntity> getSelectedItem() {
-        return additionalShiftCallbacks.getSelectedItem();
+        return additionalShiftModel.getSelectedItem();
     }
 
     @Override
     public void deleteItem(long id) {
-        additionalShiftCallbacks.deleteItem(id);
+        additionalShiftModel.deleteItem(id);
     }
 
     @Override
     public void setShiftTimes(long id, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        additionalShiftCallbacks.setShiftTimes(id, date, start, end);
+        additionalShiftModel.setShiftTimes(id, date, start, end);
     }
 
     @Override
     public void setComment(long id, @Nullable String comment) {
-        additionalShiftCallbacks.setComment(id, comment);
+        additionalShiftModel.setComment(id, comment);
     }
 
     @Override
@@ -88,7 +88,7 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
         payableViewModel.setPaid(id, paid);
     }
 
-    static final class AdditionalShiftComposition extends ItemComposition<AdditionalShiftEntity> implements AdditionalShiftCallbacks {
+    static final class AdditionalShiftComposition extends ModelComposition<AdditionalShiftEntity> implements AdditionalShiftModel {
 
         private final AdditionalShiftDao dao;
         private final String hourlyRateKey;

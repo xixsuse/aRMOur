@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 
 final class PayableComposition extends Composition implements PayableViewModel {
 
-    private final PayableItemDao dao;
+    private final PayableDao dao;
 
-    PayableComposition(Application application, PayableItemDao dao) {
+    PayableComposition(Application application, PayableDao dao) {
         super(application);
         this.dao = dao;
     }

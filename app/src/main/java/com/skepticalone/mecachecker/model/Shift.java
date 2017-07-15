@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.ShiftData;
 
-public interface Shift extends Item {
+public interface Shift {
 
     @NonNull
     ShiftData getShift();

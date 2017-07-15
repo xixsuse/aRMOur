@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-interface PayableItemDao {
+interface PayableDao {
 
     @WorkerThread
     void setPaymentSync(long id, @NonNull BigDecimal payment);

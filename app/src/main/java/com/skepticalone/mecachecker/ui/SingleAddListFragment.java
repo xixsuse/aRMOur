@@ -4,12 +4,12 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.skepticalone.mecachecker.data.ItemCallbacks;
-import com.skepticalone.mecachecker.model.PayableItem;
+import com.skepticalone.mecachecker.data.Model;
+import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class SingleAddListFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends ItemCallbacks<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
+abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends Model<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
 
     private FloatingActionButton mFab;
 

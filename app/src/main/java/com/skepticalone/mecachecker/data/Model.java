@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public interface ItemCallbacks<Entity> {
+public interface Model<Entity> {
 
     @MainThread
     @NonNull
