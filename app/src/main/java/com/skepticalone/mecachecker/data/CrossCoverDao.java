@@ -22,10 +22,7 @@ interface CrossCoverDao {
     void insertCrossCoverShift(CrossCoverEntity crossCover);
 
     @MainThread
-    @Query("SELECT * FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " ORDER BY " +
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE)
+    @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     LiveData<List<CrossCoverEntity>> getCrossCoverShifts();
 
     @MainThread

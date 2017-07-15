@@ -27,7 +27,7 @@ interface ExpenseDao {
             Contract.COLUMN_NAME_PAID +
             " IS NULL, " +
             Contract.COLUMN_NAME_CLAIMED +
-            " IS NULL, IFNULL(" +
+            " IS NULL, ifnull(" +
             Contract.COLUMN_NAME_PAID +
             ", " +
             Contract.COLUMN_NAME_CLAIMED +
