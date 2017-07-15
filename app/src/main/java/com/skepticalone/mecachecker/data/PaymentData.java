@@ -42,6 +42,10 @@ public final class PaymentData {
 //        this.comment = comment;
     }
 
+    PaymentData(int payment) {
+        this(MoneyConverter.centsToMoney(payment), null, null);
+    }
+
     @NonNull
     public BigDecimal getPayment() {
         return payment;

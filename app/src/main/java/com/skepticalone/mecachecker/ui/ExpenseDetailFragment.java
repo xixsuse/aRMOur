@@ -3,16 +3,20 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.ExpenseEntity;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
+import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 import com.skepticalone.mecachecker.dialog.TitleDialogFragment;
 import com.skepticalone.mecachecker.model.Expense;
 
+import java.math.BigDecimal;
+
 public final class ExpenseDetailFragment
-        extends PayableDetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
-        implements ExpenseDetailAdapter.Callbacks, TitleDialogFragment.Callbacks {
+        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
+        implements ExpenseDetailAdapter.Callbacks, TitleDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
     @NonNull
     @Override
@@ -36,4 +40,23 @@ public final class ExpenseDetailFragment
         getViewModel().setTitle(itemId, trimmedTitle);
     }
 
+    @Override
+    public void changePayment(long id, @NonNull BigDecimal payment) {
+        showDialogFragment(PaymentDialogFragment.newInstance(id, payment, R.string.payment));
+    }
+
+    @Override
+    public void savePayment(long id, @NonNull BigDecimal payment) {
+        getViewModel().setPayment(id, payment);
+    }
+
+    @Override
+    public void setClaimed(long id, boolean claimed) {
+        getViewModel().setClaimed(id, claimed);
+    }
+
+    @Override
+    public void setPaid(long id, boolean paid) {
+        getViewModel().setPaid(id, paid);
+    }
 }

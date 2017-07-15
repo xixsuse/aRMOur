@@ -2,30 +2,27 @@ package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
 import android.arch.core.util.Function;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.skepticalone.mecachecker.model.Item;
-import com.skepticalone.mecachecker.ui.Constants;
 
 import java.util.List;
 
-public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel implements BaseItemViewModel<Entity> {
+abstract class ItemComposition<Entity extends Item> extends Composition implements ItemCallbacks<Entity> {
 
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private final LiveData<Entity> selectedItem;
+    private final ItemDao<Entity> dao;
 
-    ItemViewModel(Application application) {
+    ItemComposition(Application application, ItemDao<Entity> dao) {
         super(application);
+        this.dao = dao;
         selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
             @Override
             public LiveData<Entity> apply(Long id) {
@@ -35,8 +32,16 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
         });
     }
 
-    abstract BaseItemDao<Entity> getDao();
-
+//    @Override
+//    public final void insertItem(@NonNull final Entity item) {
+//        runAsync(new SQLiteTask() {
+//            @Override
+//            public void runSQLiteTask() throws ShiftOverlapException {
+//                dao.insertItemSync(item);
+//            }
+//        });
+//    }
+//
     @Override
     public final void selectItem(long id) {
         selectedId.setValue(id);
@@ -51,13 +56,13 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
     @NonNull
     @Override
     public final LiveData<List<Entity>> getItems() {
-        return getDao().getItems();
+        return dao.getItems();
     }
 
     @NonNull
     @Override
     public final LiveData<Entity> getItem(long id) {
-        return getDao().getItem(id);
+        return dao.getItem(id);
     }
 
     @Override
@@ -65,7 +70,7 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
-                getDao().deleteItemSync(id);
+                dao.deleteItemSync(id);
             }
         });
     }
@@ -75,39 +80,8 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
-                getDao().setCommentSync(id, comment);
+                dao.setCommentSync(id, comment);
             }
         });
     }
-
-    final void runAsync(SQLiteTask task) {
-        new DatabaseOperation(getApplication()).execute(task);
-    }
-
-    private static final class DatabaseOperation extends AsyncTask<SQLiteTask, Void, Void> {
-
-        private final LocalBroadcastManager mBroadcastManager;
-
-        DatabaseOperation(Application application) {
-            super();
-            mBroadcastManager = LocalBroadcastManager.getInstance(application);
-        }
-
-        @Override
-        protected final Void doInBackground(SQLiteTask[] tasks) {
-            for (SQLiteTask task : tasks) {
-                try {
-                    task.runSQLiteTask();
-                } catch (ShiftOverlapException e) {
-                    Intent intent = new Intent();
-                    intent.setAction(Constants.DISPLAY_ERROR);
-                    intent.putExtra(Intent.EXTRA_TEXT, e.getMessage());
-                    mBroadcastManager.sendBroadcast(intent);
-                }
-            }
-            return null;
-        }
-
-    }
-
 }

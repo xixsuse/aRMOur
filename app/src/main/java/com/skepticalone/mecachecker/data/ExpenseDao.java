@@ -15,11 +15,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface ExpenseDao extends PayableItemDao<ExpenseEntity> {
+interface ExpenseDao extends ItemDao<ExpenseEntity>, PayableItemDao {
 
     @Override
     @Insert
-    void insertItemSync(ExpenseEntity expense);
+    void insertItemSync(@NonNull ExpenseEntity expense);
 
     @Override
     @Query("SELECT * FROM " +

@@ -10,10 +10,10 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-interface BaseItemDao<ItemType extends Item> {
+interface ItemDao<ItemType extends Item> {
 
     @WorkerThread
-    void insertItemSync(ItemType item);
+    void insertItemSync(@NonNull ItemType item);
 
     @MainThread
     @NonNull

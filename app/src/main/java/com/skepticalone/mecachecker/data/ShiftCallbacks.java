@@ -5,17 +5,15 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.util.ShiftType;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-public interface ShiftViewModel<T> extends BaseItemViewModel<T> {
+public interface ShiftCallbacks {
 
     @MainThread
-    void addShift(@NonNull ShiftType shiftType);
+    void addNewShift(@NonNull ShiftType shiftType);
 
     @MainThread
-    void setStart(long id, @NonNull LocalTime start);
-
-    @MainThread
-    void setEnd(long id, @NonNull LocalTime end);
+    void setShiftTimes(long id, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end);
 
 }

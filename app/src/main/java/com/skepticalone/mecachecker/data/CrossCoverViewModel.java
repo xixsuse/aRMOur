@@ -1,96 +1,129 @@
 package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
-import android.database.sqlite.SQLiteConstraintException;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
-        implements PayableItemViewModel<CrossCoverEntity>, SingleAddItemViewModel<CrossCoverEntity> {
-    private final CrossCoverDao crossCoverDao;
-    private final String errorMessage;
-    private final int newCrossCoverPayment;
+public final class CrossCoverViewModel extends AndroidViewModel
+        implements CrossCoverCallbacks, PayableViewModel {
+
+    private final CrossCoverCallbacks crossCoverCallbacks;
+    private final PayableViewModel payableViewModel;
 
     CrossCoverViewModel(Application application) {
         super(application);
-        crossCoverDao = AppDatabase.getInstance(application).crossCoverDao();
-        errorMessage = application.getString(R.string.cross_cover_already_exists_date);
-        newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(application).getInt(application.getString(R.string.key_cross_cover_payment), application.getResources().getInteger(R.integer.default_cross_cover_payment));
-    }
-
-    @Override
-    BaseItemDao<CrossCoverEntity> getDao() {
-        return crossCoverDao;
+        CrossCoverDao crossCoverDao = AppDatabase.getInstance(application).crossCoverDao();
+        crossCoverCallbacks = new CrossCoverComposition(application, crossCoverDao);
+        payableViewModel = new PayableComposition(application, crossCoverDao);
     }
 
     @Override
     public void addNewItem() {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                LocalDate newDate = new LocalDate();
-                LocalDate lastCrossCoverShiftDate = crossCoverDao.getLastCrossCoverDateSync();
-                if (lastCrossCoverShiftDate != null) {
-                    LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
-                    if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+        crossCoverCallbacks.addNewItem();
+    }
+
+    @NonNull
+    @Override
+    public LiveData<List<CrossCoverEntity>> getItems() {
+        return crossCoverCallbacks.getItems();
+    }
+
+    @NonNull
+    @Override
+    public LiveData<CrossCoverEntity> getItem(long id) {
+        return crossCoverCallbacks.getItem(id);
+    }
+
+    @Override
+    public void selectItem(long id) {
+        crossCoverCallbacks.selectItem(id);
+    }
+
+    @NonNull
+    @Override
+    public LiveData<CrossCoverEntity> getSelectedItem() {
+        return crossCoverCallbacks.getSelectedItem();
+    }
+
+    @Override
+    public void deleteItem(long id) {
+        crossCoverCallbacks.deleteItem(id);
+    }
+
+    @Override
+    public void setDate(long id, @NonNull LocalDate date) {
+        crossCoverCallbacks.setDate(id, date);
+    }
+
+    @Override
+    public void setComment(long id, @Nullable String comment) {
+        crossCoverCallbacks.setComment(id, comment);
+    }
+
+    @Override
+    public void setPayment(long id, @NonNull BigDecimal payment) {
+        payableViewModel.setPayment(id, payment);
+    }
+
+    @Override
+    public void setClaimed(long id, boolean claimed) {
+        payableViewModel.setClaimed(id, claimed);
+    }
+
+    @Override
+    public void setPaid(long id, boolean paid) {
+        payableViewModel.setPaid(id, paid);
+    }
+
+    static final class CrossCoverComposition extends ItemComposition<CrossCoverEntity> implements CrossCoverCallbacks {
+
+        private final CrossCoverDao dao;
+        private final String newCrossCoverPaymentKey;
+        private final int defaultNewCrossCoverPayment;
+
+        CrossCoverComposition(Application application, CrossCoverDao dao) {
+            super(application, dao);
+            this.dao = dao;
+            newCrossCoverPaymentKey = application.getString(R.string.key_cross_cover_payment);
+            defaultNewCrossCoverPayment = application.getResources().getInteger(R.integer.default_cross_cover_payment);
+        }
+
+        @Override
+        public void addNewItem() {
+            final int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
+            runAsync(new SQLiteTask() {
+                @Override
+                public void runSQLiteTask() throws ShiftOverlapException {
+                    LocalDate newDate = new LocalDate();
+                    LocalDate lastCrossCoverShiftDate = dao.getLastCrossCoverDateSync();
+                    if (lastCrossCoverShiftDate != null) {
+                        LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
+                        if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+                    }
+                    dao.insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
                 }
-                crossCoverDao.insertItemSync(new CrossCoverEntity(
-                        newDate,
-                        new PaymentData(MoneyConverter.centsToMoney(newCrossCoverPayment), null, null),
-                        null
-                ));
-            }
-        });
-    }
+            });
+        }
 
-    @Override
-    public void setPayment(final long id, @NonNull final BigDecimal payment) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setPaymentSync(id, payment);
-            }
-        });
-    }
-
-    @Override
-    public void setClaimed(final long id, final boolean claimed) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setClaimedSync(id, claimed ? DateTime.now() : null);
-            }
-        });
-    }
-
-    @Override
-    public void setPaid(final long id, final boolean paid) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setPaidSync(id, paid ? DateTime.now() : null);
-            }
-        });
-    }
-
-    public void setDateSync(final long id, @NonNull final LocalDate date) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                try {
-                    crossCoverDao.setDateSync(id, date);
-                } catch (SQLiteConstraintException e) {
-                    throw new ShiftOverlapException(errorMessage);
+        @Override
+        public void setDate(final long id, @NonNull final LocalDate date) {
+            runAsync(new SQLiteTask() {
+                @Override
+                public void runSQLiteTask() throws ShiftOverlapException {
+                    dao.setDateSync(id, date);
                 }
-            }
-        });
+            });
+        }
     }
 
 }

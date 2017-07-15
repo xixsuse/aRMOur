@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
-import com.skepticalone.mecachecker.data.ItemViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -26,23 +25,21 @@ public final class DetailActivity extends CoordinatorActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int title;
-        Class<? extends ItemViewModel> viewModelClass;
+        long itemId = getIntent().getLongExtra(ITEM_ID, NO_ID);
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
             case Constants.ITEM_TYPE_CROSS_COVER:
                 title = R.string.cross_cover;
-                viewModelClass = CrossCoverViewModel.class;
+                ViewModelProviders.of(this).get(CrossCoverViewModel.class).selectItem(itemId);
                 break;
             case Constants.ITEM_TYPE_EXPENSE:
                 title = R.string.expense;
-                viewModelClass = ExpenseViewModel.class;
+                ViewModelProviders.of(this).get(ExpenseViewModel.class).selectItem(itemId);
                 break;
             default:
                 throw new IllegalStateException();
         }
         //noinspection ConstantConditions
         getSupportActionBar().setTitle(title);
-        ItemViewModel model = ViewModelProviders.of(this).get(viewModelClass);
-        model.selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             DetailFragment detailFragment;
             switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {

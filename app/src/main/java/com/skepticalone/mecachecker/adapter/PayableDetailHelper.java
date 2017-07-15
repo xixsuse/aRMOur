@@ -1,7 +1,7 @@
 package com.skepticalone.mecachecker.adapter;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -12,52 +12,48 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
+final class PayableDetailHelper<ItemType extends PayableItem> {
 
-public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> extends ItemDetailAdapter<ItemType> {
+    private final PayableDetailFragmentCallbacks mFragmentCallbacks;
+    private final int rowNumberPayment, rowNumberClaimed, rowNumberPaid;
 
-    private final Callbacks mCallbacks;
-
-    PayableItemDetailAdapter(Callbacks callbacks) {
-        super(callbacks);
-        mCallbacks = callbacks;
+    PayableDetailHelper(
+            PayableDetailFragmentCallbacks fragmentCallbacks,
+            int rowNumberPayment,
+            int rowNumberClaimed,
+            int rowNumberPaid
+    ) {
+        mFragmentCallbacks = fragmentCallbacks;
+        this.rowNumberPayment = rowNumberPayment;
+        this.rowNumberClaimed = rowNumberClaimed;
+        this.rowNumberPaid = rowNumberPaid;
     }
 
-    abstract int getRowNumberPayment();
-
-    abstract int getRowNumberClaimed();
-
-    abstract int getRowNumberPaid();
-
-    @Override
-    @CallSuper
-    void onItemUpdated(@NonNull ItemType oldItem, @NonNull ItemType newItem) {
-        super.onItemUpdated(oldItem, newItem);
+    void onItemUpdated(@NonNull PayableItem oldItem, @NonNull PayableItem newItem, RecyclerView.Adapter adapter) {
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
-            notifyItemChanged(getRowNumberPayment());
+            adapter.notifyItemChanged(rowNumberPayment);
         }
         if (!Comparators.equalDateTimes(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalDateTimes(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
-            notifyItemChanged(getRowNumberClaimed());
-            notifyItemChanged(getRowNumberPaid());
+            adapter.notifyItemChanged(rowNumberClaimed);
+            adapter.notifyItemChanged(rowNumberPaid);
         }
     }
 
-    @Override
-    @CallSuper
-    void bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
-        if (position == getRowNumberPayment()) {
+    boolean bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
+        if (position == rowNumberPayment) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallbacks.changePayment(item.getId(), item.getPaymentData().getPayment());
+                    mFragmentCallbacks.changePayment(item.getId(), item.getPaymentData().getPayment());
                 }
             });
             holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()));
-        } else if (position == getRowNumberClaimed()) {
+            return true;
+        } else if (position == rowNumberClaimed) {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean claimed) {
-                    mCallbacks.setClaimed(item.getId(), claimed);
+                    mFragmentCallbacks.setClaimed(item.getId(), claimed);
                 }
             } : null;
             DateTime claimed = item.getPaymentData().getClaimed();
@@ -68,11 +64,12 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
                 holder.setupSwitch(R.drawable.ic_check_box_half_black_24dp, true, onClaimedCheckedChangeListener);
                 holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed));
             }
-        } else if (position == getRowNumberPaid()) {
+            return true;
+        } else if (position == rowNumberPaid) {
             CompoundButton.OnCheckedChangeListener onPaidCheckedChangeListener = item.getPaymentData().getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean paid) {
-                    mCallbacks.setPaid(item.getId(), paid);
+                    mFragmentCallbacks.setPaid(item.getId(), paid);
                 }
             };
             DateTime paid = item.getPaymentData().getPaid();
@@ -83,16 +80,8 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
                 holder.setupSwitch(R.drawable.ic_check_box_full_black_24dp, true, onPaidCheckedChangeListener);
                 holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid));
             }
-        } else {
-            super.bindViewHolder(item, holder, position);
-        }
+            return true;
+        } else return false;
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks {
-        void changePayment(long itemId, @NonNull BigDecimal payment);
-
-        void setClaimed(long itemId, boolean claimed);
-
-        void setPaid(long itemId, boolean paid);
-    }
 }

@@ -16,24 +16,24 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface CrossCoverDao extends PayableItemDao<CrossCoverEntity> {
+interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableItemDao {
 
     @Override
     @Insert
-    void insertItemSync(CrossCoverEntity crossCover);
+    void insertItemSync(@NonNull CrossCoverEntity crossCover);
 
+    @NonNull
     @Override
     @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    @NonNull
     LiveData<List<CrossCoverEntity>> getItems();
 
+    @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    @NonNull
     LiveData<CrossCoverEntity> getItem(long id);
 
     @Override
@@ -84,13 +84,13 @@ interface CrossCoverDao extends PayableItemDao<CrossCoverEntity> {
             " = :id")
     void setPaidSync(long id, @Nullable DateTime paid);
 
+    @Nullable
     @WorkerThread
     @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.CrossCoverShifts.COLUMN_NAME_DATE +
             " DESC LIMIT 1")
-    @Nullable
     LocalDate getLastCrossCoverDateSync();
 
     @WorkerThread

@@ -7,7 +7,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.Expense;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public final class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense> {
+public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,
@@ -18,30 +18,17 @@ public final class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense
             ROW_COUNT = 5;
 
     private final Callbacks mCallbacks;
+    private final PayableDetailHelper<Expense> mHelper;
 
     public ExpenseDetailAdapter(Callbacks callbacks) {
         super(callbacks);
         mCallbacks = callbacks;
-    }
-
-    @Override
-    int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
+        mHelper = new PayableDetailHelper<>(callbacks, ROW_NUMBER_PAYMENT, ROW_NUMBER_CLAIMED, ROW_NUMBER_PAID);
     }
 
     @Override
     int getRowNumberComment() {
         return ROW_NUMBER_COMMENT;
-    }
-
-    @Override
-    int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
     }
 
     @Override
@@ -52,13 +39,14 @@ public final class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense
     @Override
     void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
+        mHelper.onItemUpdated(oldExpense, newExpense, this);
         if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);
         }
     }
 
     @Override
-    void bindViewHolder(@NonNull final Expense expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull final Expense expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override
@@ -67,12 +55,11 @@ public final class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense
                 }
             });
             holder.setText(holder.getText(R.string.title), expense.getTitle());
-        } else {
-            super.bindViewHolder(expense, holder, position);
-        }
+            return true;
+        } else return mHelper.bindViewHolder(expense, holder, position) || super.bindViewHolder(expense, holder, position);
     }
 
-    public interface Callbacks extends PayableItemDetailAdapter.Callbacks {
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailFragmentCallbacks {
         void changeTitle(long id, @NonNull String currentTitle);
     }
 

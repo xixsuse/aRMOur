@@ -2,81 +2,122 @@ package com.skepticalone.mecachecker.data;
 
 
 import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 
-import org.joda.time.DateTime;
-
 import java.math.BigDecimal;
+import java.util.List;
 
-public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity>
-        implements PayableItemViewModel<ExpenseEntity>, SingleAddItemViewModel<ExpenseEntity> {
-    private final String newExpenseTitle;
-    private final ExpenseDao expenseDao;
+public final class ExpenseViewModel extends AndroidViewModel
+        implements ExpenseCallbacks, PayableViewModel {
+
+    private final ExpenseCallbacks expenseCallbacks;
+    private final PayableViewModel payableViewModel;
 
     public ExpenseViewModel(Application application) {
         super(application);
-        expenseDao = AppDatabase.getInstance(application).expenseDao();
-        newExpenseTitle = application.getString(R.string.new_expense_title);
-    }
-
-    @Override
-    BaseItemDao<ExpenseEntity> getDao() {
-        return expenseDao;
+        ExpenseDao expenseDao = AppDatabase.getInstance(application).expenseDao();
+        expenseCallbacks = new ExpenseComposition(application, expenseDao);
+        payableViewModel = new PayableComposition(application, expenseDao);
     }
 
     @Override
     public void addNewItem() {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                expenseDao.insertItemSync(new ExpenseEntity(
-                        newExpenseTitle,
-                        new PaymentData(BigDecimal.ZERO, null, null),
-                        null
-                ));
-            }
-        });
+        expenseCallbacks.addNewItem();
+    }
+
+    @NonNull
+    @Override
+    public LiveData<List<ExpenseEntity>> getItems() {
+        return expenseCallbacks.getItems();
+    }
+
+    @NonNull
+    @Override
+    public LiveData<ExpenseEntity> getItem(long id) {
+        return expenseCallbacks.getItem(id);
     }
 
     @Override
-    public void setPayment(final long id, @NonNull final BigDecimal payment) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                expenseDao.setPaymentSync(id, payment);
-            }
-        });
+    public void selectItem(long id) {
+        expenseCallbacks.selectItem(id);
+    }
+
+    @NonNull
+    @Override
+    public LiveData<ExpenseEntity> getSelectedItem() {
+        return expenseCallbacks.getSelectedItem();
     }
 
     @Override
-    public void setClaimed(final long id, final boolean claimed) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                expenseDao.setClaimedSync(id, claimed ? DateTime.now() : null);
-            }
-        });
+    public void deleteItem(long id) {
+        expenseCallbacks.deleteItem(id);
     }
 
     @Override
-    public void setPaid(final long id, final boolean paid) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                expenseDao.setPaidSync(id, paid ? DateTime.now() : null);
-            }
-        });
+    public void setTitle(long id, @NonNull String title) {
+        expenseCallbacks.setTitle(id, title);
     }
 
-    public void setTitle(final long id, @NonNull final String title) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                expenseDao.setTitleSync(id, title);
-            }
-        });
+    @Override
+    public void setComment(long id, @Nullable String comment) {
+        expenseCallbacks.setComment(id, comment);
+    }
+
+    @Override
+    public void setPayment(long id, @NonNull BigDecimal payment) {
+        payableViewModel.setPayment(id, payment);
+    }
+
+    @Override
+    public void setClaimed(long id, boolean claimed) {
+        payableViewModel.setClaimed(id, claimed);
+    }
+
+    @Override
+    public void setPaid(long id, boolean paid) {
+        payableViewModel.setPaid(id, paid);
+    }
+
+    static final class ExpenseComposition extends ItemComposition<ExpenseEntity> implements ExpenseCallbacks {
+
+        private final ExpenseDao dao;
+        private final String expenseTitle;
+
+        ExpenseComposition(Application application, ExpenseDao dao) {
+            super(application, dao);
+            this.dao = dao;
+            expenseTitle = application.getString(R.string.new_expense_title);
+        }
+
+        @Override
+        public void addNewItem() {
+            runAsync(new SQLiteTask() {
+                @Override
+                public void runSQLiteTask() throws ShiftOverlapException {
+                    dao.insertItemSync(new ExpenseEntity(
+                            expenseTitle,
+                            new PaymentData(BigDecimal.ZERO, null, null),
+                            null
+                    ));
+                }
+            });
+        }
+
+        @Override
+        public void setTitle(final long id, @NonNull final String title) {
+            runAsync(new SQLiteTask() {
+                @Override
+                public void runSQLiteTask() throws ShiftOverlapException {
+                    dao.setTitleSync(id, title);
+                }
+            });
+        }
+
     }
 
 }

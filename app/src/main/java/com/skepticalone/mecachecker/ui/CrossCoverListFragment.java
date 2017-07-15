@@ -29,4 +29,9 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
         return Constants.ITEM_TYPE_CROSS_COVER;
     }
 
+    @Override
+    void addNewItem() {
+        getViewModel().addNewItem();
+    }
+
 }

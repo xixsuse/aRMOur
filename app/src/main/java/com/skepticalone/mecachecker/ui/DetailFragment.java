@@ -18,11 +18,12 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.data.BaseItemViewModel;
+import com.skepticalone.mecachecker.data.ItemCallbacks;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.model.Item;
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends BaseItemViewModel<Entity>> extends LifecycleFragment implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
+abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemCallbacks<Entity>> extends LifecycleFragment
+        implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private final ItemDetailAdapter<ItemType> mAdapter = createAdapter();

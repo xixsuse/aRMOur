@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public interface BaseItemViewModel<Entity> {
+public interface ItemCallbacks<Entity> {
 
     @MainThread
     @NonNull
@@ -21,6 +21,9 @@ public interface BaseItemViewModel<Entity> {
     @NonNull
     LiveData<Entity> getSelectedItem();
 
+//    @MainThread
+//    void insertItem(@NonNull Entity item);
+//
     @MainThread
     void selectItem(long id);
 

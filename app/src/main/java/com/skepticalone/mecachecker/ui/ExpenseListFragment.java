@@ -29,4 +29,8 @@ public final class ExpenseListFragment extends SingleAddListFragment<Expense, Ex
         return Constants.ITEM_TYPE_EXPENSE;
     }
 
+    @Override
+    void addNewItem() {
+        getViewModel().addNewItem();
+    }
 }

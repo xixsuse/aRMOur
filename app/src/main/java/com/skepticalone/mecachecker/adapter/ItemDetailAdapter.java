@@ -47,7 +47,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     }
 
     @CallSuper
-    void bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
         if (position == getRowNumberComment()) {
             holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
                 @Override
@@ -56,9 +56,8 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
                 }
             });
             holder.setText(holder.getText(R.string.comment), item.getComment());
-        } else {
-            throw new IllegalStateException();
-        }
+            return true;
+        } else return false;
     }
 
     public final void setItem(@NonNull ItemType item) {
@@ -74,7 +73,9 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
-        bindViewHolder(mItem, holder, position);
+        if (!bindViewHolder(mItem, holder, position)){
+            throw new IllegalStateException();
+        }
     }
 
     public interface Callbacks {

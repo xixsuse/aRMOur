@@ -12,13 +12,13 @@ import com.skepticalone.mecachecker.R;
 
 import java.math.BigDecimal;
 
-public final class MoneyDialogFragment extends EditTextDialogFragment {
+public final class PaymentDialogFragment extends EditTextDialogFragment {
 
     private Callbacks mCallbacks;
 
-    public static MoneyDialogFragment newInstance(long id, @NonNull BigDecimal money, @StringRes int title) {
-        MoneyDialogFragment fragment = new MoneyDialogFragment();
-        Bundle args = getArgs(id, title, money.toPlainString(), R.string.currency_input_hint);
+    public static PaymentDialogFragment newInstance(long id, @NonNull BigDecimal payment, @StringRes int title) {
+        PaymentDialogFragment fragment = new PaymentDialogFragment();
+        Bundle args = getArgs(id, title, payment.toPlainString(), R.string.currency_input_hint);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,14 +37,14 @@ public final class MoneyDialogFragment extends EditTextDialogFragment {
     @Override
     final void save(@Nullable String trimmedTextWithLength) {
         try {
-            mCallbacks.saveMoney(getItemId(), new BigDecimal(trimmedTextWithLength));
+            mCallbacks.savePayment(getItemId(), new BigDecimal(trimmedTextWithLength));
         } catch (NullPointerException | NumberFormatException e) {
             Toast.makeText(getActivity(), R.string.invalid_format, Toast.LENGTH_SHORT).show();
         }
     }
 
     public interface Callbacks {
-        void saveMoney(long itemId, @NonNull BigDecimal money);
+        void savePayment(long id, @NonNull BigDecimal payment);
     }
 
 }

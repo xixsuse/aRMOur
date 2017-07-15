@@ -18,12 +18,12 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
-import com.skepticalone.mecachecker.data.BaseItemViewModel;
+import com.skepticalone.mecachecker.data.ItemCallbacks;
 import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends BaseItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemCallbacks<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
     private final ItemListAdapter<ItemType> mAdapter = createAdapter();
