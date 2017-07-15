@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.ItemViewModel;
 
-public class DetailActivity extends CoordinatorActivity {
+public final class DetailActivity extends CoordinatorActivity {
 
     static final String ITEM_TYPE = "ITEM_TYPE";
     static final String ITEM_ID = "ITEM_ID";

@@ -8,6 +8,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.skepticalone.mecachecker.model.Item;
@@ -41,6 +42,11 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
     @Override
     public final void selectItem(long id) {
         selectedId.setValue(id);
+    }
+
+    @Override
+    public final void setComment(long id, @Nullable String comment) {
+
     }
 
     final void runAsync(SQLiteTask task) {

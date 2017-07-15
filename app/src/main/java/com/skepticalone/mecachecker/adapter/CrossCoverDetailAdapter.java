@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.LocalDate;
 
-public class CrossCoverDetailAdapter extends PayableItemDetailAdapter<CrossCover> {
+public final class CrossCoverDetailAdapter extends PayableItemDetailAdapter<CrossCover> {
 
     private static final int
             ROW_NUMBER_DATE = 0,

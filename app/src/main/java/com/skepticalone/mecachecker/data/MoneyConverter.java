@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class MoneyConverter {
+final class MoneyConverter {
 
     private static final int MONEY_SCALE = 2;
 

@@ -6,7 +6,7 @@ import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
 import android.database.Cursor;
 import android.util.Log;
 
-class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
+final class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
 
     @Override
     public SupportSQLiteOpenHelper create(SupportSQLiteOpenHelper.Configuration configuration) {

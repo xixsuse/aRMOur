@@ -15,7 +15,7 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
+public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
         implements PayableItemViewModel<CrossCoverEntity>, SingleAddItemViewModel<CrossCoverEntity> {
     private final CrossCoverDao crossCoverDao;
     private final String errorMessage;

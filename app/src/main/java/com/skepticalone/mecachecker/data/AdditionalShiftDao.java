@@ -52,7 +52,7 @@ interface AdditionalShiftDao {
             " = :shiftEnd WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setTimes(long id, @NonNull DateTime shiftStart, @NonNull DateTime shiftEnd);
+    void setShift(long id, @NonNull DateTime shiftStart, @NonNull DateTime shiftEnd);
 
     @WorkerThread
     @Query("UPDATE " +

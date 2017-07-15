@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
-class DateTimeConverter {
+final class DateTimeConverter {
 
     @TypeConverter
     @Nullable

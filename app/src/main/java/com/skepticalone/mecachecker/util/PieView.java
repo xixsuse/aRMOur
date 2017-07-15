@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 
-public class PieView extends View {
+public final class PieView extends View {
     private static final String TAG = "PieView";
     @ColorInt
     private final int colorOne, colorTwo, colorThree;

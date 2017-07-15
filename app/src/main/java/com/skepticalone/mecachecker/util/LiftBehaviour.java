@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 @SuppressWarnings("WeakerAccess")
-public class LiftBehaviour<V extends View> extends CoordinatorLayout.Behavior<View> {
+public final class LiftBehaviour<V extends View> extends CoordinatorLayout.Behavior<View> {
 
     public LiftBehaviour(Context context, AttributeSet attrs) {
         super(context, attrs);

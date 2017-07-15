@@ -7,7 +7,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.Expense;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense> {
+public final class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,

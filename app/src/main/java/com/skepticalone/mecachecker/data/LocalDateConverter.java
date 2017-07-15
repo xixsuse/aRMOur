@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
-class LocalDateConverter {
+final class LocalDateConverter {
 
     @TypeConverter
     public static long dateToMillis(@NonNull LocalDate date) {

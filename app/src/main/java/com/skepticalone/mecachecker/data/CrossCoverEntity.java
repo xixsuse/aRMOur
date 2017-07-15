@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.model.CrossCover;
 import org.joda.time.LocalDate;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(name = Contract.CrossCoverShifts.INDEX, value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
-public class CrossCoverEntity extends ItemEntity implements CrossCover {
+public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     private final LocalDate date;

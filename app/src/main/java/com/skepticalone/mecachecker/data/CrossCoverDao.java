@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface CrossCoverDao {
+interface CrossCoverDao extends ItemDao {
 
     @WorkerThread
     @Insert
@@ -63,6 +63,7 @@ interface CrossCoverDao {
             " = :id")
     void setPayment(long id, BigDecimal payment);
 
+    @Override
     @WorkerThread
     @Query("UPDATE " +
             Contract.CrossCoverShifts.TABLE_NAME +

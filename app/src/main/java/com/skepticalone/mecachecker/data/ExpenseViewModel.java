@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ExpenseViewModel extends ItemViewModel<ExpenseEntity>
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity>
         implements PayableItemViewModel<ExpenseEntity>, SingleAddItemViewModel<ExpenseEntity> {
     private final String newExpenseTitle;
     private final ExpenseDao expenseDao;

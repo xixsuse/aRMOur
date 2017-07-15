@@ -6,7 +6,7 @@ import com.skepticalone.mecachecker.model.CrossCover;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
-public class CrossCoverListAdapter extends PayableItemListAdapter<CrossCover> {
+public final class CrossCoverListAdapter extends PayableItemListAdapter<CrossCover> {
 
     public CrossCoverListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);

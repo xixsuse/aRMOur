@@ -9,7 +9,7 @@ import android.widget.DatePicker;
 
 import org.joda.time.LocalDate;
 
-public class DatePickerDialogFragment extends AbstractDialogFragment implements DatePickerDialog.OnDateSetListener {
+public final class DatePickerDialogFragment extends AbstractDialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String
             YEAR = "YEAR",
