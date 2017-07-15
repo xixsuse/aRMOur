@@ -12,7 +12,7 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 
-abstract class CoordinatorActivity extends AppCompatActivity implements SnackbarCallbacks {
+abstract class CoordinatorActivity extends AppCompatActivity implements SnackCallbacks {
 
     CoordinatorLayout mCoordinatorLayout;
 

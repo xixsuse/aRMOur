@@ -69,7 +69,7 @@ public class CrossCoverDetailAdapter extends PayableItemDetailAdapter<CrossCover
                     mCallbacks.changeDate(crossCover.getId(), crossCover.getDate());
                 }
             });
-            holder.setText(R.string.date, DateTimeUtils.getFullDateString(crossCover.getDate()));
+            holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(crossCover.getDate()));
         } else {
             super.bindViewHolder(crossCover, holder, position);
         }

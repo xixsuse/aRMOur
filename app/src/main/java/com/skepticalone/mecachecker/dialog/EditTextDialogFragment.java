@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import com.skepticalone.mecachecker.R;
 
-abstract public class EditTextDialogFragment extends AbstractDialogFragment implements DialogInterface.OnClickListener {
+abstract class EditTextDialogFragment extends AbstractDialogFragment implements DialogInterface.OnClickListener {
     private static final String TAG = "EditTextDialogFragment";
     private static final String TEXT = "TEXT";
     private static final String TITLE_ID = "TITLE_ID";

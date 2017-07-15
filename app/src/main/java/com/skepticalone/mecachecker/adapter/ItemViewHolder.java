@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 
-class ItemViewHolder extends RecyclerView.ViewHolder {
+final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     final ImageView primaryIcon, secondaryIcon;
     final SwitchCompat switchControl;
@@ -73,20 +73,12 @@ class ItemViewHolder extends RecyclerView.ViewHolder {
         setup(icon, null, true, switchChecked, onCheckedChangeListener);
     }
 
-    void setText(@StringRes int firstLine) {
-        setText(firstLine, null);
+    String getText(@StringRes int resId) {
+        return text.getContext().getString(resId);
     }
 
-    void setText(@StringRes int firstLine, @StringRes int secondLine) {
-        setText(firstLine, text.getContext().getString(secondLine));
-    }
-
-    void setText(@StringRes int firstLine, @StringRes int secondLineFormat, Object... secondLineArguments) {
-        setText(firstLine, text.getContext().getString(secondLineFormat, secondLineArguments));
-    }
-
-    void setText(@StringRes int firstLine, @Nullable String secondLine) {
-        setText(text.getContext().getString(firstLine), secondLine);
+    String getText(@StringRes int resId, Object... formatArgs) {
+        return text.getContext().getString(resId, formatArgs);
     }
 
     void setText(@NonNull String firstLine) {
@@ -96,7 +88,8 @@ class ItemViewHolder extends RecyclerView.ViewHolder {
     void setText(@NonNull String firstLine, @Nullable String secondLine) {
         setText(firstLine, secondLine, null);
     }
-    private void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
+
+    void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(firstLine);
         ssb.setSpan(firstLineStyle, 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (secondLine != null) {

@@ -2,7 +2,6 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,39 +12,45 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.data.ItemViewModel;
+import com.skepticalone.mecachecker.data.BaseItemViewModel;
+import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.model.Item;
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment {
+abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends BaseItemViewModel<Entity>> extends LifecycleFragment implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
-    private final ItemDetailAdapter<ItemType> mAdapter = onCreateAdapter();
-    private final IntentFilter mErrorIntentFilter = new IntentFilter(ItemViewModel.DISPLAY_ERROR);
-    private SnackbarCallbacks mSnackbarCallbacks;
+    private final ItemDetailAdapter<ItemType> mAdapter = createAdapter();
+    private final IntentFilter mErrorIntentFilter = new IntentFilter(Constants.DISPLAY_ERROR);
+    private SnackCallbacks mSnackCallbacks;
     private final BroadcastReceiver mErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mSnackbarCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
+            mSnackCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.i("Callbacks", "onClick: cone");
+                    // TODO: 15/07/17
                 }
             });
         }
     };
     private ViewModel mModel;
 
+    @NonNull
+    abstract ItemDetailAdapter<ItemType> createAdapter();
+
+    @NonNull
+    abstract ViewModel createViewModel();
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mSnackbarCallbacks = (SnackbarCallbacks) context;
+        mSnackCallbacks = (SnackCallbacks) context;
     }
 
     @Override
@@ -55,11 +60,6 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         return recyclerView;
     }
 
-    @NonNull
-    abstract ItemDetailAdapter<ItemType> onCreateAdapter();
-
-    abstract Class<ViewModel> getViewModelClass();
-
     final ViewModel getViewModel() {
         return mModel;
     }
@@ -67,7 +67,7 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mModel = ViewModelProviders.of(getActivity()).get(getViewModelClass());
+        mModel = createViewModel();
         mModel.getSelectedItem().observe(this, new Observer<Entity>() {
                     @Override
                     public void onChanged(@Nullable Entity entity) {
@@ -93,4 +93,15 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         dialogFragment.setTargetFragment(this, 0);
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
+
+    @Override
+    public final void changeComment(long itemId, @Nullable String currentComment) {
+        showDialogFragment(CommentDialogFragment.newInstance(itemId, currentComment));
+    }
+
+    @Override
+    public final void setComment(long itemId, @Nullable String trimmedComment) {
+        getViewModel().setComment(itemId, trimmedComment);
+    }
+
 }

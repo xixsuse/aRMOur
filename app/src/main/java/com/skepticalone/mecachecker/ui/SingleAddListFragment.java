@@ -4,17 +4,17 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.skepticalone.mecachecker.data.SingleAddPayableItemViewModel;
+import com.skepticalone.mecachecker.data.SingleAddItemViewModel;
 import com.skepticalone.mecachecker.model.PayableItem;
 
 import java.util.List;
 
-abstract class SingleAddListFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends SingleAddPayableItemViewModel<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
+abstract class SingleAddListFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends SingleAddItemViewModel<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
 
     private FloatingActionButton mFab;
 
     @Override
-    void setupFab(FabCallbacks callbacks) {
+    final void setupFab(FabCallbacks callbacks) {
         callbacks.getFloatingActionMenu().hideMenu(true);
         mFab = callbacks.getFabAdd();
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -26,13 +26,13 @@ abstract class SingleAddListFragment<ItemType extends PayableItem, Entity extend
     }
 
     @Override
-    public void onDestroyView() {
+    public final void onDestroyView() {
         super.onDestroyView();
         mFab.hide(true);
     }
 
     @Override
-    public void onChanged(@Nullable List<Entity> entities) {
+    public final void onChanged(@Nullable List<Entity> entities) {
         super.onChanged(entities);
         if (entities == null) {
             mFab.hide(true);
@@ -42,7 +42,7 @@ abstract class SingleAddListFragment<ItemType extends PayableItem, Entity extend
     }
 
     final void addItem() {
-        getViewModel().addItem();
+        getViewModel().addNewItem();
     }
 }
 

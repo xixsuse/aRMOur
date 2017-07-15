@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.PayableItem;
 import com.skepticalone.mecachecker.util.Comparators;
 
@@ -22,7 +23,7 @@ abstract class PayableItemListAdapter<ItemType extends PayableItem> extends Item
     @Override
     final void bindViewHolder(@NonNull ItemType item, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(item.getPaymentData().getIcon());
-        holder.setText(getViewHolderTitle(item), item.getComment());
+        holder.setText(getViewHolderTitle(item), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()), item.getComment());
     }
 
     abstract String getViewHolderTitle(@NonNull ItemType item);

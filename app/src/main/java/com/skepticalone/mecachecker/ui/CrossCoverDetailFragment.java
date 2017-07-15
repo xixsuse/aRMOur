@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -13,19 +14,20 @@ import com.skepticalone.mecachecker.model.CrossCover;
 
 import org.joda.time.LocalDate;
 
-public class CrossCoverDetailFragment
-        extends SinglePaymentDetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
+public final class CrossCoverDetailFragment
+        extends PayableDetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
         implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks {
 
     @NonNull
     @Override
-    ItemDetailAdapter<CrossCover> onCreateAdapter() {
+    ItemDetailAdapter<CrossCover> createAdapter() {
         return new CrossCoverDetailAdapter(this);
     }
 
+    @NonNull
     @Override
-    Class<CrossCoverViewModel> getViewModelClass() {
-        return CrossCoverViewModel.class;
+    CrossCoverViewModel createViewModel() {
+        return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
     }
 
     @Override

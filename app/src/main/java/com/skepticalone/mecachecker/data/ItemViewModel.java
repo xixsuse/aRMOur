@@ -7,24 +7,20 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.skepticalone.mecachecker.model.Item;
+import com.skepticalone.mecachecker.ui.Constants;
 
 import java.util.List;
 
-public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel {
+public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel implements BaseItemViewModel<Entity> {
 
-    public static final String DISPLAY_ERROR = "com.skepticalone.mecachecker.DISPLAY_ERROR";
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private final LiveData<Entity> selectedItem;
-    private final LocalBroadcastManager mLocalBroadcastManager;
 
     ItemViewModel(Application application) {
         super(application);
@@ -35,105 +31,46 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
                 return id == null ? NO_ITEM : getItem(id);
             }
         });
-        mLocalBroadcastManager = LocalBroadcastManager.getInstance(application);
     }
 
+    @Override
     public final LiveData<Entity> getSelectedItem() {
         return selectedItem;
     }
 
+    @Override
     public final void selectItem(long id) {
         selectedId.setValue(id);
     }
 
-    public abstract LiveData<List<Entity>> getItems();
-
-    abstract LiveData<Entity> getItem(long id);
-
-    @WorkerThread
-    abstract void insertItemSync(@NonNull Entity item);
-
-    @WorkerThread
-    abstract void deleteItemSync(long id);
-
-    @MainThread
-    public final void deleteItem(final long id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                deleteItemSync(id);
-            }
-        }).start();
+    final void runAsync(SQLiteTask task) {
+        new DatabaseOperation(getApplication()).execute(task);
     }
 
-    interface SQLiteTask {
-        @WorkerThread
-        void runSQLiteTask() throws SQLiteConstraintException;
+    private static final class DatabaseOperation extends AsyncTask<SQLiteTask, Void, Void> {
 
-        @NonNull
-        String getErrorMessage();
-    }
+        private final LocalBroadcastManager mBroadcastManager;
 
-    final class SQLiteThread extends Thread {
-
-        private final SQLiteTask task;
-
-        SQLiteThread(SQLiteTask task) {
+        DatabaseOperation(Application application) {
             super();
-            this.task = task;
+            mBroadcastManager = LocalBroadcastManager.getInstance(application);
         }
 
         @Override
-        public final void run() {
-            try {
-                task.runSQLiteTask();
-            } catch (SQLiteConstraintException e) {
-                Intent intent = new Intent();
-                intent.setAction(DISPLAY_ERROR);
-                intent.putExtra(Intent.EXTRA_TEXT, task.getErrorMessage());
-                mLocalBroadcastManager.sendBroadcast(intent);
+        protected final Void doInBackground(SQLiteTask[] tasks) {
+            for (SQLiteTask task : tasks) {
+                try {
+                    task.runSQLiteTask();
+                } catch (ShiftOverlapException e) {
+                    Intent intent = new Intent();
+                    intent.setAction(Constants.DISPLAY_ERROR);
+                    intent.putExtra(Intent.EXTRA_TEXT, e.getMessage());
+                    mBroadcastManager.sendBroadcast(intent);
+                }
             }
+            return null;
         }
 
     }
-
-//
-//    abstract static class CreateTask<T> extends AsyncTask<T, Void, Boolean> {
-//
-//        @SafeVarargs
-//        @Override
-//        protected final Boolean doInBackground(T... items) {
-//            try {
-//                for (T item : items) {
-//                    insertItem(item);
-//                }
-//                return true;
-//            } catch (SQLiteConstraintException e) {
-//                return false;
-//            }
-//        }
-//
-//        @WorkerThread
-//        abstract void insertItem(T item);
-//    }
-//
-//    abstract static class DeleteTask extends AsyncTask<Long, Void, Boolean> {
-//
-//        @Override
-//        final protected Boolean doInBackground(Long... itemIds) {
-//            try {
-//                for (long itemId : itemIds) {
-//                    deleteItem(itemId);
-//                }
-//                return true;
-//            } catch (SQLiteConstraintException e) {
-//                return false;
-//            }
-//        }
-//
-//        @WorkerThread
-//        abstract void deleteItem(long itemId);
-//
-//    }
 
 }

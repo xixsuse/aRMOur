@@ -66,7 +66,7 @@ public class ExpenseDetailAdapter extends PayableItemDetailAdapter<Expense> {
                     mCallbacks.changeTitle(expense.getId(), expense.getTitle());
                 }
             });
-            holder.setText(R.string.title, expense.getTitle());
+            holder.setText(holder.getText(R.string.title), expense.getTitle());
         } else {
             super.bindViewHolder(expense, holder, position);
         }

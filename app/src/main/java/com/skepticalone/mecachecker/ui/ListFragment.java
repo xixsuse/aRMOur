@@ -2,7 +2,6 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -19,15 +18,15 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
-import com.skepticalone.mecachecker.data.ItemViewModel;
+import com.skepticalone.mecachecker.data.BaseItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends BaseItemViewModel<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
-    private final ItemListAdapter<ItemType> mAdapter = onCreateAdapter();
+    private final ItemListAdapter<ItemType> mAdapter = createAdapter();
     private ViewModel mModel;
     private Callbacks mCallbacks;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -70,7 +69,14 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     };
 
     @NonNull
-    abstract ItemListAdapter<ItemType> onCreateAdapter();
+    abstract ItemListAdapter<ItemType> createAdapter();
+
+    @NonNull
+    abstract ViewModel createViewModel();
+
+    final ViewModel getViewModel() {
+        return mModel;
+    }
 
     @Override
     public final void onAttach(Context context) {
@@ -87,15 +93,13 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         return recyclerView;
     }
 
-    abstract Class<ViewModel> getViewModelClass();
-
     abstract void setupFab(FabCallbacks callbacks);
 
     @Override
     @CallSuper
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mModel = ViewModelProviders.of(getActivity()).get(getViewModelClass());
+        mModel = createViewModel();
         mModel.getItems().observe(this, this);
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
             mModel.getSelectedItem().observe(this, new Observer<Entity>() {
@@ -112,10 +116,6 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     @CallSuper
     public void onChanged(@Nullable List<Entity> entities) {
         mAdapter.setItems(entities);
-    }
-
-    final ViewModel getViewModel() {
-        return mModel;
     }
 
     @Override

@@ -55,7 +55,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
                     mCallbacks.changeComment(item.getId(), item.getComment());
                 }
             });
-            holder.setText(R.string.comment, item.getComment());
+            holder.setText(holder.getText(R.string.comment), item.getComment());
         } else {
             throw new IllegalStateException();
         }
@@ -77,7 +77,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
         bindViewHolder(mItem, holder, position);
     }
 
-    interface Callbacks {
+    public interface Callbacks {
         void changeComment(long itemId, @Nullable String currentComment);
     }
 }

@@ -3,7 +3,6 @@ package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -14,7 +13,8 @@ import org.joda.time.DateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ExpenseViewModel extends SingleAddPayableItemViewModel<ExpenseEntity> {
+public class ExpenseViewModel extends ItemViewModel<ExpenseEntity>
+        implements PayableItemViewModel<ExpenseEntity>, SingleAddItemViewModel<ExpenseEntity> {
     private final String newExpenseTitle;
     private final ExpenseDao expenseDao;
 
@@ -30,56 +30,81 @@ public class ExpenseViewModel extends SingleAddPayableItemViewModel<ExpenseEntit
     }
 
     @Override
-    LiveData<ExpenseEntity> getItem(long id) {
+    public LiveData<ExpenseEntity> getItem(long id) {
         return expenseDao.getExpense(id);
     }
 
     @Override
-    public void deleteItemSync(long id) {
-        expenseDao.deleteExpense(id);
-    }
-
-    @Override
-    void insertItemSync(@NonNull ExpenseEntity expense) {
-        expenseDao.insertExpense(expense);
-    }
-
-    @NonNull
-    @Override
-    ExpenseEntity generateNewItemSync() {
-        return new ExpenseEntity(
-                newExpenseTitle, new PaymentData(MoneyConverter.centsToMoney(5000), null, null), null
-        );
-    }
-
-    @Override
-    void setPaymentSync(long id, @NonNull BigDecimal payment) {
-        expenseDao.setPayment(id, payment);
-    }
-
-    @Override
-    void setCommentSync(long id, @Nullable String comment) {
-        expenseDao.setComment(id, comment);
-    }
-
-    @Override
-    void setClaimedSync(long id, @Nullable DateTime claimed) {
-        expenseDao.setClaimed(id, claimed);
-    }
-
-    @Override
-    void setPaidSync(long id, @Nullable DateTime paid) {
-        expenseDao.setPaid(id, paid);
-    }
-
-    @MainThread
-    public void setTitle(final long id, @NonNull final String title) {
-        new Thread(new Runnable() {
+    public void addNewItem() {
+        runAsync(new SQLiteTask() {
             @Override
-            public void run() {
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.insertExpense(new ExpenseEntity(
+                        newExpenseTitle,
+                        new PaymentData(BigDecimal.ZERO, null, null),
+                        null
+                ));
+            }
+        });
+    }
+
+    @Override
+    public void deleteItem(final long id) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.deleteExpense(id);
+            }
+        });
+    }
+
+    @Override
+    public void setPayment(final long id, @NonNull final BigDecimal payment) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.setPayment(id, payment);
+            }
+        });
+    }
+
+    @Override
+    public void setClaimed(final long id, final boolean claimed) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.setClaimed(id, claimed ? DateTime.now() : null);
+            }
+        });
+    }
+
+    @Override
+    public void setPaid(final long id, final boolean paid) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.setPaid(id, paid ? DateTime.now() : null);
+            }
+        });
+    }
+
+    @Override
+    public void setComment(final long id, @Nullable final String comment) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                expenseDao.setComment(id, comment);
+            }
+        });
+    }
+
+    public void setTitle(final long id, @NonNull final String title) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
                 expenseDao.setTitle(id, title);
             }
-        }).start();
+        });
     }
 
 }

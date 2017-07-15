@@ -52,7 +52,7 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
                     mCallbacks.changePayment(item.getId(), item.getPaymentData().getPayment());
                 }
             });
-            holder.setText(R.string.payment, R.string.currency_format, item.getPaymentData().getPayment());
+            holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()));
         } else if (position == getRowNumberClaimed()) {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -63,10 +63,10 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
             DateTime claimed = item.getPaymentData().getClaimed();
             if (claimed == null) {
                 holder.setupSwitch(0, false, onClaimedCheckedChangeListener);
-                holder.setText(R.string.claimed, R.string.not_applicable);
+                holder.setText(holder.getText(R.string.claimed));
             } else {
                 holder.setupSwitch(R.drawable.ic_check_box_half_black_24dp, true, onClaimedCheckedChangeListener);
-                holder.setText(R.string.claimed, DateTimeUtils.getDateTimeString(claimed));
+                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed));
             }
         } else if (position == getRowNumberPaid()) {
             CompoundButton.OnCheckedChangeListener onPaidCheckedChangeListener = item.getPaymentData().getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
@@ -78,10 +78,10 @@ public abstract class PayableItemDetailAdapter<ItemType extends PayableItem> ext
             DateTime paid = item.getPaymentData().getPaid();
             if (paid == null) {
                 holder.setupSwitch(0, false, onPaidCheckedChangeListener);
-                holder.setText(R.string.paid, R.string.not_applicable);
+                holder.setText(holder.getText(R.string.paid));
             } else {
                 holder.setupSwitch(R.drawable.ic_check_box_full_black_24dp, true, onPaidCheckedChangeListener);
-                holder.setText(R.string.paid, DateTimeUtils.getDateTimeString(paid));
+                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid));
             }
         } else {
             super.bindViewHolder(item, holder, position);

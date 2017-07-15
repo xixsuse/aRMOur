@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.R;
 
 import java.math.BigDecimal;
 
-public class MoneyDialogFragment extends EditTextDialogFragment {
+public final class MoneyDialogFragment extends EditTextDialogFragment {
 
     private Callbacks mCallbacks;
 
@@ -24,18 +24,18 @@ public class MoneyDialogFragment extends EditTextDialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         mCallbacks = (Callbacks) getTargetFragment();
     }
 
     @Override
-    int getInputType() {
+    final int getInputType() {
         return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
     }
 
     @Override
-    void save(@Nullable String trimmedTextWithLength) {
+    final void save(@Nullable String trimmedTextWithLength) {
         try {
             mCallbacks.saveMoney(getItemId(), new BigDecimal(trimmedTextWithLength));
         } catch (NullPointerException | NumberFormatException e) {
