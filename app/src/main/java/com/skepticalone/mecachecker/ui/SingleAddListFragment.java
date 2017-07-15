@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends Model<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
+abstract class SingleAddListFragment<ItemType extends Item, ViewModel extends Model<ItemType>> extends ListFragment<ItemType, ViewModel> {
 
     private FloatingActionButton mFab;
 
@@ -32,7 +32,7 @@ abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemT
     }
 
     @Override
-    public final void onChanged(@Nullable List<Entity> entities) {
+    public final void onChanged(@Nullable List<ItemType> entities) {
         super.onChanged(entities);
         if (entities == null) {
             mFab.hide(true);

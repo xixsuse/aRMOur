@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-final class PayableComposition extends Composition implements PayableViewModel {
+final class PayableComposition extends Composition implements PayableModel {
 
     private final PayableDao dao;
 

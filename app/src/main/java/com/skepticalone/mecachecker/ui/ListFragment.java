@@ -23,7 +23,7 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends Model<Entity>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
+abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemType>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<ItemType>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
     private final ItemListAdapter<ItemType> mAdapter = createAdapter();
@@ -102,9 +102,9 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         mModel = createViewModel();
         mModel.getItems().observe(this, this);
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
-            mModel.getSelectedItem().observe(this, new Observer<Entity>() {
+            mModel.getSelectedItem().observe(this, new Observer<ItemType>() {
                 @Override
-                public void onChanged(@Nullable Entity entity) {
+                public void onChanged(@Nullable ItemType entity) {
                     mAdapter.setSelectedId(entity == null ? -1 : entity.getId());
                 }
             });
@@ -114,7 +114,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
 
     @Override
     @CallSuper
-    public void onChanged(@Nullable List<Entity> entities) {
+    public void onChanged(@Nullable List<ItemType> entities) {
         mAdapter.setItems(entities);
     }
 

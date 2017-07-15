@@ -7,19 +7,17 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.model.CrossCover;
-
 import org.joda.time.LocalDate;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(name = Contract.CrossCoverShifts.INDEX, value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
-public final class CrossCoverEntity extends ItemEntity implements CrossCover {
+public final class CrossCover extends ItemEntity implements com.skepticalone.mecachecker.model.CrossCover {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     private final LocalDate date;
     @NonNull
     @Embedded
     private final PaymentData paymentData;
-    CrossCoverEntity(
+    CrossCover(
             @NonNull LocalDate date,
             @NonNull PaymentData paymentData,
             @Nullable String comment

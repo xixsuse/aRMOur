@@ -8,11 +8,9 @@ import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.model.Item;
-
 import java.util.List;
 
-abstract class ModelComposition<Entity extends Item> extends Composition implements Model<Entity> {
+abstract class ModelComposition<Entity> extends Composition implements Model<Entity> {
 
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
@@ -32,16 +30,6 @@ abstract class ModelComposition<Entity extends Item> extends Composition impleme
         });
     }
 
-//    @Override
-//    public final void insertItem(@NonNull final Entity item) {
-//        runAsync(new SQLiteTask() {
-//            @Override
-//            public void runSQLiteTask() throws ShiftOverlapException {
-//                dao.insertItemSync(item);
-//            }
-//        });
-//    }
-//
     @Override
     public final void selectItem(long id) {
         selectedId.setValue(id);

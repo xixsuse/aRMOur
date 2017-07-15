@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
+import com.skepticalone.mecachecker.model.CrossCover;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -16,16 +18,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableDao {
+interface CrossCoverDao extends ItemDao<CrossCover>, PayableDao {
 
     @Override
     @Insert
-    void insertItemSync(@NonNull CrossCoverEntity crossCover);
+    void insertItemSync(@NonNull CrossCover crossCover);
 
     @NonNull
     @Override
     @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    LiveData<List<CrossCoverEntity>> getItems();
+    LiveData<List<CrossCover>> getItems();
 
     @NonNull
     @Override
@@ -34,7 +36,7 @@ interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableDao {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    LiveData<CrossCoverEntity> getItem(long id);
+    LiveData<CrossCover> getItem(long id);
 
     @Override
     @Query("DELETE FROM " +

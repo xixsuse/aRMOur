@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.model.CrossCover;
 
 import org.joda.time.LocalDate;
 
@@ -15,77 +16,77 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class CrossCoverViewModel extends AndroidViewModel
-        implements CrossCoverModel, PayableViewModel {
+        implements CrossCoverModel, PayableModel {
 
-    private final CrossCoverModel crossCoverCallbacks;
-    private final PayableViewModel payableViewModel;
+    private final CrossCoverModel crossCoverModel;
+    private final PayableModel payableModel;
 
     CrossCoverViewModel(Application application) {
         super(application);
         CrossCoverDao crossCoverDao = AppDatabase.getInstance(application).crossCoverDao();
-        crossCoverCallbacks = new CrossCoverComposition(application, crossCoverDao);
-        payableViewModel = new PayableComposition(application, crossCoverDao);
+        crossCoverModel = new CrossCoverComposition(application, crossCoverDao);
+        payableModel = new PayableComposition(application, crossCoverDao);
     }
 
     @Override
     public void addNewItem() {
-        crossCoverCallbacks.addNewItem();
+        crossCoverModel.addNewItem();
     }
 
     @NonNull
     @Override
-    public LiveData<List<CrossCoverEntity>> getItems() {
-        return crossCoverCallbacks.getItems();
+    public LiveData<List<CrossCover>> getItems() {
+        return crossCoverModel.getItems();
     }
 
     @NonNull
     @Override
-    public LiveData<CrossCoverEntity> getItem(long id) {
-        return crossCoverCallbacks.getItem(id);
+    public LiveData<CrossCover> getItem(long id) {
+        return crossCoverModel.getItem(id);
     }
 
     @Override
     public void selectItem(long id) {
-        crossCoverCallbacks.selectItem(id);
+        crossCoverModel.selectItem(id);
     }
 
     @NonNull
     @Override
-    public LiveData<CrossCoverEntity> getSelectedItem() {
-        return crossCoverCallbacks.getSelectedItem();
+    public LiveData<CrossCover> getSelectedItem() {
+        return crossCoverModel.getSelectedItem();
     }
 
     @Override
     public void deleteItem(long id) {
-        crossCoverCallbacks.deleteItem(id);
+        crossCoverModel.deleteItem(id);
     }
 
     @Override
     public void setDate(long id, @NonNull LocalDate date) {
-        crossCoverCallbacks.setDate(id, date);
+        crossCoverModel.setDate(id, date);
     }
 
     @Override
     public void setComment(long id, @Nullable String comment) {
-        crossCoverCallbacks.setComment(id, comment);
+        crossCoverModel.setComment(id, comment);
     }
 
     @Override
     public void setPayment(long id, @NonNull BigDecimal payment) {
-        payableViewModel.setPayment(id, payment);
+        payableModel.setPayment(id, payment);
     }
 
     @Override
     public void setClaimed(long id, boolean claimed) {
-        payableViewModel.setClaimed(id, claimed);
+        payableModel.setClaimed(id, claimed);
     }
 
     @Override
     public void setPaid(long id, boolean paid) {
-        payableViewModel.setPaid(id, paid);
+        payableModel.setPaid(id, paid);
     }
 
-    static final class CrossCoverComposition extends ModelComposition<CrossCoverEntity> implements CrossCoverModel {
+    static final class CrossCoverComposition extends ModelComposition<CrossCover> implements CrossCoverModel {
 
         private final CrossCoverDao dao;
         private final String newCrossCoverPaymentKey;
@@ -110,7 +111,7 @@ public final class CrossCoverViewModel extends AndroidViewModel
                         LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
                         if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
                     }
-                    dao.insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
+                    dao.insertItemSync(new com.skepticalone.mecachecker.data.CrossCover(newDate, new PaymentData(newCrossCoverPayment), null));
                 }
             });
         }

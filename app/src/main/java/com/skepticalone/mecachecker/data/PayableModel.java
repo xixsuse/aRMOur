@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
 
-public interface PayableViewModel {
+public interface PayableModel {
 
     void setPayment(long id, @NonNull BigDecimal payment);
 

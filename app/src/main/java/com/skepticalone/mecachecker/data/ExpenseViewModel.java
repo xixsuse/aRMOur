@@ -13,74 +13,74 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class ExpenseViewModel extends AndroidViewModel
-        implements ExpenseModel, PayableViewModel {
+        implements ExpenseModel, PayableModel {
 
-    private final ExpenseModel expenseCallbacks;
-    private final PayableViewModel payableViewModel;
+    private final ExpenseModel expenseModel;
+    private final PayableModel payableModel;
 
     public ExpenseViewModel(Application application) {
         super(application);
         ExpenseDao expenseDao = AppDatabase.getInstance(application).expenseDao();
-        expenseCallbacks = new ExpenseComposition(application, expenseDao);
-        payableViewModel = new PayableComposition(application, expenseDao);
+        expenseModel = new ExpenseComposition(application, expenseDao);
+        payableModel = new PayableComposition(application, expenseDao);
     }
 
     @Override
     public void addNewItem() {
-        expenseCallbacks.addNewItem();
+        expenseModel.addNewItem();
     }
 
     @NonNull
     @Override
     public LiveData<List<ExpenseEntity>> getItems() {
-        return expenseCallbacks.getItems();
+        return expenseModel.getItems();
     }
 
     @NonNull
     @Override
     public LiveData<ExpenseEntity> getItem(long id) {
-        return expenseCallbacks.getItem(id);
+        return expenseModel.getItem(id);
     }
 
     @Override
     public void selectItem(long id) {
-        expenseCallbacks.selectItem(id);
+        expenseModel.selectItem(id);
     }
 
     @NonNull
     @Override
     public LiveData<ExpenseEntity> getSelectedItem() {
-        return expenseCallbacks.getSelectedItem();
+        return expenseModel.getSelectedItem();
     }
 
     @Override
     public void deleteItem(long id) {
-        expenseCallbacks.deleteItem(id);
+        expenseModel.deleteItem(id);
     }
 
     @Override
     public void setTitle(long id, @NonNull String title) {
-        expenseCallbacks.setTitle(id, title);
+        expenseModel.setTitle(id, title);
     }
 
     @Override
     public void setComment(long id, @Nullable String comment) {
-        expenseCallbacks.setComment(id, comment);
+        expenseModel.setComment(id, comment);
     }
 
     @Override
     public void setPayment(long id, @NonNull BigDecimal payment) {
-        payableViewModel.setPayment(id, payment);
+        payableModel.setPayment(id, payment);
     }
 
     @Override
     public void setClaimed(long id, boolean claimed) {
-        payableViewModel.setClaimed(id, claimed);
+        payableModel.setClaimed(id, claimed);
     }
 
     @Override
     public void setPaid(long id, boolean paid) {
-        payableViewModel.setPaid(id, paid);
+        payableModel.setPaid(id, paid);
     }
 
     static final class ExpenseComposition extends ModelComposition<ExpenseEntity> implements ExpenseModel {

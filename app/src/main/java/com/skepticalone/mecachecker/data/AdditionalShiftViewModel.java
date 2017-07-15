@@ -18,16 +18,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class AdditionalShiftViewModel extends AndroidViewModel
-        implements AdditionalShiftModel, PayableViewModel {
+        implements AdditionalShiftModel, PayableModel {
 
     private final AdditionalShiftModel additionalShiftModel;
-    private final PayableViewModel payableViewModel;
+    private final PayableModel payableModel;
 
     AdditionalShiftViewModel(Application application) {
         super(application);
         AdditionalShiftDao additionalShiftDao = AppDatabase.getInstance(application).additionalShiftDao();
         additionalShiftModel = new AdditionalShiftComposition(application, additionalShiftDao);
-        payableViewModel = new PayableComposition(application, additionalShiftDao);
+        payableModel = new PayableComposition(application, additionalShiftDao);
     }
 
     @Override
@@ -75,17 +75,17 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
 
     @Override
     public void setPayment(long id, @NonNull BigDecimal payment) {
-        payableViewModel.setPayment(id, payment);
+        payableModel.setPayment(id, payment);
     }
 
     @Override
     public void setClaimed(long id, boolean claimed) {
-        payableViewModel.setClaimed(id, claimed);
+        payableModel.setClaimed(id, claimed);
     }
 
     @Override
     public void setPaid(long id, boolean paid) {
-        payableViewModel.setPaid(id, paid);
+        payableModel.setPaid(id, paid);
     }
 
     static final class AdditionalShiftComposition extends ModelComposition<AdditionalShiftEntity> implements AdditionalShiftModel {
