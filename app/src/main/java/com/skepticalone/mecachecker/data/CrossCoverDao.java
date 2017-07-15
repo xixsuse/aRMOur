@@ -5,7 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.provider.BaseColumns;
-import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
@@ -16,32 +16,82 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface CrossCoverDao extends ItemDao {
+interface CrossCoverDao extends PayableItemDao<CrossCoverEntity> {
 
-    @WorkerThread
+    @Override
     @Insert
-    void insertCrossCoverShift(CrossCoverEntity crossCover);
+    void insertItemSync(CrossCoverEntity crossCover);
 
-    @MainThread
+    @Override
     @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    LiveData<List<CrossCoverEntity>> getCrossCoverShifts();
+    @NonNull
+    LiveData<List<CrossCoverEntity>> getItems();
 
-    @MainThread
+    @Override
     @Query("SELECT * FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    LiveData<CrossCoverEntity> getCrossCoverShift(long id);
+    @NonNull
+    LiveData<CrossCoverEntity> getItem(long id);
 
-    @Nullable
+    @Override
+    @Query("DELETE FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void deleteItemSync(long id);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_COMMENT +
+            " = :comment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setCommentSync(long id, @Nullable String comment);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_PAYMENT +
+            " = :payment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPaymentSync(long id, @NonNull BigDecimal payment);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_CLAIMED +
+            " = :claimed WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setClaimedSync(long id, @Nullable DateTime claimed);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_PAID +
+            " = :paid WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPaidSync(long id, @Nullable DateTime paid);
+
     @WorkerThread
     @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.CrossCoverShifts.COLUMN_NAME_DATE +
             " DESC LIMIT 1")
-    LocalDate getLastCrossCoverShiftDate();
+    @Nullable
+    LocalDate getLastCrossCoverDateSync();
 
     @WorkerThread
     @Query("UPDATE " +
@@ -51,55 +101,6 @@ interface CrossCoverDao extends ItemDao {
             " = :date WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setDate(long id, LocalDate date);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAYMENT +
-            " = :payment WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPayment(long id, BigDecimal payment);
-
-    @Override
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_COMMENT +
-            " = :comment WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setComment(long id, String comment);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_CLAIMED +
-            " = :claimed WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setClaimed(long id, DateTime claimed);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAID +
-            " = :paid WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPaid(long id, DateTime paid);
-
-    @WorkerThread
-    @Query("DELETE FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void deleteCrossCoverShift(long id);
+    void setDateSync(long id, @NonNull LocalDate date);
 
 }

@@ -5,7 +5,8 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.provider.BaseColumns;
-import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import org.joda.time.DateTime;
@@ -14,13 +15,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-interface ExpenseDao {
+interface ExpenseDao extends PayableItemDao<ExpenseEntity> {
 
-    @WorkerThread
+    @Override
     @Insert
-    void insertExpense(ExpenseEntity expense);
+    void insertItemSync(ExpenseEntity expense);
 
-    @MainThread
+    @Override
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME + " " +
             "ORDER BY " +
@@ -32,15 +33,65 @@ interface ExpenseDao {
             ", " +
             Contract.COLUMN_NAME_CLAIMED +
             ")")
-    LiveData<List<ExpenseEntity>> getExpenses();
+    @NonNull
+    LiveData<List<ExpenseEntity>> getItems();
 
-    @MainThread
+    @Override
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    LiveData<ExpenseEntity> getExpense(long id);
+    @NonNull
+    LiveData<ExpenseEntity> getItem(long id);
+
+    @Override
+    @Query("DELETE FROM " +
+            Contract.Expenses.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void deleteItemSync(long id);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_COMMENT +
+            " = :comment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setCommentSync(long id, @Nullable String comment);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_PAYMENT +
+            " = :payment WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPaymentSync(long id, @NonNull BigDecimal payment);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_CLAIMED +
+            " = :claimed WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setClaimedSync(long id, @Nullable DateTime claimed);
+
+    @Override
+    @Query("UPDATE " +
+            Contract.Expenses.TABLE_NAME +
+            " SET " +
+            Contract.COLUMN_NAME_PAID +
+            " = :paid WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void setPaidSync(long id, @Nullable DateTime paid);
 
     @WorkerThread
     @Query("UPDATE " +
@@ -50,54 +101,6 @@ interface ExpenseDao {
             " = :title WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setTitle(long id, String title);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.Expenses.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAYMENT +
-            " = :payment WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPayment(long id, BigDecimal payment);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.Expenses.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_COMMENT +
-            " = :comment WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setComment(long id, String comment);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.Expenses.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_CLAIMED +
-            " = :claimed WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setClaimed(long id, DateTime claimed);
-
-    @WorkerThread
-    @Query("UPDATE " +
-            Contract.Expenses.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAID +
-            " = :paid WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPaid(long id, DateTime paid);
-
-    @WorkerThread
-    @Query("DELETE FROM " +
-            Contract.Expenses.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void deleteExpense(long id);
+    void setTitleSync(long id, @NonNull String title);
 
 }

@@ -1,11 +1,9 @@
 package com.skepticalone.mecachecker.data;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 
@@ -13,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
         implements PayableItemViewModel<CrossCoverEntity>, SingleAddItemViewModel<CrossCoverEntity> {
@@ -29,13 +26,8 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
     }
 
     @Override
-    public LiveData<List<CrossCoverEntity>> getItems() {
-        return crossCoverDao.getCrossCoverShifts();
-    }
-
-    @Override
-    public LiveData<CrossCoverEntity> getItem(long id) {
-        return crossCoverDao.getCrossCoverShift(id);
+    BaseItemDao<CrossCoverEntity> getDao() {
+        return crossCoverDao;
     }
 
     @Override
@@ -44,12 +36,12 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
                 LocalDate newDate = new LocalDate();
-                LocalDate lastCrossCoverShiftDate = crossCoverDao.getLastCrossCoverShiftDate();
+                LocalDate lastCrossCoverShiftDate = crossCoverDao.getLastCrossCoverDateSync();
                 if (lastCrossCoverShiftDate != null) {
                     LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
                     if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
                 }
-                crossCoverDao.insertCrossCoverShift(new CrossCoverEntity(
+                crossCoverDao.insertItemSync(new CrossCoverEntity(
                         newDate,
                         new PaymentData(MoneyConverter.centsToMoney(newCrossCoverPayment), null, null),
                         null
@@ -59,21 +51,11 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
     }
 
     @Override
-    public void deleteItem(final long id) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.deleteCrossCoverShift(id);
-            }
-        });
-    }
-
-    @Override
     public void setPayment(final long id, @NonNull final BigDecimal payment) {
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setPayment(id, payment);
+                crossCoverDao.setPaymentSync(id, payment);
             }
         });
     }
@@ -83,7 +65,7 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setClaimed(id, claimed ? DateTime.now() : null);
+                crossCoverDao.setClaimedSync(id, claimed ? DateTime.now() : null);
             }
         });
     }
@@ -93,27 +75,17 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity>
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setPaid(id, paid ? DateTime.now() : null);
+                crossCoverDao.setPaidSync(id, paid ? DateTime.now() : null);
             }
         });
     }
 
-    @Override
-    public void setComment(final long id, @Nullable final String comment) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                crossCoverDao.setComment(id, comment);
-            }
-        });
-    }
-
-    public void setDate(final long id, @NonNull final LocalDate date) {
+    public void setDateSync(final long id, @NonNull final LocalDate date) {
         runAsync(new SQLiteTask() {
             @Override
             public void runSQLiteTask() throws ShiftOverlapException {
                 try {
-                    crossCoverDao.setDate(id, date);
+                    crossCoverDao.setDateSync(id, date);
                 } catch (SQLiteConstraintException e) {
                     throw new ShiftOverlapException(errorMessage);
                 }

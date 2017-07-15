@@ -1,9 +1,7 @@
 package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
@@ -37,11 +35,7 @@ public final class CrossCoverDetailFragment
 
     @Override
     public void onDateSet(long itemId, @NonNull LocalDate date) {
-        try {
-            getViewModel().setDate(itemId, date);
-        } catch (SQLiteConstraintException e) {
-            Toast.makeText(getActivity(), "Date overlaps!", Toast.LENGTH_SHORT).show();
-        }
+        getViewModel().setDateSync(itemId, date);
     }
 
 }

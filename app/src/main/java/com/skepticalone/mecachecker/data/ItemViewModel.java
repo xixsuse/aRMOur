@@ -8,6 +8,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -34,19 +35,49 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
         });
     }
 
-    @Override
-    public final LiveData<Entity> getSelectedItem() {
-        return selectedItem;
-    }
+    abstract BaseItemDao<Entity> getDao();
 
     @Override
     public final void selectItem(long id) {
         selectedId.setValue(id);
     }
 
+    @NonNull
     @Override
-    public final void setComment(long id, @Nullable String comment) {
+    public final LiveData<Entity> getSelectedItem() {
+        return selectedItem;
+    }
 
+    @NonNull
+    @Override
+    public final LiveData<List<Entity>> getItems() {
+        return getDao().getItems();
+    }
+
+    @NonNull
+    @Override
+    public final LiveData<Entity> getItem(long id) {
+        return getDao().getItem(id);
+    }
+
+    @Override
+    public final void deleteItem(final long id) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                getDao().deleteItemSync(id);
+            }
+        });
+    }
+
+    @Override
+    public final void setComment(final long id, @Nullable final String comment) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                getDao().setCommentSync(id, comment);
+            }
+        });
     }
 
     final void runAsync(SQLiteTask task) {
