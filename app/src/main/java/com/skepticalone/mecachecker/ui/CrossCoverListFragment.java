@@ -10,7 +10,8 @@ import com.skepticalone.mecachecker.data.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.model.CrossCover;
 
-public final class CrossCoverListFragment extends SingleAddListFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel> {
+public final class CrossCoverListFragment
+        extends SingleAddListFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel> {
 
     @NonNull
     @Override

@@ -1,6 +1,8 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.Expense;
@@ -10,6 +12,13 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
     public ExpenseListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
+    }
+
+    @Override
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        viewHolder.primaryIcon.setVisibility(View.GONE);
+        return viewHolder;
     }
 
     @Override

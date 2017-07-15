@@ -32,4 +32,14 @@ public final class ShiftData {
     public DateTime getEnd() {
         return end;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof ShiftData) {
+            ShiftData other = (ShiftData) object;
+            return start.getMillis() == other.start.getMillis() && end.getMillis() == other.end.getMillis();
+        }
+        return false;
+    }
+
 }

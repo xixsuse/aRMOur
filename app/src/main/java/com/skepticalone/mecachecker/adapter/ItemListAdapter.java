@@ -90,9 +90,8 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
 
     @CallSuper
     @Override
-    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         final ItemViewHolder viewHolder = new ItemViewHolder(parent);
-        viewHolder.primaryIcon.setVisibility(View.GONE);
         viewHolder.switchControl.setVisibility(View.GONE);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

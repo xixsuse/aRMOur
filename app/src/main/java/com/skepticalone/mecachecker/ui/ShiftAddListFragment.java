@@ -6,12 +6,12 @@ import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.data.ItemCallbacks;
-import com.skepticalone.mecachecker.model.PayableItem;
+import com.skepticalone.mecachecker.model.Shift;
 import com.skepticalone.mecachecker.util.ShiftType;
 
 import java.util.List;
 
-abstract class ShiftAddListFragment<ItemType extends PayableItem, Entity extends ItemType, ViewModel extends ItemCallbacks<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
+abstract class ShiftAddListFragment<ItemType extends Shift, Entity extends ItemType, ViewModel extends ItemCallbacks<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
 
     private FloatingActionMenu mFabMenu;
 
