@@ -17,9 +17,7 @@ public class ExpenseEntity extends ItemEntity implements Expense {
     @Embedded
     private final PaymentData paymentData;
     ExpenseEntity(
-            @Nullable String comment,
-            @NonNull String title,
-            @NonNull PaymentData paymentData
+            @NonNull String title, @NonNull PaymentData paymentData, @Nullable String comment
     ) {
         super(comment);
         this.paymentData = paymentData;

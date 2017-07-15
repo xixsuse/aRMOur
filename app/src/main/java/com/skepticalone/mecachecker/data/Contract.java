@@ -9,16 +9,16 @@ final class Contract {
             COLUMN_NAME_CLAIMED = "claimed",
             COLUMN_NAME_PAID = "paid",
             COLUMN_NAME_COMMENT = "comment",
-            COLUMN_NAME_START = "start",
-            COLUMN_NAME_END = "end",
+            COLUMN_NAME_SHIFT_START = "shift_start",
+            COLUMN_NAME_SHIFT_END = "shift_end",
             BASE_COLUMN_DEFINITIONS =
                     BaseColumns._ID + " INTEGER PRIMARY KEY, " +
                             COLUMN_NAME_COMMENT + " TEXT DEFAULT NULL",
             BASE_CHECKS = checkHasLength(COLUMN_NAME_COMMENT),
             SHIFT_COLUMN_DEFINITIONS =
-                    COLUMN_NAME_START + " INTEGER NOT NULL, " +
-                            COLUMN_NAME_END + " INTEGER NOT NULL",
-            SHIFT_CHECKS = "CHECK (" + COLUMN_NAME_START + " <= " + COLUMN_NAME_END + ")",
+                    COLUMN_NAME_SHIFT_START + " INTEGER NOT NULL, " +
+                            COLUMN_NAME_SHIFT_END + " INTEGER NOT NULL",
+            SHIFT_CHECKS = "CHECK (" + COLUMN_NAME_SHIFT_START + " <= " + COLUMN_NAME_SHIFT_END + ")",
             PAYABLE_COLUMN_DEFINITIONS =
                     COLUMN_NAME_PAYMENT + " INTEGER NOT NULL, " +
                             COLUMN_NAME_CLAIMED + " INTEGER DEFAULT NULL, " +
@@ -57,30 +57,30 @@ final class Contract {
     }
 
     static class RosteredShifts {
-        static final String
-                TABLE_NAME = "rostered_shifts",
-                INDEX = INDEX_PREFIX + TABLE_NAME,
-                COLUMN_NAME_LOGGED_START = LOGGED_PREFIX + COLUMN_NAME_START,
-                COLUMN_NAME_LOGGED_END = LOGGED_PREFIX + COLUMN_NAME_END,
-                SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                        BASE_COLUMN_DEFINITIONS + ", " +
-                        SHIFT_COLUMN_DEFINITIONS + ", " +
-                        COLUMN_NAME_LOGGED_START + " INTEGER DEFAULT NULL, " +
-                        COLUMN_NAME_LOGGED_END + " INTEGER DEFAULT NULL, " +
-                        BASE_CHECKS + ", " +
-                        SHIFT_CHECKS + ", " +
-                        "CHECK (" + COLUMN_NAME_LOGGED_START + " <= " + COLUMN_NAME_LOGGED_END + ")" +
-                        ")",
-                SQL_CREATE_INDEX = createIndex(INDEX, false, TABLE_NAME, COLUMN_NAME_START),
-                SQL_CREATE_TRIGGER_BEFORE_INSERT,
-                SQL_CREATE_TRIGGER_BEFORE_UPDATE,
-                SQL_DROP_TABLE = dropTable(TABLE_NAME);
         private static final String
                 LOGGED_PREFIX = "logged_",
                 OVERLAPPING_SHIFT_CRITERIA;
+        static final String
+                TABLE_NAME = "rostered_shifts",
+                INDEX = INDEX_PREFIX + TABLE_NAME,
+                COLUMN_NAME_LOGGED_SHIFT_START = LOGGED_PREFIX + COLUMN_NAME_SHIFT_START,
+                COLUMN_NAME_LOGGED_SHIFT_END = LOGGED_PREFIX + COLUMN_NAME_SHIFT_END,
+                SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
+                        BASE_COLUMN_DEFINITIONS + ", " +
+                        SHIFT_COLUMN_DEFINITIONS + ", " +
+                        COLUMN_NAME_LOGGED_SHIFT_START + " INTEGER DEFAULT NULL, " +
+                        COLUMN_NAME_LOGGED_SHIFT_END + " INTEGER DEFAULT NULL, " +
+                        BASE_CHECKS + ", " +
+                        SHIFT_CHECKS + ", " +
+                        "CHECK (" + COLUMN_NAME_LOGGED_SHIFT_START + " <= " + COLUMN_NAME_LOGGED_SHIFT_END + ")" +
+                        ")",
+                SQL_CREATE_INDEX = createIndex(INDEX, false, TABLE_NAME, COLUMN_NAME_SHIFT_START),
+                SQL_CREATE_TRIGGER_BEFORE_INSERT,
+                SQL_CREATE_TRIGGER_BEFORE_UPDATE,
+                SQL_DROP_TABLE = dropTable(TABLE_NAME);
 
         static {
-            OVERLAPPING_SHIFT_CRITERIA = "(" + getOverlappingShiftCriteria(COLUMN_NAME_START, COLUMN_NAME_END) + ") OR (" + getOverlappingShiftCriteria(COLUMN_NAME_LOGGED_START, COLUMN_NAME_LOGGED_END) + ")";
+            OVERLAPPING_SHIFT_CRITERIA = "(" + getOverlappingShiftCriteria(COLUMN_NAME_SHIFT_START, COLUMN_NAME_SHIFT_END) + ") OR (" + getOverlappingShiftCriteria(COLUMN_NAME_LOGGED_SHIFT_START, COLUMN_NAME_LOGGED_SHIFT_END) + ")";
             SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true, TABLE_NAME, OVERLAPPING_SHIFT_CRITERIA);
             SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false, TABLE_NAME, OVERLAPPING_SHIFT_CRITERIA);
         }
@@ -98,7 +98,7 @@ final class Contract {
                         SHIFT_CHECKS + ", " +
                         PAYABLE_CHECKS +
                         ")",
-                SQL_CREATE_INDEX = createIndex(INDEX, false, TABLE_NAME, COLUMN_NAME_START),
+                SQL_CREATE_INDEX = createIndex(INDEX, false, TABLE_NAME, COLUMN_NAME_SHIFT_START),
                 SQL_CREATE_TRIGGER_BEFORE_INSERT,
                 SQL_CREATE_TRIGGER_BEFORE_UPDATE,
                 SQL_DROP_TABLE = dropTable(TABLE_NAME);
@@ -106,7 +106,7 @@ final class Contract {
                 OVERLAPPING_SHIFT_CRITERIA;
 
         static {
-            OVERLAPPING_SHIFT_CRITERIA = getOverlappingShiftCriteria(COLUMN_NAME_START, COLUMN_NAME_END);
+            OVERLAPPING_SHIFT_CRITERIA = getOverlappingShiftCriteria(COLUMN_NAME_SHIFT_START, COLUMN_NAME_SHIFT_END);
             SQL_CREATE_TRIGGER_BEFORE_INSERT = createTrigger(true, TABLE_NAME, OVERLAPPING_SHIFT_CRITERIA);
             SQL_CREATE_TRIGGER_BEFORE_UPDATE = createTrigger(false, TABLE_NAME, OVERLAPPING_SHIFT_CRITERIA);
         }
@@ -131,7 +131,6 @@ final class Contract {
     static class Expenses {
         static final String
                 TABLE_NAME = "expenses",
-                INDEX = INDEX_PREFIX + TABLE_NAME,
                 COLUMN_NAME_TITLE = "title",
                 SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                         BASE_COLUMN_DEFINITIONS + ", " +

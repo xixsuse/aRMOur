@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(entities = {CrossCoverEntity.class, ExpenseEntity.class}, version = 12)
+@Database(entities = {CrossCoverEntity.class, ExpenseEntity.class}, version = 13)
 @TypeConverters({LocalDateConverter.class, DateTimeConverter.class, MoneyConverter.class})
 abstract class AppDatabase extends RoomDatabase {
 
