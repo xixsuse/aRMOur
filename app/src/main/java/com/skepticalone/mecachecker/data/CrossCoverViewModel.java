@@ -111,7 +111,7 @@ public final class CrossCoverViewModel extends AndroidViewModel
                         LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
                         if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
                     }
-                    dao.insertItemSync(new com.skepticalone.mecachecker.data.CrossCover(newDate, new PaymentData(newCrossCoverPayment), null));
+                    dao.insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
                 }
             });
         }

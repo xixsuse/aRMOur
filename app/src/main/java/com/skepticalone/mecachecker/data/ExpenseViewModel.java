@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class ExpenseViewModel extends AndroidViewModel
-        implements ExpenseModel, PayableModel {
+        implements ExpenseModel, PayableModel, Model<ExpenseEntity> {
 
     private final ExpenseModel expenseModel;
     private final PayableModel payableModel;

@@ -5,13 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
-import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.model.Item;
 import com.skepticalone.mecachecker.util.ShiftType;
 
 import java.util.List;
 
-abstract class ShiftAddListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends Model<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
+abstract class ShiftAddListFragment<ItemType extends Item, Entity extends ItemType> extends ListFragment<ItemType, Entity> {
 
     private FloatingActionMenu mFabMenu;
 

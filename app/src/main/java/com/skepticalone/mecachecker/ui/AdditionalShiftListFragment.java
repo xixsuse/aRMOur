@@ -7,23 +7,31 @@ import com.skepticalone.mecachecker.adapter.AdditionalShiftListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.AdditionalShiftViewModel;
+import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.model.AdditionalShift;
 import com.skepticalone.mecachecker.util.ShiftType;
 
 import static com.skepticalone.mecachecker.ui.Constants.ITEM_TYPE_ADDITIONAL_SHIFT;
 
 public final class AdditionalShiftListFragment
-        extends ShiftAddListFragment<AdditionalShift, AdditionalShiftEntity, AdditionalShiftViewModel> {
+        extends ShiftAddListFragment<AdditionalShift, AdditionalShiftEntity> {
+
+    private AdditionalShiftViewModel model;
+
+    @Override
+    void onCreateViewModel() {
+        model = ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
+    }
 
     @NonNull
     @Override
-    AdditionalShiftViewModel createViewModel() {
-        return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
+    Model<AdditionalShiftEntity> getViewModel() {
+        return model;
     }
 
     @Override
     void addNewShift(@NonNull ShiftType shiftType) {
-        getViewModel().addNewShift(shiftType);
+        model.addNewShift(shiftType);
     }
 
     @NonNull

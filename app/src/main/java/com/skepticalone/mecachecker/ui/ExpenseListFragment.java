@@ -8,9 +8,12 @@ import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.ExpenseEntity;
 import com.skepticalone.mecachecker.data.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.model.Expense;
 
-public final class ExpenseListFragment extends SingleAddListFragment<Expense, ExpenseEntity, ExpenseViewModel> {
+public final class ExpenseListFragment extends SingleAddListFragment<Expense, ExpenseEntity> {
+
+    private ExpenseViewModel model;
 
     @NonNull
     @Override
@@ -18,10 +21,15 @@ public final class ExpenseListFragment extends SingleAddListFragment<Expense, Ex
         return new ExpenseListAdapter(this);
     }
 
+    @Override
+    void onCreateViewModel() {
+        model = ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+    }
+
     @NonNull
     @Override
-    ExpenseViewModel createViewModel() {
-        return ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+    Model<ExpenseEntity> getViewModel() {
+        return model;
     }
 
     @Override
@@ -31,6 +39,6 @@ public final class ExpenseListFragment extends SingleAddListFragment<Expense, Ex
 
     @Override
     void addNewItem() {
-        getViewModel().addNewItem();
+        model.addNewItem();
     }
 }

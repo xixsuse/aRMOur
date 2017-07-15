@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.data.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.CrossCoverViewModel;
 import com.skepticalone.mecachecker.dialog.DatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
@@ -16,7 +17,7 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 
 public final class CrossCoverDetailFragment
-        extends DetailFragment<CrossCover, com.skepticalone.mecachecker.data.CrossCover, CrossCoverViewModel>
+        extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
         implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
     @NonNull

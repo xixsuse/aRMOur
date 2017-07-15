@@ -23,11 +23,10 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemType>> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<ItemType>> {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
     private final ItemListAdapter<ItemType> mAdapter = createAdapter();
-    private ViewModel mModel;
     private Callbacks mCallbacks;
     private RecyclerView.LayoutManager mLayoutManager;
     private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
@@ -71,12 +70,12 @@ abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemT
     @NonNull
     abstract ItemListAdapter<ItemType> createAdapter();
 
-    @NonNull
-    abstract ViewModel createViewModel();
+    abstract void onCreateViewModel();
 
-    final ViewModel getViewModel() {
-        return mModel;
-    }
+    @NonNull
+    abstract Model<Entity> getViewModel();
+
+    abstract void setupFab(FabCallbacks callbacks);
 
     @Override
     public final void onAttach(Context context) {
@@ -93,18 +92,16 @@ abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemT
         return recyclerView;
     }
 
-    abstract void setupFab(FabCallbacks callbacks);
-
     @Override
     @CallSuper
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mModel = createViewModel();
-        mModel.getItems().observe(this, this);
+        onCreateViewModel();
+        getViewModel().getItems().observe(this, this);
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
-            mModel.getSelectedItem().observe(this, new Observer<ItemType>() {
+            getViewModel().getSelectedItem().observe(this, new Observer<Entity>() {
                 @Override
-                public void onChanged(@Nullable ItemType entity) {
+                public void onChanged(@Nullable Entity entity) {
                     mAdapter.setSelectedId(entity == null ? -1 : entity.getId());
                 }
             });
@@ -114,7 +111,7 @@ abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemT
 
     @Override
     @CallSuper
-    public void onChanged(@Nullable List<ItemType> entities) {
+    public void onChanged(@Nullable List<Entity> entities) {
         mAdapter.setItems(entities);
     }
 
@@ -134,13 +131,13 @@ abstract class ListFragment<ItemType extends Item, ViewModel extends Model<ItemT
 
     @Override
     public void onClick(long itemId) {
-        mModel.selectItem(itemId);
+        getViewModel().selectItem(itemId);
         mCallbacks.onItemSelected(getItemType(), itemId);
     }
 
     @Override
     public final void onLongClick(long itemId) {
-        mModel.deleteItem(itemId);
+        getViewModel().deleteItem(itemId);
     }
 
     interface FabCallbacks {

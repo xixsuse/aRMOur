@@ -10,14 +10,14 @@ import android.support.annotation.Nullable;
 import org.joda.time.LocalDate;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(name = Contract.CrossCoverShifts.INDEX, value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
-public final class CrossCover extends ItemEntity implements com.skepticalone.mecachecker.model.CrossCover {
+public final class CrossCoverEntity extends ItemEntity implements com.skepticalone.mecachecker.model.CrossCover {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     private final LocalDate date;
     @NonNull
     @Embedded
     private final PaymentData paymentData;
-    CrossCover(
+    CrossCoverEntity(
             @NonNull LocalDate date,
             @NonNull PaymentData paymentData,
             @Nullable String comment
