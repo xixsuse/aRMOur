@@ -6,11 +6,12 @@ import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.model.Item;
-import com.skepticalone.mecachecker.util.ShiftType;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import java.util.List;
 
-abstract class ShiftAddListFragment<ItemType extends Item, Entity extends ItemType> extends ListFragment<ItemType, Entity> {
+abstract class ShiftListFragment<ItemType extends Item, Entity extends ItemType>
+        extends ListFragment<ItemType, Entity> {
 
     private FloatingActionMenu mFabMenu;
 
@@ -22,19 +23,19 @@ abstract class ShiftAddListFragment<ItemType extends Item, Entity extends ItemTy
         callbacks.getFabNormalDay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewShift(ShiftType.NORMAL_DAY);
+                addNewShift(ShiftUtil.ShiftType.NORMAL_DAY);
             }
         });
         callbacks.getFabLongDay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewShift(ShiftType.LONG_DAY);
+                addNewShift(ShiftUtil.ShiftType.LONG_DAY);
             }
         });
         callbacks.getFabNightShift().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewShift(ShiftType.NIGHT_SHIFT);
+                addNewShift(ShiftUtil.ShiftType.NIGHT_SHIFT);
             }
         });
     }
@@ -55,7 +56,7 @@ abstract class ShiftAddListFragment<ItemType extends Item, Entity extends ItemTy
         }
     }
 
-    abstract void addNewShift(@NonNull ShiftType shiftType);
+    abstract void addNewShift(@NonNull ShiftUtil.ShiftType shiftType);
 
 }
 

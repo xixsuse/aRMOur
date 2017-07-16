@@ -3,12 +3,12 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.util.ShiftType;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -31,8 +31,8 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
     }
 
     @Override
-    public void addNewShift(@NonNull ShiftType shiftType) {
-        additionalShiftModel.addNewShift(shiftType);
+    public void addNewShift(@NonNull LocalTime start, @NonNull LocalTime end) {
+        additionalShiftModel.addNewShift(start, end);
     }
 
     @NonNull
@@ -102,19 +102,8 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
         }
 
         @Override
-        public void addNewShift(@NonNull ShiftType shiftType) {
+        public void addNewShift(@NonNull final LocalTime start, @NonNull final LocalTime end) {
             final int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
-            final LocalTime start, end;
-            switch (shiftType) {
-                case NORMAL_DAY:
-                case LONG_DAY:
-                case NIGHT_SHIFT:
-                    start = new LocalTime(8, 30);
-                    end = new LocalTime(16, 45);
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
             runAsync(new SQLiteTask() {
                 @Override
                 public void runSQLiteTask() throws ShiftOverlapException {
@@ -140,7 +129,11 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
                     final DateTime newStart = date.toDateTime(start);
                     DateTime newEnd = date.toDateTime(end);
                     while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-                    dao.setShiftTimesSync(id, newStart, newEnd);
+                    try {
+                        dao.setShiftTimesSync(id, newStart, newEnd);
+                    } catch (SQLiteConstraintException e) {
+                        throw new ShiftOverlapException(getApplication().getString(R.string.overlapping_shifts));
+                    }
                 }
             });
         }

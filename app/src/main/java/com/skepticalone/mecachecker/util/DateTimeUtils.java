@@ -66,21 +66,25 @@ public final class DateTimeUtils {
         return timeFormatter.print(getTime(totalMinutes));
     }
 
-    private static String getTimeString(DateTime time) {
+    public static String getStartTimeString(LocalTime time) {
         return timeFormatter.print(time);
     }
 
-    private static String getTimeString(DateTime time, LocalDate date) {
-        return time.toLocalDate().isEqual(date) ? getTimeString(time) : getQualifiedString(getTimeString(time), dayFormatter.print(time));
+    public static String getEndTimeString(DateTime time, LocalDate startDate) {
+        String timeString = timeFormatter.print(time.toLocalTime());
+        if (!time.toLocalDate().isEqual(startDate)) {
+            timeString = getQualifiedString(timeString, dayFormatter.print(time));
+        }
+        return timeString;
     }
 
-//    public static String getTimeString(Interval shift, boolean isStart, @Nullable DateTime startOfRosteredShift) {
+//    public static String getStartTimeString(Interval shift, boolean isStart, @Nullable DateTime startOfRosteredShift) {
 //        DateTime time = isStart ? shift.getStart() : shift.getEnd();
 //        if (isStart) {
 //            if (startOfRosteredShift == null) {
 //                return timeFormatter.print(time);
 //            } else {
-//                return getTimeString(time, startOfRosteredShift)
+//                return getStartTimeString(time, startOfRosteredShift)
 //            }
 //        }
 //        if (
@@ -125,7 +129,7 @@ public final class DateTimeUtils {
     }
 
     public static String getTimeSpanString(Interval shift) {
-        return getSpanString(timeFormatter.print(shift.getStart()), getTimeString(shift.getEnd(), shift.getStart().toLocalDate()));
+        return getSpanString(timeFormatter.print(shift.getStart()), getEndTimeString(shift.getEnd(), shift.getStart().toLocalDate()));
     }
 
     public static String getTimeSpanString(SharedPreferences sharedPreferences, String startKey, String endKey) {

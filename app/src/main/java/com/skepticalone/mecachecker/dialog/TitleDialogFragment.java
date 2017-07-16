@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.R;
 
 public final class TitleDialogFragment extends PlainTextDialogFragment {
 
-    private Callbacks mCallbacks;
+    private Callbacks callbacks;
 
     public static TitleDialogFragment newInstance(long id, @NonNull String title) {
         Bundle args = getArgs(id, R.string.title, title, R.string.title);
@@ -21,12 +21,12 @@ public final class TitleDialogFragment extends PlainTextDialogFragment {
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks) getTargetFragment();
+        callbacks = (Callbacks) getTargetFragment();
     }
 
     @Override
     final void save(@Nullable String trimmedTitle) {
-        if (trimmedTitle != null) mCallbacks.saveTitle(getItemId(), trimmedTitle);
+        if (trimmedTitle != null) callbacks.saveTitle(getItemId(), trimmedTitle);
     }
 
     public interface Callbacks {

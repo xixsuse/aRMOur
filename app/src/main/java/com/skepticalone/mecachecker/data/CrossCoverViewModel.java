@@ -3,12 +3,12 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.CrossCover;
 
 import org.joda.time.LocalDate;
 
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public final class CrossCoverViewModel extends AndroidViewModel
-        implements CrossCoverModel, PayableModel {
+        implements CrossCoverModel, PayableModel, Model<CrossCoverEntity> {
 
     private final CrossCoverModel crossCoverModel;
     private final PayableModel payableModel;
@@ -35,13 +35,13 @@ public final class CrossCoverViewModel extends AndroidViewModel
 
     @NonNull
     @Override
-    public LiveData<List<CrossCover>> getItems() {
+    public LiveData<List<CrossCoverEntity>> getItems() {
         return crossCoverModel.getItems();
     }
 
     @NonNull
     @Override
-    public LiveData<CrossCover> getItem(long id) {
+    public LiveData<CrossCoverEntity> getItem(long id) {
         return crossCoverModel.getItem(id);
     }
 
@@ -52,7 +52,7 @@ public final class CrossCoverViewModel extends AndroidViewModel
 
     @NonNull
     @Override
-    public LiveData<CrossCover> getSelectedItem() {
+    public LiveData<CrossCoverEntity> getSelectedItem() {
         return crossCoverModel.getSelectedItem();
     }
 
@@ -86,7 +86,7 @@ public final class CrossCoverViewModel extends AndroidViewModel
         payableModel.setPaid(id, paid);
     }
 
-    static final class CrossCoverComposition extends ModelComposition<CrossCover> implements CrossCoverModel {
+    static final class CrossCoverComposition extends ModelComposition<CrossCoverEntity> implements CrossCoverModel {
 
         private final CrossCoverDao dao;
         private final String newCrossCoverPaymentKey;
@@ -121,7 +121,11 @@ public final class CrossCoverViewModel extends AndroidViewModel
             runAsync(new SQLiteTask() {
                 @Override
                 public void runSQLiteTask() throws ShiftOverlapException {
-                    dao.setDateSync(id, date);
+                    try {
+                        dao.setDateSync(id, date);
+                    } catch (SQLiteConstraintException e) {
+                        throw new ShiftOverlapException(getApplication().getString(R.string.overlapping_shifts));
+                    }
                 }
             });
         }

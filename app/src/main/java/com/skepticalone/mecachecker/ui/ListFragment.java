@@ -1,6 +1,5 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -23,10 +21,10 @@ import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType> extends LifecycleFragment implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemListAdapter<ItemType>, Model<Entity>>
+        implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
-    private final ItemListAdapter<ItemType> mAdapter = createAdapter();
     private Callbacks mCallbacks;
     private RecyclerView.LayoutManager mLayoutManager;
     private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
@@ -67,42 +65,38 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType> exte
 
     };
 
-    @NonNull
-    abstract ItemListAdapter<ItemType> createAdapter();
-
-    abstract void onCreateViewModel();
-
-    @NonNull
-    abstract Model<Entity> getViewModel();
-
     abstract void setupFab(FabCallbacks callbacks);
 
     @Override
-    public final void onAttach(Context context) {
+    @CallSuper
+    public void onAttach(Context context) {
         super.onAttach(context);
         mCallbacks = (Callbacks) context;
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.list_recycler, container, false);
+    final int getLayout() {
+        return R.layout.list_recycler;
+    }
+
+    @NonNull
+    @Override
+    public final RecyclerView onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        RecyclerView recyclerView = super.onCreateView(inflater, container, savedInstanceState);
         mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(mAdapter);
         return recyclerView;
     }
 
     @Override
-    @CallSuper
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        onCreateViewModel();
         getViewModel().getItems().observe(this, this);
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
             getViewModel().getSelectedItem().observe(this, new Observer<Entity>() {
                 @Override
                 public void onChanged(@Nullable Entity entity) {
-                    mAdapter.setSelectedId(entity == null ? -1 : entity.getId());
+                    getAdapter().setSelectedId(entity == null ? -1 : entity.getId());
                 }
             });
         }
@@ -112,25 +106,25 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType> exte
     @Override
     @CallSuper
     public void onChanged(@Nullable List<Entity> entities) {
-        mAdapter.setItems(entities);
+        getAdapter().setItems(entities);
     }
 
     @Override
     public final void onStart() {
         super.onStart();
-        mAdapter.registerAdapterDataObserver(mObserver);
+        getAdapter().registerAdapterDataObserver(mObserver);
     }
 
     @Override
     public final void onStop() {
         super.onStop();
-        mAdapter.unregisterAdapterDataObserver(mObserver);
+        getAdapter().unregisterAdapterDataObserver(mObserver);
     }
 
     abstract int getItemType();
 
     @Override
-    public void onClick(long itemId) {
+    public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
         mCallbacks.onItemSelected(getItemType(), itemId);
     }

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.PaymentData;
 
-public interface Payable {
+public interface PayableItem extends Item {
 
     @NonNull
     PaymentData getPaymentData();

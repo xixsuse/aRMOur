@@ -9,57 +9,40 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
 
-    private static final int
-            ROW_NUMBER_TITLE = 0,
-            ROW_NUMBER_PAYMENT = 1,
-            ROW_NUMBER_COMMENT = 2,
-            ROW_NUMBER_CLAIMED = 3,
-            ROW_NUMBER_PAID = 4,
-            ROW_COUNT = 5;
-
-    private final Callbacks mCallbacks;
-    private final PayableDetailHelper<Expense> mHelper;
+    private final Callbacks callbacks;
+    private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
     public ExpenseDetailAdapter(Callbacks callbacks) {
         super(callbacks);
-        mCallbacks = callbacks;
-        mHelper = new PayableDetailHelper<>(callbacks, ROW_NUMBER_PAYMENT, ROW_NUMBER_CLAIMED, ROW_NUMBER_PAID);
-    }
-
-    @Override
-    int getRowNumberComment() {
-        return ROW_NUMBER_COMMENT;
-    }
-
-    @Override
-    int getRowCount(@NonNull Expense item) {
-        return ROW_COUNT;
+        this.callbacks = callbacks;
+        payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks);
     }
 
     @Override
     void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
-        mHelper.onItemUpdated(oldExpense, newExpense, this);
+        payableDetailAdapterHelper.onItemUpdated(oldExpense, newExpense, this);
         if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
-            notifyItemChanged(ROW_NUMBER_TITLE);
+            notifyItemChanged(callbacks.getRowNumberTitle());
         }
     }
 
     @Override
     boolean bindViewHolder(@NonNull final Expense expense, ItemViewHolder holder, int position) {
-        if (position == ROW_NUMBER_TITLE) {
+        if (position == callbacks.getRowNumberTitle()) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallbacks.changeTitle(expense.getId(), expense.getTitle());
+                    callbacks.changeTitle(expense.getId(), expense.getTitle());
                 }
             });
             holder.setText(holder.getText(R.string.title), expense.getTitle());
             return true;
-        } else return mHelper.bindViewHolder(expense, holder, position) || super.bindViewHolder(expense, holder, position);
+        } else return payableDetailAdapterHelper.bindViewHolder(expense, holder, position) || super.bindViewHolder(expense, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailFragmentCallbacks {
+    public interface Callbacks extends ItemDetailAdapter.Callbacks<Expense>, PayableDetailAdapterHelper.Callbacks {
+        int getRowNumberTitle();
         void changeTitle(long id, @NonNull String currentTitle);
     }
 

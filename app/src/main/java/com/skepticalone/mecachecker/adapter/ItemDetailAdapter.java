@@ -13,13 +13,13 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
 
-    private final Callbacks mCallbacks;
+    private final Callbacks<ItemType> callbacks;
     @Nullable
     private ItemType mItem;
 
-    ItemDetailAdapter(Callbacks callbacks) {
+    ItemDetailAdapter(Callbacks<ItemType> callbacks) {
         super();
-        mCallbacks = callbacks;
+        this.callbacks = callbacks;
     }
 
     @CallSuper
@@ -32,27 +32,23 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
 
     @Override
     public final int getItemCount() {
-        return mItem == null ? 0 : getRowCount(mItem);
+        return mItem == null ? 0 : callbacks.getRowCount(mItem);
     }
-
-    abstract int getRowNumberComment();
-
-    abstract int getRowCount(@NonNull ItemType item);
 
     @CallSuper
     void onItemUpdated(@NonNull ItemType oldItem, @NonNull ItemType newItem) {
         if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
-            notifyItemChanged(getRowNumberComment());
+            notifyItemChanged(callbacks.getRowNumberComment());
         }
     }
 
     @CallSuper
     boolean bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
-        if (position == getRowNumberComment()) {
+        if (position == callbacks.getRowNumberComment()) {
             holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallbacks.changeComment(item.getId(), item.getComment());
+                    callbacks.changeComment(item.getId(), item.getComment());
                 }
             });
             holder.setText(holder.getText(R.string.comment), item.getComment());
@@ -63,7 +59,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     public final void setItem(@NonNull ItemType item) {
         if (mItem == null) {
             mItem = item;
-            notifyItemRangeInserted(0, getRowCount(mItem));
+            notifyItemRangeInserted(0, callbacks.getRowCount(mItem));
         } else {
             onItemUpdated(mItem, item);
             mItem = item;
@@ -78,7 +74,9 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
         }
     }
 
-    public interface Callbacks {
+    public interface Callbacks<T> {
+        int getRowCount(@NonNull T item);
+        int getRowNumberComment();
         void changeComment(long itemId, @Nullable String currentComment);
     }
 }

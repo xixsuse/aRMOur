@@ -23,7 +23,7 @@ abstract class AbstractDialogFragment extends AppCompatDialogFragment {
         mItemId = getArguments().getLong(ITEM_ID);
     }
 
-    long getItemId() {
+    final long getItemId() {
         return mItemId;
     }
 

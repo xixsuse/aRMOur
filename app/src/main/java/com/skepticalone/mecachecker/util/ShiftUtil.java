@@ -2,54 +2,42 @@ package com.skepticalone.mecachecker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.ShiftData;
 
-import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
-final class ShiftUtil {
+public final class ShiftUtil {
 
     @StringRes
-    public static int getShiftTypeTitle(ShiftType shiftType) {
-        switch (shiftType) {
-            case NORMAL_DAY:
-                return R.string.normal_day;
-            case LONG_DAY:
-                return R.string.long_day;
-            case NIGHT_SHIFT:
-                return R.string.night_shift;
-            case OTHER:
-                return R.string.custom;
-            default:
-                throw new IllegalStateException();
+    public static int getShiftTitle(ShiftType shiftType) {
+        if (shiftType == ShiftType.NORMAL_DAY) {
+            return R.string.normal_day;
+        } else if (shiftType == ShiftType.LONG_DAY) {
+            return R.string.long_day;
+        } else if (shiftType == ShiftType.NIGHT_SHIFT) {
+            return R.string.night_shift;
+        } else {
+            return R.string.custom;
         }
     }
 
     @DrawableRes
-    public static int getShiftTypeIcon(ShiftType shiftType) {
-        switch (shiftType) {
-            case NORMAL_DAY:
-                return R.drawable.ic_normal_day_black_24dp;
-            case LONG_DAY:
-                return R.drawable.ic_long_day_black_24dp;
-            case NIGHT_SHIFT:
-                return R.drawable.ic_night_shift_black_24dp;
-            case OTHER:
-                return R.drawable.ic_custom_shift_black_24dp;
-            default:
-                throw new IllegalStateException();
+    public static int getShiftIcon(ShiftType shiftType) {
+        if (shiftType == ShiftType.NORMAL_DAY) {
+            return R.drawable.ic_normal_day_black_24dp;
+        } else if (shiftType == ShiftType.LONG_DAY) {
+            return R.drawable.ic_long_day_black_24dp;
+        } else if (shiftType == ShiftType.NIGHT_SHIFT) {
+            return R.drawable.ic_night_shift_black_24dp;
+        } else {
+            return R.drawable.ic_custom_shift_black_24dp;
         }
-    }
-
-    @DrawableRes
-    public static int getClaimStatusIcon(@NonNull Cursor cursor, int columnIndexClaimed, int columnIndexPaid) {
-        return cursor.isNull(columnIndexPaid) ? cursor.isNull(columnIndexClaimed) ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
     }
 
     public static class Calculator {
@@ -87,10 +75,21 @@ final class ShiftUtil {
             nightShiftStartDefault = context.getResources().getInteger(R.integer.default_start_night_shift);
             nightShiftEndDefault = context.getResources().getInteger(R.integer.default_end_night_shift);
         }
+//
+//        @Override
+//        public final int getShiftIcon(@NonNull ShiftData shiftData) {
+//            return ShiftUtil.getShiftIcon(getShiftType(shiftData));
+//        }
+//
+//        @Override
+//        public int getShiftTitle(@NonNull ShiftData shiftData) {
+//            return ShiftUtil.getShiftTitle(getShiftType(shiftData));
+//        }
 
-        public ShiftType getShiftType(Interval shift) {
-            int startTotalMinutes = shift.getStart().getMinuteOfDay(),
-                    endTotalMinutes = shift.getEnd().getMinuteOfDay();
+        @NonNull
+        public ShiftType getShiftType(@NonNull ShiftData shiftData) {
+            int startTotalMinutes = shiftData.getStart().getMinuteOfDay(),
+                    endTotalMinutes = shiftData.getEnd().getMinuteOfDay();
             if (
                     startTotalMinutes == mPreferences.getInt(normalDayStartKey, normalDayStartDefault) &&
                             endTotalMinutes == mPreferences.getInt(normalDayEndKey, normalDayEndDefault)
@@ -144,4 +143,10 @@ final class ShiftUtil {
 
     }
 
+    public enum ShiftType {
+        NORMAL_DAY,
+        LONG_DAY,
+        NIGHT_SHIFT,
+        OTHER
+    }
 }

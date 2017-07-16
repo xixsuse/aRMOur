@@ -6,11 +6,15 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.model.AdditionalShift;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftListAdapter extends ItemListAdapter<AdditionalShift> {
 
-    public AdditionalShiftListAdapter(@NonNull Callbacks callbacks) {
+    private final ShiftUtil.Calculator calculator;
+
+    public AdditionalShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks);
+        this.calculator = calculator;
     }
 
     @Override
@@ -22,8 +26,8 @@ public final class AdditionalShiftListAdapter extends ItemListAdapter<Additional
 
     @Override
     void bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder) {
-        holder.primaryIcon.setImageResource(R.drawable.ic_long_day_black_24dp);
-        holder.secondaryIcon.setImageResource(R.drawable.ic_cancel_red_24dp);
+        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getShiftType(shift.getShift())));
+        holder.secondaryIcon.setImageResource(shift.getPaymentData().getIcon());
         holder.setText(DateTimeUtils.getFullDateString(shift.getShift().getStart().toLocalDate()), holder.getText(R.string.currency_format, shift.getPaymentData().getPayment()), shift.getComment());
     }
 

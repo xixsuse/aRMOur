@@ -8,7 +8,7 @@ import com.skepticalone.mecachecker.R;
 
 public final class CommentDialogFragment extends PlainTextDialogFragment {
 
-    private Callbacks mCallbacks;
+    private Callbacks callbacks;
 
     public static CommentDialogFragment newInstance(long id, @Nullable String comment) {
         Bundle args = getArgs(id, R.string.comment, comment, R.string.comment);
@@ -20,12 +20,12 @@ public final class CommentDialogFragment extends PlainTextDialogFragment {
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks) getTargetFragment();
+        callbacks = (Callbacks) getTargetFragment();
     }
 
     @Override
     final void save(@Nullable String trimmedComment) {
-        mCallbacks.setComment(getItemId(), trimmedComment);
+        callbacks.setComment(getItemId(), trimmedComment);
     }
 
     public interface Callbacks {

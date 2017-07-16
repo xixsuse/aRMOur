@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.AdditionalShiftListAdapter;
@@ -9,35 +10,33 @@ import com.skepticalone.mecachecker.data.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.model.AdditionalShift;
-import com.skepticalone.mecachecker.util.ShiftType;
+import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import static com.skepticalone.mecachecker.ui.Constants.ITEM_TYPE_ADDITIONAL_SHIFT;
 
 public final class AdditionalShiftListFragment
-        extends ShiftAddListFragment<AdditionalShift, AdditionalShiftEntity> {
+        extends ShiftListFragment<AdditionalShift, AdditionalShiftEntity> {
 
     private AdditionalShiftViewModel model;
+    private ShiftUtil.Calculator calculator;
 
+    @NonNull
     @Override
-    void onCreateViewModel() {
-        model = ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
+    ItemListAdapter<AdditionalShift> onCreateAdapter(Context context) {
+        calculator = new ShiftUtil.Calculator(context);
+        return new AdditionalShiftListAdapter(this, calculator);
     }
 
     @NonNull
     @Override
-    Model<AdditionalShiftEntity> getViewModel() {
+    Model<AdditionalShiftEntity> onCreateViewModel() {
+        model = ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
         return model;
     }
 
     @Override
-    void addNewShift(@NonNull ShiftType shiftType) {
-        model.addNewShift(shiftType);
-    }
-
-    @NonNull
-    @Override
-    ItemListAdapter<AdditionalShift> createAdapter() {
-        return new AdditionalShiftListAdapter(this);
+    void addNewShift(@NonNull ShiftUtil.ShiftType shiftType) {
+        model.addNewShift(calculator.getStartTime(shiftType), calculator.getEndTime(shiftType));
     }
 
     @Override
