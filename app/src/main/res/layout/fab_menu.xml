@@ -4,7 +4,6 @@
     android:id="@+id/fab_menu"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layout_behavior=".util.LiftBehaviour"
     app:menu_colorNormal="@color/fabColorNormal"
     app:menu_colorPressed="@color/fabColorPressed"
     app:menu_colorRipple="@color/fabColorRipple">

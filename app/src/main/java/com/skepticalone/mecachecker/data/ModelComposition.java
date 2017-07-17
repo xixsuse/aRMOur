@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ abstract class ModelComposition<Entity> extends Composition implements Model<Ent
     private static final MutableLiveData NO_ITEM = new MutableLiveData<>();
     private static final MutableLiveData<List> NO_ITEMS = new MutableLiveData<>();
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    private final MutableLiveData<Entity> lastDeletedItem = new MutableLiveData<>();
     private final LiveData<Entity> selectedItem;
     private final ItemDao<Entity> dao;
 
@@ -26,6 +28,16 @@ abstract class ModelComposition<Entity> extends Composition implements Model<Ent
             public LiveData<Entity> apply(Long id) {
                 //noinspection unchecked
                 return id == null ? NO_ITEM : getItem(id);
+            }
+        });
+    }
+
+    @Override
+    public final void insertItem(@NonNull final Entity item) {
+        runAsync(new SQLiteTask() {
+            @Override
+            public void runSQLiteTask() throws ShiftOverlapException {
+                dao.insertItemSync(item);
             }
         });
     }
@@ -43,6 +55,12 @@ abstract class ModelComposition<Entity> extends Composition implements Model<Ent
 
     @NonNull
     @Override
+    public final MutableLiveData<Entity> getLastDeletedItem() {
+        return lastDeletedItem;
+    }
+
+    @NonNull
+    @Override
     public final LiveData<List<Entity>> getItems() {
         return dao.getItems();
     }
@@ -54,13 +72,14 @@ abstract class ModelComposition<Entity> extends Composition implements Model<Ent
     }
 
     @Override
-    public final void deleteItem(final long id) {
-        runAsync(new SQLiteTask() {
-            @Override
-            public void runSQLiteTask() throws ShiftOverlapException {
-                dao.deleteItemSync(id);
-            }
-        });
+    public final void deleteItem(long id) {
+        new Thread(new DeleteTask<>(dao, id, lastDeletedItem)).start();
+//        runAsync(new SQLiteTask() {
+//            @Override
+//            public void runSQLiteTask() throws ShiftOverlapException {
+//                dao.deleteItemSync(id);
+//            }
+//        });
     }
 
     @Override
@@ -71,5 +90,27 @@ abstract class ModelComposition<Entity> extends Composition implements Model<Ent
                 dao.setCommentSync(id, comment);
             }
         });
+    }
+
+    static class DeleteTask<T> implements Runnable {
+
+        private final ItemDao<T> dao;
+        private final long id;
+        private final MutableLiveData<T> deletedItem;
+
+        DeleteTask(ItemDao<T> dao, long id, MutableLiveData<T> deletedItem) {
+            this.dao = dao;
+            this.id = id;
+            this.deletedItem = deletedItem;
+        }
+
+        @WorkerThread
+        @Override
+        public void run() {
+            T item = dao.getItemSync(id);
+            if (item != null && dao.deleteItemSync(id) == 1) {
+                deletedItem.postValue(item);
+            }
+        }
     }
 }

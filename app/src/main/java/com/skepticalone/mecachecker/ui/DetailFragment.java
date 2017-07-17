@@ -22,11 +22,10 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> ex
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private final IntentFilter mErrorIntentFilter = new IntentFilter(Constants.DISPLAY_ERROR);
-    private SnackCallbacks mSnackCallbacks;
     private final BroadcastReceiver mErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mSnackCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
+            snackbarCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // TODO: 15/07/17
@@ -34,12 +33,6 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> ex
             });
         }
     };
-
-    @Override
-    public final void onAttach(Context context) {
-        super.onAttach(context);
-        mSnackCallbacks = (SnackCallbacks) context;
-    }
 
     @Override
     final int getLayout() {

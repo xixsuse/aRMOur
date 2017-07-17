@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -28,6 +29,17 @@ public final class AdditionalShiftViewModel extends AndroidViewModel
         AdditionalShiftDao additionalShiftDao = AppDatabase.getInstance(application).additionalShiftDao();
         additionalShiftModel = new AdditionalShiftComposition(application, additionalShiftDao);
         payableModel = new PayableComposition(application, additionalShiftDao);
+    }
+
+    @Override
+    public void insertItem(@NonNull AdditionalShiftEntity item) {
+        additionalShiftModel.insertItem(item);
+    }
+
+    @NonNull
+    @Override
+    public MutableLiveData<AdditionalShiftEntity> getLastDeletedItem() {
+        return additionalShiftModel.getLastDeletedItem();
     }
 
     @Override

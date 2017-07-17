@@ -16,6 +16,7 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> ext
 
     private Adapter mAdapter;
     private ViewModel viewModel;
+    SnackCallbacks snackbarCallbacks;
     @NonNull
     abstract Adapter onCreateAdapter(Context context);
     @NonNull
@@ -24,6 +25,7 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> ext
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        snackbarCallbacks = (SnackCallbacks) context;
         mAdapter = onCreateAdapter(context);
     }
 

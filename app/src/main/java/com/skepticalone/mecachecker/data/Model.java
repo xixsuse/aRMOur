@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.data;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,9 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 public interface Model<Entity> {
+
+    @MainThread
+    void insertItem(@NonNull Entity item);
 
     @MainThread
     @NonNull
@@ -21,9 +25,10 @@ public interface Model<Entity> {
     @NonNull
     LiveData<Entity> getSelectedItem();
 
-//    @MainThread
-//    void insertItem(@NonNull Entity item);
-//
+    @MainThread
+    @NonNull
+    MutableLiveData<Entity> getLastDeletedItem();
+
     @MainThread
     void selectItem(long id);
 

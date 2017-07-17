@@ -37,12 +37,20 @@ interface CrossCoverDao extends ItemDao<CrossCoverEntity>, PayableDao {
     LiveData<CrossCoverEntity> getItem(long id);
 
     @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    CrossCoverEntity getItemSync(long id);
+
+    @Override
     @Query("DELETE FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    void deleteItemSync(long id);
+    int deleteItemSync(long id);
 
     @Override
     @Query("UPDATE " +

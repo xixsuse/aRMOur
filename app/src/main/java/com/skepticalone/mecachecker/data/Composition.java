@@ -43,6 +43,7 @@ abstract class Composition {
                     intent.putExtra(Intent.EXTRA_TEXT, e.getMessage());
                     mBroadcastManager.sendBroadcast(intent);
                 }
+                if (isCancelled()) break;
             }
             return null;
         }

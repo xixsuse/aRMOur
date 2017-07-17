@@ -4,6 +4,7 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -23,6 +24,17 @@ public final class ExpenseViewModel extends AndroidViewModel
         ExpenseDao expenseDao = AppDatabase.getInstance(application).expenseDao();
         expenseModel = new ExpenseComposition(application, expenseDao);
         payableModel = new PayableComposition(application, expenseDao);
+    }
+
+    @Override
+    public void insertItem(@NonNull ExpenseEntity item) {
+        expenseModel.insertItem(item);
+    }
+
+    @NonNull
+    @Override
+    public MutableLiveData<ExpenseEntity> getLastDeletedItem() {
+        return expenseModel.getLastDeletedItem();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -26,6 +27,17 @@ public final class CrossCoverViewModel extends AndroidViewModel
         CrossCoverDao crossCoverDao = AppDatabase.getInstance(application).crossCoverDao();
         crossCoverModel = new CrossCoverComposition(application, crossCoverDao);
         payableModel = new PayableComposition(application, crossCoverDao);
+    }
+
+    @Override
+    public void insertItem(@NonNull CrossCoverEntity item) {
+        crossCoverModel.insertItem(item);
+    }
+
+    @NonNull
+    @Override
+    public MutableLiveData<CrossCoverEntity> getLastDeletedItem() {
+        return crossCoverModel.getLastDeletedItem();
     }
 
     @Override

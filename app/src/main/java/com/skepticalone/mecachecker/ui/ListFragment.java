@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -20,6 +21,7 @@ import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
+import java.util.Locale;
 
 abstract class ListFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemListAdapter<ItemType>, Model<Entity>>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
@@ -92,6 +94,20 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType> exte
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getViewModel().getItems().observe(this, this);
+        getViewModel().getLastDeletedItem().observe(this, new Observer<Entity>() {
+            @Override
+            public void onChanged(@Nullable final Entity entity) {
+                if (entity != null) {
+                    snackbarCallbacks.showSnackbar(String.format(Locale.US, "Item #%d deleted", entity.getId()), "Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getViewModel().insertItem(entity);
+                        }
+                    });
+                    getViewModel().getLastDeletedItem().setValue(null);
+                }
+            }
+        });
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
             getViewModel().getSelectedItem().observe(this, new Observer<Entity>() {
                 @Override

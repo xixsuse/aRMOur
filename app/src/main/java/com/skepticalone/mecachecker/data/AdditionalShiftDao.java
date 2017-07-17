@@ -35,12 +35,20 @@ interface AdditionalShiftDao extends ItemDao<AdditionalShiftEntity>, ShiftDao, P
     LiveData<AdditionalShiftEntity> getItem(long id);
 
     @Override
+    @Query("SELECT * FROM " +
+            Contract.AdditionalShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    AdditionalShiftEntity getItemSync(long id);
+
+    @Override
     @Query("DELETE FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    void deleteItemSync(long id);
+    int deleteItemSync(long id);
 
     @Override
     @Query("UPDATE " +

@@ -46,12 +46,20 @@ interface ExpenseDao extends ItemDao<ExpenseEntity>, PayableDao {
     LiveData<ExpenseEntity> getItem(long id);
 
     @Override
+    @Query("SELECT * FROM " +
+            Contract.Expenses.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    ExpenseEntity getItemSync(long id);
+
+    @Override
     @Query("DELETE FROM " +
             Contract.Expenses.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    void deleteItemSync(long id);
+    int deleteItemSync(long id);
 
     @Override
     @Query("UPDATE " +
