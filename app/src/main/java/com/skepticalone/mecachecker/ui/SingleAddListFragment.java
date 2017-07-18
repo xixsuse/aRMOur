@@ -4,11 +4,12 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.skepticalone.mecachecker.data.viewModel.SingleAddItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 
-abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemType> extends ListFragment<ItemType, Entity> {
+abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends SingleAddItemViewModel<Entity>> extends ListFragment<ItemType, Entity, ViewModel> {
 
     private FloatingActionButton mFab;
 
@@ -19,7 +20,7 @@ abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemT
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewItem();
+                getViewModel().addNewItem();
             }
         });
     }
@@ -39,8 +40,6 @@ abstract class SingleAddListFragment<ItemType extends Item, Entity extends ItemT
             mFab.show(true);
         }
     }
-
-    abstract void addNewItem();
 
 }
 

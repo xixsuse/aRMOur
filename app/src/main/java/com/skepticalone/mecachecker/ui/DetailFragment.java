@@ -13,10 +13,11 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.model.Item;
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemDetailAdapter<ItemType>, Model<Entity>>
+abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemDetailAdapter<ItemType>, ItemViewModel<Entity>>
         implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
@@ -41,7 +42,7 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> ex
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getSelectedItem().observe(this, new Observer<Entity>() {
+        getViewModel().selectedItem.observe(this, new Observer<Entity>() {
                     @Override
                     public void onChanged(@Nullable Entity entity) {
                         if (entity != null) getAdapter().setItem(entity);

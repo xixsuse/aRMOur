@@ -1,7 +1,7 @@
 package com.skepticalone.mecachecker.ui;
 
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -11,31 +11,22 @@ import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.model.CrossCover;
 
-public final class CrossCoverListFragment extends SingleAddListFragment<CrossCover, CrossCoverEntity> {
-
-    private CrossCoverViewModel model;
-
-    @NonNull
-    @Override
-    ItemListAdapter<CrossCover> onCreateAdapter(Context context) {
-        return new CrossCoverListAdapter(this);
-    }
-
-    @NonNull
-    @Override
-    Model<CrossCoverEntity> onCreateViewModel() {
-        model = ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
-        return model;
-    }
+public final class CrossCoverListFragment extends SingleAddListFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel> {
 
     @Override
     int getItemType() {
         return Constants.ITEM_TYPE_CROSS_COVER;
     }
 
+    @NonNull
     @Override
-    void addNewItem() {
-        model.addNewItem();
+    ItemListAdapter<CrossCover> createAdapter(Context context) {
+        return new CrossCoverListAdapter(this);
     }
 
+    @NonNull
+    @Override
+    CrossCoverViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(CrossCoverViewModel.class);
+    }
 }

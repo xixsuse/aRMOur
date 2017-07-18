@@ -17,12 +17,13 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 import java.util.Locale;
 
-abstract class ListFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemListAdapter<ItemType>, Model<Entity>>
+abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemListAdapter<ItemType>, ViewModel>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
@@ -93,7 +94,7 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType> exte
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getViewModel().getItems().observe(this, this);
-        getViewModel().getLastDeletedItem().observe(this, new Observer<Entity>() {
+        getViewModel().lastDeletedItem.observe(this, new Observer<Entity>() {
             @Override
             public void onChanged(@Nullable final Entity entity) {
                 if (entity != null) {
@@ -103,12 +104,12 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType> exte
                             getViewModel().insertItem(entity);
                         }
                     });
-                    getViewModel().getLastDeletedItem().setValue(null);
+                    getViewModel().lastDeletedItem.setValue(null);
                 }
             }
         });
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
-            getViewModel().getSelectedItem().observe(this, new Observer<Entity>() {
+            getViewModel().selectedItem.observe(this, new Observer<Entity>() {
                 @Override
                 public void onChanged(@Nullable Entity entity) {
                     getAdapter().setSelectedId(entity == null ? -1 : entity.getId());
