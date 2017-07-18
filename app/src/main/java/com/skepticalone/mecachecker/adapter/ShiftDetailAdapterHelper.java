@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.model.Shift;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-final class ShiftDetailAdapterHelper {
+abstract class ShiftDetailAdapterHelper {
 
     private final Callbacks callbacks;
     private final ShiftUtil.Calculator calculator;
@@ -22,20 +22,20 @@ final class ShiftDetailAdapterHelper {
 
     void onItemUpdated(@NonNull Shift oldShift, @NonNull Shift newShift, RecyclerView.Adapter adapter) {
         if (!oldShift.getShift().getStart().toLocalDate().isEqual(newShift.getShift().getStart().toLocalDate())) {
-            adapter.notifyItemChanged(callbacks.getRowNumberDate());
+            adapter.notifyItemChanged(getRowNumberDate());
         }
         if (
                 !oldShift.getShift().getStart().toLocalTime().isEqual(newShift.getShift().getStart().toLocalTime()) ||
                 !oldShift.getShift().getEnd().toLocalTime().isEqual(newShift.getShift().getEnd().toLocalTime())
         ) {
-            adapter.notifyItemChanged(callbacks.getRowNumberStart());
-            adapter.notifyItemChanged(callbacks.getRowNumberEnd());
-            adapter.notifyItemChanged(callbacks.getRowNumberShiftType());
+            adapter.notifyItemChanged(getRowNumberStart());
+            adapter.notifyItemChanged(getRowNumberEnd());
+            adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }
 
     boolean bindViewHolder(@NonNull final Shift item, ItemViewHolder holder, int position) {
-        if (position == callbacks.getRowNumberDate()) {
+        if (position == getRowNumberDate()) {
             holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -44,7 +44,7 @@ final class ShiftDetailAdapterHelper {
             });
             holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(item.getShift().getStart().toLocalDate()));
             return true;
-        } else if (position == callbacks.getRowNumberStart()) {
+        } else if (position == getRowNumberStart()) {
             holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -53,7 +53,7 @@ final class ShiftDetailAdapterHelper {
             });
             holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(item.getShift().getStart().toLocalTime()));
             return true;
-        } else if (position == callbacks.getRowNumberEnd()) {
+        } else if (position == getRowNumberEnd()) {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -62,7 +62,7 @@ final class ShiftDetailAdapterHelper {
             });
             holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(item.getShift().getEnd(), item.getShift().getStart().toLocalDate()));
             return true;
-        } else if (position == callbacks.getRowNumberShiftType()) {
+        } else if (position == getRowNumberShiftType()) {
             ShiftUtil.ShiftType shiftType = calculator.getShiftType(item.getShift());
             holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
             holder.setText(holder.getText(R.string.shift_type), holder.getText(ShiftUtil.getShiftTitle(shiftType)));
@@ -70,11 +70,12 @@ final class ShiftDetailAdapterHelper {
         } else return false;
     }
 
+    abstract int getRowNumberDate();
+    abstract int getRowNumberStart();
+    abstract int getRowNumberEnd();
+    abstract int getRowNumberShiftType();
+
     public interface Callbacks {
-        int getRowNumberDate();
-        int getRowNumberStart();
-        int getRowNumberEnd();
-        int getRowNumberShiftType();
         void changeDate(long id, @NonNull ShiftData shiftData);
         void changeTime(long id, boolean isStart, @NonNull ShiftData shiftData);
     }

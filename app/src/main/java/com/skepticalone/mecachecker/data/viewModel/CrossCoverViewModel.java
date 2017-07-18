@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
+import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
@@ -14,20 +15,31 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 import org.joda.time.LocalDate;
 
 
-public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCoverEntity, CrossCoverDao> {
+public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCoverEntity> {
 
+    @NonNull
+    private final CrossCoverDao dao;
+    @NonNull
     private final PayableModel payableModel;
     private final String newCrossCoverPaymentKey;
     private final int defaultNewCrossCoverPayment;
 
     CrossCoverViewModel(@NonNull Application application) {
-        super(application, AppDatabase.getInstance(application).crossCoverDao());
-        payableModel = new PayableModel(getDao());
+        super(application);
+        dao = AppDatabase.getInstance(application).crossCoverDao();
+        payableModel = new PayableModel(dao);
         newCrossCoverPaymentKey = application.getString(R.string.key_cross_cover_payment);
         defaultNewCrossCoverPayment = application.getResources().getInteger(R.integer.default_cross_cover_payment);
     }
 
-    public final PayableModel getPayableModel() {
+    @NonNull
+    @Override
+    ItemDaoContract<CrossCoverEntity> getDao() {
+        return dao;
+    }
+
+    @NonNull
+    public PayableModel getPayableModel() {
         return payableModel;
     }
 
@@ -38,7 +50,7 @@ public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCover
             @Override
             public void run() {
                 LocalDate newDate = new LocalDate();
-                LocalDate lastCrossCoverShiftDate = getDao().getLastCrossCoverDateSync();
+                LocalDate lastCrossCoverShiftDate = dao.getLastCrossCoverDateSync();
                 if (lastCrossCoverShiftDate != null) {
                     LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
                     if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
@@ -53,7 +65,7 @@ public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCover
         runAsync(new Runnable() {
             @Override
             public void run() {
-                getDao().setDateSync(id, date);
+                dao.setDateSync(id, date);
 //
 //                try {
 //                    getDao().setDateSync(id, date);

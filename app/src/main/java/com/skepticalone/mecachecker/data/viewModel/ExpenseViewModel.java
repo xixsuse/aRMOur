@@ -7,22 +7,34 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ExpenseDao;
+import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
 
-public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity, ExpenseDao> {
+public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity> {
 
+    @NonNull
+    private final ExpenseDao dao;
+    @NonNull
     private final PayableModel payableModel;
     private final String expenseTitle;
 
     public ExpenseViewModel(@NonNull Application application) {
-        super(application, AppDatabase.getInstance(application).expenseDao());
-        payableModel = new PayableModel(getDao());
+        super(application);
+        dao = AppDatabase.getInstance(application).expenseDao();
+        payableModel = new PayableModel(dao);
         expenseTitle = application.getString(R.string.new_expense_title);
     }
 
-    public final PayableModel getPayableModel() {
+    @NonNull
+    @Override
+    ItemDaoContract<ExpenseEntity> getDao() {
+        return dao;
+    }
+
+    @NonNull
+    public PayableModel getPayableModel() {
         return payableModel;
     }
 
@@ -45,7 +57,7 @@ public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity
         runAsync(new Runnable() {
             @Override
             public void run() {
-                getDao().setTitleSync(id, title);
+                dao.setTitleSync(id, title);
             }
         });
     }

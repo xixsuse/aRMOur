@@ -15,17 +15,15 @@ import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import java.util.List;
 
 
-public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel {
+public abstract class ItemViewModel<Entity> extends AndroidViewModel {
 
     private final LiveData<Entity> NO_ITEM = new MutableLiveData<>();
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     public final MutableLiveData<Entity> lastDeletedItem = new MutableLiveData<>();
     public final LiveData<Entity> selectedItem;
-    private final Dao dao;
 
-    ItemViewModel(@NonNull Application application, @NonNull Dao dao) {
+    ItemViewModel(@NonNull Application application) {
         super(application);
-        this.dao = dao;
         selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
             @Override
             public LiveData<Entity> apply(Long id) {
@@ -34,9 +32,8 @@ public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>>
         });
     }
 
-    final Dao getDao() {
-        return dao;
-    }
+    @NonNull
+    abstract ItemDaoContract<Entity> getDao();
 
     static void runAsync(Runnable runnable) {
         new Thread(runnable).start();
@@ -51,7 +48,7 @@ public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>>
         runAsync(new Runnable() {
             @Override
             public void run() {
-                dao.insertItemSync(item);
+                getDao().insertItemSync(item);
             }
         });
     }
@@ -59,13 +56,13 @@ public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>>
     @MainThread
     @NonNull
     public final LiveData<List<Entity>> getItems(){
-        return dao.getItems();
+        return getDao().getItems();
     }
 
     @MainThread
     @NonNull
     public final LiveData<Entity> getItem(long id) {
-        return dao.getItem(id);
+        return getDao().getItem(id);
     }
 
     @MainThread
@@ -73,8 +70,8 @@ public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>>
         runAsync(new Runnable() {
             @Override
             public void run() {
-                Entity item = dao.getItemSync(id);
-                if (item != null && dao.deleteItemSync(id) == 1) {
+                Entity item = getDao().getItemSync(id);
+                if (item != null && getDao().deleteItemSync(id) == 1) {
                     lastDeletedItem.postValue(item);
                 }
             }
@@ -86,7 +83,7 @@ public abstract class ItemViewModel<Entity, Dao extends ItemDaoContract<Entity>>
         runAsync(new Runnable() {
             @Override
             public void run() {
-                dao.setCommentSync(id, comment);
+                getDao().setCommentSync(id, comment);
             }
         });
     }

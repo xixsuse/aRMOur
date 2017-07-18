@@ -22,14 +22,6 @@ public final class CrossCoverDetailFragment
         implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
 
-    private static final int
-            ROW_NUMBER_DATE = 0,
-            ROW_NUMBER_PAYMENT = 1,
-            ROW_NUMBER_COMMENT = 2,
-            ROW_NUMBER_CLAIMED = 3,
-            ROW_NUMBER_PAID = 4,
-            ROW_COUNT = 5;
-
     private CrossCoverViewModel model;
 
     @NonNull

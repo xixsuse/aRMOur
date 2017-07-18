@@ -13,11 +13,11 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
 
-    private final Callbacks<ItemType> callbacks;
+    private final Callbacks callbacks;
     @Nullable
     private ItemType mItem;
 
-    ItemDetailAdapter(Callbacks<ItemType> callbacks) {
+    ItemDetailAdapter(Callbacks callbacks) {
         super();
         this.callbacks = callbacks;
     }
@@ -32,19 +32,19 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
 
     @Override
     public final int getItemCount() {
-        return mItem == null ? 0 : callbacks.getRowCount(mItem);
+        return mItem == null ? 0 : getRowCount(mItem);
     }
 
     @CallSuper
     void onItemUpdated(@NonNull ItemType oldItem, @NonNull ItemType newItem) {
         if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
-            notifyItemChanged(callbacks.getRowNumberComment());
+            notifyItemChanged(getRowNumberComment());
         }
     }
 
     @CallSuper
     boolean bindViewHolder(@NonNull final ItemType item, ItemViewHolder holder, int position) {
-        if (position == callbacks.getRowNumberComment()) {
+        if (position == getRowNumberComment()) {
             holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -59,7 +59,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     public final void setItem(@NonNull ItemType item) {
         if (mItem == null) {
             mItem = item;
-            notifyItemRangeInserted(0, callbacks.getRowCount(mItem));
+            notifyItemRangeInserted(0, getRowCount(mItem));
         } else {
             onItemUpdated(mItem, item);
             mItem = item;
@@ -73,10 +73,10 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
             throw new IllegalStateException();
         }
     }
+    abstract int getRowCount(@NonNull ItemType item);
+    abstract int getRowNumberComment();
 
-    public interface Callbacks<T> {
-        int getRowCount(@NonNull T item);
-        int getRowNumberComment();
+    public interface Callbacks {
         void changeComment(long itemId, @Nullable String currentComment);
     }
 }

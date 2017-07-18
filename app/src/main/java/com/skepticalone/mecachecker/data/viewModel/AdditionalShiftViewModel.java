@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
+import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
@@ -16,20 +17,31 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<AdditionalShiftEntity, AdditionalShiftDao> {
+public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<AdditionalShiftEntity> {
 
+    @NonNull
+    private final AdditionalShiftDao dao;
+    @NonNull
     private final PayableModel payableModel;
     private final String hourlyRateKey;
     private final int defaultHourlyRate;
 
     AdditionalShiftViewModel(@NonNull Application application) {
-        super(application, AppDatabase.getInstance(application).additionalShiftDao());
-        payableModel = new PayableModel(getDao());
+        super(application);
+        dao = AppDatabase.getInstance(application).additionalShiftDao();
+        payableModel = new PayableModel(dao);
         hourlyRateKey = application.getString(R.string.key_hourly_rate);
         defaultHourlyRate = application.getResources().getInteger(R.integer.default_hourly_rate);
     }
 
-    public final PayableModel getPayableModel() {
+    @NonNull
+    @Override
+    ItemDaoContract<AdditionalShiftEntity> getDao() {
+        return dao;
+    }
+
+    @NonNull
+    public PayableModel getPayableModel() {
         return payableModel;
     }
 
@@ -40,7 +52,7 @@ public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<Additi
             @Override
             public void run() {
                 DateTime newStart = start.toDateTimeToday();
-                final DateTime lastShiftEndTime = getDao().getLastShiftEndTimeSync();
+                final DateTime lastShiftEndTime = dao.getLastShiftEndTimeSync();
                 if (lastShiftEndTime != null) {
                     newStart = lastShiftEndTime.withTime(start);
                     while (newStart.isBefore(lastShiftEndTime)) newStart = newStart.plusDays(1);
@@ -61,7 +73,7 @@ public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<Additi
                 final DateTime newStart = date.toDateTime(start);
                 DateTime newEnd = date.toDateTime(end);
                 while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-                getDao().setShiftTimesSync(id, newStart, newEnd);
+                dao.setShiftTimesSync(id, newStart, newEnd);
 //                try {
 //                    getDao().setShiftTimesSync(id, newStart, newEnd);
 //                } catch (SQLiteConstraintException e) {

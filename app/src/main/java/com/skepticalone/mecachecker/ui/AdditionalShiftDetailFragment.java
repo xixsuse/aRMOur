@@ -26,17 +26,6 @@ public final class AdditionalShiftDetailFragment
         extends DetailFragment<AdditionalShift, AdditionalShiftEntity>
         implements AdditionalShiftDetailAdapter.Callbacks, AdditionalShiftTimeSetter, PaymentDialogFragment.Callbacks {
 
-    private static final int
-            ROW_NUMBER_DATE = 0,
-            ROW_NUMBER_START = 1,
-            ROW_NUMBER_END = 2,
-            ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_NUMBER_PAYMENT = 4,
-            ROW_NUMBER_COMMENT = 5,
-            ROW_NUMBER_CLAIMED = 6,
-            ROW_NUMBER_PAID = 7,
-            ROW_COUNT = 8;
-
     private AdditionalShiftViewModel model;
 
     @NonNull

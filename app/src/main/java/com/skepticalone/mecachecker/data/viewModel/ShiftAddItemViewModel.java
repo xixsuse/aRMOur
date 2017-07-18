@@ -4,17 +4,16 @@ import android.app.Application;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.LocalTime;
 
-public abstract class ShiftAddItemViewModel<Entity, Dao extends ItemDaoContract<Entity>> extends ItemViewModel<Entity, Dao> {
+public abstract class ShiftAddItemViewModel<Entity> extends ItemViewModel<Entity> {
 
     private final ShiftUtil.Calculator calculator;
 
-    ShiftAddItemViewModel(@NonNull Application application, @NonNull Dao dao) {
-        super(application, dao);
+    ShiftAddItemViewModel(@NonNull Application application) {
+        super(application);
         calculator = new ShiftUtil.Calculator(application);
     }
 

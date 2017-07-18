@@ -19,13 +19,6 @@ public final class ExpenseDetailFragment
         extends DetailFragment<Expense, ExpenseEntity>
         implements ExpenseDetailAdapter.Callbacks, TitleDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
-    private static final int
-            ROW_NUMBER_TITLE = 0,
-            ROW_NUMBER_PAYMENT = 1,
-            ROW_NUMBER_COMMENT = 2,
-            ROW_NUMBER_CLAIMED = 3,
-            ROW_NUMBER_PAID = 4,
-            ROW_COUNT = 5;
 
     private ExpenseViewModel model;
 
