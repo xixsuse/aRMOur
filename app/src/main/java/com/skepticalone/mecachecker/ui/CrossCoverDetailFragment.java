@@ -1,6 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -18,33 +18,29 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 
 public final class CrossCoverDetailFragment
-        extends DetailFragment<CrossCover, CrossCoverEntity>
+        extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
         implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
-
-
-    private CrossCoverViewModel model;
 
     @NonNull
     @Override
-    ItemDetailAdapter<CrossCover> onCreateAdapter(Context context) {
+    ItemDetailAdapter<CrossCover> createAdapter(Context context) {
         return new CrossCoverDetailAdapter(this);
     }
 
     @NonNull
     @Override
-    Model<CrossCoverEntity> onCreateViewModel() {
-        model = ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
-        return model;
+    CrossCoverViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(CrossCoverViewModel.class);
     }
 
     @Override
-    public void changeDate(long itemId, @NonNull LocalDate currentDate) {
-        showDialogFragment(DatePickerDialogFragment.newInstance(itemId, currentDate));
+    public void changeDate(long id, @NonNull LocalDate currentDate) {
+        showDialogFragment(DatePickerDialogFragment.newInstance(id, currentDate));
     }
 
     @Override
-    public void saveDate(long itemId, @NonNull LocalDate date) {
-        model.setDate(itemId, date);
+    public void saveDate(long id, @NonNull LocalDate date) {
+        getViewModel().setDate(id, date);
     }
 
     @Override
@@ -54,47 +50,16 @@ public final class CrossCoverDetailFragment
 
     @Override
     public void savePayment(long id, @NonNull BigDecimal payment) {
-        model.setPayment(id, payment);
+        getViewModel().getPayableModel().setPayment(id, payment);
     }
 
     @Override
     public void onClaimedToggled(long id, boolean claimed) {
-        model.setClaimed(id, claimed);
+        getViewModel().getPayableModel().setClaimed(id, claimed);
     }
 
     @Override
     public void onPaidToggled(long id, boolean paid) {
-        model.setPaid(id, paid);
+        getViewModel().getPayableModel().setPaid(id, paid);
     }
-
-    @Override
-    public int getRowNumberDate() {
-        return ROW_NUMBER_DATE;
-    }
-
-    @Override
-    public int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberComment() {
-        return ROW_NUMBER_COMMENT;
-    }
-
-    @Override
-    public int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    public int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
-    }
-
-    @Override
-    public int getRowCount(@NonNull CrossCover item) {
-        return ROW_COUNT;
-    }
-
 }

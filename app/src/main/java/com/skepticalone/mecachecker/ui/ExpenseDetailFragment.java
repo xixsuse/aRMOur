@@ -1,6 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -16,23 +16,20 @@ import com.skepticalone.mecachecker.model.Expense;
 import java.math.BigDecimal;
 
 public final class ExpenseDetailFragment
-        extends DetailFragment<Expense, ExpenseEntity>
+        extends DetailFragment<Expense, ExpenseEntity, ExpenseViewModel>
         implements ExpenseDetailAdapter.Callbacks, TitleDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
 
-    private ExpenseViewModel model;
-
     @NonNull
     @Override
-    ItemDetailAdapter<Expense> onCreateAdapter(Context context) {
+    ItemDetailAdapter<Expense> createAdapter(Context context) {
         return new ExpenseDetailAdapter(this);
     }
 
     @NonNull
     @Override
-    Model<ExpenseEntity> onCreateViewModel() {
-        model = ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
-        return model;
+    ExpenseViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(ExpenseViewModel.class);
     }
 
     @Override
@@ -41,8 +38,8 @@ public final class ExpenseDetailFragment
     }
 
     @Override
-    public void saveTitle(long itemId, @NonNull String trimmedTitle) {
-        model.setTitle(itemId, trimmedTitle);
+    public void saveTitle(long id, @NonNull String trimmedTitle) {
+        getViewModel().setTitle(id, trimmedTitle);
     }
 
     @Override
@@ -52,46 +49,17 @@ public final class ExpenseDetailFragment
 
     @Override
     public void savePayment(long id, @NonNull BigDecimal payment) {
-        model.setPayment(id, payment);
+        getViewModel().getPayableModel().setPayment(id, payment);
     }
 
     @Override
     public void onClaimedToggled(long id, boolean claimed) {
-        model.setClaimed(id, claimed);
+        getViewModel().getPayableModel().setClaimed(id, claimed);
     }
 
     @Override
     public void onPaidToggled(long id, boolean paid) {
-        model.setPaid(id, paid);
+        getViewModel().getPayableModel().setPaid(id, paid);
     }
 
-    @Override
-    public int getRowNumberTitle() {
-        return ROW_NUMBER_TITLE;
-    }
-
-    @Override
-    public int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberComment() {
-        return ROW_NUMBER_COMMENT;
-    }
-
-    @Override
-    public int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    public int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
-    }
-
-    @Override
-    public int getRowCount(@NonNull Expense item) {
-        return ROW_COUNT;
-    }
 }

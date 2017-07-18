@@ -10,8 +10,8 @@ public final class DatePickerDialogFragment extends AbstractDatePickerDialogFrag
 
     private Callbacks callbacks;
 
-    public static DatePickerDialogFragment newInstance(long itemId, @NonNull LocalDate date) {
-        Bundle args = getArgs(itemId, date);
+    public static DatePickerDialogFragment newInstance(long id, @NonNull LocalDate date) {
+        Bundle args = getArgs(id, date);
         DatePickerDialogFragment fragment = new DatePickerDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -29,7 +29,7 @@ public final class DatePickerDialogFragment extends AbstractDatePickerDialogFrag
     }
 
     public interface Callbacks {
-        void saveDate(long itemId, @NonNull LocalDate date);
+        void saveDate(long id, @NonNull LocalDate date);
     }
 
 }

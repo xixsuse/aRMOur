@@ -30,7 +30,7 @@ public final class TitleDialogFragment extends PlainTextDialogFragment {
     }
 
     public interface Callbacks {
-        void saveTitle(long itemId, @NonNull String trimmedTitle);
+        void saveTitle(long id, @NonNull String trimmedTitle);
     }
 
 }

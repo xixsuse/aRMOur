@@ -15,8 +15,8 @@ abstract class AbstractDatePickerDialogFragment extends AbstractDialogFragment i
             MONTH = "MONTH",
             DAY_OF_MONTH = "DAY_OF_MONTH";
 
-    static Bundle getArgs(long itemId, @NonNull LocalDate date) {
-        Bundle args = getArgs(itemId);
+    static Bundle getArgs(long id, @NonNull LocalDate date) {
+        Bundle args = getArgs(id);
         args.putInt(YEAR, date.getYear());
         args.putInt(MONTH, date.getMonthOfYear());
         args.putInt(DAY_OF_MONTH, date.getDayOfMonth());

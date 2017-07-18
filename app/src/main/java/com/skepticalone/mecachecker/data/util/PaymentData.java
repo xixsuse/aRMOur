@@ -31,7 +31,7 @@ public final class PaymentData {
 //    @ColumnInfo(name = Contract.COLUMN_NAME_COMMENT)
 //    private final String comment;
 
-    PaymentData(
+    public PaymentData(
             @NonNull BigDecimal payment,
             @Nullable DateTime claimed,
             @Nullable DateTime paid

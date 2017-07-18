@@ -17,7 +17,7 @@ import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.model.Item;
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType> extends BaseFragment<ItemDetailAdapter<ItemType>, ItemViewModel<Entity>>
+abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<ItemType>, ViewModel>
         implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";

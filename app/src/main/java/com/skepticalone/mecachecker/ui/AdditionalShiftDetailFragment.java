@@ -1,6 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -23,22 +23,19 @@ import org.joda.time.LocalTime;
 import java.math.BigDecimal;
 
 public final class AdditionalShiftDetailFragment
-        extends DetailFragment<AdditionalShift, AdditionalShiftEntity>
+        extends DetailFragment<AdditionalShift, AdditionalShiftEntity, AdditionalShiftViewModel>
         implements AdditionalShiftDetailAdapter.Callbacks, AdditionalShiftTimeSetter, PaymentDialogFragment.Callbacks {
-
-    private AdditionalShiftViewModel model;
 
     @NonNull
     @Override
-    ItemDetailAdapter<AdditionalShift> onCreateAdapter(Context context) {
+    ItemDetailAdapter<AdditionalShift> createAdapter(Context context) {
         return new AdditionalShiftDetailAdapter(this, new ShiftUtil.Calculator(context));
     }
 
     @NonNull
     @Override
-    Model<AdditionalShiftEntity> onCreateViewModel() {
-        model = ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
-        return model;
+    AdditionalShiftViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(AdditionalShiftViewModel.class);
     }
 
     @Override
@@ -53,7 +50,7 @@ public final class AdditionalShiftDetailFragment
 
     @Override
     public void setShiftTimes(long id, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
-        model.setShiftTimes(id, date, start, end);
+        getViewModel().setShiftTimes(id, date, start, end);
     }
 
     @Override
@@ -63,62 +60,17 @@ public final class AdditionalShiftDetailFragment
 
     @Override
     public void savePayment(long id, @NonNull BigDecimal payment) {
-        model.setPayment(id, payment);
+        getViewModel().getPayableModel().setPayment(id, payment);
     }
 
     @Override
     public void onClaimedToggled(long id, boolean claimed) {
-        model.setClaimed(id, claimed);
+        getViewModel().getPayableModel().setClaimed(id, claimed);
     }
 
     @Override
     public void onPaidToggled(long id, boolean paid) {
-        model.setPaid(id, paid);
-    }
-
-    @Override
-    public int getRowNumberDate() {
-        return ROW_NUMBER_DATE;
-    }
-
-    @Override
-    public int getRowNumberStart() {
-        return ROW_NUMBER_START;
-    }
-
-    @Override
-    public int getRowNumberEnd() {
-        return ROW_NUMBER_END;
-    }
-
-    @Override
-    public int getRowNumberShiftType() {
-        return ROW_NUMBER_SHIFT_TYPE;
-    }
-
-    @Override
-    public int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberComment() {
-        return ROW_NUMBER_COMMENT;
-    }
-
-    @Override
-    public int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    public int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
-    }
-
-    @Override
-    public int getRowCount(@NonNull AdditionalShift item) {
-        return ROW_COUNT;
+        getViewModel().getPayableModel().setPaid(id, paid);
     }
 
 }
