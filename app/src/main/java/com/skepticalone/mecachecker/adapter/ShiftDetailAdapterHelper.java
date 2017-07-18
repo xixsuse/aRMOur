@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftData;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.model.Shift;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;

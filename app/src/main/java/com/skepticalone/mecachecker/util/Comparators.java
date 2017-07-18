@@ -3,7 +3,7 @@ package com.skepticalone.mecachecker.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.data.PaymentData;
+import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

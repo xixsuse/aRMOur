@@ -13,7 +13,6 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.data.Model;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.model.Item;
 

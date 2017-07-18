@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.ShiftData;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.LocalTime;
 
@@ -110,6 +110,7 @@ public final class ShiftUtil {
             }
         }
 
+        @NonNull
         private LocalTime getStartOrEndTime(ShiftType shiftType, boolean start) {
             String key;
             int defaultTotalMinutes;
@@ -133,10 +134,12 @@ public final class ShiftUtil {
             return new LocalTime(DateTimeUtils.calculateHours(totalMinutes), DateTimeUtils.calculateMinutes(totalMinutes));
         }
 
+        @NonNull
         public LocalTime getStartTime(ShiftType shiftType) {
             return getStartOrEndTime(shiftType, true);
         }
 
+        @NonNull
         public LocalTime getEndTime(ShiftType shiftType) {
             return getStartOrEndTime(shiftType, false);
         }

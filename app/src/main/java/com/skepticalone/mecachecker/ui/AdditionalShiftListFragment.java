@@ -6,9 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.AdditionalShiftListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
-import com.skepticalone.mecachecker.data.AdditionalShiftEntity;
-import com.skepticalone.mecachecker.data.AdditionalShiftViewModel;
-import com.skepticalone.mecachecker.data.Model;
+import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
+import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.model.AdditionalShift;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 

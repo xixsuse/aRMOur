@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.AdditionalShiftViewModel;
-import com.skepticalone.mecachecker.data.CrossCoverViewModel;
-import com.skepticalone.mecachecker.data.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
+import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -26,25 +27,26 @@ public final class DetailActivity extends CoordinatorActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int title;
-        long itemId = getIntent().getLongExtra(ITEM_ID, NO_ID);
+        Class<? extends ItemViewModel> c;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
             case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
                 title = R.string.additional_shift;
-                ViewModelProviders.of(this).get(AdditionalShiftViewModel.class).selectItem(itemId);
+                c = AdditionalShiftViewModel.class;
                 break;
             case Constants.ITEM_TYPE_CROSS_COVER:
                 title = R.string.cross_cover;
-                ViewModelProviders.of(this).get(CrossCoverViewModel.class).selectItem(itemId);
+                c = CrossCoverViewModel.class;
                 break;
             case Constants.ITEM_TYPE_EXPENSE:
                 title = R.string.expense;
-                ViewModelProviders.of(this).get(ExpenseViewModel.class).selectItem(itemId);
+                c = ExpenseViewModel.class;
                 break;
             default:
                 throw new IllegalStateException();
         }
         //noinspection ConstantConditions
         getSupportActionBar().setTitle(title);
+        ViewModelProviders.of(this).get(c).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             DetailFragment detailFragment;
             switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {

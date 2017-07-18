@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.data.ShiftData;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
