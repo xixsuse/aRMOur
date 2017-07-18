@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.dialog;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.util.ShiftData;
@@ -11,19 +10,18 @@ import org.joda.time.LocalTime;
 
 public final class AdditionalShiftDatePickerDialogFragment extends ShiftDatePickerDialogFragment {
 
-    public static RosteredShiftDatePickerDialogFragment newInstance(long id, @NonNull ShiftData shiftData) {
-        Bundle args = getArgs(id, shiftData);
-        RosteredShiftDatePickerDialogFragment fragment = new RosteredShiftDatePickerDialogFragment();
-        fragment.setArguments(args);
+    public static AdditionalShiftDatePickerDialogFragment newInstance(long id, @NonNull ShiftData shiftData) {
+        AdditionalShiftDatePickerDialogFragment fragment = new AdditionalShiftDatePickerDialogFragment();
+        fragment.setArguments(getArgs(id, shiftData));
         return fragment;
     }
 
-    private RosteredShiftTimeSetter callbacks;
+    private AdditionalShiftTimeSetter callbacks;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callbacks = (RosteredShiftTimeSetter) getTargetFragment();
+        callbacks = (AdditionalShiftTimeSetter) getTargetFragment();
     }
 
     @Override
