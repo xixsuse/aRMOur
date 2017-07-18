@@ -1,35 +1,43 @@
 package com.skepticalone.mecachecker.dialog;
 
-import android.content.Context;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.DatePicker;
 
 import org.joda.time.LocalDate;
 
-public final class DatePickerDialogFragment extends AbstractDatePickerDialogFragment {
+abstract class DatePickerDialogFragment extends AbstractDialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    private Callbacks callbacks;
+    private static final String
+            YEAR = "YEAR",
+            MONTH = "MONTH",
+            DAY_OF_MONTH = "DAY_OF_MONTH";
 
-    public static DatePickerDialogFragment newInstance(long id, @NonNull LocalDate date) {
-        Bundle args = getArgs(id, date);
-        DatePickerDialogFragment fragment = new DatePickerDialogFragment();
-        fragment.setArguments(args);
-        return fragment;
+    static Bundle getArgs(long id, @NonNull LocalDate date) {
+        Bundle args = getArgs(id);
+        args.putInt(YEAR, date.getYear());
+        args.putInt(MONTH, date.getMonthOfYear());
+        args.putInt(DAY_OF_MONTH, date.getDayOfMonth());
+        return args;
+    }
+
+    @NonNull
+    @Override
+    public final Dialog onCreateDialog(Bundle savedInstanceState) {
+        return new DatePickerDialog(getActivity(), this,
+                getArguments().getInt(YEAR),
+                getArguments().getInt(MONTH) - 1,
+                getArguments().getInt(DAY_OF_MONTH)
+        );
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        callbacks = (Callbacks) getTargetFragment();
+    public final void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+        saveDate(new LocalDate(year, month + 1, dayOfMonth));
     }
 
-    @Override
-    void saveDate(@NonNull LocalDate newDate) {
-        callbacks.saveDate(getItemId(), newDate);
-    }
-
-    public interface Callbacks {
-        void saveDate(long id, @NonNull LocalDate date);
-    }
+    abstract void saveDate(@NonNull LocalDate newDate);
 
 }

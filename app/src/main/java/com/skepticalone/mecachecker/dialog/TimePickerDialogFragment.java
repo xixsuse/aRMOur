@@ -9,7 +9,7 @@ import android.widget.TimePicker;
 
 import org.joda.time.LocalTime;
 
-abstract class AbstractTimePickerDialogFragment extends AbstractDialogFragment implements TimePickerDialog.OnTimeSetListener {
+abstract class TimePickerDialogFragment extends AbstractDialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private static final String
             HOUR_OF_DAY = "HOUR_OF_DAY",

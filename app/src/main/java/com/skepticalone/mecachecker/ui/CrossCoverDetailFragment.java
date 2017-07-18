@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.dialog.DatePickerDialogFragment;
+import com.skepticalone.mecachecker.dialog.CrossCoverDatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 import com.skepticalone.mecachecker.model.CrossCover;
 
@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 
 public final class CrossCoverDetailFragment
         extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
-        implements CrossCoverDetailAdapter.Callbacks, DatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
+        implements CrossCoverDetailAdapter.Callbacks, CrossCoverDatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
 
     @NonNull
     @Override
@@ -35,7 +35,7 @@ public final class CrossCoverDetailFragment
 
     @Override
     public void changeDate(long id, @NonNull LocalDate currentDate) {
-        showDialogFragment(DatePickerDialogFragment.newInstance(id, currentDate));
+        showDialogFragment(CrossCoverDatePickerDialogFragment.newInstance(id, currentDate));
     }
 
     @Override

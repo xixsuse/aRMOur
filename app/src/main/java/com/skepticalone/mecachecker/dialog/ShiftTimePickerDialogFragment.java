@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.data.util.ShiftData;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
-public final class ShiftTimePickerDialogFragment extends AbstractTimePickerDialogFragment {
+public final class ShiftTimePickerDialogFragment extends TimePickerDialogFragment {
 
     private static final String
             IS_START = "IS_START",
@@ -26,12 +26,12 @@ public final class ShiftTimePickerDialogFragment extends AbstractTimePickerDialo
         return fragment;
     }
 
-    private AdditionalShiftTimeSetter callbacks;
+    private RosteredShiftTimeSetter callbacks;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callbacks = (AdditionalShiftTimeSetter) getTargetFragment();
+        callbacks = (RosteredShiftTimeSetter) getTargetFragment();
     }
 
     @Override
