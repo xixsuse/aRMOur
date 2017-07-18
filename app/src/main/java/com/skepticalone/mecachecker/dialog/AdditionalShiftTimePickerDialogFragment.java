@@ -5,32 +5,31 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.util.ShiftData;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
 public final class AdditionalShiftTimePickerDialogFragment extends ShiftTimePickerDialogFragment {
 
-    public static RosteredShiftTimePickerDialogFragment newInstance(long id, boolean isStart, @NonNull ShiftData shiftData) {
-        RosteredShiftTimePickerDialogFragment fragment = new RosteredShiftTimePickerDialogFragment();
+    public static AdditionalShiftTimePickerDialogFragment newInstance(long id, boolean isStart, @NonNull ShiftData shiftData) {
+        AdditionalShiftTimePickerDialogFragment fragment = new AdditionalShiftTimePickerDialogFragment();
         fragment.setArguments(getArgs(id, isStart, shiftData));
         return fragment;
     }
 
-    private RosteredShiftTimeSetter callbacks;
+    private AdditionalShiftTimeSetter callbacks;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callbacks = (RosteredShiftTimeSetter) getTargetFragment();
+        callbacks = (AdditionalShiftTimeSetter) getTargetFragment();
     }
 
     @Override
-    void saveTime(@NonNull LocalTime time, boolean isStart, @NonNull DateTime start, @NonNull DateTime end) {
+    void saveTime(@NonNull LocalTime time, boolean isStart, @NonNull ShiftData shiftData) {
         callbacks.setShiftTimes(
                 getItemId(),
-                start.toLocalDate(),
-                isStart ? time : start.toLocalTime(),
-                isStart ? end.toLocalTime() : time
+                shiftData.getStart().toLocalDate(),
+                isStart ? time : shiftData.getStart().toLocalTime(),
+                isStart ? shiftData.getEnd().toLocalTime() : time
         );
     }
 }

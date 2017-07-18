@@ -15,10 +15,8 @@ abstract class TimePickerDialogFragment extends AbstractDialogFragment implement
             HOUR_OF_DAY = "HOUR_OF_DAY",
             MINUTE_OF_HOUR = "MINUTE_OF_HOUR";
 
-//    private ShiftData shiftData;
-
-    static Bundle getArgs(long itemId, @NonNull LocalTime time) {
-        Bundle args = getArgs(itemId);
+    static Bundle getArgs(long id, @NonNull LocalTime time) {
+        Bundle args = getArgs(id);
         args.putInt(HOUR_OF_DAY, time.getHourOfDay());
         args.putInt(MINUTE_OF_HOUR, time.getMinuteOfHour());
         return args;
@@ -27,31 +25,19 @@ abstract class TimePickerDialogFragment extends AbstractDialogFragment implement
     @NonNull
     @Override
     public final Dialog onCreateDialog(Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        LocalTime time = new DateTime(args.getLong(args.getBoolean(IS_START) ? START_MILLIS : END_MILLIS)).toLocalTime();
-//        LocalTime time = new LocalTime(args.getInt(HOUR_OF_DAY), args.getInt(MINUTE_OF_HOUR));
+        Bundle arguments = getArguments();
         return new TimePickerDialog(getActivity(), this,
-                getArguments().getInt(HOUR_OF_DAY),
-                getArguments().getInt(MINUTE_OF_HOUR),
+                arguments.getInt(HOUR_OF_DAY),
+                arguments.getInt(MINUTE_OF_HOUR),
                 DateFormat.is24HourFormat(getActivity())
         );
     }
 
     @Override
     public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minuteOfHour) {
-        setTime(new LocalTime(hourOfDay, minuteOfHour));
-//        Bundle arguments = getArguments();
-//        ShiftData shiftData = new ShiftData(new DateTime(arguments.getLong(START_MILLIS)), new DateTime(arguments.getLong(END_MILLIS)));
-//        saveShiftTimes(newTime, arguments.getBoolean(IS_START), shiftData);
-//        if (arguments.getBoolean(IS_START)) {
-//            saveStart(new LocalDate(arguments.getLong(START_MILLIS)).toDateTime(newTime), new LocalTime(arguments.getLong(END_MILLIS)));
-//        } else {
-//            saveEnd(newTime);
-//        }
+        saveTime(new LocalTime(hourOfDay, minuteOfHour));
     }
 
-    abstract void setTime(@NonNull LocalTime time);
-
-//    abstract void saveShiftTimes(@NonNull LocalTime newTime, boolean isStart, @NonNull LocalDate date, @NonNull);
+    abstract void saveTime(@NonNull LocalTime time);
 
 }
