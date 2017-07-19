@@ -3,32 +3,33 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.AdditionalShift;
+import com.skepticalone.mecachecker.data.model.RosteredShift;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-public final class RosteredShiftListAdapter extends ItemListAdapter<AdditionalShift> {
+public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShift> {
 
-    private final ShiftUtil.Calculator calculator;
-
-    public RosteredShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
-        super(callbacks);
-        this.calculator = calculator;
+    RosteredShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+        super(callbacks, calculator);
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull AdditionalShift shift1, @NonNull AdditionalShift shift2) {
+    boolean areContentsTheSame(@NonNull RosteredShift shift1, @NonNull RosteredShift shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                Comparators.equalPaymentData(shift1.getPaymentData(), shift2.getPaymentData()) &&
-                shift1.getShiftData().equals(shift2.getShiftData());
+                Comparators.equalLoggedShiftData(shift1.getLoggedShiftData(), shift2.getLoggedShiftData());
     }
 
     @Override
-    void bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder) {
-        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getShiftType(shift.getShiftData())));
-        holder.secondaryIcon.setImageResource(shift.getPaymentData().getIcon());
-        holder.setText(DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()), holder.getText(R.string.currency_format, shift.getPaymentData().getPayment()), shift.getComment());
+    int getSecondaryIcon(@NonNull RosteredShift shift) {
+        return R.drawable.ic_check_black_24dp;
     }
+
+    @NonNull
+    @Override
+    String getTimeSpanString(@NonNull RosteredShift shift) {
+        return DateTimeUtils.getTimeSpanString(shift.getShiftData(), shift.getLoggedShiftData());
+    }
+
 
 }

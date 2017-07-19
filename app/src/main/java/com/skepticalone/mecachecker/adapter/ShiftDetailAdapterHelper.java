@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.model.Shift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
-import com.skepticalone.mecachecker.model.Shift;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -21,12 +21,12 @@ abstract class ShiftDetailAdapterHelper {
     }
 
     void onItemUpdated(@NonNull Shift oldShift, @NonNull Shift newShift, RecyclerView.Adapter adapter) {
-        if (!oldShift.getShift().getStart().toLocalDate().isEqual(newShift.getShift().getStart().toLocalDate())) {
+        if (!oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
             adapter.notifyItemChanged(getRowNumberDate());
         }
         if (
-                !oldShift.getShift().getStart().toLocalTime().isEqual(newShift.getShift().getStart().toLocalTime()) ||
-                !oldShift.getShift().getEnd().toLocalTime().isEqual(newShift.getShift().getEnd().toLocalTime())
+                !oldShift.getShiftData().getStart().toLocalTime().isEqual(newShift.getShiftData().getStart().toLocalTime()) ||
+                !oldShift.getShiftData().getEnd().toLocalTime().isEqual(newShift.getShiftData().getEnd().toLocalTime())
         ) {
             adapter.notifyItemChanged(getRowNumberStart());
             adapter.notifyItemChanged(getRowNumberEnd());
@@ -39,31 +39,31 @@ abstract class ShiftDetailAdapterHelper {
             holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeDate(item.getId(), item.getShift());
+                    callbacks.changeDate(item.getId(), item.getShiftData());
                 }
             });
-            holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(item.getShift().getStart().toLocalDate()));
+            holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(item.getShiftData().getStart().toLocalDate()));
             return true;
         } else if (position == getRowNumberStart()) {
             holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeTime(item.getId(), true, item.getShift());
+                    callbacks.changeTime(item.getId(), true, item.getShiftData());
                 }
             });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(item.getShift().getStart().toLocalTime()));
+            holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(item.getShiftData().getStart().toLocalTime()));
             return true;
         } else if (position == getRowNumberEnd()) {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeTime(item.getId(), false, item.getShift());
+                    callbacks.changeTime(item.getId(), false, item.getShiftData());
                 }
             });
-            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(item.getShift().getEnd(), item.getShift().getStart().toLocalDate()));
+            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(item.getShiftData().getEnd(), item.getShiftData().getStart().toLocalDate()));
             return true;
         } else if (position == getRowNumberShiftType()) {
-            ShiftUtil.ShiftType shiftType = calculator.getShiftType(item.getShift());
+            ShiftUtil.ShiftType shiftType = calculator.getShiftType(item.getShiftData());
             holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
             holder.setText(holder.getText(R.string.shift_type), holder.getText(ShiftUtil.getShiftTitle(shiftType)));
             return true;

@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.CrossCover;
+import com.skepticalone.mecachecker.data.model.CrossCover;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 

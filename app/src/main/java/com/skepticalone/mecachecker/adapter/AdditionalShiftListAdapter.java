@@ -2,33 +2,32 @@ package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-public final class AdditionalShiftListAdapter extends ItemListAdapter<AdditionalShift> {
+public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShift> {
 
-    private final ShiftUtil.Calculator calculator;
-
-    public AdditionalShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
-        super(callbacks);
-        this.calculator = calculator;
+    AdditionalShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+        super(callbacks, calculator);
     }
 
     @Override
     boolean areContentsTheSame(@NonNull AdditionalShift shift1, @NonNull AdditionalShift shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                Comparators.equalPaymentData(shift1.getPaymentData(), shift2.getPaymentData()) &&
-                shift1.getShiftData().equals(shift2.getShiftData());
+                Comparators.equalPaymentData(shift1.getPaymentData(), shift2.getPaymentData());
     }
 
     @Override
-    void bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder) {
-        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getShiftType(shift.getShiftData())));
-        holder.secondaryIcon.setImageResource(shift.getPaymentData().getIcon());
-        holder.setText(DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()), holder.getText(R.string.currency_format, shift.getPaymentData().getPayment()), shift.getComment());
+    int getSecondaryIcon(@NonNull AdditionalShift shift) {
+        return shift.getPaymentData().getIcon();
+    }
+
+    @NonNull
+    @Override
+    String getTimeSpanString(@NonNull AdditionalShift shift) {
+        return DateTimeUtils.getTimeSpanString(shift.getShiftData());
     }
 
 }

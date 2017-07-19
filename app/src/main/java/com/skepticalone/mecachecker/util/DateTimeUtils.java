@@ -1,6 +1,10 @@
 package com.skepticalone.mecachecker.util;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -128,8 +132,16 @@ public final class DateTimeUtils {
         return getSpanString(dateFormatter.print(date1), dateFormatter.print(date2));
     }
 
-    public static String getTimeSpanString(Interval shift) {
+    public static String getTimeSpanString(@NonNull ShiftData shift) {
         return getSpanString(timeFormatter.print(shift.getStart()), getEndTimeString(shift.getEnd(), shift.getStart().toLocalDate()));
+    }
+
+    public static String getTimeSpanString(@NonNull ShiftData rosteredShift, @Nullable ShiftData loggedShift) {
+        String timeSpan = getTimeSpanString(rosteredShift);
+        if (loggedShift != null) {
+            timeSpan = getQualifiedString(timeSpan, getTimeSpanString(loggedShift));
+        }
+        return timeSpan;
     }
 
     public static String getTimeSpanString(SharedPreferences sharedPreferences, String startKey, String endKey) {

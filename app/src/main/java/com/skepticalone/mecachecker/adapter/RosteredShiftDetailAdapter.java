@@ -2,24 +2,24 @@ package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.data.model.AdditionalShift;
+import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.model.RosteredShift;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<AdditionalShift> {
+public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShift> {
 
     private static final int
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_NUMBER_PAYMENT = 4,
-            ROW_NUMBER_COMMENT = 5,
-            ROW_NUMBER_CLAIMED = 6,
-            ROW_NUMBER_PAID = 7,
-            ROW_COUNT = 8;
+            ROW_NUMBER_LOGGED_START = 4,
+            ROW_NUMBER_LOGGED_END = 5,
+            ROW_NUMBER_COMMENT = 6,
+            ROW_COUNT = 7;
 
     private final ShiftDetailAdapterHelper shiftDetailAdapterHelper;
-    private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
     public RosteredShiftDetailAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks);
@@ -44,22 +44,6 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Addition
                 return ROW_NUMBER_SHIFT_TYPE;
             }
         };
-        payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks){
-            @Override
-            int getRowNumberPayment() {
-                return ROW_NUMBER_PAYMENT;
-            }
-
-            @Override
-            int getRowNumberClaimed() {
-                return ROW_NUMBER_CLAIMED;
-            }
-
-            @Override
-            int getRowNumberPaid() {
-                return ROW_NUMBER_PAID;
-            }
-        };
     }
 
     @Override
@@ -68,25 +52,30 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Addition
     }
 
     @Override
-    int getRowCount(@NonNull AdditionalShift item) {
+    int getRowCount(@NonNull RosteredShift item) {
         return ROW_COUNT;
     }
 
     @Override
-    void onItemUpdated(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
+    void onItemUpdated(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        payableDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
     }
 
     @Override
-    boolean bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
-        return
-                shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                payableDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
+    boolean bindViewHolder(@NonNull RosteredShift shift, ItemViewHolder holder, int position) {
+        if (position == ROW_NUMBER_LOGGED_START) {
+            holder.setupPlain(R.drawable.ic_clipboard_play_black_24dp, null);
+            holder.setText(holder.getText(R.string.logged_start), shift.getLoggedShiftData() == null ? holder.getText(R.string.not_applicable) :  DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getStart(), shift.getShiftData().getStart().toLocalDate()));
+            return true;
+        } else if (position == ROW_NUMBER_LOGGED_END) {
+            holder.setupPlain(R.drawable.ic_clipboard_stop_black_24dp, null);
+            holder.setText(holder.getText(R.string.logged_end), shift.getLoggedShiftData() == null ? holder.getText(R.string.not_applicable) :  DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd(), shift.getShiftData().getStart().toLocalDate()));
+            return true;
+        } else return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
                 super.bindViewHolder(shift, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, ShiftDetailAdapterHelper.Callbacks, PayableDetailAdapterHelper.Callbacks {}
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, ShiftDetailAdapterHelper.Callbacks {}
 
 }

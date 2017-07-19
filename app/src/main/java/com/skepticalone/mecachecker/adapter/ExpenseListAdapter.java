@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.Expense;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.util.Comparators;
 
 public final class ExpenseListAdapter extends ItemListAdapter<Expense> {

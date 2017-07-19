@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.PayableItem;
+import com.skepticalone.mecachecker.data.model.PayableItem;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 

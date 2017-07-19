@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.Expense;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.util.Comparators;
 
 public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {

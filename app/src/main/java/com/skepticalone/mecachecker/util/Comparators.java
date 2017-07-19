@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.util.PaymentData;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -30,6 +31,14 @@ public final class Comparators {
 
     public static boolean equalPaymentData(@NonNull final PaymentData paymentData1, @NonNull final PaymentData paymentData2) {
         return paymentData1.equals(paymentData2);
+    }
+
+    public static boolean equalShiftData(@NonNull final ShiftData shiftData1, @NonNull final ShiftData shiftData2) {
+        return shiftData1.equals(shiftData2);
+    }
+
+    public static boolean equalLoggedShiftData(@Nullable final ShiftData shiftData1, @Nullable final ShiftData shiftData2) {
+        return shiftData1 == null ? shiftData2 == null : shiftData1.equals(shiftData2);
     }
 
 }
