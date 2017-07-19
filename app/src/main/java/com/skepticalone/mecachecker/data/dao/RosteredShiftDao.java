@@ -10,45 +10,44 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
+import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntity>, ShiftDaoContract, PayableDaoContract {
+public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity>, ShiftDaoContract {
 
     @Override
     @Insert
-    void insertItemSync(@NonNull AdditionalShiftEntity item);
+    void insertItemSync(@NonNull RosteredShiftEntity item);
 
     @NonNull
     @Override
-    @Query("SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
-    LiveData<List<AdditionalShiftEntity>> getItems();
+    @Query("SELECT * FROM " + Contract.RosteredShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
+    LiveData<List<RosteredShiftEntity>> getItems();
 
     @NonNull
     @Override
     @Query("SELECT * FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    LiveData<AdditionalShiftEntity> getItem(long id);
+    LiveData<RosteredShiftEntity> getItem(long id);
 
     @Override
     @Query("SELECT * FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    AdditionalShiftEntity getItemSync(long id);
+    RosteredShiftEntity getItemSync(long id);
 
     @Override
     @Query("DELETE FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
@@ -56,7 +55,7 @@ public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntit
 
     @Override
     @Query("UPDATE " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_COMMENT +
             " = :comment WHERE " +
@@ -64,40 +63,10 @@ public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntit
             " = :id")
     void setCommentSync(long id, @Nullable String comment);
 
-    @Override
-    @Query("UPDATE " +
-            Contract.AdditionalShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAYMENT +
-            " = :payment WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPaymentSync(long id, @NonNull BigDecimal payment);
-
-    @Override
-    @Query("UPDATE " +
-            Contract.AdditionalShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_CLAIMED +
-            " = :claimed WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setClaimedSync(long id, @Nullable DateTime claimed);
-
-    @Override
-    @Query("UPDATE " +
-            Contract.AdditionalShifts.TABLE_NAME +
-            " SET " +
-            Contract.COLUMN_NAME_PAID +
-            " = :paid WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    void setPaidSync(long id, @Nullable DateTime paid);
-
     @Nullable
     @Override
     @Query("SELECT " + Contract.COLUMN_NAME_SHIFT_END + " FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.COLUMN_NAME_SHIFT_END +
             " DESC LIMIT 1")
@@ -105,14 +74,18 @@ public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntit
 
     @WorkerThread
     @Query("UPDATE " +
-            Contract.AdditionalShifts.TABLE_NAME +
+            Contract.RosteredShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_SHIFT_START +
             " = :shiftStart, " +
             Contract.COLUMN_NAME_SHIFT_END +
-            " = :shiftEnd WHERE " +
+            " = :shiftEnd, " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_START +
+            " = :loggedShiftStart, " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_END +
+            " = :loggedShiftEnd WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setShiftTimesSync(long id, @NonNull DateTime shiftStart, @NonNull DateTime shiftEnd);
+    void setShiftTimesSync(long id, @NonNull DateTime shiftStart, @NonNull DateTime shiftEnd, @Nullable DateTime loggedShiftStart, @Nullable DateTime loggedShiftEnd);
 
 }

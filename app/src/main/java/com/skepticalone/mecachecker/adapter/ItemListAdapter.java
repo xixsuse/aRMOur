@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.model.Item;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;

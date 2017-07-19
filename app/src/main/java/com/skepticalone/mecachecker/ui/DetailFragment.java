@@ -13,9 +13,9 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
-import com.skepticalone.mecachecker.model.Item;
 
 abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<ItemType>, ViewModel>
         implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {

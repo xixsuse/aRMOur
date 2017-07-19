@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<AdditionalShift> {
+public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<AdditionalShift> {
 
     private static final int
             ROW_NUMBER_DATE = 0,
@@ -21,7 +21,7 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     private final ShiftDetailAdapterHelper shiftDetailAdapterHelper;
     private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
-    public AdditionalShiftDetailAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+    public RosteredShiftDetailAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks);
         shiftDetailAdapterHelper = new ShiftDetailAdapterHelper(callbacks, calculator){
             @Override

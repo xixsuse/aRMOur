@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.model;
+package com.skepticalone.mecachecker.data.model;
 
 import android.support.annotation.NonNull;
 

@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.util.PaymentData;
-import com.skepticalone.mecachecker.model.Expense;
 
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
 public final class ExpenseEntity extends ItemEntity implements Expense {

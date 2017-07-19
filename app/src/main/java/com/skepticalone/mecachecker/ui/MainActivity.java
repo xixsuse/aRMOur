@@ -52,7 +52,7 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
         ListFragment listFragment;
         switch (item.getItemId()) {
             case R.id.additional:
-                listFragment = new AdditionalShiftListFragment();
+                listFragment = new RosteredShiftListFragment();
                 break;
             case R.id.cross_cover:
                 listFragment = new CrossCoverListFragment();
@@ -72,7 +72,7 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
             DetailFragment detailFragment;
             switch (item.getItemId()) {
                 case R.id.additional:
-                    detailFragment = new AdditionalShiftDetailFragment();
+                    detailFragment = new RosteredShiftDetailFragment();
                     break;
                 case R.id.cross_cover:
                     detailFragment = new CrossCoverDetailFragment();

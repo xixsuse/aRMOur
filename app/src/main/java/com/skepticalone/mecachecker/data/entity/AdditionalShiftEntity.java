@@ -33,7 +33,7 @@ public final class AdditionalShiftEntity extends ItemEntity implements Additiona
 
     @NonNull
     @Override
-    public ShiftData getShift() {
+    public ShiftData getShiftData() {
         return shift;
     }
 

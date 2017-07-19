@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.model.Item;
+import com.skepticalone.mecachecker.data.model.Item;
 
 abstract class ItemEntity implements Item {
     @Nullable

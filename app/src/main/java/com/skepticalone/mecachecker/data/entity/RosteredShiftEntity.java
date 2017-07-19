@@ -7,41 +7,39 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.data.model.AdditionalShift;
-import com.skepticalone.mecachecker.data.util.PaymentData;
+import com.skepticalone.mecachecker.data.model.RosteredShift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
 
 @Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(name = Contract.AdditionalShifts.INDEX, value = {Contract.COLUMN_NAME_SHIFT_START})})
-public final class AdditionalShiftEntity extends ItemEntity implements AdditionalShift {
+public final class RosteredShiftEntity extends ItemEntity implements RosteredShift {
 
     @NonNull
     @Embedded
     private final ShiftData shift;
-    @NonNull
-    @Embedded
-    private final PaymentData paymentData;
+    @Nullable
+    @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
+    private final ShiftData loggedShift;
 
-    public AdditionalShiftEntity(
-            @NonNull PaymentData paymentData,
+    public RosteredShiftEntity(
             @NonNull ShiftData shift,
+            @Nullable ShiftData loggedShift,
             @Nullable String comment
     ) {
         super(comment);
         this.shift = shift;
-        this.paymentData = paymentData;
+        this.loggedShift = loggedShift;
     }
 
     @NonNull
     @Override
-    public ShiftData getShift() {
+    public ShiftData getShiftData() {
         return shift;
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public PaymentData getPaymentData() {
-        return paymentData;
+    public ShiftData getLoggedShiftData() {
+        return loggedShift;
     }
-
 
 }

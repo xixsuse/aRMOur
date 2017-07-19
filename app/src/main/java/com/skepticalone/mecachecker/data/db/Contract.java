@@ -58,11 +58,11 @@ public final class Contract {
 
     public static class RosteredShifts {
         private static final String
-                LOGGED_PREFIX = "logged_",
                 OVERLAPPING_SHIFT_CRITERIA;
         public static final String
                 TABLE_NAME = "rostered_shifts",
                 INDEX = INDEX_PREFIX + TABLE_NAME,
+                LOGGED_PREFIX = "logged_",
                 COLUMN_NAME_LOGGED_SHIFT_START = LOGGED_PREFIX + COLUMN_NAME_SHIFT_START,
                 COLUMN_NAME_LOGGED_SHIFT_END = LOGGED_PREFIX + COLUMN_NAME_SHIFT_END,
                 SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +

@@ -17,8 +17,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 import java.util.Locale;

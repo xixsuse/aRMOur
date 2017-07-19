@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.model.Item;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.util.Comparators;
 
 public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerView.Adapter<ItemViewHolder> {

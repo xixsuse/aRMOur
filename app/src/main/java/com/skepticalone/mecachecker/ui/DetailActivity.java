@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
+import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -31,7 +31,7 @@ public final class DetailActivity extends CoordinatorActivity {
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
             case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
                 title = R.string.additional_shift;
-                c = AdditionalShiftViewModel.class;
+                c = RosteredShiftViewModel.class;
                 break;
             case Constants.ITEM_TYPE_CROSS_COVER:
                 title = R.string.cross_cover;
@@ -51,7 +51,7 @@ public final class DetailActivity extends CoordinatorActivity {
             DetailFragment detailFragment;
             switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
                 case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
-                    detailFragment = new AdditionalShiftDetailFragment();
+                    detailFragment = new RosteredShiftDetailFragment();
                     break;
                 case Constants.ITEM_TYPE_CROSS_COVER:
                     detailFragment = new CrossCoverDetailFragment();
