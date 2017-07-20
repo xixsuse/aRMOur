@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.model.Expense;
 
 public final class ExpenseListFragment extends SingleAddListFragment<Expense, ExpenseEntity, ExpenseViewModel> {
 

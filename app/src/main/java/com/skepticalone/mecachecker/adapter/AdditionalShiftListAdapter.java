@@ -9,7 +9,7 @@ import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShift> {
 
-    AdditionalShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+    public AdditionalShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks, calculator);
     }
 

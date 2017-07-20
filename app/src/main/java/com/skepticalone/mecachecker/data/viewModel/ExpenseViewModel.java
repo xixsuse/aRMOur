@@ -40,26 +40,29 @@ public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity
 
     @Override
     public void addNewItem() {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                getDao().insertItemSync(new ExpenseEntity(
-                        expenseTitle,
-                        new PaymentData(0),
-                        null
-                ));
-            }
-        });
+        insertItem(new ExpenseEntity(
+                expenseTitle,
+                new PaymentData(0),
+                null
+        ));
     }
 
     @MainThread
     public void setTitle(final long id, @NonNull final String title) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                dao.setTitleSync(id, title);
-            }
-        });
+        runAsync(new SetTitleTask(dao, id, title));
+    }
+
+    static final class SetTitleTask extends ItemRunnable<ExpenseDao> {
+        @NonNull
+        private final String title;
+        SetTitleTask(@NonNull ExpenseDao dao, long id, @NonNull String title) {
+            super(dao, id);
+            this.title = title;
+        }
+        @Override
+        void run(@NonNull ExpenseDao dao, long id) {
+            dao.setTitleSync(id, title);
+        }
     }
 
 }

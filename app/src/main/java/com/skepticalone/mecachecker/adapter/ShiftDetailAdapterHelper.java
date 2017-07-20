@@ -6,21 +6,18 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Shift;
-import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-abstract class ShiftDetailAdapterHelper {
+abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
 
-    private final Callbacks callbacks;
     private final ShiftUtil.Calculator calculator;
 
-    ShiftDetailAdapterHelper(Callbacks callbacks, ShiftUtil.Calculator calculator) {
-        this.callbacks = callbacks;
+    ShiftDetailAdapterHelper(ShiftUtil.Calculator calculator) {
         this.calculator = calculator;
     }
 
-    void onItemUpdated(@NonNull Shift oldShift, @NonNull Shift newShift, RecyclerView.Adapter adapter) {
+    void onItemUpdated(@NonNull ShiftType oldShift, @NonNull ShiftType newShift, RecyclerView.Adapter adapter) {
         if (!oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
             adapter.notifyItemChanged(getRowNumberDate());
         }
@@ -31,15 +28,16 @@ abstract class ShiftDetailAdapterHelper {
             adapter.notifyItemChanged(getRowNumberStart());
             adapter.notifyItemChanged(getRowNumberEnd());
             adapter.notifyItemChanged(getRowNumberShiftType());
+            onShiftTimesChanged();
         }
     }
 
-    boolean bindViewHolder(@NonNull final Shift item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull final ShiftType item, ItemViewHolder holder, int position) {
         if (position == getRowNumberDate()) {
             holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeDate(item.getId(), item.getShiftData());
+                    changeDate(item);
                 }
             });
             holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(item.getShiftData().getStart().toLocalDate()));
@@ -48,7 +46,7 @@ abstract class ShiftDetailAdapterHelper {
             holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeTime(item.getId(), true, item.getShiftData());
+                    changeTime(item, true);
                 }
             });
             holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(item.getShiftData().getStart().toLocalTime()));
@@ -57,7 +55,7 @@ abstract class ShiftDetailAdapterHelper {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeTime(item.getId(), false, item.getShiftData());
+                    changeTime(item, false);
                 }
             });
             holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(item.getShiftData().getEnd(), item.getShiftData().getStart().toLocalDate()));
@@ -70,13 +68,11 @@ abstract class ShiftDetailAdapterHelper {
         } else return false;
     }
 
+    void onShiftTimesChanged(){}
     abstract int getRowNumberDate();
     abstract int getRowNumberStart();
     abstract int getRowNumberEnd();
     abstract int getRowNumberShiftType();
-
-    public interface Callbacks {
-        void changeDate(long id, @NonNull ShiftData shiftData);
-        void changeTime(long id, boolean isStart, @NonNull ShiftData shiftData);
-    }
+    abstract void changeDate(@NonNull ShiftType shift);
+    abstract void changeTime(@NonNull ShiftType shift, boolean isStart);
 }

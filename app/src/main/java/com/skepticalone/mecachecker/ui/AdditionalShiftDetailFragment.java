@@ -5,16 +5,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.adapter.AdditionalShiftDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.adapter.RosteredShiftDetailAdapter;
-import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
+import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
-import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
+import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.dialog.AdditionalShiftDatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.AdditionalShiftTimePickerDialogFragment;
+import com.skepticalone.mecachecker.dialog.AdditionalShiftTimeSetter;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
-import com.skepticalone.mecachecker.dialog.RosteredShiftTimeSetter;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import org.joda.time.LocalDate;
@@ -23,19 +23,19 @@ import org.joda.time.LocalTime;
 import java.math.BigDecimal;
 
 public final class AdditionalShiftDetailFragment
-        extends DetailFragment<AdditionalShift, RosteredShiftEntity, RosteredShiftViewModel>
-        implements RosteredShiftDetailAdapter.Callbacks, RosteredShiftTimeSetter, PaymentDialogFragment.Callbacks {
+        extends DetailFragment<AdditionalShift, AdditionalShiftEntity, AdditionalShiftViewModel>
+        implements AdditionalShiftDetailAdapter.Callbacks, AdditionalShiftTimeSetter, PaymentDialogFragment.Callbacks {
 
     @NonNull
     @Override
     ItemDetailAdapter<AdditionalShift> createAdapter(Context context) {
-        return new RosteredShiftDetailAdapter(this, new ShiftUtil.Calculator(context));
+        return new AdditionalShiftDetailAdapter(this, new ShiftUtil.Calculator(context));
     }
 
     @NonNull
     @Override
-    RosteredShiftViewModel createViewModel(ViewModelProvider provider) {
-        return provider.get(RosteredShiftViewModel.class);
+    AdditionalShiftViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(AdditionalShiftViewModel.class);
     }
 
     @Override

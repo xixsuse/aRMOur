@@ -1,19 +1,15 @@
 package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.Observer;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.viewModel.ErrorMessageObserver;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
 
@@ -21,16 +17,11 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
-    private final IntentFilter mErrorIntentFilter = new IntentFilter(Constants.DISPLAY_ERROR);
-    private final BroadcastReceiver mErrorReceiver = new BroadcastReceiver() {
+
+    private final ErrorMessageObserver errorMessageObserver = new ErrorMessageObserver(){
         @Override
-        public void onReceive(Context context, Intent intent) {
-            snackbarCallbacks.showSnackbar(intent.getStringExtra(Intent.EXTRA_TEXT), "Undo", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO: 15/07/17
-                }
-            });
+        public void update(@StringRes int errorMessage) {
+            snackbarCallbacks.showSnackbar(errorMessage);
         }
     };
 
@@ -51,26 +42,14 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         );
     }
 
-    @Override
-    public final void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mErrorReceiver, mErrorIntentFilter);
-    }
-
-    @Override
-    public final void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mErrorReceiver);
-    }
-
     final void showDialogFragment(AppCompatDialogFragment dialogFragment) {
         dialogFragment.setTargetFragment(this, 0);
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     @Override
-    public final void changeComment(long itemId, @Nullable String currentComment) {
-        showDialogFragment(CommentDialogFragment.newInstance(itemId, currentComment));
+    public final void changeComment(long id, @Nullable String currentComment) {
+        showDialogFragment(CommentDialogFragment.newInstance(id, currentComment));
     }
 
     @Override
@@ -78,4 +57,15 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         getViewModel().setComment(itemId, trimmedComment);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getViewModel().errorMessage.addObserver(errorMessageObserver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getViewModel().errorMessage.deleteObserver(errorMessageObserver);
+    }
 }

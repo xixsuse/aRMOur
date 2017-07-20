@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ShiftAddItemViewModel;
-import com.skepticalone.mecachecker.model.Item;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import java.util.List;

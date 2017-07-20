@@ -51,8 +51,11 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         ListFragment listFragment;
         switch (item.getItemId()) {
-            case R.id.additional:
+            case R.id.rostered:
                 listFragment = new RosteredShiftListFragment();
+                break;
+            case R.id.additional:
+                listFragment = new AdditionalShiftListFragment();
                 break;
             case R.id.cross_cover:
                 listFragment = new CrossCoverListFragment();
@@ -71,8 +74,11 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
         if (mTwoPane) {
             DetailFragment detailFragment;
             switch (item.getItemId()) {
-                case R.id.additional:
+                case R.id.rostered:
                     detailFragment = new RosteredShiftDetailFragment();
+                    break;
+                case R.id.additional:
+                    detailFragment = new AdditionalShiftDetailFragment();
                     break;
                 case R.id.cross_cover:
                     detailFragment = new CrossCoverDetailFragment();

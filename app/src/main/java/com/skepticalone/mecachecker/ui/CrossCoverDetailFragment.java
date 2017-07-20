@@ -8,10 +8,10 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
+import com.skepticalone.mecachecker.data.model.CrossCover;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.dialog.CrossCoverDatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
-import com.skepticalone.mecachecker.model.CrossCover;
 
 import org.joda.time.LocalDate;
 

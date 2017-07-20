@@ -8,10 +8,10 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 import com.skepticalone.mecachecker.dialog.TitleDialogFragment;
-import com.skepticalone.mecachecker.model.Expense;
 
 import java.math.BigDecimal;
 

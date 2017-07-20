@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<AdditionalShift> {
@@ -18,12 +19,12 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
             ROW_NUMBER_PAID = 7,
             ROW_COUNT = 8;
 
-    private final ShiftDetailAdapterHelper shiftDetailAdapterHelper;
+    private final ShiftDetailAdapterHelper<AdditionalShift> shiftDetailAdapterHelper;
     private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
-    public AdditionalShiftDetailAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+    public AdditionalShiftDetailAdapter(final Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks);
-        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper(callbacks, calculator){
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<AdditionalShift>(calculator){
             @Override
             int getRowNumberDate() {
                 return ROW_NUMBER_DATE;
@@ -42,6 +43,16 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
             @Override
             int getRowNumberShiftType() {
                 return ROW_NUMBER_SHIFT_TYPE;
+            }
+
+            @Override
+            void changeDate(@NonNull AdditionalShift shift) {
+                callbacks.changeDate(shift.getId(), shift.getShiftData());
+            }
+
+            @Override
+            void changeTime(@NonNull AdditionalShift shift, boolean isStart) {
+                callbacks.changeTime(shift.getId(), isStart, shift.getShiftData());
             }
         };
         payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks){
@@ -87,6 +98,9 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
                 super.bindViewHolder(shift, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, ShiftDetailAdapterHelper.Callbacks, PayableDetailAdapterHelper.Callbacks {}
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailAdapterHelper.Callbacks {
+        void changeDate(long id, @NonNull ShiftData shiftData);
+        void changeTime(long id, boolean isStart, @NonNull ShiftData shiftData);
+    }
 
 }

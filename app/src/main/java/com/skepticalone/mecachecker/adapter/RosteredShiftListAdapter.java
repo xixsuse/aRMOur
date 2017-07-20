@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShift> {
 
-    RosteredShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+    public RosteredShiftListAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks, calculator);
     }
 

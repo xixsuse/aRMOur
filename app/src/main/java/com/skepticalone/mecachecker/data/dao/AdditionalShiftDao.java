@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.data.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.provider.BaseColumns;
@@ -38,6 +39,7 @@ public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntit
             " = :id")
     LiveData<AdditionalShiftEntity> getItem(long id);
 
+    @Nullable
     @Override
     @Query("SELECT * FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
@@ -47,12 +49,8 @@ public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntit
     AdditionalShiftEntity getItemSync(long id);
 
     @Override
-    @Query("DELETE FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " = :id")
-    int deleteItemSync(long id);
+    @Delete
+    int deleteItemSync(@NonNull AdditionalShiftEntity item);
 
     @Override
     @Query("UPDATE " +

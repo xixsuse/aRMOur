@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.SingleAddItemViewModel;
-import com.skepticalone.mecachecker.model.Item;
 
 import java.util.List;
 

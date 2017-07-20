@@ -1,9 +1,11 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.RosteredShift;
+import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -19,11 +21,11 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             ROW_NUMBER_COMMENT = 6,
             ROW_COUNT = 7;
 
-    private final ShiftDetailAdapterHelper shiftDetailAdapterHelper;
+    private final ShiftDetailAdapterHelper<RosteredShift> shiftDetailAdapterHelper;
 
-    public RosteredShiftDetailAdapter(Callbacks callbacks, ShiftUtil.Calculator calculator) {
+    public RosteredShiftDetailAdapter(final Callbacks callbacks, ShiftUtil.Calculator calculator) {
         super(callbacks);
-        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper(callbacks, calculator){
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RosteredShift>(calculator){
             @Override
             int getRowNumberDate() {
                 return ROW_NUMBER_DATE;
@@ -42,6 +44,16 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             @Override
             int getRowNumberShiftType() {
                 return ROW_NUMBER_SHIFT_TYPE;
+            }
+
+            @Override
+            void changeDate(@NonNull RosteredShift shift) {
+                callbacks.changeDate(shift.getId(), shift.getShiftData(), shift.getLoggedShiftData());
+            }
+
+            @Override
+            void changeTime(@NonNull RosteredShift shift, boolean isStart) {
+                callbacks.changeTime(shift.getId(), isStart, shift.getShiftData(), shift.getLoggedShiftData());
             }
         };
     }
@@ -76,6 +88,9 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 super.bindViewHolder(shift, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, ShiftDetailAdapterHelper.Callbacks {}
+    public interface Callbacks extends ItemDetailAdapter.Callbacks {
+        void changeDate(long id, @NonNull ShiftData shiftData, @Nullable ShiftData loggedShiftData);
+        void changeTime(long id, boolean isStart, @NonNull ShiftData shiftData, @Nullable ShiftData loggedShiftData);
+    }
 
 }

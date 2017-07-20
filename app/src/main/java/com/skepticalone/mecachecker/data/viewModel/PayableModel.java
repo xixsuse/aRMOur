@@ -20,32 +20,51 @@ public final class PayableModel {
     }
 
     @MainThread
-    public void setPayment(final long id, @NonNull final BigDecimal payment) {
-        ItemViewModel.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                dao.setPaymentSync(id, payment);
-            }
-        });
+    public void setPayment(long id, @NonNull BigDecimal payment) {
+        ItemViewModel.runAsync(new SetPaymentTask(dao, id, payment));
     }
 
     @MainThread
-    public void setClaimed(final long id, final boolean claimed) {
-        ItemViewModel.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                dao.setClaimedSync(id, claimed ? DateTime.now() : null);
-            }
-        });
+    public void setClaimed(long id, boolean claimed) {
+        ItemViewModel.runAsync(new SetClaimedTask(dao, id, claimed));
     }
 
     @MainThread
-    public void setPaid(final long id, final boolean paid) {
-        ItemViewModel.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                dao.setPaidSync(id, paid ? DateTime.now() : null);
-            }
-        });
+    public void setPaid(long id, boolean paid) {
+        ItemViewModel.runAsync(new SetPaidTask(dao, id, paid));
+    }
+    static final class SetPaymentTask extends ItemViewModel.ItemRunnable<PayableDaoContract> {
+        @NonNull
+        private final BigDecimal payment;
+        SetPaymentTask(@NonNull PayableDaoContract dao, long id, @NonNull BigDecimal payment) {
+            super(dao, id);
+            this.payment = payment;
+        }
+        @Override
+        void run(@NonNull PayableDaoContract dao, long id) {
+            dao.setPaymentSync(id, payment);
+        }
+    }
+    static final class SetClaimedTask extends ItemViewModel.ItemRunnable<PayableDaoContract> {
+        private boolean claimed;
+        SetClaimedTask(@NonNull PayableDaoContract dao, long id, boolean claimed) {
+            super(dao, id);
+            this.claimed = claimed;
+        }
+        @Override
+        void run(@NonNull PayableDaoContract dao, long id) {
+            dao.setClaimedSync(id, claimed ? DateTime.now() : null);
+        }
+    }
+    static final class SetPaidTask extends ItemViewModel.ItemRunnable<PayableDaoContract> {
+        private boolean paid;
+        SetPaidTask(@NonNull PayableDaoContract dao, long id, boolean paid) {
+            super(dao, id);
+            this.paid = paid;
+        }
+        @Override
+        void run(@NonNull PayableDaoContract dao, long id) {
+            dao.setPaidSync(id, paid ? DateTime.now() : null);
+        }
     }
 }

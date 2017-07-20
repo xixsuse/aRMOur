@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -46,41 +47,58 @@ public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<Additi
     }
 
     @Override
-    void addNewShift(@NonNull final LocalTime start, @NonNull final LocalTime end) {
-        final int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                DateTime newStart = start.toDateTimeToday();
-                final DateTime lastShiftEndTime = dao.getLastShiftEndTimeSync();
-                if (lastShiftEndTime != null) {
-                    newStart = lastShiftEndTime.withTime(start);
-                    while (newStart.isBefore(lastShiftEndTime)) newStart = newStart.plusDays(1);
-                }
-                DateTime newEnd = newStart.withTime(end);
-                while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-                ShiftData shiftData = new ShiftData(newStart, newEnd);
-                getDao().insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), shiftData, null));
-            }
-        });
+    void addNewShift(@NonNull LocalTime start, @NonNull LocalTime end) {
+        int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
+        runAsync(new InsertShiftTask(dao, start, end, hourlyRate));
     }
 
     @MainThread
-    public void setShiftTimes(final long id, @NonNull final LocalDate date, @NonNull final LocalTime start, @NonNull final LocalTime end) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                final DateTime newStart = date.toDateTime(start);
-                DateTime newEnd = date.toDateTime(end);
-                while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-                dao.setShiftTimesSync(id, newStart, newEnd);
-//                try {
-//                    getDao().setShiftTimesSync(id, newStart, newEnd);
-//                } catch (SQLiteConstraintException e) {
-//                    throw new ShiftOverlapException(getApplication().getString(R.string.overlapping_shifts));
-//                }
+    public void setShiftTimes(long id, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
+        runAsync(new SetShiftTimesTask(dao, id, errorMessage, date, start, end));
+    }
+
+    static final class InsertShiftTask extends DaoRunnable<AdditionalShiftDao> {
+        @NonNull
+        private final LocalTime start, end;
+        private final int hourlyRate;
+        InsertShiftTask(@NonNull AdditionalShiftDao additionalShiftDao, @NonNull LocalTime start, @NonNull LocalTime end, int hourlyRate) {
+            super(additionalShiftDao);
+            this.start = start;
+            this.end = end;
+            this.hourlyRate = hourlyRate;
+        }
+        @Override
+        void run(@NonNull AdditionalShiftDao dao) {
+            DateTime newStart = start.toDateTimeToday();
+            final DateTime lastShiftEndTime = dao.getLastShiftEndTimeSync();
+            if (lastShiftEndTime != null) {
+                newStart = lastShiftEndTime.withTime(start);
+                while (newStart.isBefore(lastShiftEndTime)) newStart = newStart.plusDays(1);
             }
-        });
+            DateTime newEnd = newStart.withTime(end);
+            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
+            ShiftData shiftData = new ShiftData(newStart, newEnd);
+            dao.insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), shiftData, null));
+        }
+    }
+    static final class SetShiftTimesTask extends OverlapItemRunnable<AdditionalShiftDao> {
+        @NonNull
+        private final LocalDate date;
+        @NonNull
+        private final LocalTime start, end;
+        SetShiftTimesTask(@NonNull AdditionalShiftDao additionalShiftDao, long id, @NonNull ErrorMessageObservable errorMessage, @NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end) {
+            super(additionalShiftDao, id, errorMessage);
+            this.date = date;
+            this.start = start;
+            this.end = end;
+        }
+        @Override
+        void runOrThrow(@NonNull AdditionalShiftDao dao, long id) throws SQLiteConstraintException {
+            final DateTime newStart = date.toDateTime(start);
+            DateTime newEnd = date.toDateTime(end);
+            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
+            dao.setShiftTimesSync(id, newStart, newEnd);
+        }
     }
 
 }

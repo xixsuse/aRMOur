@@ -18,16 +18,30 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.viewModel.EntityObserver;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 import java.util.List;
-import java.util.Locale;
 
 abstract class ListFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemListAdapter<ItemType>, ViewModel>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
     private Callbacks mCallbacks;
+    private final EntityObserver<Entity> itemDeletedObserver = new EntityObserver<Entity>(){
+        @Override
+        public void update(@Nullable final Entity deletedItem) {
+            if (deletedItem != null) {
+                snackbarCallbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getViewModel().insertItem(deletedItem);
+                    }
+                });
+            }
+        }
+    };
+
     private RecyclerView.LayoutManager mLayoutManager;
     private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
 
@@ -94,20 +108,6 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getViewModel().getItems().observe(this, this);
-        getViewModel().lastDeletedItem.observe(this, new Observer<Entity>() {
-            @Override
-            public void onChanged(@Nullable final Entity entity) {
-                if (entity != null) {
-                    snackbarCallbacks.showSnackbar(String.format(Locale.US, "Item #%d deleted", entity.getId()), "Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getViewModel().insertItem(entity);
-                        }
-                    });
-                    getViewModel().lastDeletedItem.setValue(null);
-                }
-            }
-        });
         if (getArguments().getBoolean(IS_TWO_PANE, false)) {
             getViewModel().selectedItem.observe(this, new Observer<Entity>() {
                 @Override
@@ -126,14 +126,16 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
     }
 
     @Override
-    public final void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         getAdapter().registerAdapterDataObserver(mObserver);
+        getViewModel().lastDeletedItem.addObserver(itemDeletedObserver);
     }
 
     @Override
-    public final void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
+        getViewModel().lastDeletedItem.deleteObserver(itemDeletedObserver);
         getAdapter().unregisterAdapterDataObserver(mObserver);
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
@@ -29,9 +30,13 @@ public final class DetailActivity extends CoordinatorActivity {
         int title;
         Class<? extends ItemViewModel> c;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
+            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
+                title = R.string.rostered_shift;
+                c = RosteredShiftViewModel.class;
+                break;
             case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
                 title = R.string.additional_shift;
-                c = RosteredShiftViewModel.class;
+                c = AdditionalShiftViewModel.class;
                 break;
             case Constants.ITEM_TYPE_CROSS_COVER:
                 title = R.string.cross_cover;
@@ -50,8 +55,11 @@ public final class DetailActivity extends CoordinatorActivity {
         if (savedInstanceState == null) {
             DetailFragment detailFragment;
             switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
-                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
+                case Constants.ITEM_TYPE_ROSTERED_SHIFT:
                     detailFragment = new RosteredShiftDetailFragment();
+                    break;
+                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
+                    detailFragment = new AdditionalShiftDetailFragment();
                     break;
                 case Constants.ITEM_TYPE_CROSS_COVER:
                     detailFragment = new CrossCoverDetailFragment();

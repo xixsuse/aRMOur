@@ -16,25 +16,25 @@ public final class AdditionalShiftEntity extends ItemEntity implements Additiona
 
     @NonNull
     @Embedded
-    private final ShiftData shift;
+    private final ShiftData shiftData;
     @NonNull
     @Embedded
     private final PaymentData paymentData;
 
     public AdditionalShiftEntity(
             @NonNull PaymentData paymentData,
-            @NonNull ShiftData shift,
+            @NonNull ShiftData shiftData,
             @Nullable String comment
     ) {
         super(comment);
-        this.shift = shift;
+        this.shiftData = shiftData;
         this.paymentData = paymentData;
     }
 
     @NonNull
     @Override
     public ShiftData getShiftData() {
-        return shift;
+        return shiftData;
     }
 
     @NonNull

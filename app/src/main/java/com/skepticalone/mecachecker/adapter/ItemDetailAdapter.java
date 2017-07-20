@@ -77,6 +77,6 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     abstract int getRowNumberComment();
 
     public interface Callbacks {
-        void changeComment(long itemId, @Nullable String currentComment);
+        void changeComment(long id, @Nullable String currentComment);
     }
 }

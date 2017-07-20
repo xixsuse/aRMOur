@@ -22,10 +22,11 @@ public interface ItemDaoContract<Entity> {
     LiveData<Entity> getItem(long id);
 
     @WorkerThread
+    @Nullable
     Entity getItemSync(long id);
 
     @WorkerThread
-    int deleteItemSync(long id);
+    int deleteItemSync(@NonNull Entity item);
 
     @WorkerThread
     void setCommentSync(long id, @Nullable String comment);
