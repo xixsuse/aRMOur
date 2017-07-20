@@ -160,8 +160,6 @@ abstract class ListFragment<ItemType extends Item, Entity extends ItemType, View
         FloatingActionButton getFabLongDay();
 
         FloatingActionButton getFabNightShift();
-
-        FloatingActionButton getFabAdd();
     }
 
     interface Callbacks extends FabCallbacks {

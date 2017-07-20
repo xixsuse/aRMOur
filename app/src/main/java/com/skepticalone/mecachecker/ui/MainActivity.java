@@ -16,7 +16,7 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
 
     private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private FloatingActionMenu mFabMenu;
-    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift, mFabAdd;
+    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
 
     @Override
@@ -35,10 +35,7 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
         mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
         mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
         mFabNightShift = mFabMenu.findViewById(R.id.fab_night_shift);
-        mFabAdd = findViewById(R.id.fab_add);
         mFabMenu.close(false);
-        mFabMenu.hideMenu(false);
-        mFabAdd.hide(false);
 //        if (savedInstanceState == null) {
 //            navigation.setSelectedItemId(navigation.getSelectedItemId());
 //        } else if (mTwoPane) {
@@ -130,10 +127,5 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
     @Override
     public FloatingActionButton getFabNightShift() {
         return mFabNightShift;
-    }
-
-    @Override
-    public FloatingActionButton getFabAdd() {
-        return mFabAdd;
     }
 }
