@@ -4,6 +4,7 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.SupportSQLiteOpenHelper;
 import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 final class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
@@ -52,18 +53,10 @@ final class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
         @Override
         public void onOpen(SupportSQLiteDatabase db) {
             mFrameworkCallback.onOpen(db);
+            explain(db, "SELECT * FROM " + Contract.RosteredShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START);
+            explain(db, "SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START);
             explain(db, "SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE);
-            explain(db, "SELECT * FROM " +
-                    Contract.Expenses.TABLE_NAME + " " +
-                    "ORDER BY " +
-                    Contract.COLUMN_NAME_PAID +
-                    " IS NULL, " +
-                    Contract.COLUMN_NAME_CLAIMED +
-                    " IS NULL, ifnull(" +
-                    Contract.COLUMN_NAME_PAID +
-                    ", " +
-                    Contract.COLUMN_NAME_CLAIMED +
-                    ")");
+            explain(db, "SELECT * FROM " + Contract.Expenses.TABLE_NAME + " ORDER BY CASE WHEN " + Contract.COLUMN_NAME_CLAIMED + " IS NULL THEN 2 WHEN " + Contract.COLUMN_NAME_PAID + " IS NULL THEN 1 ELSE 0 END, coalesce(" + Contract.COLUMN_NAME_PAID + ", " + Contract.COLUMN_NAME_CLAIMED + ", " + BaseColumns._ID + ")");
         }
 
         private void explain(SupportSQLiteDatabase db, String query) {
@@ -78,7 +71,6 @@ final class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
                 }
             }
             c.close();
-
         }
 
         private void resetTables(SupportSQLiteDatabase db) {

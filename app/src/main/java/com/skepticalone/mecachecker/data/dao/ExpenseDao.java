@@ -26,17 +26,8 @@ public interface ExpenseDao extends ItemDaoContract<ExpenseEntity>, PayableDaoCo
     void insertItemSync(@NonNull ExpenseEntity expense);
 
     @Override
-    @Query("SELECT * FROM " +
-            Contract.Expenses.TABLE_NAME + " " +
-            "ORDER BY " +
-            Contract.COLUMN_NAME_PAID +
-            " IS NULL, " +
-            Contract.COLUMN_NAME_CLAIMED +
-            " IS NULL, ifnull(" +
-            Contract.COLUMN_NAME_PAID +
-            ", " +
-            Contract.COLUMN_NAME_CLAIMED +
-            ")")
+//    @Query("SELECT * FROM " + Contract.Expenses.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_PAID + " IS NULL, " + Contract.COLUMN_NAME_CLAIMED + " IS NULL, coalesce(" + Contract.COLUMN_NAME_PAID + ", " + Contract.COLUMN_NAME_CLAIMED + ", " + BaseColumns._ID + ")")
+    @Query("SELECT * FROM " + Contract.Expenses.TABLE_NAME + " ORDER BY CASE WHEN " + Contract.COLUMN_NAME_CLAIMED + " IS NULL THEN 2 WHEN " + Contract.COLUMN_NAME_PAID + " IS NULL THEN 1 ELSE 0 END, coalesce(" + Contract.COLUMN_NAME_PAID + ", " + Contract.COLUMN_NAME_CLAIMED + ", " + BaseColumns._ID + ")")
     @NonNull
     LiveData<List<ExpenseEntity>> getItems();
 
