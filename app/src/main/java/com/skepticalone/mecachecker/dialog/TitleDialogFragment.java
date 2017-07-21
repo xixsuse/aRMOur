@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.ui.SnackCallbacks;
 
 public final class TitleDialogFragment extends PlainTextDialogFragment {
 
@@ -26,7 +27,11 @@ public final class TitleDialogFragment extends PlainTextDialogFragment {
 
     @Override
     final void save(@Nullable String trimmedTitle) {
-        if (trimmedTitle != null) callbacks.saveTitle(getItemId(), trimmedTitle);
+        if (trimmedTitle == null) {
+            ((SnackCallbacks) getActivity()).showSnackbar(R.string.value_required);
+        } else {
+            callbacks.saveTitle(getItemId(), trimmedTitle);
+        }
     }
 
     public interface Callbacks {

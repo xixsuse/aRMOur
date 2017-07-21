@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.InputType;
-import android.widget.Toast;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.ui.SnackCallbacks;
 
 import java.math.BigDecimal;
 
@@ -36,10 +36,14 @@ public final class PaymentDialogFragment extends EditTextDialogFragment {
 
     @Override
     final void save(@Nullable String trimmedTextWithLength) {
-        try {
-            mCallbacks.savePayment(getItemId(), new BigDecimal(trimmedTextWithLength));
-        } catch (NullPointerException | NumberFormatException e) {
-            Toast.makeText(getActivity(), R.string.invalid_format, Toast.LENGTH_SHORT).show();
+        if (trimmedTextWithLength == null) {
+            ((SnackCallbacks) getActivity()).showSnackbar(R.string.value_required);
+        } else {
+            try {
+                mCallbacks.savePayment(getItemId(), new BigDecimal(trimmedTextWithLength));
+            } catch (NumberFormatException e) {
+                ((SnackCallbacks) getActivity()).showSnackbar(R.string.invalid_format);
+            }
         }
     }
 
