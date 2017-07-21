@@ -28,7 +28,6 @@ abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
             adapter.notifyItemChanged(getRowNumberStart());
             adapter.notifyItemChanged(getRowNumberEnd());
             adapter.notifyItemChanged(getRowNumberShiftType());
-            onShiftTimesChanged();
         }
     }
 
@@ -68,7 +67,6 @@ abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
         } else return false;
     }
 
-    void onShiftTimesChanged(){}
     abstract int getRowNumberDate();
     abstract int getRowNumberStart();
     abstract int getRowNumberEnd();

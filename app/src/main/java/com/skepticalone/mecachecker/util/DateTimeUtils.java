@@ -132,6 +132,10 @@ public final class DateTimeUtils {
         return getSpanString(dateFormatter.print(date1), dateFormatter.print(date2));
     }
 
+    public static String getWeekendDateSpanString(LocalDate saturday) {
+        return getDateSpanString(saturday, saturday.plusDays(1));
+    }
+
     public static String getTimeSpanString(@NonNull ShiftData shift) {
         return getSpanString(timeFormatter.print(shift.getStart()), getEndTimeString(shift.getEnd(), shift.getStart().toLocalDate()));
     }

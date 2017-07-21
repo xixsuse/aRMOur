@@ -13,6 +13,7 @@ import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.joda.time.ReadableInstant;
 
 import java.util.List;
@@ -26,18 +27,21 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
     private final ShiftData loggedShiftData;
-    
     @Ignore
     private Duration durationOverDay, durationOverWeek, durationOverFortnight;
     @Nullable
     @Ignore
     private Duration durationBetweenShifts;
+    @Nullable
+    @Ignore
+    private LocalDate currentWeekend, lastWeekendWorked;
     @Ignore
     private boolean
             exceedsMaximumDurationOverDay,
             exceedsMaximumDurationOverWeek,
             exceedsMaximumDurationOverFortnight,
             insufficientDurationBetweenShifts,
+            consecutiveWeekendsWorked,
             compliant;
 
     public RosteredShiftEntity(
@@ -102,6 +106,23 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         return insufficientDurationBetweenShifts;
     }
 
+    @Nullable
+    @Override
+    public LocalDate getCurrentWeekend() {
+        return currentWeekend;
+    }
+
+    @Nullable
+    @Override
+    public LocalDate getLastWeekendWorked() {
+        return lastWeekendWorked;
+    }
+
+    @Override
+    public boolean consecutiveWeekendsWorked() {
+        return consecutiveWeekendsWorked;
+    }
+
     @Override
     public boolean isCompliant() {
         return compliant;
@@ -112,9 +133,27 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         do {
             RosteredShiftEntity shift = shifts.get(currentIndex);
             if (!shift.shiftData.getEnd().isAfter(cutOff)) break;
-            totalDuration = totalDuration.plus(new Duration(shift.shiftData.getStart().isBefore(cutOff) ? cutOff : shift.shiftData.getStart(), shift.shiftData.getEnd()));
+            totalDuration = totalDuration.plus(shift.shiftData.getStart().isBefore(cutOff) ? new Duration(cutOff, shift.shiftData.getEnd()) : shift.shiftData.getDuration());
         } while (--currentIndex >= 0);
         return totalDuration;
+    }
+
+    private void setupWeekends(@NonNull List<RosteredShiftEntity> shifts, int currentIndex) {
+        currentWeekend = shiftData.getWeekend();
+        if (currentWeekend != null) {
+            LocalDate previousWeekend = currentWeekend.minusWeeks(1);
+            while (--currentIndex >= 0) {
+                RosteredShiftEntity shift = shifts.get(currentIndex);
+                LocalDate weekendWorked = shift.shiftData.getWeekend();
+                if (weekendWorked != null && !currentWeekend.isEqual(weekendWorked)) {
+                    lastWeekendWorked = weekendWorked;
+                    consecutiveWeekendsWorked = lastWeekendWorked.isEqual(previousWeekend);
+                    return;
+                }
+            }
+        }
+        lastWeekendWorked = null;
+        consecutiveWeekendsWorked = false;
     }
 
     public final void setup(@NonNull List<RosteredShiftEntity> shifts, int currentIndex) {
@@ -122,6 +161,7 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         durationOverWeek = getDurationSince(shifts, currentIndex, shiftData.getEnd().minusWeeks(1));
         durationOverFortnight = getDurationSince(shifts, currentIndex, shiftData.getEnd().minusWeeks(1));
         durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).shiftData.getEnd(), shiftData.getStart());
+        setupWeekends(shifts, currentIndex);
         exceedsMaximumDurationOverDay = AppConstants.exceedsMaximumDurationOverDay(durationOverDay);
         exceedsMaximumDurationOverWeek = AppConstants.exceedsMaximumDurationOverWeek(durationOverWeek);
         exceedsMaximumDurationOverFortnight = AppConstants.exceedsMaximumDurationOverFortnight(durationOverFortnight);
@@ -130,6 +170,7 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
                 !exceedsMaximumDurationOverDay &&
                 !exceedsMaximumDurationOverWeek &&
                 !exceedsMaximumDurationOverFortnight &&
-                !insufficientDurationBetweenShifts;
+                !insufficientDurationBetweenShifts &&
+                !consecutiveWeekendsWorked;
     }
 }

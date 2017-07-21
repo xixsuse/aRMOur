@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 
 public interface RosteredShift extends Shift {
 
@@ -24,4 +25,9 @@ public interface RosteredShift extends Shift {
     @Nullable
     Duration getDurationBetweenShifts();
     boolean insufficientDurationBetweenShifts();
+    @Nullable
+    LocalDate getCurrentWeekend();
+    @Nullable
+    LocalDate getLastWeekendWorked();
+    boolean consecutiveWeekendsWorked();
 }

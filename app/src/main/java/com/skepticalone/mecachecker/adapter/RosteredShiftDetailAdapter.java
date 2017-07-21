@@ -138,11 +138,22 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             return true;
         } else if (position == ROW_NUMBER_LAST_WEEKEND_WORKED) {
             holder.setupPlain(R.drawable.ic_weekend_black_24dp, null);
-            holder.setText(
-                    holder.getText(R.string.last_weekend_worked),
-                    holder.getText(R.string.not_applicable)
-            );
-            holder.secondaryIcon.setVisibility(View.GONE);
+            if (shift.getCurrentWeekend() == null) {
+                holder.setText(
+                        holder.getText(R.string.current_weekend),
+                        holder.getText(R.string.not_applicable)
+                );
+                holder.secondaryIcon.setVisibility(View.GONE);
+            } else {
+                holder.setText(
+                        holder.getText(R.string.current_weekend),
+                        DateTimeUtils.getWeekendDateSpanString(shift.getCurrentWeekend()),
+                        holder.getText(R.string.last_weekend_worked) + ":\n" +
+                                (shift.getLastWeekendWorked() == null ? holder.getText(R.string.not_applicable) : DateTimeUtils.getWeekendDateSpanString(shift.getLastWeekendWorked()))
+                );
+                holder.secondaryIcon.setImageResource(shift.consecutiveWeekendsWorked() ? R.drawable.ic_cancel_red_24dp : R.drawable.ic_check_black_24dp);
+                holder.secondaryIcon.setVisibility(View.VISIBLE);
+            }
             return true;
         } else {
             holder.secondaryIcon.setVisibility(View.GONE);
