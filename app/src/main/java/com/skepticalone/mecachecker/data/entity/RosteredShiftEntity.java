@@ -27,13 +27,18 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
     private final ShiftData loggedShiftData;
     
-    @NonNull
     @Ignore
     private Duration durationOverDay, durationOverWeek, durationOverFortnight;
     @Nullable
     @Ignore
     private Duration durationBetweenShifts;
-
+    @Ignore
+    private boolean
+            exceedsMaximumDurationOverDay,
+            exceedsMaximumDurationOverWeek,
+            exceedsMaximumDurationOverFortnight,
+            insufficientDurationBetweenShifts,
+            compliant;
 
     public RosteredShiftEntity(
             @NonNull ShiftData shiftData,
@@ -79,30 +84,27 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
     }
     @Override
     public boolean exceedsMaximumDurationOverDay() {
-        return AppConstants.exceedsMaximumDurationOverDay(durationOverDay);
+        return exceedsMaximumDurationOverDay;
     }
 
     @Override
     public boolean exceedsMaximumDurationOverWeek() {
-        return AppConstants.exceedsMaximumDurationOverWeek(durationOverWeek);
+        return exceedsMaximumDurationOverWeek;
     }
 
     @Override
     public boolean exceedsMaximumDurationOverFortnight() {
-        return AppConstants.exceedsMaximumDurationOverFortnight(durationOverFortnight);
+        return exceedsMaximumDurationOverFortnight;
     }
 
     @Override
     public boolean insufficientDurationBetweenShifts() {
-        return AppConstants.insufficientDurationBetweenShifts(durationBetweenShifts);
+        return insufficientDurationBetweenShifts;
     }
 
     @Override
     public boolean isCompliant() {
-        return !exceedsMaximumDurationOverDay() &&
-                !exceedsMaximumDurationOverWeek() &&
-                !exceedsMaximumDurationOverFortnight() &&
-                !insufficientDurationBetweenShifts();
+        return compliant;
     }
 
     private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
@@ -120,5 +122,14 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         durationOverWeek = getDurationSince(shifts, currentIndex, shiftData.getEnd().minusWeeks(1));
         durationOverFortnight = getDurationSince(shifts, currentIndex, shiftData.getEnd().minusWeeks(1));
         durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).shiftData.getEnd(), shiftData.getStart());
+        exceedsMaximumDurationOverDay = AppConstants.exceedsMaximumDurationOverDay(durationOverDay);
+        exceedsMaximumDurationOverWeek = AppConstants.exceedsMaximumDurationOverWeek(durationOverWeek);
+        exceedsMaximumDurationOverFortnight = AppConstants.exceedsMaximumDurationOverFortnight(durationOverFortnight);
+        insufficientDurationBetweenShifts = durationBetweenShifts != null && AppConstants.insufficientDurationBetweenShifts(durationBetweenShifts);
+        compliant =
+                !exceedsMaximumDurationOverDay &&
+                !exceedsMaximumDurationOverWeek &&
+                !exceedsMaximumDurationOverFortnight &&
+                !insufficientDurationBetweenShifts;
     }
 }
