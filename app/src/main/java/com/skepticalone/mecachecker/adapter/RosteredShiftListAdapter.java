@@ -22,7 +22,7 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
 
     @Override
     int getSecondaryIcon(@NonNull RosteredShift shift) {
-        return R.drawable.ic_check_black_24dp;
+        return shift.isCompliant() ? R.drawable.ic_check_black_24dp : R.drawable.ic_cancel_red_24dp;
     }
 
     @NonNull

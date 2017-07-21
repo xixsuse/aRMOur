@@ -1,6 +1,8 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
@@ -81,6 +83,13 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     @Override
     int getRowCount(@NonNull AdditionalShift item) {
         return ROW_COUNT;
+    }
+
+    @Override
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
+        holder.secondaryIcon.setVisibility(View.GONE);
+        return holder;
     }
 
     @Override

@@ -35,6 +35,22 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
             }
         });
     }
+
+    @NonNull
+    LiveData<Entity> getItem(long id) {
+        return getDao().getItem(id);
+    }
+//
+//    @NonNull
+//    Function<Long, LiveData<Entity>> createTransformation(LiveData<Entity> noItem) {
+//        return new Function<Long, LiveData<Entity>>() {
+//            @Override
+//            public LiveData<Entity> apply(Long id) {
+//                return id == null ? NO_ITEM : getDao().getItem(id);
+//            }
+//        };
+//    }
+
     @NonNull
     abstract ItemDaoContract<Entity> getDao();
     public final void selectItem(long id) {
@@ -42,14 +58,14 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
     }
     @MainThread
     @NonNull
-    public final LiveData<List<Entity>> getItems(){
+    public LiveData<List<Entity>> getItems(){
         return getDao().getItems();
     }
-    @MainThread
-    @NonNull
-    public final LiveData<Entity> getItem(long id) {
-        return getDao().getItem(id);
-    }
+//    @MainThread
+//    @NonNull
+//    public final LiveData<Entity> getItem(long id) {
+//        return getDao().getItem(id);
+//    }
     static void runAsync(Runnable runnable) {
         new Thread(runnable).start();
     }

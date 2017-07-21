@@ -25,9 +25,7 @@ public abstract class ItemDetailAdapter<ItemType extends Item> extends RecyclerV
     @CallSuper
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemViewHolder holder = new ItemViewHolder(parent);
-        holder.secondaryIcon.setVisibility(View.GONE);
-        return holder;
+        return new ItemViewHolder(parent);
     }
 
     @Override

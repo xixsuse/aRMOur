@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.CrossCover;
@@ -54,6 +55,12 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
         return ROW_COUNT;
     }
 
+    @Override
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
+        holder.secondaryIcon.setVisibility(View.GONE);
+        return holder;
+    }
 
     @Override
     void onItemUpdated(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
