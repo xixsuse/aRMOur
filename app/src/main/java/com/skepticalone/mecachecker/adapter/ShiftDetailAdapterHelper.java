@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Shift;
+import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -18,13 +19,8 @@ abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
     }
 
     void onItemUpdated(@NonNull ShiftType oldShift, @NonNull ShiftType newShift, RecyclerView.Adapter adapter) {
-        if (!oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
+        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
             adapter.notifyItemChanged(getRowNumberDate());
-        }
-        if (
-                !oldShift.getShiftData().getStart().toLocalTime().isEqual(newShift.getShiftData().getStart().toLocalTime()) ||
-                !oldShift.getShiftData().getEnd().toLocalTime().isEqual(newShift.getShiftData().getEnd().toLocalTime())
-        ) {
             adapter.notifyItemChanged(getRowNumberStart());
             adapter.notifyItemChanged(getRowNumberEnd());
             adapter.notifyItemChanged(getRowNumberShiftType());
@@ -62,7 +58,7 @@ abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
         } else if (position == getRowNumberShiftType()) {
             ShiftUtil.ShiftType shiftType = calculator.getShiftType(item.getShiftData());
             holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
-            holder.setText(holder.getText(R.string.shift_type), holder.getText(ShiftUtil.getShiftTitle(shiftType)));
+            holder.setText(holder.getText(ShiftUtil.getShiftTitle(shiftType)), DateTimeUtils.getPeriodString(item.getShiftData().getDuration()));
             return true;
         } else return false;
     }

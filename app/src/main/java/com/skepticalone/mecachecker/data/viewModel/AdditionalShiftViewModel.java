@@ -12,7 +12,6 @@ import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
-import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -69,16 +68,7 @@ public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<Additi
         }
         @Override
         void run(@NonNull AdditionalShiftDao dao) {
-            DateTime newStart = start.toDateTimeToday();
-            final DateTime lastShiftEndTime = dao.getLastShiftEndTimeSync();
-            if (lastShiftEndTime != null) {
-                newStart = lastShiftEndTime.withTime(start);
-                while (newStart.isBefore(lastShiftEndTime)) newStart = newStart.plusDays(1);
-            }
-            DateTime newEnd = newStart.withTime(end);
-            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-            ShiftData shiftData = new ShiftData(newStart, newEnd);
-            dao.insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), shiftData, null));
+            dao.insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), createNewShiftData(start, end, dao.getLastShiftEndTimeSync()), null));
         }
     }
     static final class SetShiftTimesTask extends OverlapItemRunnable<AdditionalShiftDao> {
@@ -94,9 +84,7 @@ public final class AdditionalShiftViewModel extends ShiftAddItemViewModel<Additi
         }
         @Override
         void runOrThrow(@NonNull AdditionalShiftDao dao, long id) throws SQLiteConstraintException {
-            final DateTime newStart = date.toDateTime(start);
-            DateTime newEnd = date.toDateTime(end);
-            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
+            final DateTime newStart = date.toDateTime(start), newEnd = getEnd(newStart, end);
             dao.setShiftTimesSync(id, newStart, newEnd);
         }
     }

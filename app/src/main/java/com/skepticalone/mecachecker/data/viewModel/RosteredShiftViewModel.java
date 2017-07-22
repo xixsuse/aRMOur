@@ -13,7 +13,6 @@ import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
-import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -89,16 +88,7 @@ public final class RosteredShiftViewModel extends ShiftAddItemViewModel<Rostered
         }
         @Override
         void run(@NonNull RosteredShiftDao dao) {
-            DateTime newStart = start.toDateTimeToday();
-            final DateTime lastShiftEndTime = dao.getLastShiftEndTimeSync();
-            if (lastShiftEndTime != null) {
-                newStart = lastShiftEndTime.withTime(start);
-                while (newStart.isBefore(lastShiftEndTime)) newStart = newStart.plusDays(1);
-            }
-            DateTime newEnd = newStart.withTime(end);
-            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-            ShiftData shiftData = new ShiftData(newStart, newEnd);
-            dao.insertItemSync(new RosteredShiftEntity(shiftData, null, null));
+            dao.insertItemSync(new RosteredShiftEntity(createNewShiftData(start, end, dao.getLastShiftEndTimeSync()), null, null));
         }
     }
     static final class SetShiftTimesTask extends OverlapItemRunnable<RosteredShiftDao> {
@@ -118,16 +108,12 @@ public final class RosteredShiftViewModel extends ShiftAddItemViewModel<Rostered
         }
         @Override
         void runOrThrow(@NonNull RosteredShiftDao dao, long id) throws SQLiteConstraintException {
-            final DateTime newStart = date.toDateTime(start);
-            DateTime newEnd = date.toDateTime(end);
-            while (newEnd.isBefore(newStart)) newEnd = newEnd.plusDays(1);
-            DateTime newLoggedStart, newLoggedEnd;
+            final DateTime newStart = date.toDateTime(start), newEnd = getEnd(newStart, end), newLoggedStart, newLoggedEnd;
             if (loggedStart == null || loggedEnd == null) {
                 newLoggedStart = newLoggedEnd = null;
             } else {
                 newLoggedStart = date.toDateTime(loggedStart);
-                newLoggedEnd = date.toDateTime(loggedEnd);
-                while (newLoggedEnd.isBefore(newLoggedStart)) newLoggedEnd = newLoggedEnd.plusDays(1);
+                newLoggedEnd = getEnd(newLoggedStart, loggedEnd);
             }
             dao.setShiftTimesSync(id, newStart, newEnd, newLoggedStart, newLoggedEnd);
         }

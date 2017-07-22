@@ -23,7 +23,7 @@ public final class ShiftUtil {
         } else if (shiftType == ShiftType.NIGHT_SHIFT) {
             return R.string.night_shift;
         } else {
-            return R.string.custom;
+            return R.string.custom_shift;
         }
     }
 
