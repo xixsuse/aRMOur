@@ -93,6 +93,15 @@ public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, Payabl
             " = :id")
     void setPaidSync(long id, @Nullable DateTime paid);
 
+    @NonNull
+    @WorkerThread
+    @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    LiveData<LocalDate> getDate(long id);
+
     @Nullable
     @WorkerThread
     @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +

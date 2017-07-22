@@ -1,8 +1,10 @@
 package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
@@ -10,16 +12,20 @@ import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.model.CrossCover;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.dialog.CrossCoverDatePickerDialogFragment;
+import com.skepticalone.mecachecker.dialog.IndependentDatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
-
-import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
 public final class CrossCoverDetailFragment
         extends DetailFragment<CrossCover, CrossCoverEntity, CrossCoverViewModel>
-        implements CrossCoverDetailAdapter.Callbacks, CrossCoverDatePickerDialogFragment.Callbacks, PaymentDialogFragment.Callbacks {
+        implements CrossCoverDetailAdapter.Callbacks, IndependentDatePickerDialogFragment.TargetFragmentCallbacks, PaymentDialogFragment.Callbacks {
+
+    @NonNull
+    @Override
+    public IndependentDatePickerDialogFragment.ViewModelCallbacks getViewModel(@NonNull FragmentActivity activity) {
+        return ViewModelProviders.of(activity).get(CrossCoverViewModel.class);
+    }
 
     @NonNull
     @Override
@@ -34,13 +40,8 @@ public final class CrossCoverDetailFragment
     }
 
     @Override
-    public void changeDate(long id, @NonNull LocalDate currentDate) {
-        showDialogFragment(CrossCoverDatePickerDialogFragment.newInstance(id, currentDate));
-    }
-
-    @Override
-    public void saveDate(long id, @NonNull LocalDate date) {
-        getViewModel().setDate(id, date);
+    public void changeDate() {
+        showDialogFragment(new IndependentDatePickerDialogFragment());
     }
 
     @Override

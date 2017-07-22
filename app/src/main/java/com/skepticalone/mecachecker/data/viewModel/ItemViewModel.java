@@ -20,8 +20,8 @@ import java.util.List;
 
 public abstract class ItemViewModel<Entity> extends AndroidViewModel {
 
-    private final LiveData<Entity> NO_ITEM = new MutableLiveData<>();
-    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    final LiveData NO_DATA = new MutableLiveData<>();
+    final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     public final EntityObservable<Entity> lastDeletedItem = new EntityObservable<>();
     public final ErrorMessageObservable errorMessage = new ErrorMessageObservable();
     public final LiveData<Entity> selectedItem;
@@ -31,7 +31,7 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
         selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
             @Override
             public LiveData<Entity> apply(Long id) {
-                return id == null ? NO_ITEM : getItem(id);
+                return id == null ? NO_DATA : getItem(id);
             }
         });
     }
@@ -46,7 +46,7 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
 //        return new Function<Long, LiveData<Entity>>() {
 //            @Override
 //            public LiveData<Entity> apply(Long id) {
-//                return id == null ? NO_ITEM : getDao().getItem(id);
+//                return id == null ? NO_DATA : getDao().getItem(id);
 //            }
 //        };
 //    }

@@ -58,7 +58,7 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel exte
     final Adapter getAdapter() {
         return adapter;
     }
-    final ViewModel getViewModel() {
+    public final ViewModel getViewModel() {
         return viewModel;
     }
 }
