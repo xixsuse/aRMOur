@@ -7,6 +7,7 @@ import android.view.View;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.RosteredShift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
+import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -77,7 +78,19 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     @Override
     void onItemUpdated(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
         super.onItemUpdated(oldShift, newShift);
-        shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
+        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
+            notifyItemChanged(ROW_NUMBER_DATE);
+            notifyItemChanged(ROW_NUMBER_START);
+            notifyItemChanged(ROW_NUMBER_END);
+            notifyItemChanged(ROW_NUMBER_SHIFT_TYPE);
+            notifyItemChanged(ROW_NUMBER_LOGGED_START);
+            notifyItemChanged(ROW_NUMBER_LOGGED_END);
+        } else if (!Comparators.equalLoggedShiftData(oldShift.getLoggedShiftData(), newShift.getLoggedShiftData())) {
+            notifyItemChanged(ROW_NUMBER_START);
+            notifyItemChanged(ROW_NUMBER_END);
+            notifyItemChanged(ROW_NUMBER_LOGGED_START);
+            notifyItemChanged(ROW_NUMBER_LOGGED_END);
+        }
     }
 
     @Override

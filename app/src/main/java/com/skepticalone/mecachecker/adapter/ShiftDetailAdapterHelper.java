@@ -1,12 +1,10 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Shift;
-import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -16,15 +14,6 @@ abstract class ShiftDetailAdapterHelper<ShiftType extends Shift> {
 
     ShiftDetailAdapterHelper(ShiftUtil.Calculator calculator) {
         this.calculator = calculator;
-    }
-
-    void onItemUpdated(@NonNull ShiftType oldShift, @NonNull ShiftType newShift, RecyclerView.Adapter adapter) {
-        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
-            adapter.notifyItemChanged(getRowNumberDate());
-            adapter.notifyItemChanged(getRowNumberStart());
-            adapter.notifyItemChanged(getRowNumberEnd());
-            adapter.notifyItemChanged(getRowNumberShiftType());
-        }
     }
 
     boolean bindViewHolder(@NonNull final ShiftType item, ItemViewHolder holder, int position) {

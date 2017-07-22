@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.data.model.AdditionalShift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
+import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<AdditionalShift> {
@@ -95,8 +96,13 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     @Override
     void onItemUpdated(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
         super.onItemUpdated(oldShift, newShift);
-        shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         payableDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
+        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
+            notifyItemChanged(ROW_NUMBER_DATE);
+            notifyItemChanged(ROW_NUMBER_START);
+            notifyItemChanged(ROW_NUMBER_END);
+            notifyItemChanged(ROW_NUMBER_SHIFT_TYPE);
+        }
     }
 
     @Override
