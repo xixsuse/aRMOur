@@ -2,8 +2,9 @@ package com.skepticalone.mecachecker.dialog;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 
-public interface TitleViewModel<ItemType extends Item> extends BaseViewModel<ItemType> {
+
+public interface TitleViewModel extends BaseViewModel<ExpenseEntity> {
     void saveNewTitle(@NonNull String newTitle);
 }

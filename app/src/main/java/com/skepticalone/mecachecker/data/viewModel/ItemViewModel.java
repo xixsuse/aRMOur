@@ -20,26 +20,25 @@ import com.skepticalone.mecachecker.dialog.IndependentCommentDialogFragment;
 import java.util.List;
 
 
-public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel implements IndependentCommentDialogFragment.ViewModelCallbacks {
+public abstract class ItemViewModel<ItemType extends Item, Expense extends ItemType> extends AndroidViewModel implements IndependentCommentDialogFragment.ViewModelCallbacks {
 
-    final LiveData NO_DATA = new MutableLiveData<>();
     final MutableLiveData<Long> selectedId = new MutableLiveData<>();
-    public final EntityObservable<Entity> lastDeletedItem = new EntityObservable<>();
+    public final EntityObservable<ItemType> lastDeletedItem = new EntityObservable<>();
     public final ErrorMessageObservable errorMessage = new ErrorMessageObservable();
-    public final LiveData<Entity> selectedItem;
+    public final LiveData<ItemType> selectedItem;
     private final LiveData<String> currentComment;
 
     ItemViewModel(@NonNull Application application) {
         super(application);
-        selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
+        selectedItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<ItemType>>() {
             @Override
-            public LiveData<Entity> apply(Long id) {
+            public LiveData<ItemType> apply(Long id) {
                 return id == null ? NO_DATA : getItem(id);
             }
         });
-        currentComment = Transformations.map(selectedItem, new Function<Entity, String>() {
+        currentComment = Transformations.map(selectedItem, new Function<ItemType, String>() {
             @Override
-            public String apply(Entity item) {
+            public String apply(ItemType item) {
                 return item == null ? null : item.getComment();
             }
         });
@@ -47,34 +46,34 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
     }
 
     @NonNull
-    LiveData<Entity> getItem(long id) {
+    LiveData<ItemType> getItem(long id) {
         return getDao().getItem(id);
     }
 //
 //    @NonNull
-//    Function<Long, LiveData<Entity>> createTransformation(LiveData<Entity> noItem) {
-//        return new Function<Long, LiveData<Entity>>() {
+//    Function<Long, LiveData<ItemType>> createTransformation(LiveData<ItemType> noItem) {
+//        return new Function<Long, LiveData<ItemType>>() {
 //            @Override
-//            public LiveData<Entity> apply(Long id) {
-//                return id == null ? NO_DATA : getDao().getItem(id);
+//            public LiveData<ItemType> apply(Long id) {
+//                return id == null ? NO_DATA : getDao().fetchItem(id);
 //            }
 //        };
 //    }
 
     @NonNull
-    abstract ItemDaoContract<Entity> getDao();
+    abstract ItemDaoContract<ItemType> getDao();
     public final void selectItem(long id) {
         selectedId.setValue(id);
     }
     @MainThread
     @NonNull
-    public LiveData<List<Entity>> getItems(){
+    public LiveData<List<ItemType>> getItems(){
         return getDao().getItems();
     }
 //    @MainThread
 //    @NonNull
-//    public final LiveData<Entity> getItem(long id) {
-//        return getDao().getItem(id);
+//    public final LiveData<ItemType> fetchItem(long id) {
+//        return getDao().fetchItem(id);
 //    }
     static void runAsync(Runnable runnable) {
         new Thread(runnable).start();
@@ -92,7 +91,7 @@ public abstract class ItemViewModel<Entity extends Item> extends AndroidViewMode
     }
 
     @MainThread
-    public final void insertItem(@NonNull Entity item) {
+    public final void insertItem(@NonNull ItemType item) {
         runAsync(new InsertItemTask<>(getDao(), item));
     }
     @MainThread

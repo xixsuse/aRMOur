@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.text.InputType;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.ui.SnackCallbacks;
@@ -27,11 +26,6 @@ public final class PaymentDialogFragment extends EditTextDialogFragment {
     public final void onAttach(Context context) {
         super.onAttach(context);
         mCallbacks = (Callbacks) getTargetFragment();
-    }
-
-    @Override
-    final int getInputType() {
-        return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
     }
 
     @Override

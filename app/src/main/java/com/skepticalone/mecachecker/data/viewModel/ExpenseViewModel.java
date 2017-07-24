@@ -10,13 +10,9 @@ import com.skepticalone.mecachecker.data.dao.ExpenseDao;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.util.PaymentData;
-import com.skepticalone.mecachecker.dialog.CommentViewModel;
-import com.skepticalone.mecachecker.dialog.TitleViewModel;
 
-public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity>
-        implements TitleViewModel<Expense>, CommentViewModel<Expense> {
+public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity> {
 
     @NonNull
     private final ExpenseDao dao;

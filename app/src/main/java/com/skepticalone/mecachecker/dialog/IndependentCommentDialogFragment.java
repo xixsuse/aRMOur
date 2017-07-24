@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
 
-public abstract class IndependentCommentDialogFragment<ItemType extends Item> extends IndependentPlainTextDialogFragment<ItemType, CommentViewModel<ItemType>> {
+public abstract class IndependentCommentDialogFragment<ItemType extends Item> extends IndependentPlainTextDialogFragment<ItemType, BaseViewModel<ItemType>> {
 
     @Override
     final int getTitle() {
