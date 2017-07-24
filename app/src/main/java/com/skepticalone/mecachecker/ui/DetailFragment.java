@@ -3,28 +3,25 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v4.app.DialogFragment;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ErrorMessageObserver;
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
-import com.skepticalone.mecachecker.dialog.IndependentCommentDialogFragment;
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
+import com.skepticalone.mecachecker.dialog.ExpenseCommentDialogFragment;
 
-abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<ItemType>, ViewModel>
-        implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks, IndependentCommentDialogFragment.TargetFragmentCallbacks {
+abstract class DetailFragment<Entity extends Item, ViewModel extends BaseViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
+        implements ItemDetailAdapter.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
 
-    private final ErrorMessageObserver errorMessageObserver = new ErrorMessageObserver(){
-        @Override
-        public void update(@StringRes int errorMessage) {
-            snackbarCallbacks.showSnackbar(errorMessage);
-        }
-    };
+//    private final ErrorMessageObserver errorMessageObserver = new ErrorMessageObserver(){
+//        @Override
+//        public void update(@StringRes int errorMessage) {
+//            snackbarCallbacks.showSnackbar(errorMessage);
+//        }
+//    };
 
     @Override
     final int getLayout() {
@@ -34,7 +31,7 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().selectedItem.observe(this, new Observer<Entity>() {
+        getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
                     @Override
                     public void onChanged(@Nullable Entity entity) {
                         if (entity != null) getAdapter().setItem(entity);
@@ -43,33 +40,24 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
         );
     }
 
-    final void showDialogFragment(AppCompatDialogFragment dialogFragment) {
-        dialogFragment.setTargetFragment(this, 0);
+    final void showDialogFragment(DialogFragment dialogFragment) {
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     @Override
-    public void changeComment(long id, @Nullable String currentComment) {
-        new IndependentCommentDialogFragment(){
-
-        }
-        showDialogFragment(CommentDialogFragment.newInstance(id, currentComment));
+    public void changeComment() {
+        showDialogFragment(new ExpenseCommentDialogFragment());
     }
-
-    @Override
-    public final void setComment(long itemId, @Nullable String trimmedComment) {
-        getViewModel().setComment(itemId, trimmedComment);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getViewModel().errorMessage.addObserver(errorMessageObserver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getViewModel().errorMessage.deleteObserver(errorMessageObserver);
-    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        getViewModel().errorMessage.addObserver(errorMessageObserver);
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        getViewModel().errorMessage.deleteObserver(errorMessageObserver);
+//    }
 }

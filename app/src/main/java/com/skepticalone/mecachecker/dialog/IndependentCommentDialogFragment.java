@@ -5,12 +5,13 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
 
 public abstract class IndependentCommentDialogFragment<Entity extends Item> extends IndependentPlainTextDialogFragment<Entity, BaseViewModel<Entity>> {
 
     @Override
     final int getTitle() {
-        return R.string.title;
+        return R.string.comment;
     }
 
     @Override
@@ -18,10 +19,10 @@ public abstract class IndependentCommentDialogFragment<Entity extends Item> exte
         return super.getHint();
     }
 
+    @Nullable
     @Override
-    final void onCurrentItemChanged(@NonNull Entity item) {
-        String comment = item.getComment();
-        if (comment != null) setText(comment);
+    final String getTextForDisplay(@NonNull Entity item) {
+        return item.getComment();
     }
 
     @Override

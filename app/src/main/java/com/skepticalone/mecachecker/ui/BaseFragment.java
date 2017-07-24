@@ -13,10 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-
-
-abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel extends ItemViewModel> extends LifecycleFragment {
+abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> extends LifecycleFragment {
 
     SnackCallbacks snackbarCallbacks;
     private Adapter adapter;

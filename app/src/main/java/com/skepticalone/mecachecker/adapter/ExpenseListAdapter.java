@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.Expense;
+import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
+public final class ExpenseListAdapter extends ItemListAdapter<ExpenseEntity> {
 
     public ExpenseListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
@@ -22,14 +22,14 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull Expense expense1, @NonNull Expense expense2) {
+    boolean areContentsTheSame(@NonNull ExpenseEntity expense1, @NonNull ExpenseEntity expense2) {
         return super.areContentsTheSame(expense1, expense2) &&
                 Comparators.equalPaymentData(expense1.getPaymentData(), expense2.getPaymentData()) &&
                 expense1.getTitle().equals(expense2.getTitle());
     }
 
     @Override
-    void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder) {
+    void bindViewHolder(@NonNull ExpenseEntity expense, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
         holder.setText(expense.getTitle(), holder.getText(R.string.currency_format, expense.getPaymentData().getPayment()), expense.getComment());
     }

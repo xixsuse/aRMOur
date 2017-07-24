@@ -2,6 +2,8 @@ package com.skepticalone.mecachecker.dialog;
 
 import android.text.InputType;
 
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
+
 abstract class IndependentPlainTextDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentEditTextDialogFragment<Entity, ViewModel> {
 
     @Override

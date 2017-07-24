@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
 
 abstract class IndependentEditTextDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentDialogFragment<Entity, ViewModel> implements AlertDialog.OnClickListener {
 
@@ -40,6 +41,17 @@ abstract class IndependentEditTextDialogFragment<Entity, ViewModel extends BaseV
         editText.setHint(getHint());
     }
 
+    @Override
+    final void onCurrentItemChanged(@NonNull Entity item) {
+        String textForDisplay = getTextForDisplay(item);
+        if (textForDisplay != null) {
+            editText.setText(textForDisplay);
+        }
+    }
+
+    @Nullable
+    abstract String getTextForDisplay(@NonNull Entity item);
+
     @NonNull
     @Override
     public final Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -59,9 +71,9 @@ abstract class IndependentEditTextDialogFragment<Entity, ViewModel extends BaseV
         }
     }
 
-    final void setText(@NonNull CharSequence text) {
-        editText.setText(text);
-    }
+//    final void setText(@NonNull CharSequence text) {
+//        editText.setText(text);
+//    }
 
     @StringRes int getHint() {
         return getTitle();

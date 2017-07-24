@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.Expense;
+import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
+public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,
@@ -48,7 +48,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    int getRowCount(@NonNull Expense item) {
+    int getRowCount(@NonNull ExpenseEntity item) {
         return ROW_COUNT;
     }
 
@@ -60,7 +60,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
+    void onItemUpdated(@NonNull ExpenseEntity oldExpense, @NonNull ExpenseEntity newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
         payableDetailAdapterHelper.onItemUpdated(oldExpense, newExpense, this);
         if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
@@ -69,12 +69,12 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    boolean bindViewHolder(@NonNull final Expense expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull ExpenseEntity expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.changeTitle(expense.getId(), expense.getTitle());
+                    callbacks.changeTitle();
                 }
             });
             holder.setText(holder.getText(R.string.title), expense.getTitle());
@@ -83,7 +83,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailAdapterHelper.Callbacks {
-        void changeTitle(long id, @NonNull String currentTitle);
+        void changeTitle();
     }
 
 }

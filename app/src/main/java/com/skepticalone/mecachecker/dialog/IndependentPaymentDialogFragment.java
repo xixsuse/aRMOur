@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.InputType;
 
 import com.skepticalone.mecachecker.data.model.PayableItem;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModel;
 
 import java.math.BigDecimal;
 
@@ -20,9 +21,10 @@ public abstract class IndependentPaymentDialogFragment<Entity extends PayableIte
         return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
     }
 
+    @Nullable
     @Override
-    final void onCurrentItemChanged(@NonNull Entity item) {
-        setText(item.getPaymentData().getPayment().toPlainString());
+    final String getTextForDisplay(@NonNull Entity item) {
+        return item.getPaymentData().getPayment().toPlainString();
     }
 
     @Override

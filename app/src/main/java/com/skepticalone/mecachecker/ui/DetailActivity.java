@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
-import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
+import com.skepticalone.mecachecker.data.viewModel.AbstractViewModel;
+import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -28,23 +25,23 @@ public final class DetailActivity extends CoordinatorActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int title;
-        Class<? extends ItemViewModel> c;
+        Class<? extends AbstractViewModel> c;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
-            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
-                title = R.string.rostered_shift;
-                c = RosteredShiftViewModel.class;
-                break;
-            case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
-                title = R.string.additional_shift;
-                c = AdditionalShiftViewModel.class;
-                break;
-            case Constants.ITEM_TYPE_CROSS_COVER:
-                title = R.string.cross_cover;
-                c = CrossCoverViewModel.class;
-                break;
+//            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
+//                title = R.string.rostered_shift;
+//                c = RosteredShiftViewModel.class;
+//                break;
+//            case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
+//                title = R.string.additional_shift;
+//                c = AdditionalShiftViewModel.class;
+//                break;
+//            case Constants.ITEM_TYPE_CROSS_COVER:
+//                title = R.string.cross_cover;
+//                c = CrossCoverViewModel.class;
+//                break;
             case Constants.ITEM_TYPE_EXPENSE:
                 title = R.string.expense;
-                c = ExpenseViewModel.class;
+                c = NewExpenseViewModel.class;
                 break;
             default:
                 throw new IllegalStateException();
@@ -55,15 +52,15 @@ public final class DetailActivity extends CoordinatorActivity {
         if (savedInstanceState == null) {
             DetailFragment detailFragment;
             switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
-                case Constants.ITEM_TYPE_ROSTERED_SHIFT:
-                    detailFragment = new RosteredShiftDetailFragment();
-                    break;
-                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
-                    detailFragment = new AdditionalShiftDetailFragment();
-                    break;
-                case Constants.ITEM_TYPE_CROSS_COVER:
-                    detailFragment = new CrossCoverDetailFragment();
-                    break;
+//                case Constants.ITEM_TYPE_ROSTERED_SHIFT:
+//                    detailFragment = new RosteredShiftDetailFragment();
+//                    break;
+//                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
+//                    detailFragment = new AdditionalShiftDetailFragment();
+//                    break;
+//                case Constants.ITEM_TYPE_CROSS_COVER:
+//                    detailFragment = new CrossCoverDetailFragment();
+//                    break;
                 case Constants.ITEM_TYPE_EXPENSE:
                     detailFragment = new ExpenseDetailFragment();
                     break;

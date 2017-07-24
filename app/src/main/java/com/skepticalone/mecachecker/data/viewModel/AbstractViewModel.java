@@ -12,10 +12,9 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.dialog.BaseViewModel;
 
 
-abstract class NewBaseViewModel<Entity extends Item, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel
+public abstract class AbstractViewModel<Entity extends Item, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel
         implements BaseViewModel<Entity> {
 
     private final Dao dao;
@@ -23,7 +22,7 @@ abstract class NewBaseViewModel<Entity extends Item, Dao extends ItemDaoContract
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final LiveData NO_DATA = new MutableLiveData<>();
 
-    NewBaseViewModel(Application application) {
+    AbstractViewModel(Application application) {
         super(application);
         dao = onCreateDao(AppDatabase.getInstance(application));
         currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
@@ -42,8 +41,8 @@ abstract class NewBaseViewModel<Entity extends Item, Dao extends ItemDaoContract
         return dao.getItem(id);
     }
 
-    public final void selectItem(Entity item) {
-        selectedId.setValue(item.getId());
+    public final void selectItem(long id) {
+        selectedId.setValue(id);
     }
 
     @NonNull

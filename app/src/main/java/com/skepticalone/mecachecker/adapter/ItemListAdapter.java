@@ -13,11 +13,11 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
+public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
 
     private final Callbacks mCallbacks;
     @Nullable
-    private List<? extends ItemType> mItems;
+    private List<? extends Entity> mItems;
 
     private long mSelectedId = -1;
 
@@ -56,7 +56,7 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
         return mItems.get(position).getId();
     }
 
-    public final void setItems(final List<? extends ItemType> items) {
+    public final void setItems(final List<? extends Entity> items) {
         if (mItems == null) {
             notifyItemRangeInserted(0, items.size());
         } else {
@@ -98,27 +98,27 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
                 mCallbacks.onClick(viewHolder.getItemId());
             }
         });
-        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mCallbacks.onLongClick(viewHolder.getItemId());
-                return true;
-            }
-        });
+//        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                mCallbacks.onLongClick(viewHolder.getItemId());
+//                return true;
+//            }
+//        });
         return viewHolder;
     }
 
     @CallSuper
-    boolean areContentsTheSame(@NonNull ItemType item1, @NonNull ItemType item2) {
+    boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2) {
         return Comparators.equalStrings(item1.getComment(), item2.getComment());
     }
 
-    abstract void bindViewHolder(@NonNull ItemType item, ItemViewHolder holder);
+    abstract void bindViewHolder(@NonNull Entity item, ItemViewHolder holder);
 
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
-        ItemType item = mItems.get(position);
+        Entity item = mItems.get(position);
         holder.itemView.setSelected(item.getId() == mSelectedId);
         bindViewHolder(item, holder);
     }
@@ -130,6 +130,6 @@ public abstract class ItemListAdapter<ItemType extends Item> extends RecyclerVie
 
     public interface Callbacks {
         void onClick(long itemId);
-        void onLongClick(long itemId);
+//        void onLongClick(long itemId);
     }
 }

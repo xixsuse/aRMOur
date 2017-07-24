@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
+
 abstract class IndependentDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends AppCompatDialogFragment implements LifecycleRegistryOwner {
 //
 //    private static final String VIEW_MODEL_CLASS = "VIEW_MODEL_CLASS";

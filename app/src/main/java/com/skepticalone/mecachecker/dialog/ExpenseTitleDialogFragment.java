@@ -7,8 +7,9 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.TitleViewModel;
 
-public final class ExpenseTitleDialogFragment extends IndependentPlainTextDialogFragment<ExpenseEntity, TitleViewModel<ExpenseEntity>> {
+public final class ExpenseTitleDialogFragment extends IndependentPlainTextDialogFragment<ExpenseEntity, TitleViewModel> {
 
     @Override
     int getTitle() {
@@ -22,13 +23,13 @@ public final class ExpenseTitleDialogFragment extends IndependentPlainTextDialog
 
     @NonNull
     @Override
-    TitleViewModel<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+    TitleViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
         return viewModelProvider.get(NewExpenseViewModel.class);
     }
 
     @Override
-    void onCurrentItemChanged(@NonNull ExpenseEntity item) {
-        setText(item.getTitle());
+    String getTextForDisplay(@NonNull ExpenseEntity item) {
+        return item.getTitle();
     }
 
     @Override

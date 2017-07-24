@@ -2,20 +2,18 @@ package com.skepticalone.mecachecker.dialog;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.widget.DatePicker;
+
+import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
 
 import org.joda.time.LocalDate;
 
-public final class IndependentDatePickerDialogFragment extends LifecycleDialogFragment implements DatePickerDialog.OnDateSetListener {
+public abstract class IndependentDatePickerDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentDialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
-    private ViewModelCallbacks viewModel;
+//    private ViewModelCallbacks viewModel;
 
     @Override
     @NonNull
@@ -30,34 +28,29 @@ public final class IndependentDatePickerDialogFragment extends LifecycleDialogFr
         return datePickerDialog;
     }
 
+    @NonNull
+    abstract LocalDate getDateForDisplay(@NonNull Entity item);
+
     @Override
-    public final void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        viewModel = ((TargetFragmentCallbacks) getTargetFragment()).getViewModel(getActivity());
-        if (savedInstanceState == null) {
-            viewModel.getCurrentDate().observe(this, new Observer<LocalDate>() {
-                @Override
-                public void onChanged(@Nullable LocalDate currentDate) {
-                    if (currentDate != null) {
-                        datePickerDialog.updateDate(currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth());
-                    }
-                }
-            });
-        }
+    final void onCurrentItemChanged(@NonNull Entity item) {
+        LocalDate date = getDateForDisplay(item);
+        datePickerDialog.getDatePicker().updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
     }
 
     @Override
     public final void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        viewModel.saveNewDate(new LocalDate(year, month + 1, dayOfMonth));
+        onDateSet(new LocalDate(year, month + 1, dayOfMonth));
     }
 
-    public interface ViewModelCallbacks {
-        @NonNull LiveData<LocalDate> getCurrentDate();
-        void saveNewDate(@NonNull LocalDate newDate);
-    }
-
-    public interface TargetFragmentCallbacks {
-        @NonNull ViewModelCallbacks getViewModel(@NonNull FragmentActivity activity);
-    }
+    abstract void onDateSet(@NonNull LocalDate date);
+//
+//    public interface ViewModelCallbacks {
+//        @NonNull LiveData<LocalDate> getCurrentDate();
+//        void saveNewDate(@NonNull LocalDate newDate);
+//    }
+//
+//    public interface TargetFragmentCallbacks {
+//        @NonNull ViewModelCallbacks getViewModel(@NonNull FragmentActivity activity);
+//    }
 
 }

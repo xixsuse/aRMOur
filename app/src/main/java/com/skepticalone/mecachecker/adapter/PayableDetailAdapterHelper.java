@@ -12,8 +12,6 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
-
 abstract class PayableDetailAdapterHelper {
 
     private final Callbacks callbacks;
@@ -32,12 +30,12 @@ abstract class PayableDetailAdapterHelper {
         }
     }
 
-    boolean bindViewHolder(@NonNull final PayableItem item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull PayableItem item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.onPaymentClicked(item.getId(), item.getPaymentData().getPayment());
+                    callbacks.changePayment();
                 }
             });
             holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()));
@@ -46,7 +44,7 @@ abstract class PayableDetailAdapterHelper {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean claimed) {
-                    callbacks.onClaimedToggled(item.getId(), claimed);
+                    callbacks.setClaimed(claimed);
                 }
             } : null;
             DateTime claimed = item.getPaymentData().getClaimed();
@@ -62,7 +60,7 @@ abstract class PayableDetailAdapterHelper {
             CompoundButton.OnCheckedChangeListener onPaidCheckedChangeListener = item.getPaymentData().getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean paid) {
-                    callbacks.onPaidToggled(item.getId(), paid);
+                    callbacks.setPaid(paid);
                 }
             };
             DateTime paid = item.getPaymentData().getPaid();
@@ -82,8 +80,8 @@ abstract class PayableDetailAdapterHelper {
     abstract int getRowNumberPaid();
 
     public interface Callbacks {
-        void onPaymentClicked(long id, @NonNull BigDecimal payment);
-        void onClaimedToggled(long id, boolean claimed);
-        void onPaidToggled(long id, boolean paid);
+        void changePayment();
+        void setClaimed(boolean claimed);
+        void setPaid(boolean paid);
     }
 }
