@@ -8,7 +8,7 @@ import com.skepticalone.mecachecker.data.model.PayableItem;
 
 import java.math.BigDecimal;
 
-public abstract class IndependentPaymentDialogFragment<ItemType extends PayableItem> extends IndependentEditTextDialogFragment<ItemType, PayableViewModel> {
+public abstract class IndependentPaymentDialogFragment<Entity extends PayableItem, ViewModel extends PayableViewModel<Entity>> extends IndependentEditTextDialogFragment<Entity, ViewModel> {
 
     @Override
     final int getHint() {
@@ -21,7 +21,7 @@ public abstract class IndependentPaymentDialogFragment<ItemType extends PayableI
     }
 
     @Override
-    final void onCurrentItemChanged(@NonNull ItemType item) {
+    final void onCurrentItemChanged(@NonNull Entity item) {
         setText(item.getPaymentData().getPayment().toPlainString());
     }
 
@@ -39,5 +39,7 @@ public abstract class IndependentPaymentDialogFragment<ItemType extends PayableI
             }
         }
     }
+
+//    abstract void saveNewPayment(@NonNull BigDecimal payment);
 
 }

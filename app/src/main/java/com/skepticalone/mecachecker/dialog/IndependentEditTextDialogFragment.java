@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 
-abstract class IndependentEditTextDialogFragment<ItemType, ViewModel extends BaseViewModel<ItemType>> extends IndependentDialogFragment<ItemType, ViewModel> implements AlertDialog.OnClickListener {
+abstract class IndependentEditTextDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentDialogFragment<Entity, ViewModel> implements AlertDialog.OnClickListener {
 
     private EditText editText;
 

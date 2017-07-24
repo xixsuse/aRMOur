@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 
-abstract class IndependentDialogFragment<ItemType, ViewModel extends BaseViewModel<ItemType>> extends AppCompatDialogFragment implements LifecycleRegistryOwner {
+abstract class IndependentDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends AppCompatDialogFragment implements LifecycleRegistryOwner {
 //
 //    private static final String VIEW_MODEL_CLASS = "VIEW_MODEL_CLASS";
 //
@@ -33,7 +33,7 @@ abstract class IndependentDialogFragment<ItemType, ViewModel extends BaseViewMod
 //        return (ViewModel) ViewModelProviders.of(activity).get(viewModelClass);
 //    }
 
-    abstract void onCurrentItemChanged(@NonNull ItemType item);
+    abstract void onCurrentItemChanged(@NonNull Entity item);
 
     @Override
     public final LifecycleRegistry getLifecycle() {
@@ -45,9 +45,9 @@ abstract class IndependentDialogFragment<ItemType, ViewModel extends BaseViewMod
         super.onActivityCreated(savedInstanceState);
         viewModel = onCreateViewModel(ViewModelProviders.of(getActivity()));
         if (savedInstanceState == null) {
-            viewModel.getCurrentItem().observe(this, new Observer<ItemType>() {
+            viewModel.getCurrentItem().observe(this, new Observer<Entity>() {
                 @Override
-                public void onChanged(@Nullable ItemType item) {
+                public void onChanged(@Nullable Entity item) {
                     if (item != null) onCurrentItemChanged(item);
                 }
             });

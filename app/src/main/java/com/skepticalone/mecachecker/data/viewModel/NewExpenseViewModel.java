@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 
 public final class NewExpenseViewModel extends NewBaseViewModel<ExpenseEntity, ExpenseDao>
-        implements TitleViewModel, PayableViewModel<ExpenseEntity> {
+        implements TitleViewModel<ExpenseEntity>, PayableViewModel<ExpenseEntity> {
 
     public NewExpenseViewModel(Application application) {
         super(application);

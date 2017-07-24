@@ -2,7 +2,7 @@ package com.skepticalone.mecachecker.dialog;
 
 import android.text.InputType;
 
-abstract class IndependentPlainTextDialogFragment<ItemType, ViewModel extends BaseViewModel<ItemType>> extends IndependentEditTextDialogFragment<ItemType, ViewModel> {
+abstract class IndependentPlainTextDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentEditTextDialogFragment<Entity, ViewModel> {
 
     @Override
     final int getInputType() {
