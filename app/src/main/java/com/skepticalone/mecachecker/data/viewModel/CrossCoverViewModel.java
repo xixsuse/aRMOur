@@ -20,7 +20,9 @@ import com.skepticalone.mecachecker.dialog.IndependentDatePickerDialogFragment;
 import org.joda.time.LocalDate;
 
 
-public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCoverEntity> implements IndependentDatePickerDialogFragment.ViewModelCallbacks {
+public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCoverEntity>
+        implements IndependentDatePickerDialogFragment.ViewModelCallbacks
+{
 
     @NonNull
     private final CrossCoverDao dao;
@@ -36,10 +38,10 @@ public final class CrossCoverViewModel extends SingleAddItemViewModel<CrossCover
         payableModel = new PayableModel(dao);
         newCrossCoverPaymentKey = application.getString(R.string.key_cross_cover_payment);
         defaultNewCrossCoverPayment = application.getResources().getInteger(R.integer.default_cross_cover_payment);
-        currentDate = Transformations.switchMap(selectedId, new Function<Long, LiveData<LocalDate>>() {
+        currentDate = Transformations.map(selectedItem, new Function<CrossCoverEntity, LocalDate>() {
             @Override
-            public LiveData<LocalDate> apply(Long input) {
-                return input == null ? NO_DATA : dao.getDate(input);
+            public LocalDate apply(CrossCoverEntity item) {
+                return item == null ? null : item.getDate();
             }
         });
     }

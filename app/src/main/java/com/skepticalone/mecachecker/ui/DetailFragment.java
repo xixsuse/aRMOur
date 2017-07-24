@@ -12,9 +12,10 @@ import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ErrorMessageObserver;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 import com.skepticalone.mecachecker.dialog.CommentDialogFragment;
+import com.skepticalone.mecachecker.dialog.IndependentCommentDialogFragment;
 
 abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, ViewModel extends ItemViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<ItemType>, ViewModel>
-        implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks {
+        implements ItemDetailAdapter.Callbacks, CommentDialogFragment.Callbacks, IndependentCommentDialogFragment.TargetFragmentCallbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
 
@@ -48,7 +49,10 @@ abstract class DetailFragment<ItemType extends Item, Entity extends ItemType, Vi
     }
 
     @Override
-    public final void changeComment(long id, @Nullable String currentComment) {
+    public void changeComment(long id, @Nullable String currentComment) {
+        new IndependentCommentDialogFragment(){
+
+        }
         showDialogFragment(CommentDialogFragment.newInstance(id, currentComment));
     }
 

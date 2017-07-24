@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
 import com.skepticalone.mecachecker.R;
@@ -12,6 +13,7 @@ import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.model.CrossCover;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
+import com.skepticalone.mecachecker.dialog.IndependentCommentDialogFragment;
 import com.skepticalone.mecachecker.dialog.IndependentDatePickerDialogFragment;
 import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 
@@ -23,7 +25,7 @@ public final class CrossCoverDetailFragment
 
     @NonNull
     @Override
-    public IndependentDatePickerDialogFragment.ViewModelCallbacks getViewModel(@NonNull FragmentActivity activity) {
+    public CrossCoverViewModel getViewModel(@NonNull FragmentActivity activity) {
         return ViewModelProviders.of(activity).get(CrossCoverViewModel.class);
     }
 
@@ -42,6 +44,11 @@ public final class CrossCoverDetailFragment
     @Override
     public void changeDate() {
         showDialogFragment(new IndependentDatePickerDialogFragment());
+    }
+
+    @Override
+    public void changeComment(long id, @Nullable String currentComment) {
+        showDialogFragment(new IndependentCommentDialogFragment());
     }
 
     @Override

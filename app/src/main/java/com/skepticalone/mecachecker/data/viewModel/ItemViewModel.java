@@ -14,17 +14,20 @@ import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
+import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.dialog.IndependentCommentDialogFragment;
 
 import java.util.List;
 
 
-public abstract class ItemViewModel<Entity> extends AndroidViewModel {
+public abstract class ItemViewModel<Entity extends Item> extends AndroidViewModel implements IndependentCommentDialogFragment.ViewModelCallbacks {
 
     final LiveData NO_DATA = new MutableLiveData<>();
     final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     public final EntityObservable<Entity> lastDeletedItem = new EntityObservable<>();
     public final ErrorMessageObservable errorMessage = new ErrorMessageObservable();
     public final LiveData<Entity> selectedItem;
+    private final LiveData<String> currentComment;
 
     ItemViewModel(@NonNull Application application) {
         super(application);
@@ -34,6 +37,13 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
                 return id == null ? NO_DATA : getItem(id);
             }
         });
+        currentComment = Transformations.map(selectedItem, new Function<Entity, String>() {
+            @Override
+            public String apply(Entity item) {
+                return item == null ? null : item.getComment();
+            }
+        });
+
     }
 
     @NonNull
@@ -69,6 +79,18 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
     static void runAsync(Runnable runnable) {
         new Thread(runnable).start();
     }
+
+    @NonNull
+    @Override
+    public LiveData<String> getCurrentComment() {
+        return currentComment;
+    }
+
+    @Override
+    public void saveNewComment(@Nullable String newComment) {
+        runAsync(new SetCommentTask(dao, selectedId.getValue(), newComment));
+    }
+
     @MainThread
     public final void insertItem(@NonNull Entity item) {
         runAsync(new InsertItemTask<>(getDao(), item));

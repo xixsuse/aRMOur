@@ -10,9 +10,13 @@ import com.skepticalone.mecachecker.data.dao.ExpenseDao;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.util.PaymentData;
+import com.skepticalone.mecachecker.dialog.CommentViewModel;
+import com.skepticalone.mecachecker.dialog.TitleViewModel;
 
-public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity> {
+public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity>
+        implements TitleViewModel<Expense>, CommentViewModel<Expense> {
 
     @NonNull
     private final ExpenseDao dao;
@@ -25,6 +29,7 @@ public final class ExpenseViewModel extends SingleAddItemViewModel<ExpenseEntity
         dao = AppDatabase.getInstance(application).expenseDao();
         payableModel = new PayableModel(dao);
         expenseTitle = application.getString(R.string.new_expense_title);
+
     }
 
     @NonNull

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,20 +18,15 @@ public final class IndependentDatePickerDialogFragment extends LifecycleDialogFr
     private ViewModelCallbacks viewModel;
 
     @Override
-    public final void onAttach(Context context) {
-        super.onAttach(context);
+    @NonNull
+    public final Dialog onCreateDialog(Bundle savedInstanceState) {
         LocalDate today = LocalDate.now();
         datePickerDialog = new DatePickerDialog(
-                context, this,
+                getActivity(), this,
                 today.getYear(),
                 today.getMonthOfYear() - 1,
                 today.getDayOfMonth()
         );
-    }
-
-    @Override
-    @NonNull
-    public final Dialog onCreateDialog(Bundle savedInstanceState) {
         return datePickerDialog;
     }
 
