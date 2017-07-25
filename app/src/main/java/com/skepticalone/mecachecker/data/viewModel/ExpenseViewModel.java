@@ -16,10 +16,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
-public final class NewExpenseViewModel extends AbstractViewModel<ExpenseEntity, ExpenseDao>
-        implements TitleViewModel, PayableViewModel<ExpenseEntity> {
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, ExpenseDao>
+        implements TitleViewModelContract, PayableViewModelContract<ExpenseEntity> {
 
-    public NewExpenseViewModel(Application application) {
+    public ExpenseViewModel(Application application) {
         super(application);
     }
 

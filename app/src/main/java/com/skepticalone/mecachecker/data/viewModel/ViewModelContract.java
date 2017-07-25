@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public interface BaseViewModel<Entity> {
+public interface ViewModelContract<Entity> {
     void selectItem(long id);
 //    void deleteItem(long id);
     @NonNull

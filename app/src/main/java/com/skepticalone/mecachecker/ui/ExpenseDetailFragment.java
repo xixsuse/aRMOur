@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.dialog.ExpensePaymentDialogFragment;
 import com.skepticalone.mecachecker.dialog.ExpenseTitleDialogFragment;
 
 public final class ExpenseDetailFragment
-        extends DetailFragment<ExpenseEntity, NewExpenseViewModel>
+        extends DetailFragment<ExpenseEntity, ExpenseViewModel>
         implements ExpenseDetailAdapter.Callbacks {
 
     @NonNull
@@ -23,8 +23,8 @@ public final class ExpenseDetailFragment
 
     @NonNull
     @Override
-    NewExpenseViewModel createViewModel(ViewModelProvider provider) {
-        return provider.get(NewExpenseViewModel.class);
+    ExpenseViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(ExpenseViewModel.class);
     }
 
     @Override

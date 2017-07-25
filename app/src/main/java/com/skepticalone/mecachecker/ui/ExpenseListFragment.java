@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 
-public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEntity, NewExpenseViewModel> {
+public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEntity, ExpenseViewModel> {
 
     @Override
     int getItemType() {
@@ -30,8 +30,8 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
 
     @NonNull
     @Override
-    NewExpenseViewModel createViewModel(ViewModelProvider provider) {
-        return provider.get(NewExpenseViewModel.class);
+    ExpenseViewModel createViewModel(ViewModelProvider provider) {
+        return provider.get(ExpenseViewModel.class);
     }
 
 }

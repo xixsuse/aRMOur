@@ -14,15 +14,15 @@ import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.model.Item;
 
 
-public abstract class AbstractViewModel<Entity extends Item, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel
-        implements BaseViewModel<Entity> {
+public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel
+        implements ViewModelContract<Entity> {
 
     private final Dao dao;
     private final LiveData<Entity> currentItem;
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final LiveData NO_DATA = new MutableLiveData<>();
 
-    AbstractViewModel(Application application) {
+    ItemViewModel(Application application) {
         super(application);
         dao = onCreateDao(AppDatabase.getInstance(application));
         currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {

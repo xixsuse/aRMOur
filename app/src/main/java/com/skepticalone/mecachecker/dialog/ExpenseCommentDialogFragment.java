@@ -4,15 +4,15 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
-import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-public final class ExpenseCommentDialogFragment extends IndependentCommentDialogFragment<ExpenseEntity> {
+public final class ExpenseCommentDialogFragment extends CommentDialogFragment<ExpenseEntity> {
 
     @NonNull
     @Override
-    BaseViewModel<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
-        return viewModelProvider.get(NewExpenseViewModel.class);
+    ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        return viewModelProvider.get(ExpenseViewModel.class);
     }
 
 }

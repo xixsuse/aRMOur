@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.viewModel.AbstractViewModel;
-import com.skepticalone.mecachecker.data.viewModel.NewExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -25,7 +25,7 @@ public final class DetailActivity extends CoordinatorActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int title;
-        Class<? extends AbstractViewModel> c;
+        Class<? extends ItemViewModel> c;
         switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
 //            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
 //                title = R.string.rostered_shift;
@@ -41,7 +41,7 @@ public final class DetailActivity extends CoordinatorActivity {
 //                break;
             case Constants.ITEM_TYPE_EXPENSE:
                 title = R.string.expense;
-                c = NewExpenseViewModel.class;
+                c = ExpenseViewModel.class;
                 break;
             default:
                 throw new IllegalStateException();

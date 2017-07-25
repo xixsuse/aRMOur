@@ -5,11 +5,11 @@ import android.support.annotation.Nullable;
 import android.text.InputType;
 
 import com.skepticalone.mecachecker.data.model.PayableItem;
-import com.skepticalone.mecachecker.data.viewModel.PayableViewModel;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
 
 import java.math.BigDecimal;
 
-public abstract class IndependentPaymentDialogFragment<Entity extends PayableItem, ViewModel extends PayableViewModel<Entity>> extends IndependentEditTextDialogFragment<Entity, ViewModel> {
+public abstract class PaymentDialogFragment<Entity extends PayableItem, ViewModel extends PayableViewModelContract<Entity>> extends EditTextDialogFragment<Entity, ViewModel> {
 
     @Override
     final int getHint() {

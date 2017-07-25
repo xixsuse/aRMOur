@@ -8,10 +8,10 @@ import android.support.v4.app.DialogFragment;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 import com.skepticalone.mecachecker.dialog.ExpenseCommentDialogFragment;
 
-abstract class DetailFragment<Entity extends Item, ViewModel extends BaseViewModel<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
+abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
         implements ItemDetailAdapter.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";

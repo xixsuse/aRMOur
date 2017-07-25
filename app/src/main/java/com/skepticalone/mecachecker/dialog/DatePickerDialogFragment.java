@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.DatePicker;
 
-import com.skepticalone.mecachecker.data.viewModel.BaseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import org.joda.time.LocalDate;
 
-public abstract class IndependentDatePickerDialogFragment<Entity, ViewModel extends BaseViewModel<Entity>> extends IndependentDialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
+public abstract class DatePickerDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
 //    private ViewModelCallbacks viewModel;

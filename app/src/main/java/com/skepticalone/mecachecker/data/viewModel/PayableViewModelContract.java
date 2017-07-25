@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
 
-public interface PayableViewModel<Entity> extends BaseViewModel<Entity> {
+public interface PayableViewModelContract<Entity> extends ViewModelContract<Entity> {
 
     void saveNewPayment(@NonNull BigDecimal payment);
     void setClaimed(boolean claimed);
