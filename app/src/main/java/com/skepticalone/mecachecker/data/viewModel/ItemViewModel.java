@@ -12,6 +12,9 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.util.DeletedItem;
+
+import java.util.List;
 
 
 public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoContract<Entity>> extends AndroidViewModel
@@ -21,6 +24,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     private final LiveData<Entity> currentItem;
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final LiveData NO_DATA = new MutableLiveData<>();
+    private final DeletedItem.Observable<Entity> deletedItem = new DeletedItem.Observable<>();
 
     ItemViewModel(Application application) {
         super(application);
@@ -46,10 +50,27 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @NonNull
+    @Override
+    public DeletedItem.Observable<Entity> getDeletedItem() {
+        return deletedItem;
+    }
+
+    @NonNull
     abstract Dao onCreateDao(@NonNull AppDatabase database);
 
     final Dao getDao() {
         return dao;
+    }
+
+    @Override
+    public final void insertItem(@NonNull Entity item) {
+        dao.insertItemSync(item);
+    }
+
+    @NonNull
+    @Override
+    public final LiveData<List<Entity>> getItems() {
+        return dao.getItems();
     }
 
     @NonNull
@@ -59,10 +80,19 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @Override
+    public final void deleteItem(long id) {
+        Entity item = dao.getItemSync(id);
+        if (item != null && dao.deleteItemSync(item) == 1) {
+            deletedItem.setItem(item);
+        }
+    }
+
+    @Override
     public final void saveNewComment(@Nullable String newComment) {
         Entity item = currentItem.getValue();
         if (item != null) {
             dao.setCommentSync(item.getId(), newComment);
         }
     }
+
 }

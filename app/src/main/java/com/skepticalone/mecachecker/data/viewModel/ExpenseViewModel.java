@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
@@ -13,7 +12,6 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 
 public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, ExpenseDao>
@@ -27,12 +25,6 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
     @Override
     ExpenseDao onCreateDao(@NonNull AppDatabase database) {
         return database.expenseDao();
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<ExpenseEntity>> getItems() {
-        return getDao().getItems();
     }
 
     @Override

@@ -98,13 +98,13 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
                 mCallbacks.onClick(viewHolder.getItemId());
             }
         });
-//        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                mCallbacks.onLongClick(viewHolder.getItemId());
-//                return true;
-//            }
-//        });
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mCallbacks.onLongClick(viewHolder.getItemId());
+                return true;
+            }
+        });
         return viewHolder;
     }
 
@@ -130,6 +130,6 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     public interface Callbacks {
         void onClick(long itemId);
-//        void onLongClick(long itemId);
+        void onLongClick(long itemId);
     }
 }

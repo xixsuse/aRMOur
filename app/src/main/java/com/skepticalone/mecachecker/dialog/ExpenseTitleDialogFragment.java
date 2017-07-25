@@ -35,7 +35,7 @@ public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<Ex
     @Override
     void saveText(@Nullable String title) {
         if (title == null) {
-            // TODO: 24/07/17
+            showSnackbar(R.string.value_required);
         } else {
             getViewModel().saveNewTitle(title);
         }

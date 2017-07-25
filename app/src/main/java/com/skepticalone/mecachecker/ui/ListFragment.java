@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -16,6 +18,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.util.DeletedItem;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import java.util.List;
@@ -24,20 +27,20 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     final static String IS_TWO_PANE = "IS_TWO_PANE";
-    private Callbacks mCallbacks;
-//    private final EntityObserver<Entity> itemDeletedObserver = new EntityObserver<Entity>(){
-//        @Override
-//        public void update(@Nullable final Entity deletedItem) {
-//            if (deletedItem != null) {
-//                snackbarCallbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        getViewModel().insertItem(deletedItem);
-//                    }
-//                });
-//            }
-//        }
-//    };
+    private Callbacks callbacks;
+    private final DeletedItem.Observer<Entity> deletedItemObserver = new DeletedItem.Observer<Entity>(){
+        @Override
+        public void update(@NonNull final Entity deletedItem) {
+            callbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getViewModel().insertItem(deletedItem);
+                }
+            });
+        }
+    };
+
+
 
 //    private RecyclerView.LayoutManager mLayoutManager;
 //    private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
@@ -84,7 +87,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @CallSuper
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks) context;
+        callbacks = (Callbacks) context;
     }
 
     @Override
@@ -113,7 +116,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
                 }
             });
         }
-        setupFab(mCallbacks);
+        setupFab(callbacks);
     }
 
     @Override
@@ -122,32 +125,32 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         getAdapter().setItems(entities);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
 //        getAdapter().registerAdapterDataObserver(mObserver);
-//        getViewModel().lastDeletedItem.addObserver(itemDeletedObserver);
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        getViewModel().lastDeletedItem.deleteObserver(itemDeletedObserver);
+        getViewModel().getDeletedItem().addObserver(deletedItemObserver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getViewModel().getDeletedItem().deleteObserver(deletedItemObserver);
 //        getAdapter().unregisterAdapterDataObserver(mObserver);
-//    }
+    }
 
     abstract int getItemType();
 
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-        mCallbacks.onItemSelected(getItemType(), itemId);
+        callbacks.onItemSelected(getItemType(), itemId);
     }
 
-//    @Override
-//    public final void onLongClick(long itemId) {
-////        getViewModel().deleteItem(itemId);
-//    }
+    @Override
+    public final void onLongClick(long itemId) {
+        getViewModel().deleteItem(itemId);
+    }
 
     interface FabCallbacks {
         FloatingActionMenu getFloatingActionMenu();
@@ -161,5 +164,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
 
     interface Callbacks extends FabCallbacks {
         void onItemSelected(int itemType, long itemId);
+        void showSnackbar(@StringRes int text, @StringRes int action, @NonNull View.OnClickListener listener);
     }
+
 }

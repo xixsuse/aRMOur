@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> extends LifecycleFragment {
 
-    SnackCallbacks snackbarCallbacks;
     private Adapter adapter;
     private ViewModel viewModel;
 
@@ -26,7 +25,6 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> ext
     @CallSuper
     public void onAttach(Context context) {
         super.onAttach(context);
-        snackbarCallbacks = (SnackCallbacks) context;
         adapter = createAdapter(context);
     }
 

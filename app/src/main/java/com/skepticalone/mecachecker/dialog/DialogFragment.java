@@ -5,35 +5,31 @@ import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends AppCompatDialogFragment implements LifecycleRegistryOwner {
-//
-//    private static final String VIEW_MODEL_CLASS = "VIEW_MODEL_CLASS";
-//
-//    static Bundle getArgs(@NonNull Class<? extends ViewModelContract> viewModelClass) {
-//        Bundle args = new Bundle();
-//        args.putSerializable(VIEW_MODEL_CLASS, viewModelClass);
-//        return args;
-//    }
+public abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends AppCompatDialogFragment implements LifecycleRegistryOwner {
 
     private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private ViewModel viewModel;
+    private Callbacks callbacks;
+
+    @Override
+    @CallSuper
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        callbacks = (Callbacks) context;
+    }
 
     @NonNull
     abstract ViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider);
-// {
-//        //noinspection unchecked
-//        Class<android.arch.lifecycle.ViewModel> viewModelClass = (Class<android.arch.lifecycle.ViewModel>) getArguments().getSerializable(VIEW_MODEL_CLASS);
-//        assert viewModelClass != null;
-//        //noinspection unchecked
-//        return (ViewModel) ViewModelProviders.of(activity).get(viewModelClass);
-//    }
 
     abstract void onCurrentItemChanged(@NonNull Entity item);
 
@@ -58,6 +54,14 @@ abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity
 
     final ViewModel getViewModel() {
         return viewModel;
+    }
+
+    final void showSnackbar(@StringRes int text) {
+        callbacks.showSnackbar(text);
+    }
+
+    public interface Callbacks {
+        void showSnackbar(@StringRes int text);
     }
 
 }

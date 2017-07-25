@@ -71,10 +71,6 @@ abstract class EditTextDialogFragment<Entity, ViewModel extends ViewModelContrac
         }
     }
 
-//    final void setText(@NonNull CharSequence text) {
-//        editText.setText(text);
-//    }
-
     @StringRes int getHint() {
         return getTitle();
     }

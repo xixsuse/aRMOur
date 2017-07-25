@@ -13,7 +13,6 @@ import org.joda.time.LocalDate;
 public abstract class DatePickerDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
-//    private ViewModelCallbacks viewModel;
 
     @Override
     @NonNull
@@ -43,14 +42,5 @@ public abstract class DatePickerDialogFragment<Entity, ViewModel extends ViewMod
     }
 
     abstract void onDateSet(@NonNull LocalDate date);
-//
-//    public interface ViewModelCallbacks {
-//        @NonNull LiveData<LocalDate> getCurrentDate();
-//        void saveNewDate(@NonNull LocalDate newDate);
-//    }
-//
-//    public interface TargetFragmentCallbacks {
-//        @NonNull ViewModelCallbacks getViewModel(@NonNull FragmentActivity activity);
-//    }
 
 }
