@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -139,6 +140,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
 //        getAdapter().unregisterAdapterDataObserver(mObserver);
     }
 
+    @IdRes
     abstract int getItemType();
 
     @Override

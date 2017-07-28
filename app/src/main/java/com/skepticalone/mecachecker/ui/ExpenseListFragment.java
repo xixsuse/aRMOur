@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
@@ -14,7 +15,7 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
 
     @Override
     int getItemType() {
-        return Constants.ITEM_TYPE_EXPENSE;
+        return R.id.expenses;
     }
 
     @Override

@@ -72,24 +72,7 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.list_fragment_container, listFragment, LIST_FRAGMENT);
         if (mTwoPane) {
-            DetailFragment detailFragment;
-            switch (item.getItemId()) {
-//                case R.id.rostered:
-//                    detailFragment = new RosteredShiftDetailFragment();
-//                    break;
-//                case R.id.additional:
-//                    detailFragment = new AdditionalShiftDetailFragment();
-//                    break;
-                case R.id.cross_cover:
-                    detailFragment = new CrossCoverDetailFragment();
-                    break;
-                case R.id.expenses:
-                    detailFragment = new ExpenseDetailFragment();
-                    break;
-                default:
-                    return false;
-            }
-            transaction.replace(R.id.detail_fragment_container, detailFragment, DETAIL_FRAGMENT);
+            transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(item.getItemId()), DETAIL_FRAGMENT);
         }
         transaction.commit();
         return true;

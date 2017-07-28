@@ -25,9 +25,9 @@ public final class DetailActivity extends CoordinatorActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int title;
-        Class<? extends ItemViewModel> c;
-        switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
+        final int itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE), title;
+        final Class<? extends ItemViewModel> c;
+        switch (itemType) {
 //            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
 //                title = R.string.rostered_shift;
 //                c = RosteredShiftViewModel.class;
@@ -36,11 +36,11 @@ public final class DetailActivity extends CoordinatorActivity {
 //                title = R.string.additional_shift;
 //                c = AdditionalShiftViewModel.class;
 //                break;
-            case Constants.ITEM_TYPE_CROSS_COVER:
+            case R.id.cross_cover:
                 title = R.string.cross_cover;
                 c = CrossCoverViewModel.class;
                 break;
-            case Constants.ITEM_TYPE_EXPENSE:
+            case R.id.expenses:
                 title = R.string.expense;
                 c = ExpenseViewModel.class;
                 break;
@@ -51,26 +51,9 @@ public final class DetailActivity extends CoordinatorActivity {
         getSupportActionBar().setTitle(title);
         ViewModelProviders.of(this).get(c).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
-            DetailFragment detailFragment;
-            switch (getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE)) {
-//                case Constants.ITEM_TYPE_ROSTERED_SHIFT:
-//                    detailFragment = new RosteredShiftDetailFragment();
-//                    break;
-//                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
-//                    detailFragment = new AdditionalShiftDetailFragment();
-//                    break;
-                case Constants.ITEM_TYPE_CROSS_COVER:
-                    detailFragment = new CrossCoverDetailFragment();
-                    break;
-                case Constants.ITEM_TYPE_EXPENSE:
-                    detailFragment = new ExpenseDetailFragment();
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.coordinator, detailFragment, DETAIL_FRAGMENT)
+                    .add(R.id.coordinator, DetailFragment.getNewDetailFragment(itemType), DETAIL_FRAGMENT)
                     .commit();
         }
     }

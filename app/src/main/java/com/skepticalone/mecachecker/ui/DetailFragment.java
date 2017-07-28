@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.Observer;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 
@@ -15,6 +16,12 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
         implements ItemDetailAdapter.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
+
+    static DetailFragment getNewDetailFragment(@IdRes int itemType) {
+        if (itemType == R.id.cross_cover) return new CrossCoverDetailFragment();
+        if (itemType == R.id.expenses) return new ExpenseDetailFragment();
+        throw new IllegalStateException();
+    }
 
 //    private final ErrorMessageObserver errorMessageObserver = new ErrorMessageObserver(){
 //        @Override
