@@ -57,9 +57,9 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
 //            case R.id.additional:
 //                listFragment = new AdditionalShiftListFragment();
 //                break;
-//            case R.id.cross_cover:
-//                listFragment = new CrossCoverListFragment();
-//                break;
+            case R.id.cross_cover:
+                listFragment = new CrossCoverListFragment();
+                break;
             case R.id.expenses:
                 listFragment = new ExpenseListFragment();
                 break;
@@ -80,9 +80,9 @@ public final class MainActivity extends CoordinatorActivity implements BottomNav
 //                case R.id.additional:
 //                    detailFragment = new AdditionalShiftDetailFragment();
 //                    break;
-//                case R.id.cross_cover:
-//                    detailFragment = new CrossCoverDetailFragment();
-//                    break;
+                case R.id.cross_cover:
+                    detailFragment = new CrossCoverDetailFragment();
+                    break;
                 case R.id.expenses:
                     detailFragment = new ExpenseDetailFragment();
                     break;

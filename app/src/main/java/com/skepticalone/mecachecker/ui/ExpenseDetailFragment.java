@@ -47,35 +47,4 @@ public final class ExpenseDetailFragment
         getViewModel().setPaid(paid);
     }
 
-    //
-//    @Override
-//    public void changeTitle(long id, @NonNull String currentTitle) {
-//        showDialogFragment(TitleDialogFragment.newInstance(id, currentTitle));
-//    }
-//
-//    @Override
-//    public void saveTitle(long id, @NonNull String trimmedTitle) {
-//        getViewModel().setTitle(id, trimmedTitle);
-//    }
-//
-//    @Override
-//    public void onPaymentClicked(long id, @NonNull BigDecimal payment) {
-//        showDialogFragment(PaymentDialogFragment.newInstance(id, payment, R.string.payment));
-//    }
-//
-//    @Override
-//    public void savePayment(long id, @NonNull BigDecimal payment) {
-//        getViewModel().getPayableModel().setPayment(id, payment);
-//    }
-//
-//    @Override
-//    public void onClaimedToggled(long id, boolean claimed) {
-//        getViewModel().getPayableModel().setClaimed(id, claimed);
-//    }
-//
-//    @Override
-//    public void onPaidToggled(long id, boolean paid) {
-//        getViewModel().getPayableModel().setPaid(id, paid);
-//    }
-
 }

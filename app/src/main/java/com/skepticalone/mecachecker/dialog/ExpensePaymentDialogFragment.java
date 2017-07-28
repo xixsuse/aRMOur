@@ -6,8 +6,9 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
 
-public final class ExpensePaymentDialogFragment extends PaymentDialogFragment<ExpenseEntity, ExpenseViewModel> {
+public final class ExpensePaymentDialogFragment extends PaymentDialogFragment<ExpenseEntity> {
 
     @Override
     int getTitle() {
@@ -16,7 +17,7 @@ public final class ExpensePaymentDialogFragment extends PaymentDialogFragment<Ex
 
     @NonNull
     @Override
-    ExpenseViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+    PayableViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
         return viewModelProvider.get(ExpenseViewModel.class);
     }
 

@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import org.joda.time.LocalDate;
 
-public abstract class DatePickerDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
+public abstract class DateDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
 

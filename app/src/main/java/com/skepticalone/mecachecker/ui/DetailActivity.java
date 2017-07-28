@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
@@ -35,10 +36,10 @@ public final class DetailActivity extends CoordinatorActivity {
 //                title = R.string.additional_shift;
 //                c = AdditionalShiftViewModel.class;
 //                break;
-//            case Constants.ITEM_TYPE_CROSS_COVER:
-//                title = R.string.cross_cover;
-//                c = CrossCoverViewModel.class;
-//                break;
+            case Constants.ITEM_TYPE_CROSS_COVER:
+                title = R.string.cross_cover;
+                c = CrossCoverViewModel.class;
+                break;
             case Constants.ITEM_TYPE_EXPENSE:
                 title = R.string.expense;
                 c = ExpenseViewModel.class;
@@ -58,9 +59,9 @@ public final class DetailActivity extends CoordinatorActivity {
 //                case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
 //                    detailFragment = new AdditionalShiftDetailFragment();
 //                    break;
-//                case Constants.ITEM_TYPE_CROSS_COVER:
-//                    detailFragment = new CrossCoverDetailFragment();
-//                    break;
+                case Constants.ITEM_TYPE_CROSS_COVER:
+                    detailFragment = new CrossCoverDetailFragment();
+                    break;
                 case Constants.ITEM_TYPE_EXPENSE:
                     detailFragment = new ExpenseDetailFragment();
                     break;

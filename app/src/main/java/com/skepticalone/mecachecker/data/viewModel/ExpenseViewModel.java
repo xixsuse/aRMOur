@@ -9,16 +9,17 @@ import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
 
-import org.joda.time.DateTime;
-
 import java.math.BigDecimal;
 
 
 public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, ExpenseDao>
-        implements TitleViewModelContract, PayableViewModelContract<ExpenseEntity> {
+        implements PayableViewModelContract<ExpenseEntity> {
+
+    private final PayableHelper payableHelper;
 
     public ExpenseViewModel(Application application) {
         super(application);
+        payableHelper = new PayableHelper(getDao());
     }
 
     @NonNull
@@ -28,35 +29,18 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
     }
 
     @Override
-    public void saveNewTitle(@NonNull String newTitle) {
-        ExpenseEntity expense = getCurrentItem().getValue();
-        if (expense != null) {
-            getDao().setTitleSync(expense.getId(), newTitle);
-        }
-    }
-
-    @Override
     public void saveNewPayment(@NonNull BigDecimal payment) {
-        ExpenseEntity expense = getCurrentItem().getValue();
-        if (expense != null) {
-            getDao().setPaymentSync(expense.getId(), payment);
-        }
+        payableHelper.saveNewPayment(getCurrentItem(), payment);
     }
 
     @Override
     public void setClaimed(boolean claimed) {
-        ExpenseEntity expense = getCurrentItem().getValue();
-        if (expense != null) {
-            getDao().setClaimedSync(expense.getId(), claimed ? DateTime.now() : null);
-        }
+        payableHelper.setClaimed(getCurrentItem(), claimed);
     }
 
     @Override
     public void setPaid(boolean paid) {
-        ExpenseEntity expense = getCurrentItem().getValue();
-        if (expense != null) {
-            getDao().setPaidSync(expense.getId(), paid ? DateTime.now() : null);
-        }
+        payableHelper.setPaid(getCurrentItem(), paid);
     }
 
     public void addNewExpense() {
@@ -66,4 +50,12 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
                 null
         ));
     }
+
+    public void saveNewTitle(@NonNull String newTitle) {
+        ExpenseEntity expense = getCurrentItem().getValue();
+        if (expense != null) {
+            getDao().setTitleSync(expense.getId(), newTitle);
+        }
+    }
+
 }

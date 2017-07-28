@@ -10,7 +10,7 @@ import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
 
 import java.math.BigDecimal;
 
-public abstract class PaymentDialogFragment<Entity extends PayableItem, ViewModel extends PayableViewModelContract<Entity>> extends EditTextDialogFragment<Entity, ViewModel> {
+public abstract class PaymentDialogFragment<Entity extends PayableItem> extends TextDialogFragment<Entity, PayableViewModelContract<Entity>> {
 
     @Override
     final int getHint() {
