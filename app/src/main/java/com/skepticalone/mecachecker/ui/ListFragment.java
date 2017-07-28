@@ -27,7 +27,7 @@ import java.util.List;
 abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemListAdapter<Entity>, ViewModel>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
-    final static String IS_TWO_PANE = "IS_TWO_PANE";
+//    final static String IS_TWO_PANE = "IS_TWO_PANE";
     private Callbacks callbacks;
     private final DeletedItem.Observer<Entity> deletedItemObserver = new DeletedItem.Observer<Entity>(){
         @Override
@@ -41,7 +41,11 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         }
     };
 
-
+    static ListFragment getNewListFragment(@IdRes int itemType) {
+        if (itemType == R.id.cross_cover) return new CrossCoverListFragment();
+        if (itemType == R.id.expenses) return new ExpenseListFragment();
+        throw new IllegalStateException();
+    }
 
 //    private RecyclerView.LayoutManager mLayoutManager;
 //    private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
@@ -109,14 +113,14 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getViewModel().getItems().observe(this, this);
-        if (getArguments().getBoolean(IS_TWO_PANE, false)) {
-            getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
-                @Override
-                public void onChanged(@Nullable Entity entity) {
-                    getAdapter().setSelectedId(entity == null ? -1 : entity.getId());
-                }
-            });
-        }
+//        if (getArguments().getBoolean(IS_TWO_PANE, false)) {
+//            getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
+//                @Override
+//                public void onChanged(@Nullable Entity entity) {
+//                    getAdapter().setSelectedId(entity == null ? -1 : entity.getId());
+//                }
+//            });
+//        }
         setupFab(callbacks);
     }
 
@@ -146,7 +150,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-        callbacks.onItemSelected(getItemType(), itemId);
+//        callbacks.onItemSelected(getItemType(), itemId);
     }
 
     @Override
@@ -165,7 +169,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     }
 
     interface Callbacks extends FabCallbacks {
-        void onItemSelected(int itemType, long itemId);
+//        void onItemSelected(int itemType, long itemId);
         void showSnackbar(@StringRes int text, @StringRes int action, @NonNull View.OnClickListener listener);
     }
 

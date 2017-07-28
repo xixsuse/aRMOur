@@ -22,6 +22,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
 
     private final Dao dao;
     private final LiveData<Entity> currentItem;
+    @NonNull
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final LiveData NO_DATA = new MutableLiveData<>();
     private final DeletedItem.Observable<Entity> deletedItem = new DeletedItem.Observable<>();
@@ -43,6 +44,11 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     @NonNull
     LiveData<Entity> fetchItem(long id) {
         return dao.getItem(id);
+    }
+
+    @NonNull
+    public final LiveData<Long> getSelectedId() {
+        return selectedId;
     }
 
     public final void selectItem(long id) {

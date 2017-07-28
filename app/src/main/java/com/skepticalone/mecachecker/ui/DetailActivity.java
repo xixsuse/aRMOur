@@ -2,12 +2,11 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 public final class DetailActivity extends CoordinatorActivity {
 
@@ -22,34 +21,19 @@ public final class DetailActivity extends CoordinatorActivity {
         return R.layout.detail_activity;
     }
 
+    @StringRes
+    private static int getTitle(@IdRes int itemType) {
+        if (itemType == R.id.cross_cover) return R.string.cross_cover;
+        if (itemType == R.id.expenses) return R.string.expense;
+        throw new IllegalArgumentException();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final int itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE), title;
-        final Class<? extends ItemViewModel> c;
-        switch (itemType) {
-//            case Constants.ITEM_TYPE_ROSTERED_SHIFT:
-//                title = R.string.rostered_shift;
-//                c = RosteredShiftViewModel.class;
-//                break;
-//            case Constants.ITEM_TYPE_ADDITIONAL_SHIFT:
-//                title = R.string.additional_shift;
-//                c = AdditionalShiftViewModel.class;
-//                break;
-            case R.id.cross_cover:
-                title = R.string.cross_cover;
-                c = CrossCoverViewModel.class;
-                break;
-            case R.id.expenses:
-                title = R.string.expense;
-                c = ExpenseViewModel.class;
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        //noinspection ConstantConditions
-        getSupportActionBar().setTitle(title);
-        ViewModelProviders.of(this).get(c).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
+        setTitle(getTitle(itemType));
+        ViewModelProviders.of(this).get(getViewModelClass(itemType)).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
