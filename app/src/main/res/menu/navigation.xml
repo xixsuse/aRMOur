@@ -6,10 +6,10 @@
         <!--android:icon="@drawable/ic_check_black_24dp"-->
         <!--android:title="@string/rostered_shifts" />-->
 
-    <!--<item-->
-        <!--android:id="@+id/additional"-->
-        <!--android:icon="@drawable/ic_add_black_24dp"-->
-        <!--android:title="@string/additional_shifts" />-->
+    <item
+        android:id="@+id/additional"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:title="@string/additional_shifts" />
 
     <item
         android:id="@+id/cross_cover"

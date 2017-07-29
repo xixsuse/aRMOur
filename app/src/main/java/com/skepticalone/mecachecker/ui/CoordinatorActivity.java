@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
@@ -36,6 +37,7 @@ abstract class CoordinatorActivity extends AppCompatActivity implements DialogFr
 
     @NonNull
     static Class<? extends ItemViewModel<? extends Item, ? extends ItemDaoContract>> getViewModelClass(@IdRes int itemType) {
+        if (itemType == R.id.additional) return AdditionalShiftViewModel.class;
         if (itemType == R.id.cross_cover) return CrossCoverViewModel.class;
         if (itemType == R.id.expenses) return ExpenseViewModel.class;
         throw new IllegalStateException();

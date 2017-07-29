@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.PayableItem;
+import com.skepticalone.mecachecker.data.model.Payable;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
@@ -20,7 +20,7 @@ abstract class PayableDetailAdapterHelper {
         this.callbacks = callbacks;
     }
 
-    void onItemUpdated(@NonNull PayableItem oldItem, @NonNull PayableItem newItem, RecyclerView.Adapter adapter) {
+    void onItemUpdated(@NonNull Payable oldItem, @NonNull Payable newItem, RecyclerView.Adapter adapter) {
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
             adapter.notifyItemChanged(getRowNumberPayment());
         }
@@ -30,7 +30,7 @@ abstract class PayableDetailAdapterHelper {
         }
     }
 
-    boolean bindViewHolder(@NonNull PayableItem item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Payable item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, new View.OnClickListener() {
                 @Override

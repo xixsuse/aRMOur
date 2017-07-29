@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 
 public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, ExpenseDao>
-        implements PayableViewModelContract<ExpenseEntity> {
+        implements SingleAddViewModelContract<ExpenseEntity>, PayableViewModelContract<ExpenseEntity> {
 
     private final PayableHelper payableHelper;
 
@@ -43,7 +43,8 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
         payableHelper.setPaid(getCurrentItem(), paid);
     }
 
-    public void addNewExpense() {
+    @Override
+    public void addNewItem() {
         insertItem(new ExpenseEntity(
                 getApplication().getString(R.string.new_expense_title),
                 new PaymentData(0),

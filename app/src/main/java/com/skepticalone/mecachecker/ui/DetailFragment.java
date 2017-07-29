@@ -18,6 +18,7 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
 
     static DetailFragment getNewDetailFragment(@IdRes int itemType) {
+        if (itemType == R.id.additional) return new AdditionalShiftDetailFragment();
         if (itemType == R.id.cross_cover) return new CrossCoverDetailFragment();
         if (itemType == R.id.expenses) return new ExpenseDetailFragment();
         throw new IllegalStateException();

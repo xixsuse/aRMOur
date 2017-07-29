@@ -4,9 +4,9 @@ import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.SingleAddViewModelContract;
 
-abstract class SingleAddListFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends ListFragment<Entity, ViewModel> {
+abstract class SingleAddListFragment<Entity extends Item, ViewModel extends SingleAddViewModelContract<Entity>> extends ListFragment<Entity, ViewModel> {
 
     @Override
     final void setupFab(FabCallbacks callbacks) {
@@ -15,12 +15,10 @@ abstract class SingleAddListFragment<Entity extends Item, ViewModel extends View
         fabMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewItem();
+                getViewModel().addNewItem();
             }
         });
     }
-
-    abstract void addNewItem();
 
 }
 

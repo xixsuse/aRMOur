@@ -22,11 +22,6 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
         return R.id.expenses;
     }
 
-    @Override
-    void addNewItem() {
-        getViewModel().addNewExpense();
-    }
-
     @NonNull
     @Override
     ItemListAdapter<ExpenseEntity> createAdapter(Context context) {

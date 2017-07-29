@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 
 
 public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, CrossCoverDao>
-        implements PayableViewModelContract<CrossCoverEntity> {
+        implements SingleAddViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity> {
 
     private final PayableHelper payableHelper;
     private final String newCrossCoverPaymentKey;
@@ -57,7 +57,8 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
         }
     }
 
-    public void addNewCrossCover() {
+    @Override
+    public void addNewItem() {
         LocalDate newDate = new LocalDate();
         LocalDate lastCrossCoverShiftDate = getDao().getLastCrossCoverDateSync();
         if (lastCrossCoverShiftDate != null) {

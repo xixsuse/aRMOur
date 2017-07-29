@@ -23,6 +23,7 @@ public final class DetailActivity extends CoordinatorActivity {
 
     @StringRes
     private static int getTitle(@IdRes int itemType) {
+        if (itemType == R.id.additional) return R.string.additional_shift;
         if (itemType == R.id.cross_cover) return R.string.cross_cover;
         if (itemType == R.id.expenses) return R.string.expense;
         throw new IllegalArgumentException();

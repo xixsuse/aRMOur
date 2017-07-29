@@ -33,7 +33,7 @@ public abstract class DateDialogFragment<Entity, ViewModel extends ViewModelCont
     @Override
     final void onCurrentItemChanged(@NonNull Entity item) {
         LocalDate date = getDateForDisplay(item);
-        datePickerDialog.getDatePicker().updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
+        datePickerDialog.updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
     }
 
     @Override

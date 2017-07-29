@@ -3,7 +3,6 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -20,21 +19,12 @@ import com.skepticalone.mecachecker.R;
 public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, ListFragment.Callbacks {
     private static final String ITEM_TYPE = "ITEM_TYPE";
-
-//    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
-
-//    private static final String LIST_FRAGMENT = "LIST_FRAGMENT", DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
     private BottomNavigationView navigation;
     private FloatingActionMenu mFabMenu;
     private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
     @Nullable
     private LiveData<Long> selectedId;
-//
-//    @Override
-//    public LifecycleRegistry getLifecycle() {
-//        return lifecycleRegistry;
-//    }
 
     @Override
     int getContentView() {
@@ -49,12 +39,6 @@ public final class MainActivity extends CoordinatorActivity
             intent.putExtra(DetailActivity.ITEM_ID, itemId);
             startActivity(intent);
         }
-    }
-
-    private static String getItemType(@IdRes int itemType) {
-        if (itemType == R.id.cross_cover) return "Cross cover";
-        if (itemType == R.id.expenses) return "Expenses";
-        return "Other: itemType = " + itemType;
     }
 
     @Override
@@ -76,80 +60,7 @@ public final class MainActivity extends CoordinatorActivity
                 // do nothing
             }
         });
-//        navigation.setSelectedItemId(itemType);
-//
-//        if (savedInstanceState == null) {
-//            navigation.setSelectedItemId(navigation.getSelectedItemId());
-//        } else if (mTwoPane) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(navigation.getSelectedItemId()), DETAIL_FRAGMENT)
-//                    .commitAllowingStateLoss();
-//        }
-//        setViewModel(navigation.getSelectedItemId());
-//        if (savedInstanceState == null) {
-//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//            transaction.add(R.id.list_fragment_container, ListFragment.getNewListFragment(itemType), LIST_FRAGMENT);
-//            if (selectedId == null) {
-//                transaction.remove(getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT));
-//            } else {
-//                transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType), DETAIL_FRAGMENT);
-//            }
-//            transaction.commit();
-//
-//        }
-
-//        navigation.setOnNavigationItemReselectedListener(this);
-//        if (!mTwoPane) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .remove(getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT))
-//                    .commit();
-//        }
-//        if (savedInstanceState == null) {
-//            navigation.setSelectedItemId(navigation.getSelectedItemId());
-//        } else if (mTwoPane) {
-//            getSupportFragmentManager().findFragmentByTag()
-//        }
-//        navigation.setSelectedItemId(navigation.getSelectedItemId());
     }
-//
-//    @Override
-//    public void onChanged(@Nullable Long selectedId) {
-//        final String TAG = "onSelectedIdChanged";
-//        Log.i(TAG, "onChanged: selectedId=" + selectedId + ", twoPane=" + mTwoPane);
-//        if (selectedId != null) {
-//            if (mTwoPane) {
-//                getSupportFragmentManager().beginTransaction();
-//                if (selectedId == null) {
-//                    transaction.remove(getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT));
-//                } else {
-//                    transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType), DETAIL_FRAGMENT);
-//                }
-//                transaction.commit();
-//            } else {
-//                if (selectedId != null) {
-//                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-//                    intent.putExtra(DetailActivity.ITEM_TYPE, itemType);
-//                    intent.putExtra(DetailActivity.ITEM_ID, selectedId);
-//                    startActivity(intent);
-//                }
-//            }
-//        }
-//    }
-
-//    private void setViewModel(@IdRes final int itemType) {
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.list_fragment_container, ListFragment.getNewListFragment(itemType), LIST_FRAGMENT)
-//                .remove(getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT))
-//                .commit();
-//        if (selectedId != null) selectedId.removeObserver(this);
-//        selectedId = ViewModelProviders.of(this).get(getViewModelClass(itemType)).getSelectedId();
-//        selectedId.observeForever(this);
-//    }
-//
-//    @Override
-//    public void showDetail(int itemType, long itemId) {
-//
-//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -159,7 +70,7 @@ public final class MainActivity extends CoordinatorActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        final int itemType = item.getItemId();
+        int itemType = item.getItemId();
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.list_fragment_container, ListFragment.getNewListFragment(itemType));
@@ -167,27 +78,6 @@ public final class MainActivity extends CoordinatorActivity
             transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType));
         }
         transaction.commit();
-//
-//        final String TAG = "onSelectedIdChanged";
-//        Log.i(TAG, "onChanged: selectedId=" + selectedId + ", twoPane=" + mTwoPane);
-//        if (selectedId != null) {
-//            if (mTwoPane) {
-//                getSupportFragmentManager().beginTransaction();
-//                if (selectedId == null) {
-//                    transaction.remove(getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT));
-//                } else {
-//                    transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType), DETAIL_FRAGMENT);
-//                }
-//                transaction.commit();
-//            } else {
-//                if (selectedId != null) {
-//                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-//                    intent.putExtra(DetailActivity.ITEM_TYPE, itemType);
-//                    intent.putExtra(DetailActivity.ITEM_ID, selectedId);
-//                    startActivity(intent);
-//                }
-//            }
-//        }
         return true;
     }
 

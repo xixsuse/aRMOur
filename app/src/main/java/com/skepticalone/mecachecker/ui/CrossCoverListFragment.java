@@ -18,11 +18,6 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
         return R.id.cross_cover;
     }
 
-    @Override
-    void addNewItem() {
-        getViewModel().addNewCrossCover();
-    }
-
     @NonNull
     @Override
     ItemListAdapter<CrossCoverEntity> createAdapter(Context context) {

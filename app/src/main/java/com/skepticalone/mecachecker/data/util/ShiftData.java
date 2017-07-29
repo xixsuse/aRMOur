@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 public final class ShiftData {
 
@@ -65,6 +66,36 @@ public final class ShiftData {
         if (weekendStart.isBefore(end) && start.isBefore(weekendStart.plusDays(2))) {
             return weekendStart.toLocalDate();
         } else return null;
+    }
+
+    @NonNull
+    public static DateTime getNewEnd(@NonNull final DateTime start, @NonNull final LocalTime end) {
+        DateTime newEnd = start.withTime(end);
+        while (!newEnd.isAfter(start)) {
+            newEnd = newEnd.plusDays(1);
+        }
+        return newEnd;
+    }
+
+    @NonNull
+    private DateTime getNewEnd(@NonNull final DateTime newStart) {
+        return getNewEnd(newStart, end.toLocalTime());
+    }
+
+    @NonNull
+    public ShiftData withNewDate(@NonNull LocalDate newDate) {
+        final DateTime newStart = start.withDate(newDate), newEnd = getNewEnd(newStart);
+        return new ShiftData(newStart, newEnd);
+    }
+
+    @NonNull
+    public ShiftData withNewTime(@NonNull LocalTime time, boolean isStart) {
+        if (isStart) {
+            final DateTime newStart = start.withTime(time);
+            return new ShiftData(newStart, getNewEnd(newStart, end.toLocalTime()));
+        } else {
+            return new ShiftData(start, getNewEnd(start, time));
+        }
     }
 
 }

@@ -11,51 +11,50 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
+import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, PayableDaoContract {
+public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntity>, PayableDaoContract {
 
     @Override
     @Insert
-    long insertItemSync(@NonNull CrossCoverEntity crossCover);
+    long insertItemSync(@NonNull AdditionalShiftEntity crossCover);
 
     @NonNull
     @Override
-    @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    LiveData<List<CrossCoverEntity>> getItems();
+    @Query("SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
+    LiveData<List<AdditionalShiftEntity>> getItems();
 
     @NonNull
     @Override
     @Query("SELECT * FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    LiveData<CrossCoverEntity> getItem(long id);
+    LiveData<AdditionalShiftEntity> getItem(long id);
 
     @Nullable
     @Override
     @Query("SELECT * FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    CrossCoverEntity getItemSync(long id);
+    AdditionalShiftEntity getItemSync(long id);
 
     @Override
     @Delete
-    int deleteItemSync(@NonNull CrossCoverEntity item);
+    int deleteItemSync(@NonNull AdditionalShiftEntity item);
 
     @Override
     @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_COMMENT +
             " = :comment WHERE " +
@@ -65,7 +64,7 @@ public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, Payabl
 
     @Override
     @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_PAYMENT +
             " = :payment WHERE " +
@@ -75,7 +74,7 @@ public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, Payabl
 
     @Override
     @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_CLAIMED +
             " = :claimed WHERE " +
@@ -85,7 +84,7 @@ public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, Payabl
 
     @Override
     @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_PAID +
             " = :paid WHERE " +
@@ -95,21 +94,23 @@ public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, Payabl
 
     @Nullable
     @WorkerThread
-    @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+    @Query("SELECT " + Contract.COLUMN_NAME_SHIFT_END + " FROM " +
+            Contract.AdditionalShifts.TABLE_NAME +
             " ORDER BY " +
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
+            Contract.COLUMN_NAME_SHIFT_END +
             " DESC LIMIT 1")
-    LocalDate getLastCrossCoverDateSync();
+    DateTime getLastShiftEndSync();
 
     @WorkerThread
     @Query("UPDATE " +
-            Contract.CrossCoverShifts.TABLE_NAME +
+            Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-            " = :date WHERE " +
+            Contract.COLUMN_NAME_SHIFT_START +
+            " = :start, " +
+            Contract.COLUMN_NAME_SHIFT_END +
+            " = :end WHERE " +
             BaseColumns._ID +
             " = :id")
-    void setDateSync(long id, @NonNull LocalDate date);
+    void setShiftTimesSync(long id, @NonNull DateTime start, @NonNull DateTime end);
 
 }

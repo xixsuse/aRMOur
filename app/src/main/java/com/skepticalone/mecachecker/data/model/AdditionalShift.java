@@ -1,5 +1,5 @@
 package com.skepticalone.mecachecker.data.model;
 
-public interface AdditionalShift extends Shift, PayableItem {
+public interface AdditionalShift extends Shift, Payable {
 
 }

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
 
-public interface CrossCover extends PayableItem {
+public interface CrossCover extends Payable {
 
     @NonNull
     LocalDate getDate();
