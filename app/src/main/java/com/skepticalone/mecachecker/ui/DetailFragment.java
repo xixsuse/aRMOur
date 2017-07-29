@@ -22,6 +22,8 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
     private Snackbar snackbar;
 
     static DetailFragment getNewDetailFragment(@IdRes int itemType) {
+        // TODO: 30/07/17
+//        if (itemType == R.id.rostered) return new RosteredShiftDetailFragment();
         if (itemType == R.id.additional) return new AdditionalShiftDetailFragment();
         if (itemType == R.id.cross_cover) return new CrossCoverDetailFragment();
         if (itemType == R.id.expenses) return new ExpenseDetailFragment();

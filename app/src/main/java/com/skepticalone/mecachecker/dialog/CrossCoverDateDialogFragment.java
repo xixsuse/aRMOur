@@ -5,10 +5,11 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 
 import org.joda.time.LocalDate;
 
-public final class CrossCoverDateDialogFragment extends DateDialogFragment<CrossCoverEntity, CrossCoverViewModel> {
+public final class CrossCoverDateDialogFragment extends DateDialogFragment<CrossCoverEntity> {
 
     @NonNull
     @Override
@@ -18,12 +19,8 @@ public final class CrossCoverDateDialogFragment extends DateDialogFragment<Cross
 
     @NonNull
     @Override
-    CrossCoverViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+    DateViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
         return viewModelProvider.get(CrossCoverViewModel.class);
     }
 
-    @Override
-    void onDateSet(@NonNull LocalDate date) {
-        getViewModel().saveNewDate(date);
-    }
 }

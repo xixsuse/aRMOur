@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 
 
 public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, CrossCoverDao>
-        implements SingleAddViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity> {
+        implements SingleAddViewModelContract<CrossCoverEntity>, DateViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity> {
 
     private final PayableHelper payableHelper;
     private final String newCrossCoverPaymentKey;
@@ -51,12 +51,13 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
         payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
-    public void saveNewDate(@NonNull final LocalDate newDate) {
+    @Override
+    public void saveNewDate(@NonNull final LocalDate date) {
         runAsync(new Runnable() {
             @Override
             public void run() {
                 try {
-                    getDao().setDateSync(getCurrentItemId(), newDate);
+                    getDao().setDateSync(getCurrentItemId(), date);
                 } catch (SQLiteConstraintException e) {
                     errorMessage.postValue(R.string.overlapping_shifts);
                 }

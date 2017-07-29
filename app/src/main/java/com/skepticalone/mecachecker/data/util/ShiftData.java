@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
+import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -80,7 +81,7 @@ public final class ShiftData {
     }
 
     @NonNull
-    public static DateTime getNewEnd(@NonNull final DateTime start, @NonNull final LocalTime end) {
+    private static DateTime getNewEnd(@NonNull final DateTime start, @NonNull final LocalTime end) {
         DateTime newEnd = start.withTime(end);
         while (!newEnd.isAfter(start)) {
             newEnd = newEnd.plusDays(1);
@@ -89,13 +90,8 @@ public final class ShiftData {
     }
 
     @NonNull
-    private DateTime getNewEnd(@NonNull final DateTime newStart) {
-        return getNewEnd(newStart, end.toLocalTime());
-    }
-
-    @NonNull
     public ShiftData withNewDate(@NonNull final LocalDate newDate) {
-        final DateTime newStart = start.withDate(newDate), newEnd = getNewEnd(newStart);
+        final DateTime newStart = start.withDate(newDate), newEnd = getNewEnd(newStart, end.toLocalTime());
         return new ShiftData(newStart, newEnd);
     }
 
@@ -114,6 +110,11 @@ public final class ShiftData {
         final DateTime newStart = getNewStart(startTime, earliestStart),
                 newEnd = getNewEnd(newStart, endTime);
         return new ShiftData(newStart, newEnd);
+    }
+
+    @NonNull
+    public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart) {
+        return withEarliestStart(startTime, endTime, earliestStart == null ? null : earliestStart.plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS));
     }
 
 }

@@ -30,6 +30,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     private Callbacks callbacks;
 
     static ListFragment getNewListFragment(@IdRes int itemType) {
+        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
         if (itemType == R.id.additional) return new AdditionalShiftListFragment();
         if (itemType == R.id.cross_cover) return new CrossCoverListFragment();
         if (itemType == R.id.expenses) return new ExpenseListFragment();

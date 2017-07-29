@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.DatePicker;
 
-import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 
 import org.joda.time.LocalDate;
 
-public abstract class DateDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements DatePickerDialog.OnDateSetListener {
+public abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, DateViewModelContract<Entity>> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
 
@@ -38,9 +38,7 @@ public abstract class DateDialogFragment<Entity, ViewModel extends ViewModelCont
 
     @Override
     public final void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        onDateSet(new LocalDate(year, month + 1, dayOfMonth));
+        getViewModel().saveNewDate(new LocalDate(year, month + 1, dayOfMonth));
     }
-
-    abstract void onDateSet(@NonNull LocalDate date);
 
 }

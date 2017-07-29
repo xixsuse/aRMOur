@@ -51,6 +51,21 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
+
+    @Override
+    public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                selectedId.postValue(getDao().insertItemSync(new AdditionalShiftEntity(
+                        PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
+                        ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
+                        null
+                )));
+            }
+        });
+    }
+
     @MainThread
     private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData) {
         runAsync(new Runnable() {
@@ -71,24 +86,10 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
     }
 
-    @Override
+    @MainThread
     public void saveNewTime(@NonNull LocalTime time, boolean start) {
         AdditionalShiftEntity shift = getCurrentItemSync();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
-    }
-
-    @Override
-    public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                selectedId.postValue(getDao().insertItemSync(new AdditionalShiftEntity(
-                        PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
-                        ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
-                        null
-                )));
-            }
-        });
     }
 
 }

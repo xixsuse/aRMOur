@@ -16,13 +16,14 @@ import java.util.List;
 
 public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback {
 
+    @NonNull
     private final Callbacks mCallbacks;
     @Nullable
     private List<? extends Entity> mItems;
 
 //    private long mSelectedId = -1;
 
-    ItemListAdapter(Callbacks callbacks) {
+    ItemListAdapter(@NonNull Callbacks callbacks) {
         super();
         setHasStableIds(true);
         mCallbacks = callbacks;

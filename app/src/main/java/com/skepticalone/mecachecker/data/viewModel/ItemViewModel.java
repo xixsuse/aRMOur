@@ -40,7 +40,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
                     //noinspection unchecked
                     return NO_DATA;
                 } else {
-                    return fetchItem(id);
+                    return getItem(id);
                 }
             }
         });
@@ -51,7 +51,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @NonNull
-    LiveData<Entity> fetchItem(long id) {
+    LiveData<Entity> getItem(long id) {
         return dao.getItem(id);
     }
 
@@ -90,7 +90,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
 
     @NonNull
     @Override
-    public final LiveData<List<Entity>> getItems() {
+    public LiveData<List<Entity>> getItems() {
         return dao.getItems();
     }
 

@@ -18,6 +18,7 @@ import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
+import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
 
 abstract class CoordinatorActivity extends AppCompatActivity implements com.skepticalone.mecachecker.util.Snackbar {
 
@@ -36,6 +37,7 @@ abstract class CoordinatorActivity extends AppCompatActivity implements com.skep
 
     @NonNull
     static Class<? extends ItemViewModel<? extends Item, ? extends ItemDaoContract>> getViewModelClass(@IdRes int itemType) {
+        if (itemType == R.id.rostered) return RosteredShiftViewModel.class;
         if (itemType == R.id.additional) return AdditionalShiftViewModel.class;
         if (itemType == R.id.cross_cover) return CrossCoverViewModel.class;
         if (itemType == R.id.expenses) return ExpenseViewModel.class;
