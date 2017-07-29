@@ -69,6 +69,17 @@ public final class ShiftData {
     }
 
     @NonNull
+    private static DateTime getNewStart(@NonNull final LocalTime start, @Nullable final DateTime earliestStart) {
+        DateTime newStart = (earliestStart == null ? DateTime.now() : earliestStart).withTime(start);
+        if (earliestStart != null) {
+            while (newStart.isBefore(earliestStart)) {
+                newStart = newStart.plusDays(1);
+            }
+        }
+        return newStart;
+    }
+
+    @NonNull
     public static DateTime getNewEnd(@NonNull final DateTime start, @NonNull final LocalTime end) {
         DateTime newEnd = start.withTime(end);
         while (!newEnd.isAfter(start)) {
@@ -83,19 +94,26 @@ public final class ShiftData {
     }
 
     @NonNull
-    public ShiftData withNewDate(@NonNull LocalDate newDate) {
+    public ShiftData withNewDate(@NonNull final LocalDate newDate) {
         final DateTime newStart = start.withDate(newDate), newEnd = getNewEnd(newStart);
         return new ShiftData(newStart, newEnd);
     }
 
     @NonNull
-    public ShiftData withNewTime(@NonNull LocalTime time, boolean isStart) {
+    public ShiftData withNewTime(@NonNull final LocalTime time, boolean isStart) {
         if (isStart) {
             final DateTime newStart = start.withTime(time);
             return new ShiftData(newStart, getNewEnd(newStart, end.toLocalTime()));
         } else {
             return new ShiftData(start, getNewEnd(start, time));
         }
+    }
+
+    @NonNull
+    public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart) {
+        final DateTime newStart = getNewStart(startTime, earliestStart),
+                newEnd = getNewEnd(newStart, endTime);
+        return new ShiftData(newStart, newEnd);
     }
 
 }

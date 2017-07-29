@@ -5,6 +5,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
 import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
@@ -26,8 +28,10 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "database";
 
+    @Nullable
     private static AppDatabase DATABASE;
 
+    @NonNull
     public static AppDatabase getInstance(Context applicationContext) {
         if (DATABASE == null) {
             DATABASE = Room

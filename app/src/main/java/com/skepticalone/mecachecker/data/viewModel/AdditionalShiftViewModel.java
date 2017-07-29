@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.data.viewModel;
 import android.app.Application;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
@@ -13,7 +14,6 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -24,16 +24,10 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         implements ShiftViewModelContract<AdditionalShiftEntity>, PayableViewModelContract<AdditionalShiftEntity> {
 
     private final PayableHelper payableHelper;
-    private final String hourlyRateKey;
-    private final int defaultHourlyRate;
-    private final ShiftUtil.Calculator calculator;
 
     public AdditionalShiftViewModel(Application application) {
         super(application);
         payableHelper = new PayableHelper(getDao());
-        hourlyRateKey = application.getString(R.string.key_hourly_rate);
-        defaultHourlyRate = application.getResources().getInteger(R.integer.default_hourly_rate);
-        calculator = new ShiftUtil.Calculator(application);
     }
 
     @NonNull
@@ -57,6 +51,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
+    @MainThread
     private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData) {
         runAsync(new Runnable() {
             @Override
@@ -70,6 +65,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         });
     }
 
+    @Override
     public void saveNewDate(@NonNull LocalDate newDate) {
         AdditionalShiftEntity shift = getCurrentItemSync();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
@@ -86,24 +82,13 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         runAsync(new Runnable() {
             @Override
             public void run() {
-                final int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
-                final LocalTime startTime = calculator.getStartTime(shiftType),
-                        endTime = calculator.getEndTime(shiftType);
-                DateTime newStart = DateTime.now().withTime(startTime);
-                final DateTime lastShiftEnd = getDao().getLastShiftEndSync(), newEnd;
-                if (lastShiftEnd != null && newStart.isBefore(lastShiftEnd)) {
-                    newStart = lastShiftEnd.withTime(newStart.toLocalTime());
-                    while (newStart.isBefore(lastShiftEnd)) {
-                        newStart = newStart.plusDays(1);
-                    }
-                }
-                newEnd = ShiftData.getNewEnd(newStart, endTime);
                 selectedId.postValue(getDao().insertItemSync(new AdditionalShiftEntity(
-                        new PaymentData(hourlyRate),
-                        new ShiftData(newStart, newEnd),
+                        PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
+                        ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
                         null
                 )));
             }
         });
     }
+
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
@@ -42,6 +43,17 @@ public final class ShiftUtil {
 
     public static class Calculator {
 
+        @Nullable
+        private static Calculator CALCULATOR;
+
+        @NonNull
+        public static Calculator getInstance(@NonNull Context context) {
+            if (CALCULATOR == null) {
+                CALCULATOR = new Calculator(context.getApplicationContext());
+            }
+            return CALCULATOR;
+        }
+
         private final SharedPreferences mPreferences;
 
         private final String
@@ -60,20 +72,20 @@ public final class ShiftUtil {
                 nightShiftStartDefault,
                 nightShiftEndDefault;
 
-        public Calculator(Context context) {
-            mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            normalDayStartKey = context.getString(R.string.key_start_normal_day);
-            normalDayEndKey = context.getString(R.string.key_end_normal_day);
-            longDayStartKey = context.getString(R.string.key_start_long_day);
-            longDayEndKey = context.getString(R.string.key_end_long_day);
-            nightShiftStartKey = context.getString(R.string.key_start_night_shift);
-            nightShiftEndKey = context.getString(R.string.key_end_night_shift);
-            normalDayStartDefault = context.getResources().getInteger(R.integer.default_start_normal_day);
-            normalDayEndDefault = context.getResources().getInteger(R.integer.default_end_normal_day);
-            longDayStartDefault = context.getResources().getInteger(R.integer.default_start_long_day);
-            longDayEndDefault = context.getResources().getInteger(R.integer.default_end_long_day);
-            nightShiftStartDefault = context.getResources().getInteger(R.integer.default_start_night_shift);
-            nightShiftEndDefault = context.getResources().getInteger(R.integer.default_end_night_shift);
+        private Calculator(@NonNull Context applicationContext) {
+            mPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+            normalDayStartKey = applicationContext.getString(R.string.key_start_normal_day);
+            normalDayEndKey = applicationContext.getString(R.string.key_end_normal_day);
+            longDayStartKey = applicationContext.getString(R.string.key_start_long_day);
+            longDayEndKey = applicationContext.getString(R.string.key_end_long_day);
+            nightShiftStartKey = applicationContext.getString(R.string.key_start_night_shift);
+            nightShiftEndKey = applicationContext.getString(R.string.key_end_night_shift);
+            normalDayStartDefault = applicationContext.getResources().getInteger(R.integer.default_start_normal_day);
+            normalDayEndDefault = applicationContext.getResources().getInteger(R.integer.default_end_normal_day);
+            longDayStartDefault = applicationContext.getResources().getInteger(R.integer.default_start_long_day);
+            longDayEndDefault = applicationContext.getResources().getInteger(R.integer.default_end_long_day);
+            nightShiftStartDefault = applicationContext.getResources().getInteger(R.integer.default_start_night_shift);
+            nightShiftEndDefault = applicationContext.getResources().getInteger(R.integer.default_end_night_shift);
         }
 //
 //        @Override

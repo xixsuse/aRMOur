@@ -20,7 +20,7 @@ public final class AdditionalShiftDetailFragment
     @NonNull
     @Override
     ItemDetailAdapter<AdditionalShiftEntity> createAdapter(Context context) {
-        return new AdditionalShiftDetailAdapter(this, new ShiftUtil.Calculator(context));
+        return new AdditionalShiftDetailAdapter(this, ShiftUtil.Calculator.getInstance(context));
     }
 
     @NonNull

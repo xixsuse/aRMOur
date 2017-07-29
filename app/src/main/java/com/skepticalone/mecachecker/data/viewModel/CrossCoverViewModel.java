@@ -78,7 +78,7 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
                 int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
                 selectedId.postValue(getDao().insertItemSync(new CrossCoverEntity(
                         newDate,
-                        new PaymentData(newCrossCoverPayment),
+                        PaymentData.fromPayment(newCrossCoverPayment),
                         null
                 )));
             }

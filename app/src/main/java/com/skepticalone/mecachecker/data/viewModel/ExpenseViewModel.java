@@ -50,7 +50,7 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
             public void run() {
                 selectedId.postValue(getDao().insertItemSync(new ExpenseEntity(
                         getApplication().getString(R.string.new_expense_title),
-                        new PaymentData(0),
+                        PaymentData.fromPayment(0),
                         null
                 )));
             }

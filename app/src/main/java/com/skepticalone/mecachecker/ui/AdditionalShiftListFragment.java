@@ -22,7 +22,7 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
     @NonNull
     @Override
     ItemListAdapter<AdditionalShiftEntity> createAdapter(Context context) {
-        return new AdditionalShiftListAdapter(this, new ShiftUtil.Calculator(context));
+        return new AdditionalShiftListAdapter(this, ShiftUtil.Calculator.getInstance(context));
     }
 
     @NonNull

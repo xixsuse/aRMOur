@@ -43,8 +43,9 @@ public final class PaymentData {
 //        this.comment = comment;
     }
 
-    public PaymentData(int payment) {
-        this(MoneyConverter.centsToMoney(payment), null, null);
+    @NonNull
+    public static PaymentData fromPayment(int payment) {
+        return new PaymentData(MoneyConverter.centsToMoney(payment), null, null);
     }
 
     @NonNull
