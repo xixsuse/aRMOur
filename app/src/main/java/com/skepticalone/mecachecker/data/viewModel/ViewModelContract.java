@@ -1,15 +1,17 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
 import android.arch.lifecycle.LiveData;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
 
+@MainThread
 public interface ViewModelContract<Entity> {
     void selectItem(long id);
     void deleteItem(long id);
-    void insertItem(@NonNull Entity item);
+    void restoreItem(@NonNull Entity item);
     @NonNull
     LiveData<Entity> getCurrentItem();
     @NonNull

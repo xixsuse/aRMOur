@@ -44,56 +44,62 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
 
     @Override
     public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItem(), payment);
+        payableHelper.saveNewPayment(getCurrentItemId(), payment);
     }
 
     @Override
     public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItem(), claimed);
+        payableHelper.setClaimed(getCurrentItemId(), claimed);
     }
 
     @Override
     public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItem(), paid);
+        payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
-    private void saveNewShiftTimes(long id, @NonNull ShiftData shiftData) {
-        try {
-            getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
-        } catch (SQLiteConstraintException e) {
-            postErrorMessage(R.string.overlapping_shifts);
-        }
+    private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
+                } catch (SQLiteConstraintException e) {
+                    postErrorMessage(R.string.overlapping_shifts);
+                }
+            }
+        });
     }
 
     public void saveNewDate(@NonNull LocalDate newDate) {
         AdditionalShiftEntity shift = getCurrentItem().getValue();
-        if (shift != null) {
-            saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
-        }
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
     }
 
     @Override
     public void saveNewTime(@NonNull LocalTime time, boolean start) {
         AdditionalShiftEntity shift = getCurrentItem().getValue();
-        if (shift != null) {
-            saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
-        }
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
     }
 
     @Override
-    public void addNewShift(@NonNull ShiftUtil.ShiftType shiftType) {
-        final int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
-        final LocalTime startTime = calculator.getStartTime(shiftType),
-                endTime = calculator.getEndTime(shiftType);
-        DateTime newStart = DateTime.now().withTime(startTime);
-        final DateTime lastShiftEnd = getDao().getLastShiftEndSync(), newEnd;
-        if (lastShiftEnd != null && newStart.isBefore(lastShiftEnd)) {
-            newStart = lastShiftEnd.withTime(newStart.toLocalTime());
-            while (newStart.isBefore(lastShiftEnd)) {
-                newStart = newStart.plusDays(1);
+    public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                final int hourlyRate = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(hourlyRateKey, defaultHourlyRate);
+                final LocalTime startTime = calculator.getStartTime(shiftType),
+                        endTime = calculator.getEndTime(shiftType);
+                DateTime newStart = DateTime.now().withTime(startTime);
+                final DateTime lastShiftEnd = getDao().getLastShiftEndSync(), newEnd;
+                if (lastShiftEnd != null && newStart.isBefore(lastShiftEnd)) {
+                    newStart = lastShiftEnd.withTime(newStart.toLocalTime());
+                    while (newStart.isBefore(lastShiftEnd)) {
+                        newStart = newStart.plusDays(1);
+                    }
+                }
+                newEnd = ShiftData.getNewEnd(newStart, endTime);
+                getDao().insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), new ShiftData(newStart, newEnd), null));
             }
-        }
-        newEnd = ShiftData.getNewEnd(newStart, endTime);
-        insertItem(new AdditionalShiftEntity(new PaymentData(hourlyRate), new ShiftData(newStart, newEnd), null));
+        });
     }
 }

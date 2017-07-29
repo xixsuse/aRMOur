@@ -30,33 +30,40 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
 
     @Override
     public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItem(), payment);
+        payableHelper.saveNewPayment(getCurrentItemId(), payment);
     }
 
     @Override
     public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItem(), claimed);
+        payableHelper.setClaimed(getCurrentItemId(), claimed);
     }
 
     @Override
     public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItem(), paid);
+        payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
     @Override
     public void addNewItem() {
-        insertItem(new ExpenseEntity(
-                getApplication().getString(R.string.new_expense_title),
-                new PaymentData(0),
-                null
-        ));
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                getDao().insertItemSync(new ExpenseEntity(
+                        getApplication().getString(R.string.new_expense_title),
+                        new PaymentData(0),
+                        null
+                ));
+            }
+        });
     }
 
-    public void saveNewTitle(@NonNull String newTitle) {
-        ExpenseEntity expense = getCurrentItem().getValue();
-        if (expense != null) {
-            getDao().setTitleSync(expense.getId(), newTitle);
-        }
+    public void saveNewTitle(@NonNull final String newTitle) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                getDao().setTitleSync(getCurrentItemId(), newTitle);
+            }
+        });
     }
 
 }

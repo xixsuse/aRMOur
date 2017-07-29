@@ -1,10 +1,8 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
-import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.dao.PayableDaoContract;
-import com.skepticalone.mecachecker.data.model.Payable;
 
 import org.joda.time.DateTime;
 
@@ -19,24 +17,32 @@ final class PayableHelper {
         this.dao = dao;
     }
 
-    void saveNewPayment(@NonNull LiveData<? extends Payable> currentItem, @NonNull BigDecimal payment) {
-        Payable item = currentItem.getValue();
-        if (item != null) {
-            dao.setPaymentSync(item.getId(), payment);
-        }
+    void saveNewPayment(final long id, @NonNull final BigDecimal payment) {
+        ItemViewModel.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                dao.setPaymentSync(id, payment);
+            }
+        });
     }
 
-    void setClaimed(@NonNull LiveData<? extends Payable> currentItem, boolean claimed) {
-        Payable item = currentItem.getValue();
-        if (item != null) {
-            dao.setClaimedSync(item.getId(), claimed ? DateTime.now() : null);
-        }
+    void setClaimed(final long id, final boolean claimed) {
+        ItemViewModel.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                dao.setClaimedSync(id, claimed ? DateTime.now() : null);
+
+            }
+        });
     }
 
-    void setPaid(@NonNull LiveData<? extends Payable> currentItem, boolean paid) {
-        Payable item = currentItem.getValue();
-        if (item != null) {
-            dao.setPaidSync(item.getId(), paid ? DateTime.now() : null);
-        }
+    void setPaid(final long id, final boolean paid) {
+        ItemViewModel.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                dao.setPaidSync(id, paid ? DateTime.now() : null);
+
+            }
+        });
     }
 }

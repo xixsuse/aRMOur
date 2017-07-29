@@ -38,39 +38,46 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
 
     @Override
     public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItem(), payment);
+        payableHelper.saveNewPayment(getCurrentItemId(), payment);
     }
 
     @Override
     public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItem(), claimed);
+        payableHelper.setClaimed(getCurrentItemId(), claimed);
     }
 
     @Override
     public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItem(), paid);
+        payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
-    public void saveNewDate(@NonNull LocalDate newDate) {
-        CrossCoverEntity CrossCover = getCurrentItem().getValue();
-        if (CrossCover != null) {
-            try {
-                getDao().setDateSync(CrossCover.getId(), newDate);
-            } catch (SQLiteConstraintException e) {
-                postErrorMessage(R.string.overlapping_shifts);
+    public void saveNewDate(@NonNull final LocalDate newDate) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getDao().setDateSync(getCurrentItemId(), newDate);
+                } catch (SQLiteConstraintException e) {
+                    postErrorMessage(R.string.overlapping_shifts);
+                }
             }
-        }
+        });
     }
 
     @Override
     public void addNewItem() {
-        LocalDate newDate = new LocalDate();
-        LocalDate lastCrossCoverShiftDate = getDao().getLastCrossCoverDateSync();
-        if (lastCrossCoverShiftDate != null) {
-            LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
-            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
-        }
-        int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
-        insertItem(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                LocalDate newDate = new LocalDate();
+                LocalDate lastCrossCoverShiftDate = getDao().getLastCrossCoverDateSync();
+                if (lastCrossCoverShiftDate != null) {
+                    LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
+                    if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+                }
+                int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
+                getDao().insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
+            }
+        });
     }
 }

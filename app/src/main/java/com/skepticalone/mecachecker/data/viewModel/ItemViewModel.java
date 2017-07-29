@@ -48,6 +48,10 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         });
     }
 
+    static void runAsync(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
     @NonNull
     LiveData<Entity> fetchItem(long id) {
         return dao.getItem(id);
@@ -77,8 +81,13 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @Override
-    public final void insertItem(@NonNull Entity item) {
-        selectedId.setValue(dao.insertItemSync(item));
+    public final void restoreItem(@NonNull final Entity item) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                selectedId.postValue(dao.insertItemSync(item));
+            }
+        });
     }
 
     @NonNull
@@ -94,25 +103,36 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @Override
-    public final void deleteItem(long id) {
-        Entity item = dao.getItemSync(id);
-        if (item != null && dao.deleteItemSync(item) == 1) {
-            selectedId.setValue(null);
-            deletedItem.setValue(item);
-        }
+    public final void deleteItem(final long id) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                Entity item = dao.getItemSync(id);
+                if (item != null && dao.deleteItemSync(item) == 1) {
+                    selectedId.postValue(null);
+                    deletedItem.postValue(item);
+                }
+            }
+        });
+    }
+
+    final long getCurrentItemId() {
+        return currentItem.getValue().getId();
     }
 
     @Override
-    public final void saveNewComment(@Nullable String newComment) {
-        Entity item = currentItem.getValue();
-        if (item != null) {
-            dao.setCommentSync(item.getId(), newComment);
-        }
+    public final void saveNewComment(@Nullable final String newComment) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                dao.setCommentSync(getCurrentItemId(), newComment);
+            }
+        });
     }
 
     @WorkerThread
-    final void postErrorMessage(@StringRes int errorMessage) {
-        this.errorMessage.postValue(errorMessage);
+    final void postErrorMessage(@StringRes int message) {
+        errorMessage.postValue(message);
     }
 
 }

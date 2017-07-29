@@ -123,7 +123,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
                     callbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            getViewModel().insertItem(deletedItem);
+                            getViewModel().restoreItem(deletedItem);
                         }
                     });
                 }

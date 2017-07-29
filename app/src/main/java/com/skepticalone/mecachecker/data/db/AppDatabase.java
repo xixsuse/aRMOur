@@ -33,8 +33,6 @@ public abstract class AppDatabase extends RoomDatabase {
             DATABASE = Room
                     .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
                     .openHelperFactory(new HelperFactory())
-                    // TODO: 24/07/17
-                    .allowMainThreadQueries()
                     .build();
         }
         return DATABASE;
