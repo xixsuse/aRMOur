@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.util.Snackbar;
 
 abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements AlertDialog.OnClickListener {
 
     private EditText editText;
+    private Snackbar snackbar;
 
     abstract int getInputType();
     @StringRes
@@ -36,6 +38,7 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
+        snackbar = (Snackbar) context;
         editText = (EditText) LayoutInflater.from(context).inflate(R.layout.edit_text, null, false);
         editText.setInputType(getInputType());
         editText.setHint(getHint());
@@ -73,6 +76,10 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
 
     @StringRes int getHint() {
         return getTitle();
+    }
+
+    final void showSnackbar(@StringRes int text) {
+        snackbar.showSnackbar(text);
     }
 
 }

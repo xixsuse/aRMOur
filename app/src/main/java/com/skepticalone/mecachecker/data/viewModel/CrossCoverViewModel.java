@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
@@ -53,7 +54,11 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
     public void saveNewDate(@NonNull LocalDate newDate) {
         CrossCoverEntity CrossCover = getCurrentItem().getValue();
         if (CrossCover != null) {
-            getDao().setDateSync(CrossCover.getId(), newDate);
+            try {
+                getDao().setDateSync(CrossCover.getId(), newDate);
+            } catch (SQLiteConstraintException e) {
+                postErrorMessage(R.string.overlapping_shifts);
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
@@ -57,7 +58,11 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     }
 
     private void saveNewShiftTimes(long id, @NonNull ShiftData shiftData) {
-        getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
+        try {
+            getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
+        } catch (SQLiteConstraintException e) {
+            postErrorMessage(R.string.overlapping_shifts);
+        }
     }
 
     public void saveNewDate(@NonNull LocalDate newDate) {

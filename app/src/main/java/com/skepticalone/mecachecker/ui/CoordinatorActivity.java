@@ -18,9 +18,8 @@ import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-import com.skepticalone.mecachecker.dialog.DialogFragment;
 
-abstract class CoordinatorActivity extends AppCompatActivity implements DialogFragment.Callbacks {
+abstract class CoordinatorActivity extends AppCompatActivity implements com.skepticalone.mecachecker.util.Snackbar {
 
     CoordinatorLayout mCoordinatorLayout;
 

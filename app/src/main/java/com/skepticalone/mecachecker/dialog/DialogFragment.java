@@ -5,12 +5,9 @@ import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
@@ -19,14 +16,6 @@ public abstract class DialogFragment<Entity, ViewModel extends ViewModelContract
 
     private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private ViewModel viewModel;
-    private Callbacks callbacks;
-
-    @Override
-    @CallSuper
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        callbacks = (Callbacks) context;
-    }
 
     @NonNull
     abstract ViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider);
@@ -54,14 +43,6 @@ public abstract class DialogFragment<Entity, ViewModel extends ViewModelContract
 
     final ViewModel getViewModel() {
         return viewModel;
-    }
-
-    final void showSnackbar(@StringRes int text) {
-        callbacks.showSnackbar(text);
-    }
-
-    public interface Callbacks {
-        void showSnackbar(@StringRes int text);
     }
 
 }

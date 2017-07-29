@@ -17,4 +17,6 @@ public interface ViewModelContract<Entity> {
     void saveNewComment(@Nullable String newComment);
     @NonNull
     LiveData<Entity> getDeletedItem();
+    @NonNull
+    LiveData<Integer> getErrorMessage();
 }

@@ -8,6 +8,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
@@ -24,6 +26,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     @NonNull
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
+    private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Entity> deletedItem = new MutableLiveData<>();
     static {
         //noinspection unchecked
@@ -58,6 +61,12 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     @Override
     public LiveData<Entity> getDeletedItem() {
         return deletedItem;
+    }
+
+    @NonNull
+    @Override
+    public LiveData<Integer> getErrorMessage() {
+        return errorMessage;
     }
 
     @NonNull
@@ -99,6 +108,11 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         if (item != null) {
             dao.setCommentSync(item.getId(), newComment);
         }
+    }
+
+    @WorkerThread
+    final void postErrorMessage(@StringRes int errorMessage) {
+        this.errorMessage.postValue(errorMessage);
     }
 
 }
