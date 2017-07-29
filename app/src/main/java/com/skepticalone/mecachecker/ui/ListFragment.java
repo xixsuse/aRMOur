@@ -150,7 +150,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-//        callbacks.onItemSelected(getItemType(), itemId);
+        callbacks.onItemSelected(getItemType(), itemId);
     }
 
     @Override
@@ -169,7 +169,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     }
 
     interface Callbacks extends FabCallbacks {
-//        void onItemSelected(int itemType, long itemId);
+        void onItemSelected(int itemType, long itemId);
         void showSnackbar(@StringRes int text, @StringRes int action, @NonNull View.OnClickListener listener);
     }
 

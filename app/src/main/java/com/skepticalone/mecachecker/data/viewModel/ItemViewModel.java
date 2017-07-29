@@ -71,6 +71,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     @Override
     public final void insertItem(@NonNull Entity item) {
         dao.insertItemSync(item);
+        selectedId.setValue(item.getId());
     }
 
     @NonNull
