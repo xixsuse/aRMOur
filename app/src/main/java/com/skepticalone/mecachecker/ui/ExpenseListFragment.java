@@ -29,18 +29,5 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
     ExpenseViewModel createViewModel(ViewModelProvider provider) {
         return provider.get(ExpenseViewModel.class);
     }
-//
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        getViewModel().getCurrentItem().observe(this, new Observer<ExpenseEntity>() {
-//            @Override
-//            public void onChanged(@Nullable ExpenseEntity expenseEntity) {
-//                if (expenseEntity != null && getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-//                    showDetail(expenseEntity.getId());
-//                }
-//            }
-//        });
-//    }
 
 }

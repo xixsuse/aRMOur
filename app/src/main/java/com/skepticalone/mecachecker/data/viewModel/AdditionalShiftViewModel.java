@@ -64,20 +64,20 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
                 try {
                     getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
-                    postErrorMessage(R.string.overlapping_shifts);
+                    errorMessage.postValue(R.string.overlapping_shifts);
                 }
             }
         });
     }
 
     public void saveNewDate(@NonNull LocalDate newDate) {
-        AdditionalShiftEntity shift = getCurrentItem().getValue();
+        AdditionalShiftEntity shift = getCurrentItemSync();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
     }
 
     @Override
     public void saveNewTime(@NonNull LocalTime time, boolean start) {
-        AdditionalShiftEntity shift = getCurrentItem().getValue();
+        AdditionalShiftEntity shift = getCurrentItemSync();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
     }
 
@@ -98,7 +98,11 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
                     }
                 }
                 newEnd = ShiftData.getNewEnd(newStart, endTime);
-                getDao().insertItemSync(new AdditionalShiftEntity(new PaymentData(hourlyRate), new ShiftData(newStart, newEnd), null));
+                selectedId.postValue(getDao().insertItemSync(new AdditionalShiftEntity(
+                        new PaymentData(hourlyRate),
+                        new ShiftData(newStart, newEnd),
+                        null
+                )));
             }
         });
     }

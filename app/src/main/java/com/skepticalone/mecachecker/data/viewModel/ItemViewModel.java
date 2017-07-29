@@ -8,8 +8,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.WorkerThread;
 
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
@@ -24,9 +22,9 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     private final Dao dao;
     private final LiveData<Entity> currentItem;
     @NonNull
-    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
-    private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
+    final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Entity> deletedItem = new MutableLiveData<>();
     static {
         //noinspection unchecked
@@ -116,8 +114,15 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         });
     }
 
+    @NonNull
+    final Entity getCurrentItemSync() {
+        Entity item = currentItem.getValue();
+        assert (item != null);
+        return item;
+    }
+
     final long getCurrentItemId() {
-        return currentItem.getValue().getId();
+        return getCurrentItemSync().getId();
     }
 
     @Override
@@ -128,11 +133,6 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
                 dao.setCommentSync(getCurrentItemId(), newComment);
             }
         });
-    }
-
-    @WorkerThread
-    final void postErrorMessage(@StringRes int message) {
-        errorMessage.postValue(message);
     }
 
 }

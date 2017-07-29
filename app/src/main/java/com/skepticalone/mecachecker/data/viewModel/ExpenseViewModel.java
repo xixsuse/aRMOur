@@ -48,11 +48,11 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
         runAsync(new Runnable() {
             @Override
             public void run() {
-                getDao().insertItemSync(new ExpenseEntity(
+                selectedId.postValue(getDao().insertItemSync(new ExpenseEntity(
                         getApplication().getString(R.string.new_expense_title),
                         new PaymentData(0),
                         null
-                ));
+                )));
             }
         });
     }

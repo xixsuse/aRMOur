@@ -58,7 +58,7 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
                 try {
                     getDao().setDateSync(getCurrentItemId(), newDate);
                 } catch (SQLiteConstraintException e) {
-                    postErrorMessage(R.string.overlapping_shifts);
+                    errorMessage.postValue(R.string.overlapping_shifts);
                 }
             }
         });
@@ -76,7 +76,11 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
                     if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
                 }
                 int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
-                getDao().insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
+                selectedId.postValue(getDao().insertItemSync(new CrossCoverEntity(
+                        newDate,
+                        new PaymentData(newCrossCoverPayment),
+                        null
+                )));
             }
         });
     }
