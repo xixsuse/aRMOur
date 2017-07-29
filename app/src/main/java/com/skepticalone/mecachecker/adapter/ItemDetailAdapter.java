@@ -54,14 +54,17 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
         } else return false;
     }
 
-    public final void setItem(@NonNull Entity item) {
-        if (mItem == null) {
-            mItem = item;
-            notifyItemRangeInserted(0, getRowCount(mItem));
+    public final void setItem(@Nullable Entity item) {
+        if (mItem == null && item == null) {
+            return;
+        } else if (mItem == null) {
+            notifyItemRangeInserted(0, getRowCount(item));
+        } else if (item == null) {
+            notifyItemRangeRemoved(0, getRowCount(mItem));
         } else {
             onItemUpdated(mItem, item);
-            mItem = item;
         }
+        mItem = item;
     }
 
     @Override

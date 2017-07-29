@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
+public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback {
 
     private final Callbacks mCallbacks;
     @Nullable
@@ -82,7 +83,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
                 }
 
             });
-            result.dispatchUpdatesTo(this);
+            result.dispatchUpdatesTo((ListUpdateCallback) this);
         }
         mItems = items;
     }
@@ -128,8 +129,32 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         return mItems == null ? 0 : mItems.size();
     }
 
+    @Override
+    public void onInserted(int position, int count) {
+        notifyItemRangeInserted(position, count);
+        mCallbacks.scrollToPosition(position + count - 1);
+    }
+
+    @Override
+    public void onRemoved(int position, int count) {
+        notifyItemRangeRemoved(position, count);
+    }
+
+    @Override
+    public void onMoved(int fromPosition, int toPosition) {
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onChanged(int position, int count, Object payload) {
+        notifyItemRangeChanged(position, count, payload);
+    }
+
     public interface Callbacks {
         void onClick(long itemId);
         void onLongClick(long itemId);
+        void scrollToPosition(int position);
     }
+
+
 }

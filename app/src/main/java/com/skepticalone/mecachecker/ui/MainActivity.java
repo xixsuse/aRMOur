@@ -42,7 +42,7 @@ public final class MainActivity extends CoordinatorActivity
     }
 
     @Override
-    public void onItemSelected(int itemType, long itemId) {
+    public void showDetail(int itemType, long itemId) {
         if (!mTwoPane) {
             Intent intent = new Intent(MainActivity.this, DetailActivity.class);
             intent.putExtra(DetailActivity.ITEM_TYPE, itemType);
@@ -147,7 +147,7 @@ public final class MainActivity extends CoordinatorActivity
 //    }
 //
 //    @Override
-//    public void onItemSelected(int itemType, long itemId) {
+//    public void showDetail(int itemType, long itemId) {
 //
 //    }
 

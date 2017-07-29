@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.util.DeletedItem;
 
 import java.util.List;
 
@@ -24,9 +23,12 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     private final LiveData<Entity> currentItem;
     @NonNull
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
-    private static final LiveData NO_DATA = new MutableLiveData<>();
-    private final DeletedItem.Observable<Entity> deletedItem = new DeletedItem.Observable<>();
-
+    private static final MutableLiveData NO_DATA = new MutableLiveData<>();
+    private final MutableLiveData<Entity> deletedItem = new MutableLiveData<>();
+    static {
+        //noinspection unchecked
+        NO_DATA.setValue(null);
+    }
     ItemViewModel(Application application) {
         super(application);
         dao = onCreateDao(AppDatabase.getInstance(application));
@@ -36,7 +38,9 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
                 if (id == null){
                     //noinspection unchecked
                     return NO_DATA;
-                } else return fetchItem(id);
+                } else {
+                    return fetchItem(id);
+                }
             }
         });
     }
@@ -46,18 +50,13 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         return dao.getItem(id);
     }
 
-    @NonNull
-    public final LiveData<Long> getSelectedId() {
-        return selectedId;
-    }
-
     public final void selectItem(long id) {
         selectedId.setValue(id);
     }
 
     @NonNull
     @Override
-    public DeletedItem.Observable<Entity> getDeletedItem() {
+    public LiveData<Entity> getDeletedItem() {
         return deletedItem;
     }
 
@@ -70,8 +69,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
 
     @Override
     public final void insertItem(@NonNull Entity item) {
-        dao.insertItemSync(item);
-        selectedId.setValue(item.getId());
+        selectedId.setValue(dao.insertItemSync(item));
     }
 
     @NonNull
@@ -90,7 +88,8 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     public final void deleteItem(long id) {
         Entity item = dao.getItemSync(id);
         if (item != null && dao.deleteItemSync(item) == 1) {
-            deletedItem.setItem(item);
+            selectedId.setValue(null);
+            deletedItem.setValue(item);
         }
     }
 

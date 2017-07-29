@@ -4,8 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.data.util.DeletedItem;
-
 import java.util.List;
 
 public interface ViewModelContract<Entity> {
@@ -18,5 +16,5 @@ public interface ViewModelContract<Entity> {
     LiveData<List<Entity>> getItems();
     void saveNewComment(@Nullable String newComment);
     @NonNull
-    DeletedItem.Observable<Entity> getDeletedItem();
+    LiveData<Entity> getDeletedItem();
 }

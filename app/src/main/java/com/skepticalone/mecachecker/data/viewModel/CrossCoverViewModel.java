@@ -65,6 +65,6 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
             if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
         }
         int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
-        getDao().insertItemSync(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
+        insertItem(new CrossCoverEntity(newDate, new PaymentData(newCrossCoverPayment), null));
     }
 }

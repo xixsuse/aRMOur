@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
+import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.util.DeletedItem;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import java.util.List;
@@ -27,19 +27,7 @@ import java.util.List;
 abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemListAdapter<Entity>, ViewModel>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
-//    final static String IS_TWO_PANE = "IS_TWO_PANE";
     private Callbacks callbacks;
-    private final DeletedItem.Observer<Entity> deletedItemObserver = new DeletedItem.Observer<Entity>(){
-        @Override
-        public void update(@NonNull final Entity deletedItem) {
-            callbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getViewModel().insertItem(deletedItem);
-                }
-            });
-        }
-    };
 
     static ListFragment getNewListFragment(@IdRes int itemType) {
         if (itemType == R.id.cross_cover) return new CrossCoverListFragment();
@@ -47,7 +35,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         throw new IllegalStateException();
     }
 
-//    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mLayoutManager;
 //    private final RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
 //
 //        private static final String TAG = "mObserver";
@@ -104,13 +92,19 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @Override
     public final RecyclerView onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = super.onCreateView(inflater, container, savedInstanceState);
-//        mLayoutManager = recyclerView.getLayoutManager();
+        mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         return recyclerView;
     }
 
     @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void scrollToPosition(int position) {
+        mLayoutManager.scrollToPosition(position);
+    }
+
+    @Override
+    @CallSuper
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getViewModel().getItems().observe(this, this);
 //        if (getArguments().getBoolean(IS_TWO_PANE, false)) {
@@ -121,6 +115,19 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
 //                }
 //            });
 //        }
+        getViewModel().getDeletedItem().observe(this, new Observer<Entity>() {
+            @Override
+            public void onChanged(@Nullable final Entity deletedItem) {
+                if (deletedItem != null && getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+                    callbacks.showSnackbar(R.string.item_removed, R.string.undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getViewModel().insertItem(deletedItem);
+                        }
+                    });
+                }
+            }
+        });
         setupFab(callbacks);
     }
 
@@ -130,27 +137,17 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         getAdapter().setItems(entities);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        getAdapter().registerAdapterDataObserver(mObserver);
-        getViewModel().getDeletedItem().addObserver(deletedItemObserver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getViewModel().getDeletedItem().deleteObserver(deletedItemObserver);
-//        getAdapter().unregisterAdapterDataObserver(mObserver);
-    }
-
     @IdRes
     abstract int getItemType();
 
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-        callbacks.onItemSelected(getItemType(), itemId);
+        showDetail(itemId);
+    }
+
+    final void showDetail(long itemId) {
+        callbacks.showDetail(getItemType(), itemId);
     }
 
     @Override
@@ -169,7 +166,7 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     }
 
     interface Callbacks extends FabCallbacks {
-        void onItemSelected(int itemType, long itemId);
+        void showDetail(int itemType, long itemId);
         void showSnackbar(@StringRes int text, @StringRes int action, @NonNull View.OnClickListener listener);
     }
 

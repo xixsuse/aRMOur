@@ -23,7 +23,7 @@ public interface ExpenseDao extends ItemDaoContract<ExpenseEntity>, PayableDaoCo
 
     @Override
     @Insert
-    void insertItemSync(@NonNull ExpenseEntity expense);
+    long insertItemSync(@NonNull ExpenseEntity expense);
 
     @Override
 //    @Query("SELECT * FROM " + Contract.Expenses.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_PAID + " IS NULL, " + Contract.COLUMN_NAME_CLAIMED + " IS NULL, coalesce(" + Contract.COLUMN_NAME_PAID + ", " + Contract.COLUMN_NAME_CLAIMED + ", " + BaseColumns._ID + ")")

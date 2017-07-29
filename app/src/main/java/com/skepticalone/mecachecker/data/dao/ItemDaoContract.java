@@ -11,7 +11,7 @@ import java.util.List;
 public interface ItemDaoContract<Entity> {
 
     @WorkerThread
-    void insertItemSync(@NonNull Entity item);
+    long insertItemSync(@NonNull Entity item);
 
     @MainThread
     @NonNull

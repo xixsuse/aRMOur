@@ -23,13 +23,6 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
         throw new IllegalStateException();
     }
 
-//    private final ErrorMessageObserver errorMessageObserver = new ErrorMessageObserver(){
-//        @Override
-//        public void update(@StringRes int errorMessage) {
-//            snackbarCallbacks.showSnackbar(errorMessage);
-//        }
-//    };
-
     @Override
     final int getLayout() {
         return R.layout.detail_recycler;
@@ -41,7 +34,7 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
         getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
                     @Override
                     public void onChanged(@Nullable Entity entity) {
-                        if (entity != null) getAdapter().setItem(entity);
+                        getAdapter().setItem(entity);
                     }
                 }
         );

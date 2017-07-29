@@ -44,7 +44,7 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
     }
 
     public void addNewExpense() {
-        getDao().insertItemSync(new ExpenseEntity(
+        insertItem(new ExpenseEntity(
                 getApplication().getString(R.string.new_expense_title),
                 new PaymentData(0),
                 null

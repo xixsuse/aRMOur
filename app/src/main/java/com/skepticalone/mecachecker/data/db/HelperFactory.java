@@ -60,6 +60,7 @@ final class HelperFactory extends FrameworkSQLiteOpenHelperFactory {
         }
 
         private void explain(SupportSQLiteDatabase db, String query) {
+            // TODO: 29/07/17 remove this method 
             String TAG = "explain";
             Log.i(TAG, "query: " + query);
             Cursor c = db.query("EXPLAIN QUERY PLAN " + query);
