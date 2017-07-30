@@ -7,7 +7,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-public abstract class CommentDialogFragment<Entity extends Item> extends PlainTextDialogFragment<Entity, ViewModelContract<Entity>> {
+abstract class CommentDialogFragment<Entity extends Item> extends PlainTextDialogFragment<Entity, ViewModelContract<Entity>> {
 
     @Override
     final int getTitle() {

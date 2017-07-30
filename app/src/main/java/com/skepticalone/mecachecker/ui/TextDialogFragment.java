@@ -11,7 +11,6 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
@@ -27,12 +26,6 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
     abstract int getTitle();
 
     abstract void saveText(@Nullable String text);
-
-    @Nullable
-    private static String getTextToSave(@NonNull TextView textView) {
-        String text = textView.getText().toString().trim();
-        return text.isEmpty() ? null : text;
-    }
 
     @SuppressLint("InflateParams")
     @Override

@@ -52,7 +52,7 @@ public final class RosteredShiftDetailFragment
 
         @NonNull
         @Override
-        public ViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        ViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(RosteredShiftViewModel.class);
         }
 
@@ -62,7 +62,7 @@ public final class RosteredShiftDetailFragment
 
         @NonNull
         @Override
-        public DateViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        DateViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(RosteredShiftViewModel.class);
         }
 
@@ -73,7 +73,7 @@ public final class RosteredShiftDetailFragment
         private static final String LOGGED = "LOGGED";
         private boolean logged;
 
-        public static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
+        private static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
             Bundle arguments = getArgs(start);
             arguments.putBoolean(LOGGED, logged);
             RosteredShiftTimeDialogFragment fragment = new RosteredShiftTimeDialogFragment();
@@ -89,7 +89,7 @@ public final class RosteredShiftDetailFragment
 
         @NonNull
         @Override
-        public ShiftData getShiftDataForDisplay(@NonNull RosteredShiftEntity shift) {
+        ShiftData getShiftDataForDisplay(@NonNull RosteredShiftEntity shift) {
             final ShiftData shiftData;
             if (logged) {
                 shiftData = shift.getLoggedShiftData();
@@ -102,12 +102,12 @@ public final class RosteredShiftDetailFragment
 
         @NonNull
         @Override
-        public RosteredShiftViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        RosteredShiftViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(RosteredShiftViewModel.class);
         }
 
         @Override
-        public void onTimeSet(@NonNull LocalTime time, boolean start) {
+        void onTimeSet(@NonNull LocalTime time, boolean start) {
             getViewModel().saveNewTime(getCurrentItem(), time, start, logged);
         }
 

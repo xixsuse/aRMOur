@@ -50,7 +50,7 @@ public final class ExpenseDetailFragment
 
         @NonNull
         @Override
-        public ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(ExpenseViewModel.class);
         }
 
@@ -59,13 +59,13 @@ public final class ExpenseDetailFragment
     public static final class ExpensePaymentDialogFragment extends PaymentDialogFragment<ExpenseEntity> {
 
         @Override
-        public int getTitle() {
+        int getTitle() {
             return R.string.payment;
         }
 
         @NonNull
         @Override
-        public PayableViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        PayableViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(ExpenseViewModel.class);
         }
 
@@ -74,23 +74,23 @@ public final class ExpenseDetailFragment
     public static final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<ExpenseEntity, ExpenseViewModel> {
 
         @Override
-        public int getTitle() {
+        int getTitle() {
             return R.string.title;
         }
 
         @NonNull
         @Override
-        public ExpenseViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        ExpenseViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(ExpenseViewModel.class);
         }
 
         @Override
-        public String getTextForDisplay(@NonNull ExpenseEntity item) {
+        String getTextForDisplay(@NonNull ExpenseEntity item) {
             return item.getTitle();
         }
 
         @Override
-        public void saveText(@Nullable String title) {
+        void saveText(@Nullable String title) {
             if (title == null) {
                 showSnackbar(R.string.value_required);
             } else {

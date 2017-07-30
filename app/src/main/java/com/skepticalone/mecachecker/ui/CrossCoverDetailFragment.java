@@ -52,7 +52,7 @@ public final class CrossCoverDetailFragment
 
         @NonNull
         @Override
-        public ViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        ViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(CrossCoverViewModel.class);
         }
 
@@ -62,13 +62,13 @@ public final class CrossCoverDetailFragment
 
         @NonNull
         @Override
-        public LocalDate getDateForDisplay(@NonNull CrossCoverEntity crossCover) {
+        LocalDate getDateForDisplay(@NonNull CrossCoverEntity crossCover) {
             return crossCover.getDate();
         }
 
         @NonNull
         @Override
-        public DateViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        DateViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(CrossCoverViewModel.class);
         }
 
@@ -77,13 +77,13 @@ public final class CrossCoverDetailFragment
     public static final class CrossCoverPaymentDialogFragment extends PaymentDialogFragment<CrossCoverEntity> {
 
         @Override
-        public int getTitle() {
+        int getTitle() {
             return R.string.payment;
         }
 
         @NonNull
         @Override
-        public PayableViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        PayableViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
             return viewModelProvider.get(CrossCoverViewModel.class);
         }
 

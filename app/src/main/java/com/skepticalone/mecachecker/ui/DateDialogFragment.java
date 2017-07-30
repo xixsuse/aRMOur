@@ -11,7 +11,7 @@ import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 
 import org.joda.time.LocalDate;
 
-public abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, DateViewModelContract<Entity>> implements DatePickerDialog.OnDateSetListener {
+abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, DateViewModelContract<Entity>> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
 
@@ -29,7 +29,7 @@ public abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, 
     }
 
     @NonNull
-    public abstract LocalDate getDateForDisplay(@NonNull Entity item);
+    abstract LocalDate getDateForDisplay(@NonNull Entity item);
 
     @Override
     public final void onChanged(@Nullable Entity item) {

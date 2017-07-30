@@ -14,13 +14,13 @@ import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import org.joda.time.LocalTime;
 
-public abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements TimePickerDialog.OnTimeSetListener {
+abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends DialogFragment<Entity, ViewModel> implements TimePickerDialog.OnTimeSetListener {
 
     private static final String START = "START";
     private boolean start;
     private TimePickerDialog timePickerDialog;
 
-    public static Bundle getArgs(boolean start) {
+    static Bundle getArgs(boolean start) {
         Bundle args = new Bundle();
         args.putBoolean(START, start);
         return args;
@@ -57,6 +57,6 @@ public abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelCont
         onTimeSet(new LocalTime(hourOfDay, minuteOfHour), start);
     }
 
-    public abstract void onTimeSet(@NonNull LocalTime time, boolean start);
+    abstract void onTimeSet(@NonNull LocalTime time, boolean start);
 
 }

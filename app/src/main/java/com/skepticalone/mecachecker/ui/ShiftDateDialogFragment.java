@@ -6,11 +6,11 @@ import com.skepticalone.mecachecker.data.model.Shift;
 
 import org.joda.time.LocalDate;
 
-public abstract class ShiftDateDialogFragment<Entity extends Shift> extends DateDialogFragment<Entity> {
+abstract class ShiftDateDialogFragment<Entity extends Shift> extends DateDialogFragment<Entity> {
 
     @NonNull
     @Override
-    public final LocalDate getDateForDisplay(@NonNull Entity shift) {
+    final LocalDate getDateForDisplay(@NonNull Entity shift) {
         return shift.getShiftData().getStart().toLocalDate();
     }
 
