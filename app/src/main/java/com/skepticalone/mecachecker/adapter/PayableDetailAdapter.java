@@ -12,7 +12,7 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-abstract class PayableDetailAdapter<Entity extends Payable> extends ItemDetailAdapter<Entity> {
+public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemDetailAdapter<Entity> {
 
     @NonNull
     private final Callbacks callbacks;

@@ -5,19 +5,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
-import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.dialog.ExpensePaymentDialogFragment;
 import com.skepticalone.mecachecker.dialog.ExpenseTitleDialogFragment;
+import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 
 public final class ExpenseDetailFragment
-        extends DetailFragment<ExpenseEntity, ExpenseViewModel>
+        extends PayableDetailFragment<ExpenseEntity, ExpenseViewModel>
         implements ExpenseDetailAdapter.Callbacks {
 
     @NonNull
     @Override
-    ItemDetailAdapter<ExpenseEntity> createAdapter(Context context) {
+    PayableDetailAdapter<ExpenseEntity> createAdapter(Context context) {
         return new ExpenseDetailAdapter(this);
     }
 
@@ -32,19 +33,10 @@ public final class ExpenseDetailFragment
         showDialogFragment(new ExpenseTitleDialogFragment());
     }
 
+    @NonNull
     @Override
-    public void changePayment() {
-        showDialogFragment(new ExpensePaymentDialogFragment());
-    }
-
-    @Override
-    public void setClaimed(boolean claimed) {
-        getViewModel().setClaimed(claimed);
-    }
-
-    @Override
-    public void setPaid(boolean paid) {
-        getViewModel().setPaid(paid);
+    PaymentDialogFragment getNewPaymentDialogFragment() {
+        return new ExpensePaymentDialogFragment();
     }
 
 }

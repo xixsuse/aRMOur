@@ -5,21 +5,22 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.AdditionalShiftDetailAdapter;
-import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
+import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.dialog.AdditionalShiftDateDialogFragment;
 import com.skepticalone.mecachecker.dialog.AdditionalShiftPaymentDialogFragment;
 import com.skepticalone.mecachecker.dialog.AdditionalShiftTimeDialogFragment;
+import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftDetailFragment
-        extends DetailFragment<AdditionalShiftEntity, AdditionalShiftViewModel>
+        extends PayableDetailFragment<AdditionalShiftEntity, AdditionalShiftViewModel>
         implements AdditionalShiftDetailAdapter.Callbacks {
 
     @NonNull
     @Override
-    ItemDetailAdapter<AdditionalShiftEntity> createAdapter(Context context) {
+    PayableDetailAdapter<AdditionalShiftEntity> createAdapter(Context context) {
         return new AdditionalShiftDetailAdapter(this, ShiftUtil.Calculator.getInstance(context));
     }
 
@@ -39,19 +40,10 @@ public final class AdditionalShiftDetailFragment
         showDialogFragment(AdditionalShiftTimeDialogFragment.newInstance(start));
     }
 
+    @NonNull
     @Override
-    public void changePayment() {
-        showDialogFragment(new AdditionalShiftPaymentDialogFragment());
-    }
-
-    @Override
-    public void setClaimed(boolean claimed) {
-        getViewModel().setClaimed(claimed);
-    }
-
-    @Override
-    public void setPaid(boolean paid) {
-        getViewModel().setPaid(paid);
+    PaymentDialogFragment getNewPaymentDialogFragment() {
+        return new AdditionalShiftPaymentDialogFragment();
     }
 
 }
