@@ -111,7 +111,7 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     boolean bindViewHolder(@NonNull AdditionalShiftEntity shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, null);
-            holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, shift.getTotalPayment()));
+            holder.setText(holder.getText(R.string.payment), holder.getCurrencyText(shift.getTotalPayment()));
             return true;
         } else return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
                 super.bindViewHolder(shift, holder, position);

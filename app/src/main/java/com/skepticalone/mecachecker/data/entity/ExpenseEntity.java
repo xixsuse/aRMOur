@@ -18,7 +18,7 @@ public final class ExpenseEntity extends ItemEntity implements com.skepticalone.
     @Embedded
     private final PaymentData paymentData;
     public ExpenseEntity(
-            @NonNull String title, @NonNull PaymentData paymentData, @Nullable String comment
+            @NonNull String title, @NonNull PaymentData paymentData, @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
         super(comment);
         this.paymentData = paymentData;

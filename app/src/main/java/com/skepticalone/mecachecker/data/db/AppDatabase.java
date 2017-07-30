@@ -21,7 +21,7 @@ import com.skepticalone.mecachecker.data.util.LocalDateConverter;
 import com.skepticalone.mecachecker.data.util.MoneyConverter;
 
 @Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class},
-        version = 28)
+        version = 29)
 @TypeConverters({LocalDateConverter.class, DateTimeConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

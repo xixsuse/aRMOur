@@ -30,10 +30,11 @@ public final class PaymentData {
 //    @ColumnInfo(name = Contract.COLUMN_NAME_COMMENT)
 //    private final String comment;
 
+    @SuppressWarnings("WeakerAccess")
     public PaymentData(
             @NonNull BigDecimal payment,
-            @Nullable DateTime claimed,
-            @Nullable DateTime paid
+            @SuppressWarnings("SameParameterValue") @Nullable DateTime claimed,
+            @SuppressWarnings("SameParameterValue") @Nullable DateTime paid
 //            @Nullable String comment
     ) {
         this.payment = payment;

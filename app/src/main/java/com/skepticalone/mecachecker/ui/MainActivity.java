@@ -3,18 +3,21 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.settings.SettingsActivity;
 
 public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, ListFragment.Callbacks {
@@ -44,6 +47,7 @@ public final class MainActivity extends CoordinatorActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         mFabMenu = findViewById(R.id.fab_menu);
         mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
@@ -60,6 +64,20 @@ public final class MainActivity extends CoordinatorActivity
                 // do nothing
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else return super.onOptionsItemSelected(item);
     }
 
     @Override

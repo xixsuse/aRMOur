@@ -39,7 +39,7 @@ public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity
                 try {
                     getDao().setDateSync(item.getId(), date);
                 } catch (SQLiteConstraintException e) {
-                    postErrorMessage(R.string.overlapping_shifts);
+                    postOverlappingShifts();
                 }
             }
         });

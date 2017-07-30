@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Dao
 public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity> {
 

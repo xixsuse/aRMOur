@@ -93,10 +93,6 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-        showDetail(itemId);
-    }
-
-    final void showDetail(long itemId) {
         callbacks.showDetail(getItemType(), itemId);
     }
 

@@ -32,7 +32,7 @@ public final class AdditionalShiftEntity extends ItemEntity implements Additiona
     public AdditionalShiftEntity(
             @NonNull PaymentData paymentData,
             @NonNull ShiftData shiftData,
-            @Nullable String comment
+            @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
         super(comment);
         this.shiftData = shiftData;

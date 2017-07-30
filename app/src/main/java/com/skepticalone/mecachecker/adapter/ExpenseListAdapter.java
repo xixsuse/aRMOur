@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.util.Comparators;
 
@@ -31,7 +30,7 @@ public final class ExpenseListAdapter extends ItemListAdapter<ExpenseEntity> {
     @Override
     void bindViewHolder(@NonNull ExpenseEntity expense, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
-        holder.setText(expense.getTitle(), holder.getText(R.string.currency_format, expense.getPaymentData().getPayment()), expense.getComment());
+        holder.setText(expense.getTitle(), holder.getCurrencyText(expense.getPaymentData().getPayment()), expense.getComment());
     }
 
 }

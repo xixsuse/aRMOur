@@ -19,6 +19,7 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public interface CrossCoverDao extends PayableDaoContract<CrossCoverEntity> {
 

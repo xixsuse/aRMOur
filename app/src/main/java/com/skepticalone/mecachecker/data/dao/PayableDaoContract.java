@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
+@SuppressWarnings("NullableProblems")
 public interface PayableDaoContract<Entity> extends ItemDaoContract<Entity> {
 
     @WorkerThread

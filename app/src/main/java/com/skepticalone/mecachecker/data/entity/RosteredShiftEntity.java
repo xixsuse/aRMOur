@@ -48,8 +48,8 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
 
     public RosteredShiftEntity(
             @NonNull ShiftData shiftData,
-            @Nullable ShiftData loggedShiftData,
-            @Nullable String comment
+            @SuppressWarnings("SameParameterValue") @Nullable ShiftData loggedShiftData,
+            @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
         super(comment);
         this.shiftData = shiftData;

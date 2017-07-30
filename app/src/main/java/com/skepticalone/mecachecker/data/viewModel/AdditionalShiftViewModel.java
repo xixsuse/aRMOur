@@ -53,7 +53,7 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
                 try {
                     getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
-                    postErrorMessage(R.string.overlapping_shifts);
+                    postOverlappingShifts();
                 }
             }
         });

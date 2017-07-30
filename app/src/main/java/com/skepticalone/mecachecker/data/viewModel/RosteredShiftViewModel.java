@@ -9,7 +9,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
@@ -100,7 +99,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
                 try {
                     getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd(), loggedShiftData == null ? null : loggedShiftData.getStart(), loggedShiftData == null ? null : loggedShiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
-                    postErrorMessage(R.string.overlapping_shifts);
+                    postOverlappingShifts();
                 }
             }
         });

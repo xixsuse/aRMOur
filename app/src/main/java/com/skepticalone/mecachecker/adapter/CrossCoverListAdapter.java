@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
@@ -32,7 +31,7 @@ public final class CrossCoverListAdapter extends ItemListAdapter<CrossCoverEntit
     @Override
     void bindViewHolder(@NonNull CrossCoverEntity crossCover, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(crossCover.getPaymentData().getIcon());
-        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), holder.getText(R.string.currency_format, crossCover.getPaymentData().getPayment()), crossCover.getComment());
+        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), holder.getCurrencyText(crossCover.getPaymentData().getPayment()), crossCover.getComment());
     }
 
 }

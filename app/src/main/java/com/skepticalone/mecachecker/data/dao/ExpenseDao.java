@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public interface ExpenseDao extends PayableDaoContract<ExpenseEntity> {
 

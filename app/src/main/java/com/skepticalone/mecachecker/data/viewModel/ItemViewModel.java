@@ -9,10 +9,10 @@ import android.arch.lifecycle.Transformations;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.annotation.WorkerThread;
 import android.view.View;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.model.Item;
@@ -132,8 +132,8 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     }
 
     @WorkerThread
-    final void postErrorMessage(@StringRes int message) {
-        errorMessage.postValue(message);
+    final void postOverlappingShifts() {
+        errorMessage.postValue(R.string.overlapping_shifts);
     }
 
     @WorkerThread

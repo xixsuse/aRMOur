@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread;
 
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 public interface ItemDaoContract<Entity> {
 
     @WorkerThread

@@ -41,6 +41,7 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @CallSuper
     boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberComment(item)) {

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.github.clans.fab.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fab_add"
-    style="@style/fab"
-    android:src="@drawable/ic_add_white_24dp"
-    />

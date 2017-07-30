@@ -28,6 +28,7 @@ public final class ShiftData {
     @Ignore
     private final Duration duration;
 
+    @SuppressWarnings("WeakerAccess")
     public ShiftData(
             @NonNull DateTime start,
             @NonNull DateTime end

@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 
+import java.math.BigDecimal;
+
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     final ImageView primaryIcon, secondaryIcon;
@@ -74,12 +76,14 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         setup(icon, null, true, switchChecked, onCheckedChangeListener);
     }
 
+    @NonNull
     String getText(@StringRes int resId) {
         return text.getContext().getString(resId);
     }
 
-    String getText(@StringRes int resId, Object... formatArgs) {
-        return text.getContext().getString(resId, formatArgs);
+    @NonNull
+    String getCurrencyText(@NonNull BigDecimal value) {
+        return text.getContext().getString(R.string.currency_format, value);
     }
 
     void setText(@NonNull String firstLine) {

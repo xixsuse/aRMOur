@@ -7,31 +7,6 @@
         <!--<item name="colorButtonNormal"></item>-->
     </style>
 
-    <style name="detail_list_label" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:paddingLeft">@dimen/standard_padding</item>
-        <item name="android:paddingRight">@dimen/standard_padding</item>
-    </style>
-
-    <style name="detail_list_content" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:paddingLeft">@dimen/standard_padding</item>
-        <item name="android:paddingRight">@dimen/standard_padding</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <color name="fabColorNormal">#43A047</color>
-    <color name="fabColorPressed">#2E7D32</color>
-    <color name="fabColorRipple">#1B5E20</color>
-
     <style name="fab">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -39,15 +14,5 @@
         <item name="fab_colorPressed">@color/fabColorPressed</item>
         <item name="fab_colorRipple">@color/fabColorRipple</item>
     </style>
-
-    <style name="ShiftDetailButton" parent="Widget.AppCompat.Button.Colored" />
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
