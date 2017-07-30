@@ -4,10 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
-import com.skepticalone.mecachecker.util.Comparators;
-import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<AdditionalShiftEntity> {
@@ -24,14 +21,39 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
             ROW_COUNT = 8;
 
     @NonNull
-    private final ShiftUtil.Calculator calculator;
-    private final Callbacks callbacks;
+    private final ShiftDetailAdapterHelper<AdditionalShiftEntity> shiftDetailAdapterHelper;
+    @NonNull
     private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
-    public AdditionalShiftDetailAdapter(Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    public AdditionalShiftDetailAdapter(@NonNull final Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
         super(callbacks);
-        this.callbacks = callbacks;
-        this.calculator = calculator;
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<AdditionalShiftEntity>(callbacks, calculator) {
+            @Override
+            int getRowNumberDate() {
+                return ROW_NUMBER_DATE;
+            }
+
+            @Override
+            int getRowNumberStart() {
+                return ROW_NUMBER_START;
+            }
+
+            @Override
+            int getRowNumberEnd() {
+                return ROW_NUMBER_END;
+            }
+
+            @Override
+            int getRowNumberShiftType() {
+                return ROW_NUMBER_SHIFT_TYPE;
+            }
+
+            @Override
+            void changeTime(boolean start) {
+                callbacks.changeTime(start);
+            }
+
+        };
         payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks) {
             @Override
             int getRowNumberPayment() {
@@ -51,17 +73,17 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    int getRowNumberComment() {
+    int getRowNumberComment(@NonNull AdditionalShiftEntity shift) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull AdditionalShiftEntity item) {
+    int getRowCount(@NonNull AdditionalShiftEntity shift) {
         return ROW_COUNT;
     }
 
     @Override
-    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
         holder.secondaryIcon.setVisibility(View.GONE);
         return holder;
@@ -70,54 +92,18 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     @Override
     void onItemUpdated(@NonNull AdditionalShiftEntity oldShift, @NonNull AdditionalShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
+        shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         payableDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
-            notifyItemChanged(ROW_NUMBER_DATE);
-            notifyItemChanged(ROW_NUMBER_START);
-            notifyItemChanged(ROW_NUMBER_END);
-            notifyItemChanged(ROW_NUMBER_SHIFT_TYPE);
-        }
     }
 
     @Override
     boolean bindViewHolder(@NonNull AdditionalShiftEntity shift, ItemViewHolder holder, int position) {
-        if (position == ROW_NUMBER_DATE) {
-            holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.changeDate();
-                }
-            });
-            holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()));
-            return true;
-        } else if (position == ROW_NUMBER_START) {
-            holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.changeTime(true);
-                }
-            });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(shift.getShiftData().getStart().toLocalTime()));
-            return true;
-        } else if (position == ROW_NUMBER_END) {
-            holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.changeTime(false);
-                }
-            });
-            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd(), shift.getShiftData().getStart().toLocalDate()));
-            return true;
-        } else if (position == ROW_NUMBER_SHIFT_TYPE) {
-            ShiftUtil.ShiftType shiftType = calculator.getShiftType(shift.getShiftData());
-            holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
-            holder.setText(holder.getText(ShiftUtil.getShiftTitle(shiftType)), DateTimeUtils.getPeriodString(shift.getShiftData().getDuration()));
-            return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(shift, holder, position) || super.bindViewHolder(shift, holder, position);
+        return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
+                payableDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
+                super.bindViewHolder(shift, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailAdapterHelper.Callbacks {
-        void changeDate();
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks, PayableDetailAdapterHelper.Callbacks {
         void changeTime(boolean start);
     }
 

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.util.Comparators;
 
 import org.joda.time.DateTime;
 
@@ -62,28 +61,10 @@ public final class PaymentData {
     public DateTime getPaid() {
         return paid;
     }
-//
-//    @Nullable
-//    public String getComment() {
-//        return comment;
-//    }
 
     @DrawableRes
     public int getIcon() {
         return paid == null ? claimed == null ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof PaymentData) {
-            PaymentData other = (PaymentData) object;
-            return
-                    Comparators.equalBigDecimals(payment, other.payment) &&
-                            Comparators.equalDateTimes(claimed, other.claimed) &&
-                            Comparators.equalDateTimes(paid, other.paid);
-//            &&
-//                            Comparators.equalStrings(comment, other.comment);
-        }
-        return false;
-    }
 }

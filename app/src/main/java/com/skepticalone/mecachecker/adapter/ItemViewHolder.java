@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -105,5 +106,10 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
             }
         }
         text.setText(ssb);
+    }
+
+    void setCompliant(boolean compliant) {
+        secondaryIcon.setImageResource(RosteredShiftEntity.getComplianceIcon(compliant));
+        secondaryIcon.setVisibility(View.VISIBLE);
     }
 }

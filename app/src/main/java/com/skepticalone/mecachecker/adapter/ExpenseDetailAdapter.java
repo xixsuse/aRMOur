@@ -18,10 +18,12 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity>
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
 
+    @NonNull
     private final Callbacks callbacks;
+    @NonNull
     private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
-    public ExpenseDetailAdapter(Callbacks callbacks) {
+    public ExpenseDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
         this.callbacks = callbacks;
         payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks) {
@@ -43,12 +45,12 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity>
     }
 
     @Override
-    int getRowNumberComment() {
+    int getRowNumberComment(@NonNull ExpenseEntity expense) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull ExpenseEntity item) {
+    int getRowCount(@NonNull ExpenseEntity expense) {
         return ROW_COUNT;
     }
 

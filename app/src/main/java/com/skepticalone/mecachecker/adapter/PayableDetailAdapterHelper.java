@@ -14,13 +14,14 @@ import org.joda.time.DateTime;
 
 abstract class PayableDetailAdapterHelper {
 
+    @NonNull
     private final Callbacks callbacks;
 
-    PayableDetailAdapterHelper(Callbacks callbacks) {
+    PayableDetailAdapterHelper(@NonNull Callbacks callbacks) {
         this.callbacks = callbacks;
     }
 
-    void onItemUpdated(@NonNull Payable oldItem, @NonNull Payable newItem, RecyclerView.Adapter adapter) {
+    void onItemUpdated(@NonNull Payable oldItem, @NonNull Payable newItem, @NonNull RecyclerView.Adapter adapter) {
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
             adapter.notifyItemChanged(getRowNumberPayment());
         }
@@ -79,7 +80,7 @@ abstract class PayableDetailAdapterHelper {
     abstract int getRowNumberClaimed();
     abstract int getRowNumberPaid();
 
-    public interface Callbacks {
+    interface Callbacks {
         void changePayment();
         void setClaimed(boolean claimed);
         void setPaid(boolean paid);

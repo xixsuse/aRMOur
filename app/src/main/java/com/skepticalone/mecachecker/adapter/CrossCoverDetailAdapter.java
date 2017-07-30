@@ -4,10 +4,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
-import com.skepticalone.mecachecker.util.Comparators;
-import com.skepticalone.mecachecker.util.DateTimeUtils;
+
+import org.joda.time.LocalDate;
 
 public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCoverEntity> {
 
@@ -19,12 +18,25 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCoverE
             ROW_NUMBER_PAID = 4,
             ROW_COUNT = 5;
 
-    private final Callbacks callbacks;
+    @NonNull
+    private final DateDetailAdapterHelper<CrossCoverEntity> dateDetailAdapterHelper;
+    @NonNull
     private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
-    public CrossCoverDetailAdapter(Callbacks callbacks) {
+    public CrossCoverDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
-        this.callbacks = callbacks;
+        dateDetailAdapterHelper = new DateDetailAdapterHelper<CrossCoverEntity>(callbacks) {
+            @Override
+            int getRowNumberDate() {
+                return ROW_NUMBER_DATE;
+            }
+
+            @NonNull
+            @Override
+            LocalDate getDate(@NonNull CrossCoverEntity crossCover) {
+                return crossCover.getDate();
+            }
+        };
         payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks) {
             @Override
             int getRowNumberPayment() {
@@ -44,12 +56,12 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCoverE
     }
 
     @Override
-    int getRowNumberComment() {
+    int getRowNumberComment(@NonNull CrossCoverEntity crossCover) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull CrossCoverEntity item) {
+    int getRowCount(@NonNull CrossCoverEntity crossCover) {
         return ROW_COUNT;
     }
 
@@ -63,28 +75,17 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCoverE
     @Override
     void onItemUpdated(@NonNull CrossCoverEntity oldCrossCover, @NonNull CrossCoverEntity newCrossCover) {
         super.onItemUpdated(oldCrossCover, newCrossCover);
+        dateDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
         payableDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
-        if (!Comparators.equalLocalDates(oldCrossCover.getDate(), newCrossCover.getDate())) {
-            notifyItemChanged(ROW_NUMBER_DATE);
-        }
     }
 
     @Override
     boolean bindViewHolder(@NonNull CrossCoverEntity crossCover, ItemViewHolder holder, int position) {
-        if (position == ROW_NUMBER_DATE) {
-            holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.changeDate();
-                }
-            });
-            holder.setText(holder.getText(R.string.date), DateTimeUtils.getFullDateString(crossCover.getDate()));
-            return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(crossCover, holder, position) || super.bindViewHolder(crossCover, holder, position);
+        return dateDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
+                payableDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
+                super.bindViewHolder(crossCover, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailAdapterHelper.Callbacks {
-        void changeDate();
-    }
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks, PayableDetailAdapterHelper.Callbacks {}
 
 }

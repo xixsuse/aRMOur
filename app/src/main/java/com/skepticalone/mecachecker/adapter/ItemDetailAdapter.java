@@ -13,11 +13,12 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
 
+    @NonNull
     private final Callbacks callbacks;
     @Nullable
     private Entity mItem;
 
-    ItemDetailAdapter(Callbacks callbacks) {
+    ItemDetailAdapter(@NonNull Callbacks callbacks) {
         super();
         this.callbacks = callbacks;
     }
@@ -36,13 +37,13 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
     @CallSuper
     void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem) {
         if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
-            notifyItemChanged(getRowNumberComment());
+            notifyItemChanged(getRowNumberComment(oldItem));
         }
     }
 
     @CallSuper
     boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
-        if (position == getRowNumberComment()) {
+        if (position == getRowNumberComment(item)) {
             holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -75,7 +76,7 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
         }
     }
     abstract int getRowCount(@NonNull Entity item);
-    abstract int getRowNumberComment();
+    abstract int getRowNumberComment(@NonNull Entity item);
 
     public interface Callbacks {
         void changeComment();

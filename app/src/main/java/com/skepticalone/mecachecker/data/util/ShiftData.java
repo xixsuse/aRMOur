@@ -52,15 +52,6 @@ public final class ShiftData {
         return duration;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof ShiftData) {
-            ShiftData other = (ShiftData) object;
-            return start.getMillis() == other.start.getMillis() && end.getMillis() == other.end.getMillis();
-        }
-        return false;
-    }
-
     @Nullable
     public LocalDate getWeekend() {
         DateTime weekendStart = start.withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
