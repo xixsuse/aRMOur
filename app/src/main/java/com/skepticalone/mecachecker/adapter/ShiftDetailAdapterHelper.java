@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Shift;
-import com.skepticalone.mecachecker.util.Comparators;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -16,7 +15,7 @@ import org.joda.time.LocalDate;
 abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetailAdapterHelper<Entity> {
 
     @NonNull
-    final ShiftUtil.Calculator calculator;
+    private final ShiftUtil.Calculator calculator;
 
     ShiftDetailAdapterHelper(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
         super(callbacks);
@@ -38,9 +37,15 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
     @CallSuper
     void onItemUpdated(@NonNull Entity oldShift, @NonNull Entity newShift, @NonNull RecyclerView.Adapter adapter) {
         super.onItemUpdated(oldShift, newShift, adapter);
-        if (!Comparators.equalShiftData(oldShift.getShiftData(), newShift.getShiftData())) {
+        boolean startTimeChanged = !oldShift.getShiftData().getStart().toLocalTime().isEqual(newShift.getShiftData().getStart().toLocalTime()),
+                endTimeChanged = !oldShift.getShiftData().getEnd().toLocalTime().isEqual(newShift.getShiftData().getEnd().toLocalTime());
+        if (startTimeChanged) {
             adapter.notifyItemChanged(getRowNumberStart());
+        }
+        if (endTimeChanged || !oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
             adapter.notifyItemChanged(getRowNumberEnd());
+        }
+        if (startTimeChanged || endTimeChanged || !oldShift.getShiftData().getDuration().isEqual(newShift.getShiftData().getDuration())) {
             adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }

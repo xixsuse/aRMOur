@@ -11,6 +11,7 @@ import android.widget.TimePicker;
 
 import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.util.AppConstants;
 
 import org.joda.time.LocalTime;
 
@@ -54,7 +55,7 @@ abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelContract<En
 
     @Override
     public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minuteOfHour) {
-        onTimeSet(new LocalTime(hourOfDay, minuteOfHour), start);
+        onTimeSet(new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minuteOfHour)), start);
     }
 
     abstract void onTimeSet(@NonNull LocalTime time, boolean start);

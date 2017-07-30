@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
@@ -16,15 +17,16 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_NUMBER_LOGGED_START = 4,
-            ROW_NUMBER_LOGGED_END = 5,
-            ROW_NUMBER_COMMENT_IF_LOGGED = 6,
-            ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED = 7,
-            ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED = 8,
-            ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED = 9,
-            ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED = 10,
-            ROW_NUMBER_WEEKEND_IF_LOGGED = 11,
-            ROW_COUNT_IF_LOGGED = 12,
+            ROW_NUMBER_TOGGLE_LOGGED = 4,
+            ROW_NUMBER_LOGGED_START = 5,
+            ROW_NUMBER_LOGGED_END = 6,
+            ROW_NUMBER_COMMENT_IF_LOGGED = 7,
+            ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED = 8,
+            ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED = 9,
+            ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED = 10,
+            ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED = 11,
+            ROW_NUMBER_WEEKEND_IF_LOGGED = 12,
+            ROW_COUNT_IF_LOGGED = 13,
             NUMBER_OF_ROWS_FOR_LOGGED = 2;
 
     @NonNull
@@ -100,17 +102,47 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             notifyItemChanged(adjustForLogged(ROW_NUMBER_WEEKEND_IF_LOGGED, oldShift));
         }
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
+            notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             notifyItemRangeInserted(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() == null) {
+            notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
-        } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null && (!Comparators.equalShiftData(oldShift.getLoggedShiftData(), newShift.getLoggedShiftData()) || !Comparators.equalLocalDates(oldShift.getShiftData().getStart().toLocalDate(), newShift.getShiftData().getStart().toLocalDate()))) {
-            notifyItemRangeChanged(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
+        } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null) {
+            boolean dateChanged = !Comparators.equalLocalDates(oldShift.getShiftData().getStart().toLocalDate(), newShift.getShiftData().getStart().toLocalDate());
+            if (dateChanged || !oldShift.getLoggedShiftData().getStart().toLocalTime().isEqual(newShift.getLoggedShiftData().getStart().toLocalTime())) {
+                notifyItemChanged(ROW_NUMBER_LOGGED_START);
+            }
+            if (dateChanged || !oldShift.getLoggedShiftData().getEnd().toLocalTime().isEqual(newShift.getLoggedShiftData().getEnd().toLocalTime())) {
+                notifyItemChanged(ROW_NUMBER_LOGGED_END);
+            }
+            if (!oldShift.getLoggedShiftData().getDuration().isEqual(newShift.getLoggedShiftData().getDuration())) {
+                notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
+            }
         }
     }
 
     @Override
     boolean bindViewHolder(@NonNull RosteredShiftEntity shift, ItemViewHolder holder, int position) {
-        if (position == ROW_NUMBER_LOGGED_START && shift.getLoggedShiftData() != null) {
+        if (position == ROW_NUMBER_TOGGLE_LOGGED) {
+            final boolean switchChecked;
+            final String secondLine;
+            if (shift.getLoggedShiftData() == null) {
+                switchChecked = false;
+                secondLine = null;
+            } else {
+                switchChecked = true;
+                secondLine = DateTimeUtils.getPeriodString(shift.getLoggedShiftData().getDuration());
+            }
+            holder.setupSwitch(R.drawable.ic_clipboard_black_24dp, switchChecked, new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean logged) {
+                    callbacks.setLogged(logged);
+                }
+            });
+            holder.setText(holder.getText(R.string.logged), secondLine);
+            holder.secondaryIcon.setVisibility(View.GONE);
+            return true;
+        } else if (position == ROW_NUMBER_LOGGED_START && shift.getLoggedShiftData() != null) {
             holder.setupPlain(R.drawable.ic_clipboard_play_black_24dp, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -196,6 +228,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     public interface Callbacks extends ItemDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks {
+        void setLogged(boolean logged);
         void changeTime(boolean start, boolean logged);
     }
 

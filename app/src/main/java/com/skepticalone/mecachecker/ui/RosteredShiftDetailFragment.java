@@ -42,6 +42,11 @@ public final class RosteredShiftDetailFragment
         showDialogFragment(RosteredShiftTimeDialogFragment.newInstance(start, logged));
     }
 
+    @Override
+    public void setLogged(boolean logged) {
+        getViewModel().setLogged(getCurrentItem().getId(), logged);
+    }
+
     @NonNull
     @Override
     CommentDialogFragment getNewCommentDialogFragment() {

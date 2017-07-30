@@ -61,7 +61,6 @@ public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity> {
             " = :id")
     void setCommentSync(long id, @Nullable String comment);
 
-
     @Nullable
     @WorkerThread
     @Query("SELECT " + Contract.COLUMN_NAME_SHIFT_END + " FROM " +
@@ -86,5 +85,33 @@ public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity> {
             BaseColumns._ID +
             " = :id")
     void setShiftTimesSync(long id, @NonNull DateTime start, @NonNull DateTime end, @Nullable DateTime loggedStart, @Nullable DateTime loggedEnd);
+
+    @WorkerThread
+    @Query("UPDATE " +
+            Contract.RosteredShifts.TABLE_NAME +
+            " SET " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_START +
+            " = " +
+            Contract.COLUMN_NAME_SHIFT_START +
+            ", " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_END +
+            " = " +
+            Contract.COLUMN_NAME_SHIFT_END +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void switchOnLogSync(long id);
+
+    @WorkerThread
+    @Query("UPDATE " +
+            Contract.RosteredShifts.TABLE_NAME +
+            " SET " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_START +
+            " = NULL, " +
+            Contract.RosteredShifts.COLUMN_NAME_LOGGED_SHIFT_END +
+            " = NULL WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    void switchOffLogSync(long id);
 
 }

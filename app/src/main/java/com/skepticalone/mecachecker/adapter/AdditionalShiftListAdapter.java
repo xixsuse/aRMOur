@@ -1,10 +1,10 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.util.Comparators;
-import com.skepticalone.mecachecker.util.DateTimeUtils;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShiftEntity> {
@@ -24,10 +24,10 @@ public final class AdditionalShiftListAdapter extends ShiftListAdapter<Additiona
         return shift.getPaymentData().getIcon();
     }
 
-    @NonNull
+    @Nullable
     @Override
-    String getTimeSpanString(@NonNull AdditionalShiftEntity shift) {
-        return DateTimeUtils.getTimeSpanString(shift.getShiftData());
+    String getThirdLine(@NonNull AdditionalShiftEntity shift) {
+        return shift.getComment();
     }
 
 }

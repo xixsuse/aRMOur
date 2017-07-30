@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.model.Shift;
 import com.skepticalone.mecachecker.util.Comparators;
@@ -32,15 +33,15 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
         holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
         holder.setText(
                 DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()),
-                getTimeSpanString(shift),
-                shift.getComment()
+                DateTimeUtils.getTimeSpanString(shift.getShiftData()),
+                getThirdLine(shift)
         );
     }
 
     @DrawableRes
     abstract int getSecondaryIcon(@NonNull Entity shift);
 
-    @NonNull
-    abstract String getTimeSpanString(@NonNull Entity shift);
+    @Nullable
+    abstract String getThirdLine(@NonNull Entity shift);
 
 }

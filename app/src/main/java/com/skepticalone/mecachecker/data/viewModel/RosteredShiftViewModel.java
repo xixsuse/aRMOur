@@ -82,6 +82,17 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     }
 
     @MainThread
+    public void setLogged(final long id, final boolean logged) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                if (logged) getDao().switchOnLogSync(id);
+                else getDao().switchOffLogSync(id);
+            }
+        });
+    }
+
+    @MainThread
     private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData, @Nullable final ShiftData loggedShiftData) {
         runAsync(new Runnable() {
             @Override

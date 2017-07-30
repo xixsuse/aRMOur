@@ -1,6 +1,7 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 import com.skepticalone.mecachecker.util.Comparators;
@@ -24,10 +25,10 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
         return shift.getComplianceIcon();
     }
 
-    @NonNull
+    @Nullable
     @Override
-    String getTimeSpanString(@NonNull RosteredShiftEntity shift) {
-        return DateTimeUtils.getTimeSpanString(shift.getShiftData(), shift.getLoggedShiftData());
+    String getThirdLine(@NonNull RosteredShiftEntity shift) {
+        return shift.getLoggedShiftData() == null ? null : DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData());
     }
 
 }
