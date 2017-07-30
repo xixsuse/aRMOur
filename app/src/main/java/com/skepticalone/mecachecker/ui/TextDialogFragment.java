@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.dialog;
+package com.skepticalone.mecachecker.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

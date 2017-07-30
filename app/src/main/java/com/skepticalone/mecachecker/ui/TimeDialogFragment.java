@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.dialog;
+package com.skepticalone.mecachecker.ui;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -20,7 +20,7 @@ public abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelCont
     private boolean start;
     private TimePickerDialog timePickerDialog;
 
-    static Bundle getArgs(boolean start) {
+    public static Bundle getArgs(boolean start) {
         Bundle args = new Bundle();
         args.putBoolean(START, start);
         return args;
@@ -57,6 +57,6 @@ public abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelCont
         onTimeSet(new LocalTime(hourOfDay, minuteOfHour), start);
     }
 
-    abstract void onTimeSet(@NonNull LocalTime time, boolean start);
+    public abstract void onTimeSet(@NonNull LocalTime time, boolean start);
 
 }

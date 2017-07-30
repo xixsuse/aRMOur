@@ -4,13 +4,16 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
 import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.dialog.CrossCoverDateDialogFragment;
-import com.skepticalone.mecachecker.dialog.CrossCoverPaymentDialogFragment;
-import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+
+import org.joda.time.LocalDate;
 
 public final class CrossCoverDetailFragment
         extends PayableDetailFragment<CrossCoverEntity, CrossCoverViewModel>
@@ -35,8 +38,54 @@ public final class CrossCoverDetailFragment
 
     @NonNull
     @Override
+    CommentDialogFragment getNewCommentDialogFragment() {
+        return new CrossCoverCommentDialogFragment();
+    }
+
+    @NonNull
+    @Override
     PaymentDialogFragment getNewPaymentDialogFragment() {
         return new CrossCoverPaymentDialogFragment();
     }
 
+    public static final class CrossCoverCommentDialogFragment extends CommentDialogFragment<CrossCoverEntity> {
+
+        @NonNull
+        @Override
+        public ViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(CrossCoverViewModel.class);
+        }
+
+    }
+
+    public static final class CrossCoverDateDialogFragment extends DateDialogFragment<CrossCoverEntity> {
+
+        @NonNull
+        @Override
+        public LocalDate getDateForDisplay(@NonNull CrossCoverEntity crossCover) {
+            return crossCover.getDate();
+        }
+
+        @NonNull
+        @Override
+        public DateViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(CrossCoverViewModel.class);
+        }
+
+    }
+
+    public static final class CrossCoverPaymentDialogFragment extends PaymentDialogFragment<CrossCoverEntity> {
+
+        @Override
+        public int getTitle() {
+            return R.string.payment;
+        }
+
+        @NonNull
+        @Override
+        public PayableViewModelContract<CrossCoverEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(CrossCoverViewModel.class);
+        }
+
+    }
 }

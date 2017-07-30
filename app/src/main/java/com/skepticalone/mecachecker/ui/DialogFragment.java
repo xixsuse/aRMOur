@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.dialog;
+package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -13,21 +13,21 @@ import android.support.v7.app.AppCompatDialogFragment;
 
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-public abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends AppCompatDialogFragment implements Observer<Entity>, LifecycleRegistryOwner {
+abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends AppCompatDialogFragment implements Observer<Entity>, LifecycleRegistryOwner {
 
     private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private ViewModel viewModel;
+
+    @Override
+    public final LifecycleRegistry getLifecycle() {
+        return lifecycleRegistry;
+    }
 
     @Nullable
     private Entity currentItem;
 
     @NonNull
     abstract ViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider);
-
-    @Override
-    public final LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
-    }
 
     @Override
     @CallSuper

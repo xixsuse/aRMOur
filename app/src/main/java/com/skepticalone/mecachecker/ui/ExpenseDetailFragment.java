@@ -3,14 +3,15 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
 import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.dialog.ExpensePaymentDialogFragment;
-import com.skepticalone.mecachecker.dialog.ExpenseTitleDialogFragment;
-import com.skepticalone.mecachecker.dialog.PaymentDialogFragment;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 public final class ExpenseDetailFragment
         extends PayableDetailFragment<ExpenseEntity, ExpenseViewModel>
@@ -39,4 +40,62 @@ public final class ExpenseDetailFragment
         return new ExpensePaymentDialogFragment();
     }
 
+    @NonNull
+    @Override
+    CommentDialogFragment getNewCommentDialogFragment() {
+        return new ExpenseCommentDialogFragment();
+    }
+
+    public static final class ExpenseCommentDialogFragment extends CommentDialogFragment<ExpenseEntity> {
+
+        @NonNull
+        @Override
+        public ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(ExpenseViewModel.class);
+        }
+
+    }
+
+    public static final class ExpensePaymentDialogFragment extends PaymentDialogFragment<ExpenseEntity> {
+
+        @Override
+        public int getTitle() {
+            return R.string.payment;
+        }
+
+        @NonNull
+        @Override
+        public PayableViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(ExpenseViewModel.class);
+        }
+
+    }
+
+    public static final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<ExpenseEntity, ExpenseViewModel> {
+
+        @Override
+        public int getTitle() {
+            return R.string.title;
+        }
+
+        @NonNull
+        @Override
+        public ExpenseViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(ExpenseViewModel.class);
+        }
+
+        @Override
+        public String getTextForDisplay(@NonNull ExpenseEntity item) {
+            return item.getTitle();
+        }
+
+        @Override
+        public void saveText(@Nullable String title) {
+            if (title == null) {
+                showSnackbar(R.string.value_required);
+            } else {
+                getViewModel().saveNewTitle(getCurrentItem().getId(), title);
+            }
+        }
+    }
 }

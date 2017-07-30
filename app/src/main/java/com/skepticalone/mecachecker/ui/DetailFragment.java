@@ -13,7 +13,6 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
-import com.skepticalone.mecachecker.dialog.ExpenseCommentDialogFragment;
 import com.skepticalone.mecachecker.util.Snackbar;
 
 abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
@@ -73,9 +72,12 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
+    @NonNull
+    abstract CommentDialogFragment getNewCommentDialogFragment();
+
     @Override
-    public void changeComment() {
-        showDialogFragment(new ExpenseCommentDialogFragment());
+    public final void changeComment() {
+        showDialogFragment(getNewCommentDialogFragment());
     }
 
 }

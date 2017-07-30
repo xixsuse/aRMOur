@@ -2,15 +2,19 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.adapter.RosteredShiftDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
+import com.skepticalone.mecachecker.data.util.ShiftData;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
-import com.skepticalone.mecachecker.dialog.RosteredShiftDateDialogFragment;
-import com.skepticalone.mecachecker.dialog.RosteredShiftTimeDialogFragment;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 import com.skepticalone.mecachecker.util.ShiftUtil;
+
+import org.joda.time.LocalTime;
 
 public final class RosteredShiftDetailFragment
         extends DetailFragment<RosteredShiftEntity, RosteredShiftViewModel>
@@ -38,4 +42,74 @@ public final class RosteredShiftDetailFragment
         showDialogFragment(RosteredShiftTimeDialogFragment.newInstance(start, logged));
     }
 
+    @NonNull
+    @Override
+    CommentDialogFragment getNewCommentDialogFragment() {
+        return new RosteredShiftCommentDialogFragment();
+    }
+
+    public static final class RosteredShiftCommentDialogFragment extends CommentDialogFragment<RosteredShiftEntity> {
+
+        @NonNull
+        @Override
+        public ViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(RosteredShiftViewModel.class);
+        }
+
+    }
+
+    public static final class RosteredShiftDateDialogFragment extends ShiftDateDialogFragment<RosteredShiftEntity> {
+
+        @NonNull
+        @Override
+        public DateViewModelContract<RosteredShiftEntity> onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(RosteredShiftViewModel.class);
+        }
+
+    }
+
+    public static final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<RosteredShiftEntity, RosteredShiftViewModel> {
+
+        private static final String LOGGED = "LOGGED";
+        private boolean logged;
+
+        public static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
+            Bundle arguments = getArgs(start);
+            arguments.putBoolean(LOGGED, logged);
+            RosteredShiftTimeDialogFragment fragment = new RosteredShiftTimeDialogFragment();
+            fragment.setArguments(arguments);
+            return fragment;
+        }
+
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            logged = getArguments().getBoolean(LOGGED);
+        }
+
+        @NonNull
+        @Override
+        public ShiftData getShiftDataForDisplay(@NonNull RosteredShiftEntity shift) {
+            final ShiftData shiftData;
+            if (logged) {
+                shiftData = shift.getLoggedShiftData();
+                if (shiftData == null) throw new IllegalStateException();
+            } else {
+                shiftData = shift.getShiftData();
+            }
+            return shiftData;
+        }
+
+        @NonNull
+        @Override
+        public RosteredShiftViewModel onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+            return viewModelProvider.get(RosteredShiftViewModel.class);
+        }
+
+        @Override
+        public void onTimeSet(@NonNull LocalTime time, boolean start) {
+            getViewModel().saveNewTime(getCurrentItem(), time, start, logged);
+        }
+
+    }
 }

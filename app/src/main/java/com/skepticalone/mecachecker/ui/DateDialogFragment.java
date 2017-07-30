@@ -1,4 +1,4 @@
-package com.skepticalone.mecachecker.dialog;
+package com.skepticalone.mecachecker.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -29,7 +29,7 @@ public abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, 
     }
 
     @NonNull
-    abstract LocalDate getDateForDisplay(@NonNull Entity item);
+    public abstract LocalDate getDateForDisplay(@NonNull Entity item);
 
     @Override
     public final void onChanged(@Nullable Entity item) {

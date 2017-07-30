@@ -1,10 +1,10 @@
-package com.skepticalone.mecachecker.dialog;
+package com.skepticalone.mecachecker.ui;
 
 import android.text.InputType;
 
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-abstract class PlainTextDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends TextDialogFragment<Entity, ViewModel> {
+public abstract class PlainTextDialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends TextDialogFragment<Entity, ViewModel> {
 
     @Override
     final int getInputType() {
