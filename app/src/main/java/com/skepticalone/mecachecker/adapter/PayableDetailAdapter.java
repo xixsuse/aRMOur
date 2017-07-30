@@ -1,7 +1,7 @@
 package com.skepticalone.mecachecker.adapter;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -12,26 +12,32 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
-abstract class PayableDetailAdapterHelper {
+abstract class PayableDetailAdapter<Entity extends Payable> extends ItemDetailAdapter<Entity> {
 
     @NonNull
     private final Callbacks callbacks;
 
-    PayableDetailAdapterHelper(@NonNull Callbacks callbacks) {
+    PayableDetailAdapter(@NonNull Callbacks callbacks) {
+        super(callbacks);
         this.callbacks = callbacks;
     }
 
-    void onItemUpdated(@NonNull Payable oldItem, @NonNull Payable newItem, @NonNull RecyclerView.Adapter adapter) {
+    @Override
+    @CallSuper
+    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem) {
+        super.onItemUpdated(oldItem, newItem);
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
-            adapter.notifyItemChanged(getRowNumberPayment());
+            notifyItemChanged(getRowNumberPayment());
         }
         if (!Comparators.equalDateTimes(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalDateTimes(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
-            adapter.notifyItemChanged(getRowNumberClaimed());
-            adapter.notifyItemChanged(getRowNumberPaid());
+            notifyItemChanged(getRowNumberClaimed());
+            notifyItemChanged(getRowNumberPaid());
         }
     }
 
-    boolean bindViewHolder(@NonNull Payable item, ItemViewHolder holder, int position) {
+    @Override
+    @CallSuper
+    boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, new View.OnClickListener() {
                 @Override
@@ -73,14 +79,14 @@ abstract class PayableDetailAdapterHelper {
                 holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid));
             }
             return true;
-        } else return false;
+        } else return super.bindViewHolder(item, holder, position);
     }
 
     abstract int getRowNumberPayment();
     abstract int getRowNumberClaimed();
     abstract int getRowNumberPaid();
 
-    interface Callbacks {
+    public interface Callbacks extends ItemDetailAdapter.Callbacks {
         void changePayment();
         void setClaimed(boolean claimed);
         void setPaid(boolean paid);

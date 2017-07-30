@@ -16,7 +16,7 @@ import com.skepticalone.mecachecker.dialog.ExpenseCommentDialogFragment;
 import com.skepticalone.mecachecker.util.Snackbar;
 
 abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
-        implements ItemDetailAdapter.Callbacks {
+        implements Observer<Entity>, ItemDetailAdapter.Callbacks {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private Snackbar snackbar;
@@ -43,13 +43,7 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
-                    @Override
-                    public void onChanged(@Nullable Entity entity) {
-                        getAdapter().setItem(entity);
-                    }
-                }
-        );
+        getViewModel().getCurrentItem().observe(this, this);
         getViewModel().getErrorMessage().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer text) {
@@ -58,6 +52,11 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
                 }
             }
         });
+    }
+
+    @Override
+    public void onChanged(@Nullable Entity entity) {
+        getAdapter().setItem(entity);
     }
 
     final void showDialogFragment(DialogFragment dialogFragment) {

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<AdditionalShiftEntity> {
+public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<AdditionalShiftEntity> {
 
     private static final int
             ROW_NUMBER_DATE = 0,
@@ -22,8 +22,6 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
 
     @NonNull
     private final ShiftDetailAdapterHelper<AdditionalShiftEntity> shiftDetailAdapterHelper;
-    @NonNull
-    private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
     public AdditionalShiftDetailAdapter(@NonNull final Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
         super(callbacks);
@@ -54,22 +52,21 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
             }
 
         };
-        payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks) {
-            @Override
-            int getRowNumberPayment() {
-                return ROW_NUMBER_PAYMENT;
-            }
+    }
 
-            @Override
-            int getRowNumberClaimed() {
-                return ROW_NUMBER_CLAIMED;
-            }
+    @Override
+    int getRowNumberPayment() {
+        return ROW_NUMBER_PAYMENT;
+    }
 
-            @Override
-            int getRowNumberPaid() {
-                return ROW_NUMBER_PAID;
-            }
-        };
+    @Override
+    int getRowNumberClaimed() {
+        return ROW_NUMBER_CLAIMED;
+    }
+
+    @Override
+    int getRowNumberPaid() {
+        return ROW_NUMBER_PAID;
     }
 
     @Override
@@ -93,17 +90,15 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     void onItemUpdated(@NonNull AdditionalShiftEntity oldShift, @NonNull AdditionalShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        payableDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
     }
 
     @Override
     boolean bindViewHolder(@NonNull AdditionalShiftEntity shift, ItemViewHolder holder, int position) {
         return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                payableDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
                 super.bindViewHolder(shift, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks, PayableDetailAdapterHelper.Callbacks {
+    public interface Callbacks extends PayableDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks {
         void changeTime(boolean start);
     }
 

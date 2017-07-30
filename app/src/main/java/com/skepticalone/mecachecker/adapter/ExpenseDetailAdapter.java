@@ -8,7 +8,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity> {
+public final class ExpenseDetailAdapter extends PayableDetailAdapter<ExpenseEntity> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,
@@ -20,28 +20,25 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity>
 
     @NonNull
     private final Callbacks callbacks;
-    @NonNull
-    private final PayableDetailAdapterHelper payableDetailAdapterHelper;
 
     public ExpenseDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
         this.callbacks = callbacks;
-        payableDetailAdapterHelper = new PayableDetailAdapterHelper(callbacks) {
-            @Override
-            int getRowNumberPayment() {
-                return ROW_NUMBER_PAYMENT;
-            }
+    }
 
-            @Override
-            int getRowNumberClaimed() {
-                return ROW_NUMBER_CLAIMED;
-            }
+    @Override
+    int getRowNumberPayment() {
+        return ROW_NUMBER_PAYMENT;
+    }
 
-            @Override
-            int getRowNumberPaid() {
-                return ROW_NUMBER_PAID;
-            }
-        };
+    @Override
+    int getRowNumberClaimed() {
+        return ROW_NUMBER_CLAIMED;
+    }
+
+    @Override
+    int getRowNumberPaid() {
+        return ROW_NUMBER_PAID;
     }
 
     @Override
@@ -64,7 +61,6 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity>
     @Override
     void onItemUpdated(@NonNull ExpenseEntity oldExpense, @NonNull ExpenseEntity newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
-        payableDetailAdapterHelper.onItemUpdated(oldExpense, newExpense, this);
         if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);
         }
@@ -81,10 +77,10 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<ExpenseEntity>
             });
             holder.setText(holder.getText(R.string.title), expense.getTitle());
             return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(expense, holder, position) || super.bindViewHolder(expense, holder, position);
+        } else return super.bindViewHolder(expense, holder, position);
     }
 
-    public interface Callbacks extends ItemDetailAdapter.Callbacks, PayableDetailAdapterHelper.Callbacks {
+    public interface Callbacks extends PayableDetailAdapter.Callbacks {
         void changeTitle();
     }
 
