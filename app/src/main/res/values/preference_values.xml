@@ -23,8 +23,8 @@
     <integer name="default_end_night_shift">480</integer>
     <bool name="default_skip_weekend_night_shift">false</bool>
     <string name="skip_weekend_title">Skip weekends</string>
-    <string name="skip_weekend_summary_on">New shifts will always begin on weekdays</string>
-    <string name="skip_weekend_summary_off">New shifts may begin on weekends</string>
+    <string name="skip_weekend_summary_on">New rostered shifts will always begin on weekdays</string>
+    <string name="skip_weekend_summary_off">New rostered shifts may begin on weekends</string>
     <string name="key_hourly_rate">key_hourly_rate</string>
     <integer name="default_hourly_rate">5500</integer>
     <string name="key_cross_cover_payment">key_cross_cover_payment</string>

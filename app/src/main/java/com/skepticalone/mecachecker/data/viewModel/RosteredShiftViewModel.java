@@ -5,10 +5,15 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 import android.database.sqlite.SQLiteConstraintException;
+import android.preference.PreferenceManager;
+import android.support.annotation.BoolRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.annotation.WorkerThread;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
@@ -65,13 +70,30 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         });
     }
 
+    @WorkerThread
+    private boolean skipWeekends(@NonNull final ShiftUtil.ShiftType shiftType) {
+        @StringRes final int skipWeekendsKey;
+        @BoolRes final int defaultSkipWeekends;
+        if (shiftType == ShiftUtil.ShiftType.NORMAL_DAY) {
+            skipWeekendsKey = R.string.key_skip_weekend_normal_day;
+            defaultSkipWeekends = R.bool.default_skip_weekend_normal_day;
+        } else if (shiftType == ShiftUtil.ShiftType.LONG_DAY) {
+            skipWeekendsKey = R.string.key_skip_weekend_long_day;
+            defaultSkipWeekends = R.bool.default_skip_weekend_long_day;
+        } else if (shiftType == ShiftUtil.ShiftType.NIGHT_SHIFT) {
+            skipWeekendsKey = R.string.key_skip_weekend_night_shift;
+            defaultSkipWeekends = R.bool.default_skip_weekend_night_shift;
+        } else throw new IllegalStateException();
+        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(skipWeekendsKey), getApplication().getResources().getBoolean(defaultSkipWeekends));
+    }
+
     @Override
     public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
         runAsync(new Runnable() {
             @Override
             public void run() {
                 postSelectedId(getDao().insertItemSync(new RosteredShiftEntity(
-                        ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
+                        ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync(), skipWeekends(shiftType)),
                         null,
                         null
                 )));

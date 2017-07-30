@@ -62,12 +62,10 @@ public final class ShiftData {
     }
 
     @NonNull
-    private static DateTime getNewStart(@NonNull final LocalTime start, @Nullable final DateTime earliestStart) {
+    private static DateTime getNewStart(@NonNull final LocalTime start, @Nullable final DateTime earliestStart, boolean skipWeekends) {
         DateTime newStart = (earliestStart == null ? DateTime.now() : earliestStart).withTime(start);
-        if (earliestStart != null) {
-            while (newStart.isBefore(earliestStart)) {
-                newStart = newStart.plusDays(1);
-            }
+        while ((earliestStart != null && newStart.isBefore(earliestStart)) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
+            newStart = newStart.plusDays(1);
         }
         return newStart;
     }
@@ -98,15 +96,15 @@ public final class ShiftData {
     }
 
     @NonNull
-    public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart) {
-        final DateTime newStart = getNewStart(startTime, earliestStart),
+    public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart, boolean skipWeekends) {
+        final DateTime newStart = getNewStart(startTime, earliestStart, skipWeekends),
                 newEnd = getNewEnd(newStart, endTime);
         return new ShiftData(newStart, newEnd);
     }
 
     @NonNull
-    public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart) {
-        return withEarliestStart(startTime, endTime, earliestStart == null ? null : earliestStart.plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS));
+    public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart, boolean skipWeekends) {
+        return withEarliestStart(startTime, endTime, earliestStart == null ? null : earliestStart.plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS), skipWeekends);
     }
 
 }
