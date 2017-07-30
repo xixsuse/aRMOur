@@ -17,7 +17,8 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
     @Override
     boolean areContentsTheSame(@NonNull RosteredShiftEntity shift1, @NonNull RosteredShiftEntity shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                (shift1.getLoggedShiftData() == null ? shift2.getLoggedShiftData() != null : (shift2.getLoggedShiftData() == null || Comparators.equalShiftData(shift1.getLoggedShiftData(), shift2.getLoggedShiftData())));
+                shift1.isCompliant() == shift2.isCompliant() &&
+                (shift1.getLoggedShiftData() == null ? shift2.getLoggedShiftData() == null : (shift2.getLoggedShiftData() != null && Comparators.equalShiftData(shift1.getLoggedShiftData(), shift2.getLoggedShiftData())));
     }
 
     @Override

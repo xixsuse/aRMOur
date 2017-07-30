@@ -21,11 +21,11 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             ROW_NUMBER_LOGGED_START = 5,
             ROW_NUMBER_LOGGED_END = 6,
             ROW_NUMBER_COMMENT_IF_LOGGED = 7,
-            ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED = 8,
+            ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED = 8,
             ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED = 9,
             ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED = 10,
             ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED = 11,
-            ROW_NUMBER_WEEKEND_IF_LOGGED = 12,
+            ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED = 12,
             ROW_COUNT_IF_LOGGED = 13,
             NUMBER_OF_ROWS_FOR_LOGGED = 2;
 
@@ -79,7 +79,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
 
     @Override
     int getRowCount(@NonNull RosteredShiftEntity shift) {
-        return adjustForLogged(ROW_COUNT_IF_LOGGED, shift);
+        return adjustForLogged(ROW_COUNT_IF_LOGGED, shift) - (shift.getCurrentWeekend() == null ? 1 : 0);
     }
     
     @Override
@@ -87,7 +87,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         if (oldShift.getDurationBetweenShifts() == null ? newShift.getDurationBetweenShifts() != null : (newShift.getDurationBetweenShifts() == null || !oldShift.getDurationBetweenShifts().isEqual(newShift.getDurationBetweenShifts()))) {
-            notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED, oldShift));
+            notifyItemChanged(adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, oldShift));
         }
         if (!oldShift.getDurationOverDay().isEqual(newShift.getDurationOverDay())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, oldShift));
@@ -99,7 +99,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, oldShift));
         }
         if (oldShift.getCurrentWeekend() == null ? newShift.getCurrentWeekend() != null : (newShift.getCurrentWeekend() == null || !oldShift.getCurrentWeekend().isEqual(newShift.getCurrentWeekend()) || (oldShift.getLastWeekendWorked() == null ? newShift.getLastWeekendWorked() != null : (newShift.getLastWeekendWorked() == null || !oldShift.getLastWeekendWorked().isEqual(newShift.getLastWeekendWorked()))))) {
-            notifyItemChanged(adjustForLogged(ROW_NUMBER_WEEKEND_IF_LOGGED, oldShift));
+            notifyItemChanged(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
         }
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
@@ -162,7 +162,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             holder.setText(holder.getText(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd(), shift.getShiftData().getStart().toLocalDate()));
             holder.secondaryIcon.setVisibility(View.GONE);
             return true;
-        } else if (position == adjustForLogged(ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED, shift)) {
+        } else if (position == adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, shift)) {
             holder.setupPlain(R.drawable.ic_sleep_black_24dp, null);
             if (shift.getDurationBetweenShifts() == null) {
                 holder.setText(
@@ -173,7 +173,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             } else {
                 holder.setText(
                         holder.getText(R.string.time_between_shifts),
-                        DateTimeUtils.getPeriodString(shift.getDurationBetweenShifts())
+                        DateTimeUtils.getPeriodString(shift.getDurationBetweenShifts().toPeriodTo(shift.getShiftData().getStart()))
                 );
                 holder.setCompliant(!shift.insufficientDurationBetweenShifts());
             }
@@ -202,23 +202,18 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             );
             holder.setCompliant(!shift.exceedsMaximumDurationOverFortnight());
             return true;
-        } else if (position == adjustForLogged(ROW_NUMBER_WEEKEND_IF_LOGGED, shift)) {
+        } else if (shift.getCurrentWeekend() != null && position == adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, shift)) {
             holder.setupPlain(R.drawable.ic_weekend_black_24dp, null);
-            if (shift.getCurrentWeekend() == null) {
-                holder.setText(
-                        holder.getText(R.string.current_weekend),
-                        holder.getText(R.string.not_applicable)
-                );
-                holder.secondaryIcon.setVisibility(View.GONE);
+            final String secondLine, thirdLine;
+            if (shift.getLastWeekendWorked() == null) {
+                secondLine = holder.getText(R.string.not_applicable);
+                thirdLine = null;
             } else {
-                holder.setText(
-                        holder.getText(R.string.current_weekend),
-                        DateTimeUtils.getWeekendDateSpanString(shift.getCurrentWeekend()),
-                        holder.getText(R.string.last_weekend_worked) + ":\n" +
-                                (shift.getLastWeekendWorked() == null ? holder.getText(R.string.not_applicable) : DateTimeUtils.getWeekendDateSpanString(shift.getLastWeekendWorked()))
-                );
-                holder.setCompliant(!shift.consecutiveWeekendsWorked());
+                secondLine = DateTimeUtils.getWeekendDateSpanString(shift.getLastWeekendWorked());
+                thirdLine = DateTimeUtils.getWeeksAgo(shift.getLastWeekendWorked(), shift.getCurrentWeekend());
             }
+            holder.setText(holder.getText(R.string.last_weekend_worked), secondLine, thirdLine);
+            holder.setCompliant(!shift.consecutiveWeekendsWorked());
             return true;
         } else {
             holder.secondaryIcon.setVisibility(View.GONE);

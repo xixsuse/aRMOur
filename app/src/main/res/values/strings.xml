@@ -51,7 +51,6 @@
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
     <string name="last_weekend_worked">Last weekend worked</string>
-    <string name="current_weekend">Current weekend</string>
     <string name="invalid_format">Invalid format</string>
     <string name="value_required">Value required</string>
     <string name="overlapping_shifts">Overlapping shifts!</string>
