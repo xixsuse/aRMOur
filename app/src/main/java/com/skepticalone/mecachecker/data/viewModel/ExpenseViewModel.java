@@ -9,38 +9,17 @@ import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.util.PaymentData;
 
-import java.math.BigDecimal;
-
-
-public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, ExpenseDao>
-        implements SingleAddViewModelContract<ExpenseEntity>, PayableViewModelContract<ExpenseEntity> {
-
-    private final PayableHelper payableHelper;
+public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, ExpenseDao>
+        implements SingleAddViewModelContract<ExpenseEntity> {
 
     public ExpenseViewModel(Application application) {
         super(application);
-        payableHelper = new PayableHelper(getDao());
     }
 
     @NonNull
     @Override
     ExpenseDao onCreateDao(@NonNull AppDatabase database) {
         return database.expenseDao();
-    }
-
-    @Override
-    public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItemId(), payment);
-    }
-
-    @Override
-    public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItemId(), claimed);
-    }
-
-    @Override
-    public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItemId(), paid);
     }
 
     @Override
@@ -57,11 +36,11 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
         });
     }
 
-    public void saveNewTitle(@NonNull final String newTitle) {
+    public void saveNewTitle(final long id, @NonNull final String newTitle) {
         runAsync(new Runnable() {
             @Override
             public void run() {
-                getDao().setTitleSync(getCurrentItemId(), newTitle);
+                getDao().setTitleSync(id, newTitle);
             }
         });
     }

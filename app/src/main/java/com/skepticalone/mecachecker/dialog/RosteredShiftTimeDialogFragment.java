@@ -33,8 +33,14 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
     @NonNull
     @Override
     ShiftData getShiftDataForDisplay(@NonNull RosteredShiftEntity shift) {
-        //noinspection ConstantConditions
-        return logged ? shift.getLoggedShiftData() : shift.getShiftData();
+        final ShiftData shiftData;
+        if (logged) {
+            shiftData = shift.getLoggedShiftData();
+            if (shiftData == null) throw new IllegalStateException();
+        } else {
+            shiftData = shift.getShiftData();
+        }
+        return shiftData;
     }
 
     @NonNull
@@ -45,7 +51,7 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
 
     @Override
     void onTimeSet(@NonNull LocalTime time, boolean start) {
-        getViewModel().saveNewTime(time, start, logged);
+        getViewModel().saveNewTime(getCurrentItem(), time, start, logged);
     }
 
 }

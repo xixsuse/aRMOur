@@ -96,14 +96,12 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     }
 
     @Override
-    public void saveNewDate(@NonNull LocalDate date) {
-        RosteredShiftEntity shift = getCurrentItemSync();
+    public void saveNewDate(@NonNull RosteredShiftEntity shift, @NonNull LocalDate date) {
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date));
     }
 
     @MainThread
-    public void saveNewTime(@NonNull LocalTime time, boolean start, boolean logged) {
-        RosteredShiftEntity shift = getCurrentItemSync();
+    public void saveNewTime(@NonNull RosteredShiftEntity shift, @NonNull LocalTime time, boolean start, boolean logged) {
         if (logged && shift.getLoggedShiftData() == null) throw new IllegalStateException();
         saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, start), logged ? shift.getLoggedShiftData().withNewTime(time, start) : shift.getLoggedShiftData());
     }

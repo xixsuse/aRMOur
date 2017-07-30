@@ -31,7 +31,7 @@ public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<
 
     @Override
     void onTimeSet(@NonNull LocalTime time, boolean start) {
-        getViewModel().saveNewTime(time, start);
+        getViewModel().saveNewTime(getCurrentItem(), time, start);
     }
 
 }

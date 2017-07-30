@@ -45,10 +45,13 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
     }
 
     @Override
-    final void onCurrentItemChanged(@NonNull Entity item) {
-        String textForDisplay = getTextForDisplay(item);
-        if (textForDisplay != null) {
-            editText.setText(textForDisplay);
+    public final void onChanged(@Nullable Entity item) {
+        super.onChanged(item);
+        if (item != null) {
+            String textForDisplay = getTextForDisplay(item);
+            if (textForDisplay != null) {
+                editText.setText(textForDisplay);
+            }
         }
     }
 

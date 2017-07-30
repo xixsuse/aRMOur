@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 
@@ -62,8 +63,9 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
         });
     }
 
-    @Nullable
+    @NonNull
     final Entity getCurrentItem() {
+        if (currentItem == null) throw new IllegalStateException();
         return currentItem;
     }
 

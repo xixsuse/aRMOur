@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-public interface AdditionalShiftDao extends ItemDaoContract<AdditionalShiftEntity>, PayableDaoContract {
+public interface AdditionalShiftDao extends PayableDaoContract<AdditionalShiftEntity> {
 
     @Override
     @Insert

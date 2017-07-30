@@ -17,17 +17,12 @@ import com.skepticalone.mecachecker.util.ShiftUtil;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-import java.math.BigDecimal;
 
-
-public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity, AdditionalShiftDao>
-        implements ShiftViewModelContract<AdditionalShiftEntity>, PayableViewModelContract<AdditionalShiftEntity> {
-
-    private final PayableHelper payableHelper;
+public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalShiftEntity, AdditionalShiftDao>
+        implements ShiftViewModelContract<AdditionalShiftEntity> {
 
     public AdditionalShiftViewModel(Application application) {
         super(application);
-        payableHelper = new PayableHelper(getDao());
     }
 
     @NonNull
@@ -35,22 +30,6 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     AdditionalShiftDao onCreateDao(@NonNull AppDatabase database) {
         return database.additionalShiftDao();
     }
-
-    @Override
-    public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItemId(), payment);
-    }
-
-    @Override
-    public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItemId(), claimed);
-    }
-
-    @Override
-    public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItemId(), paid);
-    }
-
 
     @Override
     public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
@@ -81,14 +60,12 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     }
 
     @Override
-    public void saveNewDate(@NonNull LocalDate newDate) {
-        AdditionalShiftEntity shift = getCurrentItemSync();
-        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(newDate));
+    public void saveNewDate(@NonNull AdditionalShiftEntity shift, @NonNull LocalDate date) {
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date));
     }
 
     @MainThread
-    public void saveNewTime(@NonNull LocalTime time, boolean start) {
-        AdditionalShiftEntity shift = getCurrentItemSync();
+    public void saveNewTime(@NonNull AdditionalShiftEntity shift, @NonNull LocalTime time, boolean start) {
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
     }
 

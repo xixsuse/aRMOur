@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.DatePicker;
 
 import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
@@ -31,14 +32,17 @@ public abstract class DateDialogFragment<Entity> extends DialogFragment<Entity, 
     abstract LocalDate getDateForDisplay(@NonNull Entity item);
 
     @Override
-    final void onCurrentItemChanged(@NonNull Entity item) {
-        LocalDate date = getDateForDisplay(item);
-        datePickerDialog.updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
+    public final void onChanged(@Nullable Entity item) {
+        super.onChanged(item);
+        if (item != null) {
+            LocalDate date = getDateForDisplay(item);
+            datePickerDialog.updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
+        }
     }
 
     @Override
     public final void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        getViewModel().saveNewDate(new LocalDate(year, month + 1, dayOfMonth));
+        getViewModel().saveNewDate(getCurrentItem(), new LocalDate(year, month + 1, dayOfMonth));
     }
 
 }

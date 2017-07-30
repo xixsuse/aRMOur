@@ -12,8 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
-import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
@@ -36,7 +34,7 @@ abstract class CoordinatorActivity extends AppCompatActivity implements com.skep
     }
 
     @NonNull
-    static Class<? extends ItemViewModel<? extends Item, ? extends ItemDaoContract>> getViewModelClass(@IdRes int itemType) {
+    static Class<? extends ItemViewModel> getViewModelClass(@IdRes int itemType) {
         if (itemType == R.id.rostered) return RosteredShiftViewModel.class;
         if (itemType == R.id.additional) return AdditionalShiftViewModel.class;
         if (itemType == R.id.cross_cover) return CrossCoverViewModel.class;

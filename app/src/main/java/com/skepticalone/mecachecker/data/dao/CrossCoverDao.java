@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
-public interface CrossCoverDao extends ItemDaoContract<CrossCoverEntity>, PayableDaoContract {
+public interface CrossCoverDao extends PayableDaoContract<CrossCoverEntity> {
 
     @Override
     @Insert

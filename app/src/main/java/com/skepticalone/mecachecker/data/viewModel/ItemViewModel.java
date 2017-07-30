@@ -46,7 +46,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         });
     }
 
-    static void runAsync(Runnable runnable) {
+    void runAsync(Runnable runnable) {
         new Thread(runnable).start();
     }
 
@@ -114,23 +114,23 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         });
     }
 
-    @NonNull
-    final Entity getCurrentItemSync() {
-        Entity item = currentItem.getValue();
-        assert (item != null);
-        return item;
-    }
-
-    final long getCurrentItemId() {
-        return getCurrentItemSync().getId();
-    }
+//    @NonNull
+//    final Entity getCurrentItemSync() {
+//        Entity item = currentItem.getValue();
+//        assert (item != null);
+//        return item;
+//    }
+//
+//    final long getCurrentItemId() {
+//        return getCurrentItemSync().getId();
+//    }
 
     @Override
-    public final void saveNewComment(@Nullable final String newComment) {
+    public final void saveNewComment(final long id, @Nullable final String newComment) {
         runAsync(new Runnable() {
             @Override
             public void run() {
-                dao.setCommentSync(getCurrentItemId(), newComment);
+                dao.setCommentSync(id, newComment);
             }
         });
     }

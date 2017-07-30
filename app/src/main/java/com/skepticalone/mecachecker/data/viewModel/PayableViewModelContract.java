@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @MainThread
 public interface PayableViewModelContract<Entity> extends ViewModelContract<Entity> {
 
-    void saveNewPayment(@NonNull BigDecimal payment);
+    void saveNewPayment(long id, @NonNull BigDecimal payment);
     void setClaimed(long id, boolean claimed);
     void setPaid(long id, boolean paid);
 

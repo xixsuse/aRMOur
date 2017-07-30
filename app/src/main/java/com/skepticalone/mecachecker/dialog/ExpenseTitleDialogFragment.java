@@ -36,7 +36,7 @@ public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<Ex
         if (title == null) {
             showSnackbar(R.string.value_required);
         } else {
-            getViewModel().saveNewTitle(title);
+            getViewModel().saveNewTitle(getCurrentItem().getId(), title);
         }
     }
 }

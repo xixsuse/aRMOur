@@ -34,7 +34,7 @@ public abstract class PaymentDialogFragment<Entity extends Payable> extends Text
             showSnackbar(R.string.value_required);
         } else {
             try {
-                getViewModel().saveNewPayment(new BigDecimal(paymentString));
+                getViewModel().saveNewPayment(getCurrentItem().getId(), new BigDecimal(paymentString));
             } catch (NumberFormatException e) {
                 showSnackbar(R.string.invalid_format);
             }

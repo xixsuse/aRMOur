@@ -27,7 +27,7 @@ public abstract class CommentDialogFragment<Entity extends Item> extends PlainTe
 
     @Override
     final void saveText(@Nullable String comment) {
-        getViewModel().saveNewComment(comment);
+        getViewModel().saveNewComment(getCurrentItem().getId(), comment);
     }
 
 }

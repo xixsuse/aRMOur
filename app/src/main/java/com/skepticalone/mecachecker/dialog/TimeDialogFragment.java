@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
@@ -42,10 +43,13 @@ public abstract class TimeDialogFragment<Entity, ViewModel extends ViewModelCont
     abstract ShiftData getShiftDataForDisplay(@NonNull Entity item);
 
     @Override
-    final void onCurrentItemChanged(@NonNull Entity item) {
-        ShiftData shiftData = getShiftDataForDisplay(item);
-        LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
-        timePickerDialog.updateTime(time.getHourOfDay(), time.getMinuteOfHour());
+    public final void onChanged(@Nullable Entity item) {
+        super.onChanged(item);
+        if (item != null) {
+            ShiftData shiftData = getShiftDataForDisplay(item);
+            LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
+            timePickerDialog.updateTime(time.getHourOfDay(), time.getMinuteOfHour());
+        }
     }
 
     @Override

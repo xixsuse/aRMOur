@@ -16,7 +16,7 @@ public interface ViewModelContract<Entity> {
     LiveData<Entity> getCurrentItem();
     @NonNull
     LiveData<List<Entity>> getItems();
-    void saveNewComment(@Nullable String newComment);
+    void saveNewComment(long id, @Nullable String newComment);
     @NonNull
     LiveData<Entity> getDeletedItem();
     @NonNull

@@ -13,19 +13,14 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import org.joda.time.LocalDate;
 
-import java.math.BigDecimal;
+public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity, CrossCoverDao>
+        implements SingleAddViewModelContract<CrossCoverEntity>, DateViewModelContract<CrossCoverEntity> {
 
-
-public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, CrossCoverDao>
-        implements SingleAddViewModelContract<CrossCoverEntity>, DateViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity> {
-
-    private final PayableHelper payableHelper;
     private final String newCrossCoverPaymentKey;
     private final int defaultNewCrossCoverPayment;
 
     public CrossCoverViewModel(Application application) {
         super(application);
-        payableHelper = new PayableHelper(getDao());
         newCrossCoverPaymentKey = application.getString(R.string.key_cross_cover_payment);
         defaultNewCrossCoverPayment = application.getResources().getInteger(R.integer.default_cross_cover_payment);
     }
@@ -37,27 +32,12 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
     }
 
     @Override
-    public void saveNewPayment(@NonNull BigDecimal payment) {
-        payableHelper.saveNewPayment(getCurrentItemId(), payment);
-    }
-
-    @Override
-    public void setClaimed(boolean claimed) {
-        payableHelper.setClaimed(getCurrentItemId(), claimed);
-    }
-
-    @Override
-    public void setPaid(boolean paid) {
-        payableHelper.setPaid(getCurrentItemId(), paid);
-    }
-
-    @Override
-    public void saveNewDate(@NonNull final LocalDate date) {
+    public void saveNewDate(@NonNull final CrossCoverEntity item, @NonNull final LocalDate date) {
         runAsync(new Runnable() {
             @Override
             public void run() {
                 try {
-                    getDao().setDateSync(getCurrentItemId(), date);
+                    getDao().setDateSync(item.getId(), date);
                 } catch (SQLiteConstraintException e) {
                     errorMessage.postValue(R.string.overlapping_shifts);
                 }
