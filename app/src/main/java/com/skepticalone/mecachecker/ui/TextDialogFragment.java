@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -21,20 +22,24 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
     private EditText editText;
     private Snackbar snackbar;
 
-    abstract int getInputType();
     @StringRes
     abstract int getTitle();
 
     abstract void saveText(@Nullable String text);
+
+    @LayoutRes
+    abstract int getEditText();
+
+    void onEditTextCreated(@NonNull EditText editText) {
+    }
 
     @SuppressLint("InflateParams")
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);
         snackbar = (Snackbar) context;
-        editText = (EditText) LayoutInflater.from(context).inflate(R.layout.edit_text, null, false);
-        editText.setInputType(getInputType());
-        editText.setHint(getHint());
+        editText = (EditText) LayoutInflater.from(context).inflate(getEditText(), null, false);
+        onEditTextCreated(editText);
     }
 
     @Override
@@ -68,10 +73,6 @@ abstract class TextDialogFragment<Entity, ViewModel extends ViewModelContract<En
             String trimmedText = editText.getText().toString().trim();
             saveText(trimmedText.isEmpty() ? null : trimmedText);
         }
-    }
-
-    @StringRes int getHint() {
-        return getTitle();
     }
 
     final void showSnackbar(@StringRes int text) {

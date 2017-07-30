@@ -14,11 +14,6 @@ abstract class CommentDialogFragment<Entity extends Item> extends PlainTextDialo
         return R.string.comment;
     }
 
-    @Override
-    final int getHint() {
-        return super.getHint();
-    }
-
     @Nullable
     @Override
     final String getTextForDisplay(@NonNull Entity item) {

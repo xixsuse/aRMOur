@@ -2,7 +2,6 @@ package com.skepticalone.mecachecker.ui;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.InputType;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Payable;
@@ -13,13 +12,8 @@ import java.math.BigDecimal;
 abstract class PaymentDialogFragment<Entity extends Payable> extends TextDialogFragment<Entity, PayableViewModelContract<Entity>> {
 
     @Override
-    final int getHint() {
-        return R.string.currency_input_hint;
-    }
-
-    @Override
-    final int getInputType() {
-        return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+    final int getEditText() {
+        return R.layout.currency_edit_text;
     }
 
     @Nullable
