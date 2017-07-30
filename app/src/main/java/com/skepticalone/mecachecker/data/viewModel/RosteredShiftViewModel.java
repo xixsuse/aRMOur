@@ -71,7 +71,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         runAsync(new Runnable() {
             @Override
             public void run() {
-                selectedId.postValue(getDao().insertItemSync(new RosteredShiftEntity(
+                postSelectedId(getDao().insertItemSync(new RosteredShiftEntity(
                         ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
                         null,
                         null
@@ -100,7 +100,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
                 try {
                     getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd(), loggedShiftData == null ? null : loggedShiftData.getStart(), loggedShiftData == null ? null : loggedShiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
-                    errorMessage.postValue(R.string.overlapping_shifts);
+                    postErrorMessage(R.string.overlapping_shifts);
                 }
             }
         });

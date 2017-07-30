@@ -92,7 +92,7 @@ public final class ExpenseDetailFragment
         @Override
         void saveText(@Nullable String title) {
             if (title == null) {
-                showSnackbar(R.string.value_required);
+                showSnackbar(R.string.title_required);
             } else {
                 getViewModel().saveNewTitle(getCurrentItem().getId(), title);
             }

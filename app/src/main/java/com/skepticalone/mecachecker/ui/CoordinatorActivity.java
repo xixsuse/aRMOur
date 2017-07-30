@@ -33,6 +33,15 @@ abstract class CoordinatorActivity extends AppCompatActivity implements com.skep
         mCoordinatorLayout = findViewById(R.id.coordinator);
     }
 
+    @StringRes
+    static int getName(@IdRes int itemType) {
+        if (itemType == R.id.rostered) return R.string.rostered_shift;
+        if (itemType == R.id.additional) return R.string.additional_shift;
+        if (itemType == R.id.cross_cover) return R.string.cross_cover;
+        if (itemType == R.id.expenses) return R.string.expense;
+        throw new IllegalArgumentException();
+    }
+
     @NonNull
     static Class<? extends ItemViewModel> getViewModelClass(@IdRes int itemType) {
         if (itemType == R.id.rostered) return RosteredShiftViewModel.class;

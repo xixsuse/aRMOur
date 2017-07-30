@@ -1,7 +1,9 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -35,17 +37,27 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
         }
     }
 
+    @StringRes
+    int getPaymentTitle() {
+        return R.string.payment;
+    }
+
+    @DrawableRes
+    int getPaymentIcon() {
+        return R.drawable.ic_dollar_black_24dp;
+    }
+
     @Override
     @CallSuper
     boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
-            holder.setupPlain(R.drawable.ic_dollar_black_24dp, new View.OnClickListener() {
+            holder.setupPlain(getPaymentIcon(), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changePayment();
                 }
             });
-            holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()));
+            holder.setText(holder.getText(getPaymentTitle()), holder.getText(R.string.currency_format, item.getPaymentData().getPayment()));
             return true;
         } else if (position == getRowNumberClaimed()) {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {

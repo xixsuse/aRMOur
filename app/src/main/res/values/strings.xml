@@ -16,7 +16,7 @@
     <string name="custom_shift">Custom shift</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
-    <string name="item_removed">Item removed</string>
+    <string name="item_removed">%s removed</string>
     <string name="undo">Undo</string>
     <string name="shift_type">Shift type</string>
     <string name="title_shift_list">Shifts</string>
@@ -52,6 +52,7 @@
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
     <string name="last_weekend_worked">Last weekend worked</string>
     <string name="invalid_format">Invalid format</string>
+    <string name="title_required">Title required</string>
     <string name="value_required">Value required</string>
     <string name="overlapping_shifts">Overlapping shifts!</string>
     <string name="cross_cover_already_exists_date">Cross cover already exists for this date</string>

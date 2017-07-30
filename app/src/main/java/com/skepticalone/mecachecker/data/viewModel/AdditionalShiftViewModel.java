@@ -36,7 +36,7 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
         runAsync(new Runnable() {
             @Override
             public void run() {
-                selectedId.postValue(getDao().insertItemSync(new AdditionalShiftEntity(
+                postSelectedId(getDao().insertItemSync(new AdditionalShiftEntity(
                         PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
                         ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync()),
                         null
@@ -53,7 +53,7 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
                 try {
                     getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
-                    errorMessage.postValue(R.string.overlapping_shifts);
+                    postErrorMessage(R.string.overlapping_shifts);
                 }
             }
         });

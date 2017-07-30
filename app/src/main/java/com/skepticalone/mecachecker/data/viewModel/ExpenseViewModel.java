@@ -27,7 +27,7 @@ public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, Expe
         runAsync(new Runnable() {
             @Override
             public void run() {
-                selectedId.postValue(getDao().insertItemSync(new ExpenseEntity(
+                postSelectedId(getDao().insertItemSync(new ExpenseEntity(
                         getApplication().getString(R.string.new_expense_title),
                         PaymentData.fromPayment(0),
                         null

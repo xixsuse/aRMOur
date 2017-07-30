@@ -2,9 +2,7 @@ package com.skepticalone.mecachecker.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
 
@@ -21,20 +19,11 @@ public final class DetailActivity extends CoordinatorActivity {
         return R.layout.detail_activity;
     }
 
-    @StringRes
-    private static int getTitle(@IdRes int itemType) {
-        if (itemType == R.id.rostered) return R.string.rostered_shift;
-        if (itemType == R.id.additional) return R.string.additional_shift;
-        if (itemType == R.id.cross_cover) return R.string.cross_cover;
-        if (itemType == R.id.expenses) return R.string.expense;
-        throw new IllegalArgumentException();
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final int itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE), title;
-        setTitle(getTitle(itemType));
+        setTitle(getName(itemType));
         ViewModelProviders.of(this).get(getViewModelClass(itemType)).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             getSupportFragmentManager()

@@ -6,8 +6,12 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.annotation.WorkerThread;
+import android.view.View;
 
 import com.skepticalone.mecachecker.data.dao.ItemDaoContract;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
@@ -22,10 +26,11 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
     private final Dao dao;
     private final LiveData<Entity> currentItem;
     @NonNull
-    final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
-    final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
-    private final MutableLiveData<Entity> deletedItem = new MutableLiveData<>();
+    private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<View.OnClickListener> deletedItemRestorer = new MutableLiveData<>();
+
     static {
         //noinspection unchecked
         NO_DATA.setValue(null);
@@ -55,14 +60,15 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         return dao.getItem(id);
     }
 
+    @MainThread
     public final void selectItem(long id) {
         selectedId.setValue(id);
     }
 
     @NonNull
     @Override
-    public LiveData<Entity> getDeletedItem() {
-        return deletedItem;
+    public LiveData<View.OnClickListener> getDeletedItemRestorer() {
+        return deletedItemRestorer;
     }
 
     @NonNull
@@ -83,7 +89,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         runAsync(new Runnable() {
             @Override
             public void run() {
-                selectedId.postValue(dao.insertItemSync(item));
+                postSelectedId(dao.insertItemSync(item));
             }
         });
     }
@@ -105,15 +111,35 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         runAsync(new Runnable() {
             @Override
             public void run() {
-                Entity item = dao.getItemSync(id);
+                final Entity item = dao.getItemSync(id);
                 if (item != null && dao.deleteItemSync(item) == 1) {
-                    selectedId.postValue(null);
-                    deletedItem.postValue(item);
+                    postSelectedId(null);
+                    deletedItemRestorer.postValue(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            runAsync(new Runnable() {
+                                @Override
+                                public void run() {
+                                    deletedItemRestorer.postValue(null);
+                                    postSelectedId(dao.insertItemSync(item));
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
     }
 
+    @WorkerThread
+    final void postErrorMessage(@StringRes int message) {
+        errorMessage.postValue(message);
+    }
+
+    @WorkerThread
+    final void postSelectedId(@Nullable Long id) {
+        selectedId.postValue(id);
+    }
 //    @NonNull
 //    final Entity getCurrentItemSync() {
 //        Entity item = currentItem.getValue();

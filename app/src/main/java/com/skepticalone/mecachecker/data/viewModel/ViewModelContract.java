@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface ViewModelContract<Entity> {
     LiveData<List<Entity>> getItems();
     void saveNewComment(long id, @Nullable String newComment);
     @NonNull
-    LiveData<Entity> getDeletedItem();
+    LiveData<View.OnClickListener> getDeletedItemRestorer();
     @NonNull
     LiveData<Integer> getErrorMessage();
 }

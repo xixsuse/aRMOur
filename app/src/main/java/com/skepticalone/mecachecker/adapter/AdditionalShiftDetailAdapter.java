@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
@@ -14,11 +15,12 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
-            ROW_NUMBER_PAYMENT = 4,
-            ROW_NUMBER_COMMENT = 5,
-            ROW_NUMBER_CLAIMED = 6,
-            ROW_NUMBER_PAID = 7,
-            ROW_COUNT = 8;
+            ROW_NUMBER_HOURLY_RATE = 4,
+            ROW_NUMBER_TOTAL_PAYMENT = 5,
+            ROW_NUMBER_COMMENT = 6,
+            ROW_NUMBER_CLAIMED = 7,
+            ROW_NUMBER_PAID = 8,
+            ROW_COUNT = 9;
 
     @NonNull
     private final ShiftDetailAdapterHelper<AdditionalShiftEntity> shiftDetailAdapterHelper;
@@ -56,7 +58,7 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
 
     @Override
     int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
+        return ROW_NUMBER_HOURLY_RATE;
     }
 
     @Override
@@ -80,6 +82,16 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     }
 
     @Override
+    int getPaymentTitle() {
+        return R.string.hourly_rate;
+    }
+
+    @Override
+    int getPaymentIcon() {
+        return R.drawable.ic_watch_black_24dp;
+    }
+
+    @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
         holder.secondaryIcon.setVisibility(View.GONE);
@@ -90,11 +102,18 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     void onItemUpdated(@NonNull AdditionalShiftEntity oldShift, @NonNull AdditionalShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
+        if (!oldShift.getTotalPayment().equals(newShift.getTotalPayment())) {
+            notifyItemChanged(ROW_NUMBER_TOTAL_PAYMENT);
+        }
     }
 
     @Override
     boolean bindViewHolder(@NonNull AdditionalShiftEntity shift, ItemViewHolder holder, int position) {
-        return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
+        if (position == ROW_NUMBER_TOTAL_PAYMENT) {
+            holder.setupPlain(R.drawable.ic_dollar_black_24dp, null);
+            holder.setText(holder.getText(R.string.payment), holder.getText(R.string.currency_format, shift.getTotalPayment()));
+            return true;
+        } else return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
                 super.bindViewHolder(shift, holder, position);
     }
 

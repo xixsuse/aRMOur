@@ -14,7 +14,7 @@ abstract class PaymentDialogFragment<Entity extends Payable> extends TextDialogF
 
     @Override
     final int getHint() {
-        return super.getHint();
+        return R.string.currency_input_hint;
     }
 
     @Override

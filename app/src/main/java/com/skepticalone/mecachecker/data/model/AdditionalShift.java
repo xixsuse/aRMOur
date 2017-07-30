@@ -1,5 +1,10 @@
 package com.skepticalone.mecachecker.data.model;
 
-public interface AdditionalShift extends Shift, Payable {
+import android.support.annotation.NonNull;
 
+import java.math.BigDecimal;
+
+public interface AdditionalShift extends Shift, Payable {
+    @NonNull
+    BigDecimal getTotalPayment();
 }
