@@ -26,7 +26,7 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
 
     @NonNull
     @Override
-    RosteredShiftViewModel createViewModel(ViewModelProvider provider) {
+    RosteredShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(RosteredShiftViewModel.class);
     }
 

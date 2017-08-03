@@ -27,7 +27,7 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
 
     @NonNull
     @Override
-    AdditionalShiftViewModel createViewModel(ViewModelProvider provider) {
+    AdditionalShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(AdditionalShiftViewModel.class);
     }
 

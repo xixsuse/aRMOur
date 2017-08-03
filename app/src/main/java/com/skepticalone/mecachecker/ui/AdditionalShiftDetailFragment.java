@@ -29,7 +29,7 @@ public final class AdditionalShiftDetailFragment
 
     @NonNull
     @Override
-    AdditionalShiftViewModel createViewModel(ViewModelProvider provider) {
+    AdditionalShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(AdditionalShiftViewModel.class);
     }
 

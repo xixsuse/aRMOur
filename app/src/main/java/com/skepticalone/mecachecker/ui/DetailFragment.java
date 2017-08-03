@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
@@ -18,7 +17,6 @@ import com.skepticalone.mecachecker.util.Snackbar;
 abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemDetailAdapter<Entity>, ViewModel>
         implements ItemDetailAdapter.Callbacks {
 
-    private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
     private Snackbar snackbar;
     @Nullable
     private Entity currentItem;
@@ -66,10 +64,6 @@ abstract class DetailFragment<Entity extends Item, ViewModel extends ViewModelCo
     final Entity getCurrentItem() {
         if (currentItem == null) throw new IllegalStateException();
         return currentItem;
-    }
-
-    final void showDialogFragment(DialogFragment dialogFragment) {
-        dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     @NonNull

@@ -1,7 +1,5 @@
 package com.skepticalone.mecachecker.ui;
 
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,19 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDialogFragment;
 
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends AppCompatDialogFragment implements Observer<Entity>, LifecycleRegistryOwner {
+abstract class DialogFragment<Entity, ViewModel extends ViewModelContract<Entity>> extends LifecycleDialogFragment implements Observer<Entity> {
 
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     private ViewModel viewModel;
-
-    @Override
-    public final LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
-    }
 
     @Nullable
     private Entity currentItem;

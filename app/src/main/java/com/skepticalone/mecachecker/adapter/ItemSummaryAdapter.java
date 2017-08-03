@@ -1,0 +1,55 @@
+package com.skepticalone.mecachecker.adapter;
+
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.skepticalone.mecachecker.data.model.Item;
+
+import java.util.List;
+
+public abstract class ItemSummaryAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
+
+    @Nullable
+    private List<Entity> mItems;
+
+    public final void setItems(final @Nullable List<Entity> items) {
+        boolean empty = mItems == null;
+        mItems = items;
+        if (empty) {
+            notifyItemRangeInserted(0, getItemCount());
+        } else {
+            notifyItemRangeChanged(0, getItemCount());
+        }
+    }
+
+    @CallSuper
+    @Override
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+        final ItemViewHolder viewHolder = new ItemViewHolder(parent);
+        viewHolder.switchControl.setVisibility(View.GONE);
+        viewHolder.secondaryIcon.setVisibility(View.GONE);
+        return viewHolder;
+    }
+
+    @Override
+    public final void onBindViewHolder(ItemViewHolder holder, int position) {
+        //noinspection ConstantConditions
+        if (!bindViewHolder(mItems, holder, position)){
+            throw new IllegalStateException();
+        }
+    }
+
+    abstract boolean bindViewHolder(@NonNull List<Entity> items, @NonNull ItemViewHolder holder, int position);
+
+    abstract int getRowCount();
+
+    @Override
+    public final int getItemCount() {
+        return mItems == null ? 0 : getRowCount();
+    }
+
+}

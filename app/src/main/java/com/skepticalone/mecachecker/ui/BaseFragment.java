@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 
 abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> extends LifecycleFragment {
 
+    private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
+
     private Adapter adapter;
     private ViewModel viewModel;
 
@@ -29,7 +31,7 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> ext
     }
 
     @NonNull
-    abstract ViewModel createViewModel(ViewModelProvider provider);
+    abstract ViewModel createViewModel(@NonNull ViewModelProvider provider);
 
     @Override
     @CallSuper
@@ -48,6 +50,10 @@ abstract class BaseFragment<Adapter extends RecyclerView.Adapter, ViewModel> ext
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(getLayout(), container, false);
         recyclerView.setAdapter(adapter);
         return recyclerView;
+    }
+
+    final void showDialogFragment(android.support.v4.app.DialogFragment dialogFragment) {
+        dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 
     final Adapter getAdapter() {

@@ -19,7 +19,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     @NonNull
     private final Callbacks mCallbacks;
     @Nullable
-    private List<? extends Entity> mItems;
+    private List<Entity> mItems;
 
 //    private long mSelectedId = -1;
 
@@ -58,7 +58,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         return mItems.get(position).getId();
     }
 
-    public final void setItems(final List<? extends Entity> items) {
+    public final void setItems(final List<Entity> items) {
         if (mItems == null) {
             notifyItemRangeInserted(0, items.size());
         } else {

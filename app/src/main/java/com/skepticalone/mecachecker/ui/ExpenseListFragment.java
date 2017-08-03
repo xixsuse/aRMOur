@@ -26,7 +26,7 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
 
     @NonNull
     @Override
-    ExpenseViewModel createViewModel(ViewModelProvider provider) {
+    ExpenseViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(ExpenseViewModel.class);
     }
 

@@ -68,7 +68,7 @@ public final class MainActivity extends CoordinatorActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return true;
     }
 
@@ -78,6 +78,14 @@ public final class MainActivity extends CoordinatorActivity
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         } else return super.onOptionsItemSelected(item);
+//
+//        switch (item.getItemId()) {
+//            case R.id.settings:
+//                startActivity(new Intent(this, SettingsActivity.class));
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
     }
 
     @Override

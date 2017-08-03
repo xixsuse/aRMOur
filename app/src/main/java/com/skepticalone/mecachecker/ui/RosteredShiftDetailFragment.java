@@ -28,7 +28,7 @@ public final class RosteredShiftDetailFragment
 
     @NonNull
     @Override
-    RosteredShiftViewModel createViewModel(ViewModelProvider provider) {
+    RosteredShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(RosteredShiftViewModel.class);
     }
 

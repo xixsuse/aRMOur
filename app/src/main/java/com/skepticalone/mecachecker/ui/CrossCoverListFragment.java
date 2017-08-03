@@ -26,7 +26,7 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
 
     @NonNull
     @Override
-    CrossCoverViewModel createViewModel(ViewModelProvider provider) {
+    CrossCoverViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(CrossCoverViewModel.class);
     }
 
