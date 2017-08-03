@@ -17,12 +17,21 @@ public abstract class ItemSummaryAdapter<Entity extends Item> extends RecyclerVi
     private List<Entity> mItems;
 
     public final void setItems(final @Nullable List<Entity> items) {
-        boolean empty = mItems == null;
-        mItems = items;
-        if (empty) {
-            notifyItemRangeInserted(0, getItemCount());
+        if (mItems == null && items == null) {
+            return;
+        } else if (mItems == null) {
+            notifyItemRangeInserted(0, getRowCount());
+        } else if (items == null) {
+            notifyItemRangeRemoved(0, getRowCount());
         } else {
-            notifyItemRangeChanged(0, getItemCount());
+            notifyItemRangeChanged(0, getRowCount());
+        }
+        mItems = items;
+    }
+
+    final void onFiltersChanged() {
+        if (mItems != null) {
+            notifyItemRangeChanged(0, getRowCount());
         }
     }
 

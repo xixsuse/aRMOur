@@ -1,12 +1,17 @@
 package com.skepticalone.mecachecker.ui;
 
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,23 +24,31 @@ import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 import java.util.List;
 
-abstract class SummaryDialogFragment<Entity extends Item> extends LifecycleDialogFragment implements Observer<List<Entity>> {
+abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDialogFragment implements LifecycleRegistryOwner, Observer<List<Entity>> {
 
-    static SummaryDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
+    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+
+    @Override
+    public final LifecycleRegistry getLifecycle() {
+        return lifecycleRegistry;
+    }
+
+    static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
 //        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
 //        if (itemType == R.id.additional) return new AdditionalShiftListFragment();
 //        if (itemType == R.id.cross_cover) return new CrossCoverListFragment();
-        if (itemType == R.id.expenses) return new ExpenseSummaryDialogFragment();
+        if (itemType == R.id.expenses) return new ExpenseTotalsDialogFragment();
         throw new IllegalStateException();
     }
 
     @NonNull
     abstract ViewModelContract<Entity> onCreateViewModel(@NonNull ViewModelProvider provider);
 
-    @NonNull
-    abstract ItemSummaryAdapter<Entity> createAdapter();
+    @LayoutRes
+    abstract int getLayout();
 
-    private final ItemSummaryAdapter<Entity> adapter = createAdapter();
+    @NonNull
+    abstract ItemSummaryAdapter<Entity> getAdapter();
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
@@ -44,15 +57,16 @@ abstract class SummaryDialogFragment<Entity extends Item> extends LifecycleDialo
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.detail_recycler, container, false);
-        recyclerView.setAdapter(adapter);
-        return recyclerView;
+    public final void onChanged(@Nullable List<Entity> entities) {
+        getAdapter().setItems(entities);
     }
 
     @Override
-    public final void onChanged(@Nullable List<Entity> items) {
-        adapter.setItems(items);
+    @CallSuper
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View layout = inflater.inflate(getLayout(), container, false);
+        ((RecyclerView) layout.findViewById(R.id.recycler_view)).setAdapter(getAdapter());
+        return layout;
     }
 
 }

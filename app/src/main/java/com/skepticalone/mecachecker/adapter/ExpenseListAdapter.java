@@ -30,7 +30,7 @@ public final class ExpenseListAdapter extends ItemListAdapter<ExpenseEntity> {
     @Override
     void bindViewHolder(@NonNull ExpenseEntity expense, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
-        holder.setText(expense.getTitle(), holder.getCurrencyText(expense.getPaymentData().getPayment()), expense.getComment());
+        holder.setText(expense.getTitle(), holder.getPaymentText(expense.getPaymentData().getPayment()), expense.getComment());
     }
 
 }

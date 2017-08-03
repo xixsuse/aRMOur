@@ -6,12 +6,14 @@ import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
+import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public final class ExpenseSummaryAdapter extends ItemSummaryAdapter<ExpenseEntity> {
 
+    private boolean includeUnclaimed = true, includeClaimed = true, includePaid = true;
     private static final int
             ROW_NUMBER_TOTAL_NUMBER = 0,
             ROW_NUMBER_TOTAL_PAYMENT = 1,
@@ -22,6 +24,31 @@ public final class ExpenseSummaryAdapter extends ItemSummaryAdapter<ExpenseEntit
         return ROW_COUNT;
     }
 
+    public void includeUnclaimed(boolean includeUnclaimed) {
+        if (this.includeUnclaimed != includeUnclaimed) {
+            this.includeUnclaimed = includeUnclaimed;
+            onFiltersChanged();
+        }
+    }
+
+    public void includeClaimed(boolean includeClaimed) {
+        if (this.includeClaimed != includeClaimed) {
+            this.includeClaimed = includeClaimed;
+            onFiltersChanged();
+        }
+    }
+
+    public void includePaid(boolean includePaid) {
+        if (this.includePaid != includePaid) {
+            this.includePaid = includePaid;
+            onFiltersChanged();
+        }
+    }
+
+    private boolean filtered() {
+        return !includeUnclaimed || !includeClaimed || !includePaid;
+    }
+
     @Override
     boolean bindViewHolder(@NonNull List<ExpenseEntity> items, @NonNull ItemViewHolder holder, int position) {
         @DrawableRes final int icon;
@@ -30,15 +57,36 @@ public final class ExpenseSummaryAdapter extends ItemSummaryAdapter<ExpenseEntit
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
             icon = R.drawable.ic_list_black_24dp;
             firstLine = R.string.expenses;
-            secondLine = Integer.toString(items.size());
+            int filteredCount = 0;
+            for (ExpenseEntity expense : items) {
+                PaymentData paymentData = expense.getPaymentData();
+                if (paymentData.getClaimed() == null) {
+                    if (!includeUnclaimed) continue;
+                } else if (paymentData.getPaid() == null) {
+                    if (!includeClaimed) continue;
+                } else {
+                    if (!includePaid) continue;
+                }
+                filteredCount++;
+            }
+            secondLine = (filtered() && items.size() > 0) ? holder.getCountPercentage(filteredCount, filteredCount * 100f / items.size()) : holder.getCount(filteredCount);
         } else if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             icon = R.drawable.ic_dollar_black_24dp;
             firstLine = R.string.total_payment;
-            BigDecimal totalPayment = BigDecimal.ZERO;
+            BigDecimal filteredPayment = BigDecimal.ZERO, totalPayment = BigDecimal.ZERO;
             for (ExpenseEntity expense : items) {
-                totalPayment = totalPayment.add(expense.getPaymentData().getPayment());
+                PaymentData paymentData = expense.getPaymentData();
+                totalPayment = totalPayment.add(paymentData.getPayment());
+                if (paymentData.getClaimed() == null) {
+                    if (!includeUnclaimed) continue;
+                } else if (paymentData.getPaid() == null) {
+                    if (!includeClaimed) continue;
+                } else {
+                    if (!includePaid) continue;
+                }
+                filteredPayment = filteredPayment.add(paymentData.getPayment());
             }
-            secondLine = holder.getCurrencyText(totalPayment);
+            secondLine = (filtered() && totalPayment.compareTo(BigDecimal.ZERO) > 0) ? holder.getPaymentPercentage(filteredPayment, filteredPayment.multiply(new BigDecimal(100)).divide(totalPayment, BigDecimal.ROUND_HALF_UP)) : holder.getPaymentText(filteredPayment);
         } else return false;
         holder.setupPlain(icon, null);
         holder.setText(holder.getText(firstLine), secondLine);

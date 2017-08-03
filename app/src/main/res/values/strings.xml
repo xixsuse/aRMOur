@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MECA checker</string>
     <string name="settings">Settings</string>
-    <string name="summary">Summary</string>
+    <string name="totals">Totals</string>
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
@@ -24,13 +24,17 @@
     <string name="expenses">Expenses</string>
     <string name="expense">Expense</string>
     <string name="new_expense_title">New expense</string>
-    <string name="currency_format">$%.2f</string>
+    <string name="payment_format">$%.2f</string>
+    <string name="count_format">%d</string>
+    <string name="count_percentage_format">%d (%.0f%%)</string>
+    <string name="payment_percentage_format">$%.2f (%.0f%%)</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="title">Title</string>
     <string name="payment">Payment</string>
     <string name="total_payment">Total payment</string>
     <string name="cross_cover_payment">Cross cover payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
+    <string name="unclaimed">Unclaimed</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>
     <string name="comment">Comment</string>

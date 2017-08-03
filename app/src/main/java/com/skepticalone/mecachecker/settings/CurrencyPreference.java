@@ -44,7 +44,7 @@ public class CurrencyPreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return getContext().getString(R.string.currency_format, BigDecimal.valueOf(mValue, 2));
+        return getContext().getString(R.string.payment_format, BigDecimal.valueOf(mValue, 2));
     }
 
     @Override

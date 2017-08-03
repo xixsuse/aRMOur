@@ -88,8 +88,23 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @NonNull
-    String getCurrencyText(@NonNull BigDecimal value) {
-        return text.getContext().getString(R.string.currency_format, value);
+    String getCount(int count) {
+        return text.getContext().getString(R.string.count_format, count);
+    }
+
+    @NonNull
+    String getCountPercentage(int count, float percentage) {
+        return text.getContext().getString(R.string.count_percentage_format, count, percentage);
+    }
+
+    @NonNull
+    String getPaymentText(@NonNull BigDecimal payment) {
+        return text.getContext().getString(R.string.payment_format, payment);
+    }
+
+    @NonNull
+    String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal percentage) {
+        return text.getContext().getString(R.string.payment_percentage_format, payment, percentage);
     }
 
     void setText(@NonNull String firstLine) {

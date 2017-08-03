@@ -62,7 +62,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         if (mItems == null) {
             notifyItemRangeInserted(0, items.size());
         } else {
-            final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
                     return mItems.size();
@@ -83,8 +83,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
                     return ItemListAdapter.this.areContentsTheSame(mItems.get(oldItemPosition), items.get(newItemPosition));
                 }
 
-            });
-            result.dispatchUpdatesTo((ListUpdateCallback) this);
+            }).dispatchUpdatesTo((ListUpdateCallback) this);
         }
         mItems = items;
     }

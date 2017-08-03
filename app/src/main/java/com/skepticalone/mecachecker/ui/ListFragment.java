@@ -58,8 +58,8 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.summary) {
-            showDialogFragment(SummaryDialogFragment.getNewSummaryDialogFragment(getItemType()));
+        if (item.getItemId() == R.id.totals) {
+            showDialogFragment(TotalsDialogFragment.getNewSummaryDialogFragment(getItemType()));
             return true;
         } else return super.onOptionsItemSelected(item);
     }

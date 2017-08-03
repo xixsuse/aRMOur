@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ToggleButton
+        android:id="@+id/unclaimed"
+        android:textOn="@string/unclaimed"
+        android:textOff="@string/unclaimed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintEnd_toStartOf="@+id/claimed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+        android:checked="true"
+        />
+    <ToggleButton
+        android:id="@+id/claimed"
+        android:textOn="@string/claimed"
+        android:textOff="@string/claimed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/paid"
+        app:layout_constraintStart_toEndOf="@+id/unclaimed"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+        android:checked="true"
+        />
+
+    <ToggleButton
+        android:id="@+id/paid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textOn="@string/paid"
+        android:textOff="@string/paid"
+        app:layout_constraintStart_toEndOf="@+id/claimed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+        android:checked="true"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        app:layoutManager="LinearLayoutManager"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</android.support.constraint.ConstraintLayout>
