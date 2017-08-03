@@ -13,7 +13,7 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import org.joda.time.LocalDate;
 
-@Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(name = Contract.CrossCoverShifts.INDEX, value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
+@Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
 public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
@@ -40,5 +40,15 @@ public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @Override
     public PaymentData getPaymentData() {
         return paymentData;
+    }
+
+    @NonNull
+    public static LocalDate getNewDate(@Nullable final LocalDate lastDate) {
+        LocalDate newDate = LocalDate.now();
+        if (lastDate != null) {
+            LocalDate earliestShiftDate = lastDate.plusDays(1);
+            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+        }
+        return newDate;
     }
 }

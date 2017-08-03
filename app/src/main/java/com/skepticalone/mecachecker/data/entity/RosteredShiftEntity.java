@@ -20,7 +20,7 @@ import org.joda.time.ReadableInstant;
 
 import java.util.List;
 
-@Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(name = Contract.RosteredShifts.INDEX, value = {Contract.COLUMN_NAME_SHIFT_START})})
+@Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
 public final class RosteredShiftEntity extends ItemEntity implements RosteredShift {
 
     @NonNull

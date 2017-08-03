@@ -16,7 +16,7 @@ import org.joda.time.DateTimeConstants;
 
 import java.math.BigDecimal;
 
-@Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(name = Contract.AdditionalShifts.INDEX, value = {Contract.COLUMN_NAME_SHIFT_START})})
+@Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
 public final class AdditionalShiftEntity extends ItemEntity implements AdditionalShift {
 
     @NonNull

@@ -50,18 +50,13 @@ public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity
         runAsync(new Runnable() {
             @Override
             public void run() {
-                LocalDate newDate = new LocalDate();
-                LocalDate lastCrossCoverShiftDate = getDao().getLastCrossCoverDateSync();
-                if (lastCrossCoverShiftDate != null) {
-                    LocalDate earliestShiftDate = lastCrossCoverShiftDate.plusDays(1);
-                    if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+                synchronized (CrossCoverViewModel.this) {
+                    postSelectedId(getDao().insertItemSync(new CrossCoverEntity(
+                            CrossCoverEntity.getNewDate(getDao().getLastCrossCoverDateSync()),
+                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment)),
+                            null
+                    )));
                 }
-                int newCrossCoverPayment = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment);
-                postSelectedId(getDao().insertItemSync(new CrossCoverEntity(
-                        newDate,
-                        PaymentData.fromPayment(newCrossCoverPayment),
-                        null
-                )));
             }
         });
     }

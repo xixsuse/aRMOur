@@ -24,7 +24,7 @@ public interface AdditionalShiftDao extends PayableDaoContract<AdditionalShiftEn
 
     @Override
     @Insert
-    long insertItemSync(@NonNull AdditionalShiftEntity crossCover);
+    long insertItemSync(@NonNull AdditionalShiftEntity shift);
 
     @NonNull
     @Override
@@ -51,7 +51,7 @@ public interface AdditionalShiftDao extends PayableDaoContract<AdditionalShiftEn
 
     @Override
     @Delete
-    int deleteItemSync(@NonNull AdditionalShiftEntity item);
+    int deleteItemSync(@NonNull AdditionalShiftEntity shift);
 
     @Override
     @Query("UPDATE " +

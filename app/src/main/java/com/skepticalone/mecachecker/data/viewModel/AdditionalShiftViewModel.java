@@ -36,11 +36,13 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertItemSync(new AdditionalShiftEntity(
-                        PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
-                        ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync(), false),
-                        null
-                )));
+                synchronized (AdditionalShiftViewModel.this) {
+                    postSelectedId(getDao().insertItemSync(new AdditionalShiftEntity(
+                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
+                            ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync(), false),
+                            null
+                    )));
+                }
             }
         });
     }

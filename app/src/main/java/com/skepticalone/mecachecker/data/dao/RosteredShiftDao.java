@@ -23,7 +23,7 @@ public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity> {
 
     @Override
     @Insert
-    long insertItemSync(@NonNull RosteredShiftEntity item);
+    long insertItemSync(@NonNull RosteredShiftEntity shift);
 
     @NonNull
     @Override
@@ -50,7 +50,7 @@ public interface RosteredShiftDao extends ItemDaoContract<RosteredShiftEntity> {
 
     @Override
     @Delete
-    int deleteItemSync(@NonNull RosteredShiftEntity item);
+    int deleteItemSync(@NonNull RosteredShiftEntity shift);
 
     @Override
     @Query("UPDATE " +

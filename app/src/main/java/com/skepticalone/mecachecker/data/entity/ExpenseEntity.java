@@ -7,10 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
+import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.util.PaymentData;
 
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
-public final class ExpenseEntity extends ItemEntity implements com.skepticalone.mecachecker.data.model.Expense {
+public final class ExpenseEntity extends ItemEntity implements Expense {
     @NonNull
     @ColumnInfo(name = Contract.Expenses.COLUMN_NAME_TITLE)
     private final String title;

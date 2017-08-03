@@ -20,8 +20,7 @@ import com.skepticalone.mecachecker.data.util.DateTimeConverter;
 import com.skepticalone.mecachecker.data.util.LocalDateConverter;
 import com.skepticalone.mecachecker.data.util.MoneyConverter;
 
-@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class},
-        version = 29)
+@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 40)
 @TypeConverters({LocalDateConverter.class, DateTimeConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -35,7 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (DATABASE == null) {
             DATABASE = Room
                     .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
-                    .openHelperFactory(new HelperFactory())
+                    .openHelperFactory(new SQLiteOpenHelperFactory())
                     .build();
         }
         return DATABASE;

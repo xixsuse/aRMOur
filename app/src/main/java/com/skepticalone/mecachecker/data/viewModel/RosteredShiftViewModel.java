@@ -20,6 +20,7 @@ import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 import com.skepticalone.mecachecker.data.util.ShiftData;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -92,12 +93,14 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertItemSync(new RosteredShiftEntity(
-                        ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync(), skipWeekends(shiftType)),
-                        null,
-                        null
-                )));
-
+                synchronized (RosteredShiftViewModel.this) {
+                    DateTime lastShiftEnd = getDao().getLastShiftEndSync();
+                    postSelectedId(getDao().insertItemSync(new RosteredShiftEntity(
+                            ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), lastShiftEnd, skipWeekends(shiftType)),
+                            null,
+                            null
+                    )));
+                }
             }
         });
     }
@@ -107,7 +110,13 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         runAsync(new Runnable() {
             @Override
             public void run() {
-                if (logged) getDao().switchOnLogSync(id);
+                if (logged) {
+                    try {
+                        getDao().switchOnLogSync(id);
+                    } catch (SQLiteConstraintException e) {
+                        postOverlappingShifts();
+                    }
+                }
                 else getDao().switchOffLogSync(id);
             }
         });

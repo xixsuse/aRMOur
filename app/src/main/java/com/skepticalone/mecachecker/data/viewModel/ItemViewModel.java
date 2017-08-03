@@ -51,8 +51,19 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
         });
     }
 
-    void runAsync(Runnable runnable) {
+    void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(1000);
+//                    runnable.run();
+//                } catch (InterruptedException e) {
+//                    // do nothing
+//                }
+//            }
+//        }).start();
     }
 
     @NonNull

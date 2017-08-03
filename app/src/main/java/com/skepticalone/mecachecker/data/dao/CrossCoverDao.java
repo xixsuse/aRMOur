@@ -52,7 +52,7 @@ public interface CrossCoverDao extends PayableDaoContract<CrossCoverEntity> {
 
     @Override
     @Delete
-    int deleteItemSync(@NonNull CrossCoverEntity item);
+    int deleteItemSync(@NonNull CrossCoverEntity crossCover);
 
     @Override
     @Query("UPDATE " +
