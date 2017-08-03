@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.DialogPreference;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
@@ -30,7 +31,7 @@ public class TimePreference extends DialogPreference {
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mTimePicker = (TimePicker) view;
-        ((TimePicker) view).setIs24HourView(false);
+        mTimePicker.setIs24HourView(DateFormat.is24HourFormat(mTimePicker.getContext()));
         int hours = DateTimeUtils.calculateHours(mTotalMinutes);
         int minutes = DateTimeUtils.calculateMinutes(mTotalMinutes);
         if (Build.VERSION.SDK_INT >= 23) {
