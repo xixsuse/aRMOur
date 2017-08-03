@@ -53,6 +53,11 @@ public final class RosteredShiftDetailFragment
         return new RosteredShiftCommentDialogFragment();
     }
 
+    @Override
+    public void showMessage(@NonNull String message) {
+        showDialogFragment(MessageDialogFragment.newInstance(message));
+    }
+
     public static final class RosteredShiftCommentDialogFragment extends CommentDialogFragment<RosteredShiftEntity> {
 
         @NonNull

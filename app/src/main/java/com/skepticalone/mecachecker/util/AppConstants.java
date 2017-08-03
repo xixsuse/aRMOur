@@ -7,11 +7,11 @@ import org.joda.time.Duration;
 
 public final class AppConstants {
 
-    private static final int MINIMUM_HOURS_BETWEEN_SHIFTS = 8;
+    public static final int MINIMUM_HOURS_BETWEEN_SHIFTS = 8;
+    public static final int MAXIMUM_HOURS_OVER_DAY = 16;
+    public static final int MAXIMUM_HOURS_OVER_WEEK = 72;
+    public static final int MAXIMUM_HOURS_OVER_FORTNIGHT = 144;
     public static final Duration MINIMUM_DURATION_BETWEEN_SHIFTS = Duration.standardHours(MINIMUM_HOURS_BETWEEN_SHIFTS);
-    private static final int MAXIMUM_HOURS_OVER_DAY = 16;
-    private static final int MAXIMUM_HOURS_OVER_WEEK = 72;
-    private static final int MAXIMUM_HOURS_OVER_FORTNIGHT = 144;
     private static final Duration MAXIMUM_DURATION_OVER_DAY = Duration.standardHours(MAXIMUM_HOURS_OVER_DAY);
     private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(MAXIMUM_HOURS_OVER_WEEK);
     private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(MAXIMUM_HOURS_OVER_FORTNIGHT);

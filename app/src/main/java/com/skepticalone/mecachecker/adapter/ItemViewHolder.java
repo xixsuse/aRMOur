@@ -53,6 +53,12 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
                 switchControl.setChecked(switchChecked);
             }
             switchControl.setEnabled(onCheckedChangeListener != null);
+            onClickListener = onCheckedChangeListener == null ? null : new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switchControl.toggle();
+                }
+            };
             switchControl.setVisibility(View.VISIBLE);
         } else {
             switchControl.setVisibility(View.GONE);
