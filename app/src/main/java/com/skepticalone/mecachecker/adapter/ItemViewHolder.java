@@ -93,8 +93,8 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @NonNull
-    String getCountPercentage(int count, float percentage) {
-        return text.getContext().getString(R.string.count_percentage_format, count, percentage);
+    String getCountPercentage(int count, int totalCount) {
+        return text.getContext().getString(R.string.count_percentage_format, count, count * 100f / totalCount);
     }
 
     @NonNull
@@ -103,8 +103,8 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @NonNull
-    String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal percentage) {
-        return text.getContext().getString(R.string.payment_percentage_format, payment, percentage);
+    String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
+        return text.getContext().getString(R.string.payment_percentage_format, payment, payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP));
     }
 
     void setText(@NonNull String firstLine) {

@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.adapter.ItemSummaryAdapter;
+import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
@@ -36,7 +36,7 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
     static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
 //        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
 //        if (itemType == R.id.additional) return new AdditionalShiftListFragment();
-//        if (itemType == R.id.cross_cover) return new CrossCoverListFragment();
+        if (itemType == R.id.cross_cover) return new CrossCoverTotalsDialogFragment();
         if (itemType == R.id.expenses) return new ExpenseTotalsDialogFragment();
         throw new IllegalStateException();
     }
@@ -48,7 +48,7 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
     abstract int getLayout();
 
     @NonNull
-    abstract ItemSummaryAdapter<Entity> getAdapter();
+    abstract ItemTotalsAdapter<Entity> getAdapter();
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {

@@ -21,6 +21,7 @@
     <string name="additional_shifts">Additional shifts</string>
     <string name="additional_shift">Additional shift</string>
     <string name="cross_cover">Cross cover</string>
+    <string name="cross_cover_shifts">Cross cover shifts</string>
     <string name="expenses">Expenses</string>
     <string name="expense">Expense</string>
     <string name="new_expense_title">New expense</string>

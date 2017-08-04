@@ -6,12 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemSummaryAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
+public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener{
 
     @Nullable
     private List<Entity> mItems;
@@ -29,7 +30,8 @@ public abstract class ItemSummaryAdapter<Entity extends Item> extends RecyclerVi
         mItems = items;
     }
 
-    final void onFiltersChanged() {
+    @Override
+    public final void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         if (mItems != null) {
             notifyItemRangeChanged(0, getRowCount());
         }
