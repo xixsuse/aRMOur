@@ -10,6 +10,8 @@ import com.skepticalone.mecachecker.data.db.Contract;
 import com.skepticalone.mecachecker.data.model.Expense;
 import com.skepticalone.mecachecker.data.util.PaymentData;
 
+import java.math.BigDecimal;
+
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
 public final class ExpenseEntity extends ItemEntity implements Expense {
     @NonNull
@@ -35,5 +37,11 @@ public final class ExpenseEntity extends ItemEntity implements Expense {
     @Override
     public PaymentData getPaymentData() {
         return paymentData;
+    }
+
+    @NonNull
+    @Override
+    public BigDecimal getPayment() {
+        return paymentData.getPayment();
     }
 }

@@ -13,6 +13,8 @@ import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import org.joda.time.LocalDate;
 
+import java.math.BigDecimal;
+
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
 public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @NonNull
@@ -40,6 +42,12 @@ public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @Override
     public PaymentData getPaymentData() {
         return paymentData;
+    }
+
+    @NonNull
+    @Override
+    public BigDecimal getPayment() {
+        return paymentData.getPayment();
     }
 
     @NonNull

@@ -102,7 +102,7 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     void onItemUpdated(@NonNull AdditionalShiftEntity oldShift, @NonNull AdditionalShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        if (!oldShift.getTotalPayment().equals(newShift.getTotalPayment())) {
+        if (!oldShift.getPayment().equals(newShift.getPayment())) {
             notifyItemChanged(ROW_NUMBER_TOTAL_PAYMENT);
         }
     }
@@ -111,7 +111,7 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     boolean bindViewHolder(@NonNull AdditionalShiftEntity shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, null);
-            holder.setText(holder.getText(R.string.payment), holder.getPaymentText(shift.getTotalPayment()));
+            holder.setText(holder.getText(R.string.payment), holder.getPaymentText(shift.getPayment()));
             return true;
         } else return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
                 super.bindViewHolder(shift, holder, position);

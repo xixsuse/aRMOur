@@ -87,39 +87,54 @@ public final class ShiftUtil {
             nightShiftStartDefault = applicationContext.getResources().getInteger(R.integer.default_start_night_shift);
             nightShiftEndDefault = applicationContext.getResources().getInteger(R.integer.default_end_night_shift);
         }
-//
-//        @Override
-//        public final int getShiftIcon(@NonNull ShiftData shiftData) {
-//            return ShiftUtil.getShiftIcon(getShiftType(shiftData));
-//        }
-//
-//        @Override
-//        public int getShiftTitle(@NonNull ShiftData shiftData) {
-//            return ShiftUtil.getShiftTitle(getShiftType(shiftData));
-//        }
+
+        public final Filter
+                normalDayFilter = new Filter() {
+                    @Override
+                    public boolean include(@NonNull ShiftData shiftdata) {
+                        return isNormalDay(shiftdata);
+                    }
+                },
+                longDayFilter = new Filter() {
+                    @Override
+                    public boolean include(@NonNull ShiftData shiftdata) {
+                        return isLongDay(shiftdata);
+                    }
+                },
+                nightShiftFilter = new Filter() {
+                    @Override
+                    public boolean include(@NonNull ShiftData shiftdata) {
+                        return isNightShift(shiftdata);
+                    }
+                },
+                customShiftFilter = new Filter() {
+                    @Override
+                    public boolean include(@NonNull ShiftData shiftdata) {
+                        return !isNormalDay(shiftdata) && !isLongDay(shiftdata) && !isNightShift(shiftdata);
+                    }
+                };
+
+        public boolean isNormalDay(@NonNull ShiftData shiftData) {
+            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(normalDayStartKey, normalDayStartDefault) &&
+                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(normalDayEndKey, normalDayEndDefault);
+        }
+
+        public boolean isLongDay(@NonNull ShiftData shiftData) {
+            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(longDayStartKey, longDayStartDefault) &&
+                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(longDayEndKey, longDayEndDefault);
+        }
+
+        public boolean isNightShift(@NonNull ShiftData shiftData) {
+            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
+                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(nightShiftEndKey, nightShiftEndDefault);
+        }
 
         @NonNull
         public ShiftType getShiftType(@NonNull ShiftData shiftData) {
-            int startTotalMinutes = shiftData.getStart().getMinuteOfDay(),
-                    endTotalMinutes = shiftData.getEnd().getMinuteOfDay();
-            if (
-                    startTotalMinutes == mPreferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                            endTotalMinutes == mPreferences.getInt(normalDayEndKey, normalDayEndDefault)
-                    ) {
-                return ShiftType.NORMAL_DAY;
-            } else if (
-                    startTotalMinutes == mPreferences.getInt(longDayStartKey, longDayStartDefault) &&
-                            endTotalMinutes == mPreferences.getInt(longDayEndKey, longDayEndDefault)
-                    ) {
-                return ShiftType.LONG_DAY;
-            } else if (
-                    startTotalMinutes == mPreferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                            endTotalMinutes == mPreferences.getInt(nightShiftEndKey, nightShiftEndDefault)
-                    ) {
-                return ShiftType.NIGHT_SHIFT;
-            } else {
-                return ShiftType.OTHER;
-            }
+            if (isNormalDay(shiftData)) return ShiftType.NORMAL_DAY;
+            if (isLongDay(shiftData)) return ShiftType.LONG_DAY;
+            if (isNightShift(shiftData)) return ShiftType.NIGHT_SHIFT;
+            return ShiftType.OTHER;
         }
 
         @NonNull
@@ -164,4 +179,9 @@ public final class ShiftUtil {
         NIGHT_SHIFT,
         OTHER
     }
+
+    public interface Filter {
+        boolean include(@NonNull ShiftData shiftdata);
+    }
+
 }

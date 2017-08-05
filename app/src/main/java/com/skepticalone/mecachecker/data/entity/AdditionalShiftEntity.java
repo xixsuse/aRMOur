@@ -56,7 +56,7 @@ public final class AdditionalShiftEntity extends ItemEntity implements Additiona
 
     @NonNull
     @Override
-    public BigDecimal getTotalPayment() {
+    public BigDecimal getPayment() {
         return totalPayment;
     }
 }
