@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
@@ -28,6 +29,14 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
 
     private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
 
+    private ItemTotalsAdapter<Entity> adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = createAdapter(context);
+    }
+
     @Override
     public final LifecycleRegistry getLifecycle() {
         return lifecycleRegistry;
@@ -35,9 +44,9 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
 
     static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
 //        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
-//        if (itemType == R.id.additional) return new AdditionalShiftListFragment();
-        if (itemType == R.id.cross_cover) return new CrossCoverTotalsDialogFragment();
-        if (itemType == R.id.expenses) return new ExpenseTotalsDialogFragment();
+        if (itemType == R.id.additional) return new AdditionalShiftListFragment.AdditionalShiftTotalsDialogFragment();
+        if (itemType == R.id.cross_cover) return new CrossCoverListFragment.CrossCoverTotalsDialogFragment();
+        if (itemType == R.id.expenses) return new ExpenseListFragment.ExpenseTotalsDialogFragment();
         throw new IllegalStateException();
     }
 
@@ -48,7 +57,12 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
     abstract int getLayout();
 
     @NonNull
-    abstract ItemTotalsAdapter<Entity> getAdapter();
+    abstract ItemTotalsAdapter<Entity> createAdapter(@NonNull Context context);
+
+    @NonNull
+    final ItemTotalsAdapter<Entity> getAdapter(){
+        return adapter;
+    }
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
@@ -58,14 +72,14 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
 
     @Override
     public final void onChanged(@Nullable List<Entity> entities) {
-        getAdapter().setItems(entities);
+        adapter.setItems(entities);
     }
 
     @Override
     @CallSuper
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(getLayout(), container, false);
-        ((RecyclerView) layout.findViewById(R.id.recycler_view)).setAdapter(getAdapter());
+        ((RecyclerView) layout.findViewById(R.id.recycler_view)).setAdapter(adapter);
         return layout;
     }
 

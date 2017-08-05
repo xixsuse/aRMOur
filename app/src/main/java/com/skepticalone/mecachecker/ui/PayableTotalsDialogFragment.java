@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +8,16 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
 import com.skepticalone.mecachecker.adapter.PayableTotalsAdapter;
 import com.skepticalone.mecachecker.data.model.Payable;
 
-public abstract class PayableTotalsDialogFragment<Entity extends Payable> extends TotalsDialogFragment<Entity> implements PayableTotalsAdapter.Callbacks {
-
-    private final PayableTotalsAdapter<Entity> adapter = new PayableTotalsAdapter<>(this);
+abstract class PayableTotalsDialogFragment<Entity extends Payable> extends TotalsDialogFragment<Entity> implements PayableTotalsAdapter.Callbacks {
 
     private CompoundButton unclaimed, claimed, paid;
 
     @Override
     final int getLayout() {
-        return R.layout.expense_summary;
+        return R.layout.payable_summary;
     }
 
     @Override
@@ -29,11 +25,11 @@ public abstract class PayableTotalsDialogFragment<Entity extends Payable> extend
         View layout = super.onCreateView(inflater, container, savedInstanceState);
         //noinspection ConstantConditions
         unclaimed = layout.findViewById(R.id.unclaimed);
-        unclaimed.setOnCheckedChangeListener(adapter);
+        unclaimed.setOnCheckedChangeListener(getAdapter());
         claimed = layout.findViewById(R.id.claimed);
-        claimed.setOnCheckedChangeListener(adapter);
+        claimed.setOnCheckedChangeListener(getAdapter());
         paid = layout.findViewById(R.id.paid);
-        paid.setOnCheckedChangeListener(adapter);
+        paid.setOnCheckedChangeListener(getAdapter());
         return layout;
     }
 
@@ -52,9 +48,4 @@ public abstract class PayableTotalsDialogFragment<Entity extends Payable> extend
         return paid.isChecked();
     }
 
-    @NonNull
-    @Override
-    final ItemTotalsAdapter<Entity> getAdapter() {
-        return adapter;
-    }
 }

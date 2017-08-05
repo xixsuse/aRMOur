@@ -7,9 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.AdditionalShiftListAdapter;
+import com.skepticalone.mecachecker.adapter.AdditionalShiftTotalsAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
+import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 public final class AdditionalShiftListFragment extends ShiftAddListFragment<AdditionalShiftEntity, AdditionalShiftViewModel> {
@@ -29,6 +32,21 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
     @Override
     AdditionalShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(AdditionalShiftViewModel.class);
+    }
+    public static final class AdditionalShiftTotalsDialogFragment extends PayableTotalsDialogFragment<AdditionalShiftEntity> {
+
+        @NonNull
+        @Override
+        ItemTotalsAdapter<AdditionalShiftEntity> createAdapter(@NonNull Context context) {
+            return new AdditionalShiftTotalsAdapter(this, ShiftUtil.Calculator.getInstance(context));
+        }
+
+        @NonNull
+        @Override
+        ViewModelContract<AdditionalShiftEntity> onCreateViewModel(@NonNull ViewModelProvider provider) {
+            return provider.get(AdditionalShiftViewModel.class);
+        }
+
     }
 
 }

@@ -11,29 +11,34 @@ import java.util.List;
 public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<AdditionalShiftEntity> {
 
     private static final int
-            ROW_NUMBER_NORMAL_DAY_TOTAL = 0,
-            ROW_NUMBER_LONG_DAY_TOTAL = 1,
-            ROW_NUMBER_NIGHT_SHIFT_TOTAL = 2,
-            ROW_NUMBER_CUSTOM_SHIFT_TOTAL = 3,
-            ROW_NUMBER_ALL_SHIFT_TOTAL = 4,
-            ROW_NUMBER_NORMAL_DAY_PAYMENT = 5,
-            ROW_NUMBER_LONG_DAY_PAYMENT = 6,
-            ROW_NUMBER_NIGHT_SHIFT_PAYMENT = 7,
-            ROW_NUMBER_CUSTOM_SHIFT_PAYMENT = 8,
-            ROW_NUMBER_ALL_SHIFT_PAYMENT = 9,
+            ROW_NUMBER_ALL_SHIFT_TOTAL = 0,
+            ROW_NUMBER_NORMAL_DAY_TOTAL = 1,
+            ROW_NUMBER_LONG_DAY_TOTAL = 2,
+            ROW_NUMBER_NIGHT_SHIFT_TOTAL = 3,
+            ROW_NUMBER_CUSTOM_SHIFT_TOTAL = 4,
+            ROW_NUMBER_ALL_SHIFT_PAYMENT = 5,
+            ROW_NUMBER_NORMAL_DAY_PAYMENT = 6,
+            ROW_NUMBER_LONG_DAY_PAYMENT = 7,
+            ROW_NUMBER_NIGHT_SHIFT_PAYMENT = 8,
+            ROW_NUMBER_CUSTOM_SHIFT_PAYMENT = 9,
             ROW_COUNT = 10;
 
     @NonNull
     private final ShiftUtil.Calculator calculator;
 
-    AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    public AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
         super(callbacks);
         this.calculator = calculator;
     }
 
     @Override
-    int getTitle() {
-        return R.string.additional_shifts;
+    int getTotalNumberTitle() {
+        return R.string.all_shifts;
+    }
+
+    @Override
+    int getTotalPaymentTitle() {
+        return getTotalNumberTitle();
     }
 
     @Override

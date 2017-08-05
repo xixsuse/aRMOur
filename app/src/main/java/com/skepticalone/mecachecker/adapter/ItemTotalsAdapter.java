@@ -75,25 +75,6 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
         holder.setupTotals(icon, title, secondLine);
     }
 
-//
-//    public interface Filter<T> {
-//        boolean include(T item);
-//    }
-//
-//    static final void bindTotalNumber(@DrawableRes int icon, @StringRes int title, @NonNull List<T> items, @Nullable Filter<Entity> filter, @NonNull ItemViewHolder holder){
-//        @NonNull final String secondLine;
-//        if (filter != null && items.size() > 0) {
-//            int filteredCount = 0;
-//            for (T item : items) {
-//                if (filter.include(item)) filteredCount++;
-//            }
-//            secondLine = holder.getCountPercentage(filteredCount, items.size());
-//        } else {
-//            secondLine = holder.getCount(items.size());
-//        }
-//        holder.setupTotals(icon, title, secondLine);
-//    }
-
     abstract boolean bindViewHolder(@NonNull List<Entity> items, @NonNull ItemViewHolder holder, int position);
 
     abstract int getRowCount();

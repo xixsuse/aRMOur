@@ -16,6 +16,7 @@
     <string name="cancel">Cancel</string>
     <string name="item_removed">%s removed</string>
     <string name="undo">Undo</string>
+    <string name="all_shifts">All shifts</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
     <string name="additional_shifts">Additional shifts</string>

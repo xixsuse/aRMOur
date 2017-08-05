@@ -11,7 +11,7 @@ import com.skepticalone.mecachecker.data.model.Payable;
 import java.math.BigDecimal;
 import java.util.List;
 
-abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAdapter<Entity> {
+public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAdapter<Entity> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -22,7 +22,12 @@ abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAd
     }
 
     @StringRes
-    abstract int getTitle();
+    abstract int getTotalNumberTitle();
+
+    @StringRes
+    int getTotalPaymentTitle() {
+        return R.string.total_payment;
+    }
 
     abstract int getRowNumberTotalNumber();
 
@@ -32,7 +37,7 @@ abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAd
         @NonNull final String secondLine;
         BigDecimal totalPayment = BigDecimal.ZERO;
         for (Entity item : items) {
-            totalPayment = totalPayment.add(item.getPaymentData().getPayment());
+            totalPayment = totalPayment.add(item.getPayment());
         }
         if (isFiltered() && totalPayment.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal filteredPayment = BigDecimal.ZERO;
@@ -43,7 +48,7 @@ abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAd
         } else {
             secondLine = holder.getPaymentText(totalPayment);
         }
-        holder.setupTotals(R.drawable.ic_dollar_black_24dp, R.string.total_payment, secondLine);
+        holder.setupTotals(icon, title, secondLine);
     }
 
     @Override
@@ -66,15 +71,15 @@ abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAd
     @CallSuper
     boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == getRowNumberTotalNumber()) {
-            bindTotalNumber(R.drawable.ic_list_black_24dp, getTitle(), allItems, holder);
+            bindTotalNumber(R.drawable.ic_list_black_24dp, getTotalNumberTitle(), allItems, holder);
             return true;
         } else if (position == getRowNumberTotalPayment()) {
-            bindTotalPayment(R.drawable.ic_dollar_black_24dp, R.string.total_payment, allItems, holder);
+            bindTotalPayment(R.drawable.ic_dollar_black_24dp, getTotalPaymentTitle(), allItems, holder);
             return true;
         } else return false;
     }
 
-    interface Callbacks {
+    public interface Callbacks {
         boolean includeUnclaimed();
         boolean includeClaimed();
         boolean includePaid();

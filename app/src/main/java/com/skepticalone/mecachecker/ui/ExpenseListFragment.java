@@ -7,9 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
+import com.skepticalone.mecachecker.adapter.ExpenseTotalsAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
+import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
 public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEntity, ExpenseViewModel> {
 
@@ -30,4 +33,19 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
         return provider.get(ExpenseViewModel.class);
     }
 
+    public static final class ExpenseTotalsDialogFragment extends PayableTotalsDialogFragment<ExpenseEntity> {
+
+        @NonNull
+        @Override
+        ItemTotalsAdapter<ExpenseEntity> createAdapter(@NonNull Context context) {
+            return new ExpenseTotalsAdapter(this);
+        }
+
+        @NonNull
+        @Override
+        ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider provider) {
+            return provider.get(ExpenseViewModel.class);
+        }
+
+    }
 }

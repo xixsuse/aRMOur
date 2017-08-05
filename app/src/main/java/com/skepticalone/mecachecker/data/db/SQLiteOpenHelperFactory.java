@@ -3,27 +3,25 @@ package com.skepticalone.mecachecker.data.db;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.SupportSQLiteOpenHelper;
 import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
-import android.database.Cursor;
-import android.util.Log;
 
 final class SQLiteOpenHelperFactory extends FrameworkSQLiteOpenHelperFactory {
 
     @Override
-    public SupportSQLiteOpenHelper create(SupportSQLiteOpenHelper.Configuration configuration) {
+    public final SupportSQLiteOpenHelper create(SupportSQLiteOpenHelper.Configuration configuration) {
         return super.create(SupportSQLiteOpenHelper.Configuration
                 .builder(configuration.context)
                 .name(configuration.name)
                 .version(configuration.version)
-                .callback(new MyOpenHelper(configuration.callback))
+                .callback(new OpenHelper(configuration.callback))
                 .errorHandler(configuration.errorHandler)
                 .build());
     }
 
-    private static class MyOpenHelper extends SupportSQLiteOpenHelper.Callback {
+    private final static class OpenHelper extends SupportSQLiteOpenHelper.Callback {
 
         private final SupportSQLiteOpenHelper.Callback mFrameworkCallback;
 
-        private MyOpenHelper(SupportSQLiteOpenHelper.Callback frameworkCallback) {
+        private OpenHelper(SupportSQLiteOpenHelper.Callback frameworkCallback) {
             mFrameworkCallback = frameworkCallback;
         }
 
@@ -88,21 +86,20 @@ final class SQLiteOpenHelperFactory extends FrameworkSQLiteOpenHelperFactory {
 //                    "SELECT * FROM " + Contract.Expenses.TABLE_NAME + " ORDER BY CASE WHEN " + Contract.COLUMN_NAME_CLAIMED + " IS NULL THEN 2 WHEN " + Contract.COLUMN_NAME_PAID + " IS NULL THEN 1 ELSE 0 END, coalesce(" + Contract.COLUMN_NAME_PAID + ", " + Contract.COLUMN_NAME_CLAIMED + ", " + BaseColumns._ID + ")"
 //            );
         }
-
-        private void explain(SupportSQLiteDatabase db, String query) {
-            // TODO: 29/07/17 remove this method
-            String TAG = "explain";
-            Log.i(TAG, "query: " + query);
-            Cursor c = db.query(query);
-            int columnCount = c.getColumnCount();
-            while (c.moveToNext()) {
-                Log.i(TAG, "---row " + c.getPosition());
-                for (String columnName : c.getColumnNames()) {
-                    Log.i(TAG, "------" + columnName + ": " + c.getString(c.getColumnIndex(columnName)));
-                }
-            }
-            c.close();
-        }
+//
+//        private void explain(SupportSQLiteDatabase db, String query) {
+//            String TAG = "explain";
+//            Log.i(TAG, "query: " + query);
+//            Cursor c = db.query(query);
+//            int columnCount = c.getColumnCount();
+//            while (c.moveToNext()) {
+//                Log.i(TAG, "---row " + c.getPosition());
+//                for (String columnName : c.getColumnNames()) {
+//                    Log.i(TAG, "------" + columnName + ": " + c.getString(c.getColumnIndex(columnName)));
+//                }
+//            }
+//            c.close();
+//        }
 
         private void createTriggers(SupportSQLiteDatabase db) {
             db.execSQL(Contract.RosteredShifts.SQL_CREATE_TRIGGER_BEFORE_INSERT);

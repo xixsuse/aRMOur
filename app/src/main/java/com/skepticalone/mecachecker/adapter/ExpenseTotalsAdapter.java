@@ -3,16 +3,16 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.Expense;
+import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 
-public final class ExpenseTotalsAdapter extends PayableTotalsAdapter<Expense> {
+public final class ExpenseTotalsAdapter extends PayableTotalsAdapter<ExpenseEntity> {
 
     private static final int
         ROW_NUMBER_TOTAL_NUMBER = 0,
         ROW_NUMBER_TOTAL_PAYMENT = 1,
         ROW_COUNT = 2;
 
-    ExpenseTotalsAdapter(@NonNull Callbacks callbacks) {
+    public ExpenseTotalsAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
     }
 
@@ -32,7 +32,7 @@ public final class ExpenseTotalsAdapter extends PayableTotalsAdapter<Expense> {
     }
 
     @Override
-    int getTitle() {
+    int getTotalNumberTitle() {
         return R.string.expenses;
     }
 

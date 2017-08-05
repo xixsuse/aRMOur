@@ -1,16 +1,16 @@
 package com.skepticalone.mecachecker.adapter;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.model.CrossCover;
+import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 
-public final class CrossCoverTotalsAdapter extends PayableTotalsAdapter<CrossCover> {
+public final class CrossCoverTotalsAdapter extends PayableTotalsAdapter<CrossCoverEntity> {
 
     private static final int
             ROW_NUMBER_TOTAL_NUMBER = 0,
             ROW_NUMBER_TOTAL_PAYMENT = 1,
             ROW_COUNT = 2;
 
-    CrossCoverTotalsAdapter(Callbacks callbacks) {
+    public CrossCoverTotalsAdapter(Callbacks callbacks) {
         super(callbacks);
     }
 
@@ -30,7 +30,7 @@ public final class CrossCoverTotalsAdapter extends PayableTotalsAdapter<CrossCov
     }
 
     @Override
-    int getTitle() {
+    int getTotalNumberTitle() {
         return R.string.cross_cover_shifts;
     }
 
