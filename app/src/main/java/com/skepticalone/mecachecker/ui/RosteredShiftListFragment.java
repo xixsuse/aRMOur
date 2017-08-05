@@ -74,7 +74,7 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
 
         @Override
         int getLayout() {
-            return R.layout.rostered_summary;
+            return R.layout.compliance_summary;
         }
 
         @Override

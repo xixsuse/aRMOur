@@ -15,8 +15,8 @@
             android:layout_weight="1"
             android:textOn="@string/compliant"
             android:textOff="@string/compliant"
-            android:drawableLeft="@drawable/compliant_black_24dp"
-            android:drawableStart="@drawable/compliant_black_24dp"
+            android:drawableRight="@drawable/compliant_black_24dp"
+            android:drawableEnd="@drawable/compliant_black_24dp"
             android:checked="true"
             />
         <ToggleButton
@@ -26,8 +26,8 @@
             android:layout_weight="1"
             android:textOn="@string/non_compliant"
             android:textOff="@string/non_compliant"
-            android:drawableLeft="@drawable/non_compliant_red_24dp"
-            android:drawableStart="@drawable/non_compliant_red_24dp"
+            android:drawableRight="@drawable/non_compliant_red_24dp"
+            android:drawableEnd="@drawable/non_compliant_red_24dp"
             android:checked="true"
             />
     </LinearLayout>

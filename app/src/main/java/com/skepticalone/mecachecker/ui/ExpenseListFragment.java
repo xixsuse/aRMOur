@@ -7,9 +7,9 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
-import com.skepticalone.mecachecker.adapter.ExpenseTotalsAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
+import com.skepticalone.mecachecker.adapter.SinglePayableTotalsAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
 import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
@@ -44,7 +44,7 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
         @NonNull
         @Override
         ItemTotalsAdapter<ExpenseEntity> createAdapter(@NonNull Context context) {
-            return new ExpenseTotalsAdapter(this);
+            return new SinglePayableTotalsAdapter<>(this, R.string.expenses);
         }
 
         @NonNull

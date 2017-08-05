@@ -82,9 +82,9 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         setup(icon, null, true, switchChecked, onCheckedChangeListener);
     }
 
-    void setupTotals(@DrawableRes final int icon, @StringRes final int firstLine, @NonNull final String secondLine){
+    void setupTotals(@DrawableRes final int icon, @StringRes final int firstLine, @NonNull final String secondLine, @Nullable final String thirdLine){
         setupPlain(icon, null);
-        setText(getText(firstLine), secondLine);
+        setText(getText(firstLine), secondLine, thirdLine);
     }
 
     @NonNull

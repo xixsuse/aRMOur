@@ -26,8 +26,8 @@
             android:layout_weight="1"
             android:textOn="@string/claimed"
             android:textOff="@string/claimed"
-            android:drawableLeft="@drawable/claimed_black_24dp"
-            android:drawableStart="@drawable/claimed_black_24dp"
+            android:drawableRight="@drawable/claimed_black_24dp"
+            android:drawableEnd="@drawable/claimed_black_24dp"
             android:checked="true"
             />
 
@@ -38,8 +38,8 @@
             android:layout_weight="1"
             android:textOn="@string/paid"
             android:textOff="@string/paid"
-            android:drawableLeft="@drawable/paid_black_24dp"
-            android:drawableStart="@drawable/paid_black_24dp"
+            android:drawableRight="@drawable/paid_black_24dp"
+            android:drawableEnd="@drawable/paid_black_24dp"
             android:checked="true"
             />
 

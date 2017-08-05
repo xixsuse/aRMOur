@@ -3,13 +3,11 @@ package com.skepticalone.mecachecker.adapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
 
 import java.util.List;
@@ -89,20 +87,9 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
 //        holder.setupTotals(icon, title, secondLine);
 //    }
 
-    @CallSuper
-    boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position){
-        if (position == getRowNumberTotalNumber()) {
-            holder.setupTotals(R.drawable.ic_list_black_24dp, getTotalNumberTitle(), getTotalNumber(allItems, holder));
-            return true;
-        } else return false;
-    }
-
-    abstract int getRowNumberTotalNumber();
+    abstract boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position);
 
     abstract int getRowCount();
-
-    @StringRes
-    abstract int getTotalNumberTitle();
 
     @Override
     public final int getItemCount() {
