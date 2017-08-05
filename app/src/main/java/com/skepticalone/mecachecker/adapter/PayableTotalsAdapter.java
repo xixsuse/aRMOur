@@ -21,17 +21,12 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
         this.callbacks = callbacks;
     }
 
-    @StringRes
-    abstract int getTotalNumberTitle();
+    abstract int getRowNumberTotalPayment();
 
     @StringRes
     int getTotalPaymentTitle() {
         return R.string.total_payment;
     }
-
-    abstract int getRowNumberTotalNumber();
-
-    abstract int getRowNumberTotalPayment();
 
     final void bindTotalPayment(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
         @NonNull final String secondLine;
@@ -58,25 +53,16 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
 
     @Override
     final boolean isIncluded(@NonNull Entity item) {
-        if (item.getPaymentData().getClaimed() == null) {
-            return callbacks.includeUnclaimed();
-        } else if (item.getPaymentData().getPaid() == null) {
-            return callbacks.includeClaimed();
-        } else {
-            return callbacks.includePaid();
-        }
+        return item.getPaymentData().getClaimed() == null ? callbacks.includeUnclaimed() : item.getPaymentData().getPaid() == null ? callbacks.includeClaimed() : callbacks.includePaid();
     }
 
     @Override
     @CallSuper
     boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
-        if (position == getRowNumberTotalNumber()) {
-            bindTotalNumber(R.drawable.ic_list_black_24dp, getTotalNumberTitle(), allItems, holder);
-            return true;
-        } else if (position == getRowNumberTotalPayment()) {
+        if (position == getRowNumberTotalPayment()) {
             bindTotalPayment(R.drawable.ic_dollar_black_24dp, getTotalPaymentTitle(), allItems, holder);
             return true;
-        } else return false;
+        } else return super.bindViewHolder(allItems, holder, position);
     }
 
     public interface Callbacks {

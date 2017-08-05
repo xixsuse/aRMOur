@@ -33,6 +33,12 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
         return provider.get(CrossCoverViewModel.class);
     }
 
+    @NonNull
+    @Override
+    TotalsDialogFragment<CrossCoverEntity> createSummaryDialogFragment() {
+        return new CrossCoverTotalsDialogFragment();
+    }
+
     public static final class CrossCoverTotalsDialogFragment extends PayableTotalsDialogFragment<CrossCoverEntity> {
 
         @NonNull

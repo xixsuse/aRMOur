@@ -36,6 +36,8 @@
     <string name="total_payment">Total payment</string>
     <string name="cross_cover_payment">Cross cover payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
+    <string name="compliant">Compliant</string>
+    <string name="non_compliant">Non-compliant</string>
     <string name="unclaimed">Unclaimed</string>
     <string name="claimed">Claimed</string>
     <string name="paid">Paid</string>

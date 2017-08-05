@@ -9,34 +9,23 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ToggleButton
-            android:id="@+id/unclaimed"
+            android:id="@+id/compliant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textOn="@string/unclaimed"
-            android:textOff="@string/unclaimed"
+            android:textOn="@string/compliant"
+            android:textOff="@string/compliant"
             android:checked="true"
             />
         <ToggleButton
-            android:id="@+id/claimed"
+            android:id="@+id/non_compliant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textOn="@string/claimed"
-            android:textOff="@string/claimed"
+            android:textOn="@string/non_compliant"
+            android:textOff="@string/non_compliant"
             android:checked="true"
             />
-
-        <ToggleButton
-            android:id="@+id/paid"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOn="@string/paid"
-            android:textOff="@string/paid"
-            android:checked="true"
-            />
-
     </LinearLayout>
 
     <include layout="@layout/totals_recycler"/>

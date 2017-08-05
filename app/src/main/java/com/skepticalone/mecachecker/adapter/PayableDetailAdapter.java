@@ -71,7 +71,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                 holder.setupSwitch(0, false, onClaimedCheckedChangeListener);
                 holder.setText(holder.getText(R.string.claimed));
             } else {
-                holder.setupSwitch(R.drawable.ic_check_box_half_black_24dp, true, onClaimedCheckedChangeListener);
+                holder.setupSwitch(R.drawable.claimed_black_24dp, true, onClaimedCheckedChangeListener);
                 holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed));
             }
             return true;
@@ -87,7 +87,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                 holder.setupSwitch(0, false, onPaidCheckedChangeListener);
                 holder.setText(holder.getText(R.string.paid));
             } else {
-                holder.setupSwitch(R.drawable.ic_check_box_full_black_24dp, true, onPaidCheckedChangeListener);
+                holder.setupSwitch(R.drawable.paid_black_24dp, true, onPaidCheckedChangeListener);
                 holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid));
             }
             return true;

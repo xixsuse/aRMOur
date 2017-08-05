@@ -137,7 +137,7 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
 
     @DrawableRes
     public static int getComplianceIcon(boolean compliant) {
-        return compliant ? R.drawable.ic_check_black_24dp : R.drawable.ic_cancel_red_24dp;
+        return compliant ? R.drawable.compliant_black_24dp : R.drawable.non_compliant_red_24dp;
     }
 
     private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {

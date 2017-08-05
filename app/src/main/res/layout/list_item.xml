@@ -49,7 +49,7 @@
         android:layout_marginTop="16dp"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_check_black_24dp" />
+        tools:src="@drawable/compliant_black_24dp" />
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/switch_control"

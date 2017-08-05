@@ -33,6 +33,12 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
         return provider.get(ExpenseViewModel.class);
     }
 
+    @NonNull
+    @Override
+    TotalsDialogFragment<ExpenseEntity> createSummaryDialogFragment() {
+        return new ExpenseTotalsDialogFragment();
+    }
+
     public static final class ExpenseTotalsDialogFragment extends PayableTotalsDialogFragment<ExpenseEntity> {
 
         @NonNull

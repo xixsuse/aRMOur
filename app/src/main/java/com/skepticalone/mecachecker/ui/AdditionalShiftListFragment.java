@@ -33,6 +33,13 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
     AdditionalShiftViewModel createViewModel(@NonNull ViewModelProvider provider) {
         return provider.get(AdditionalShiftViewModel.class);
     }
+
+    @NonNull
+    @Override
+    TotalsDialogFragment<AdditionalShiftEntity> createSummaryDialogFragment() {
+        return new AdditionalShiftTotalsDialogFragment();
+    }
+
     public static final class AdditionalShiftTotalsDialogFragment extends PayableTotalsDialogFragment<AdditionalShiftEntity> {
 
         @NonNull

@@ -65,7 +65,7 @@ public final class PaymentData {
 
     @DrawableRes
     public int getIcon() {
-        return paid == null ? claimed == null ? R.drawable.ic_check_box_empty_black_24dp : R.drawable.ic_check_box_half_black_24dp : R.drawable.ic_check_box_full_black_24dp;
+        return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
     }
 
 }

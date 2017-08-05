@@ -56,10 +56,13 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         inflater.inflate(R.menu.list_fragment_menu, menu);
     }
 
+    @NonNull
+    abstract TotalsDialogFragment<Entity> createSummaryDialogFragment();
+
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.totals) {
-            showDialogFragment(TotalsDialogFragment.getNewSummaryDialogFragment(getItemType()));
+            showDialogFragment(createSummaryDialogFragment());
             return true;
         } else return super.onOptionsItemSelected(item);
     }

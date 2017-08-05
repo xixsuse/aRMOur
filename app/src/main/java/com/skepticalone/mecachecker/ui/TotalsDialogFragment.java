@@ -8,7 +8,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,13 +41,13 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
         return lifecycleRegistry;
     }
 
-    static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
-//        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
-        if (itemType == R.id.additional) return new AdditionalShiftListFragment.AdditionalShiftTotalsDialogFragment();
-        if (itemType == R.id.cross_cover) return new CrossCoverListFragment.CrossCoverTotalsDialogFragment();
-        if (itemType == R.id.expenses) return new ExpenseListFragment.ExpenseTotalsDialogFragment();
-        throw new IllegalStateException();
-    }
+//    static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
+////        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
+//        if (itemType == R.id.additional) return new AdditionalShiftListFragment.AdditionalShiftTotalsDialogFragment();
+//        if (itemType == R.id.cross_cover) return new CrossCoverListFragment.CrossCoverTotalsDialogFragment();
+//        if (itemType == R.id.expenses) return new ExpenseListFragment.ExpenseTotalsDialogFragment();
+//        throw new IllegalStateException();
+//    }
 
     @NonNull
     abstract ViewModelContract<Entity> onCreateViewModel(@NonNull ViewModelProvider provider);
