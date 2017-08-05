@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.CallSuper;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -61,25 +60,39 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
         }
     }
 
-    final void bindTotalNumber(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder){
-        @NonNull final String secondLine;
+    @NonNull
+    final String getTotalNumber(@NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
         int totalCount = items.size();
         if (isFiltered() && totalCount > 0) {
             int filteredCount = 0;
             for (Entity item : items) {
                 if (isIncluded(item)) filteredCount++;
             }
-            secondLine = holder.getCountPercentage(filteredCount, totalCount);
+            return holder.getCountPercentage(filteredCount, totalCount);
         } else {
-            secondLine = holder.getCount(totalCount);
+            return holder.getCount(totalCount);
         }
-        holder.setupTotals(icon, title, secondLine);
     }
+
+//    final void bindTotalNumber(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder){
+//        @NonNull final String secondLine;
+//        int totalCount = items.size();
+//        if (isFiltered() && totalCount > 0) {
+//            int filteredCount = 0;
+//            for (Entity item : items) {
+//                if (isIncluded(item)) filteredCount++;
+//            }
+//            secondLine = holder.getCountPercentage(filteredCount, totalCount);
+//        } else {
+//            secondLine = holder.getCount(totalCount);
+//        }
+//        holder.setupTotals(icon, title, secondLine);
+//    }
 
     @CallSuper
     boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position){
         if (position == getRowNumberTotalNumber()) {
-            bindTotalNumber(R.drawable.ic_list_black_24dp, getTotalNumberTitle(), allItems, holder);
+            holder.setupTotals(R.drawable.ic_list_black_24dp, getTotalNumberTitle(), getTotalNumber(allItems, holder));
             return true;
         } else return false;
     }

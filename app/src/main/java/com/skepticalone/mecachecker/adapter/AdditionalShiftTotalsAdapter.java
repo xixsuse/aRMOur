@@ -12,16 +12,12 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
 
     private static final int
             ROW_NUMBER_ALL_SHIFT_TOTAL = 0,
-            ROW_NUMBER_NORMAL_DAY_TOTAL = 1,
-            ROW_NUMBER_LONG_DAY_TOTAL = 2,
-            ROW_NUMBER_NIGHT_SHIFT_TOTAL = 3,
-            ROW_NUMBER_CUSTOM_SHIFT_TOTAL = 4,
-            ROW_NUMBER_ALL_SHIFT_PAYMENT = 5,
-            ROW_NUMBER_NORMAL_DAY_PAYMENT = 6,
-            ROW_NUMBER_LONG_DAY_PAYMENT = 7,
-            ROW_NUMBER_NIGHT_SHIFT_PAYMENT = 8,
-            ROW_NUMBER_CUSTOM_SHIFT_PAYMENT = 9,
-            ROW_COUNT = 10;
+            ROW_NUMBER_ALL_SHIFT_PAYMENT = 1,
+            ROW_NUMBER_NORMAL_DAY = 2,
+            ROW_NUMBER_LONG_DAY = 3,
+            ROW_NUMBER_NIGHT_SHIFT = 4,
+            ROW_NUMBER_CUSTOM_SHIFT = 5,
+            ROW_COUNT = 6;
 
     @NonNull
     private final ShiftUtil.Calculator calculator;
@@ -60,49 +56,27 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
     boolean bindViewHolder(@NonNull List<AdditionalShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
         final ShiftUtil.ShiftType shiftType;
         switch (position) {
-            case ROW_NUMBER_NORMAL_DAY_TOTAL:
-            case ROW_NUMBER_NORMAL_DAY_PAYMENT:
+            case ROW_NUMBER_NORMAL_DAY:
                 shiftType = ShiftUtil.ShiftType.NORMAL_DAY;
                 break;
-            case ROW_NUMBER_LONG_DAY_TOTAL:
-            case ROW_NUMBER_LONG_DAY_PAYMENT:
+            case ROW_NUMBER_LONG_DAY:
                 shiftType = ShiftUtil.ShiftType.LONG_DAY;
                 break;
-            case ROW_NUMBER_NIGHT_SHIFT_TOTAL:
-            case ROW_NUMBER_NIGHT_SHIFT_PAYMENT:
+            case ROW_NUMBER_NIGHT_SHIFT:
                 shiftType = ShiftUtil.ShiftType.NIGHT_SHIFT;
                 break;
-            case ROW_NUMBER_CUSTOM_SHIFT_TOTAL:
-            case ROW_NUMBER_CUSTOM_SHIFT_PAYMENT:
+            case ROW_NUMBER_CUSTOM_SHIFT:
                 shiftType = ShiftUtil.ShiftType.CUSTOM;
                 break;
             default:
                 return super.bindViewHolder(allShifts, holder, position);
         }
-        switch (position) {
-            case ROW_NUMBER_NORMAL_DAY_TOTAL:
-            case ROW_NUMBER_LONG_DAY_TOTAL:
-            case ROW_NUMBER_NIGHT_SHIFT_TOTAL:
-            case ROW_NUMBER_CUSTOM_SHIFT_TOTAL:
-                bindTotalNumber(
-                        ShiftUtil.getShiftIcon(shiftType),
-                        ShiftUtil.getShiftTitle(shiftType),
-                        calculator.getFilteredShifts(allShifts, shiftType),
-                        holder
-                );
-                break;
-            case ROW_NUMBER_NORMAL_DAY_PAYMENT:
-            case ROW_NUMBER_LONG_DAY_PAYMENT:
-            case ROW_NUMBER_NIGHT_SHIFT_PAYMENT:
-            case ROW_NUMBER_CUSTOM_SHIFT_PAYMENT:
-                bindTotalPayment(
-                        ShiftUtil.getShiftIcon(shiftType),
-                        ShiftUtil.getShiftTitle(shiftType),
-                        calculator.getFilteredShifts(allShifts, shiftType),
-                        holder
-                );
-                break;
-        }
+        List<AdditionalShiftEntity> filteredShifts = calculator.getFilteredShifts(allShifts, shiftType);
+        holder.setupTotals(
+                ShiftUtil.getShiftIcon(shiftType),
+                ShiftUtil.getShiftTitle(shiftType),
+                getTotalNumber(filteredShifts, holder) + '\n' + getTotalPayment(filteredShifts, holder)
+        );
         return true;
     }
 

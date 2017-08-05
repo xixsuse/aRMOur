@@ -1,7 +1,6 @@
 package com.skepticalone.mecachecker.adapter;
 
 import android.support.annotation.CallSuper;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
@@ -28,8 +27,8 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
         return R.string.total_payment;
     }
 
-    final void bindTotalPayment(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
-        @NonNull final String secondLine;
+    @NonNull
+    final String getTotalPayment(@NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
         BigDecimal totalPayment = BigDecimal.ZERO;
         for (Entity item : items) {
             totalPayment = totalPayment.add(item.getPayment());
@@ -39,12 +38,29 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
             for (Entity item : items) {
                 if (isIncluded(item)) filteredPayment = filteredPayment.add(item.getPayment());
             }
-            secondLine = holder.getPaymentPercentage(filteredPayment, totalPayment);
+            return holder.getPaymentPercentage(filteredPayment, totalPayment);
         } else {
-            secondLine = holder.getPaymentText(totalPayment);
+            return holder.getPaymentText(totalPayment);
         }
-        holder.setupTotals(icon, title, secondLine);
     }
+
+//    final void bindTotalPayment(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
+//        @NonNull final String secondLine;
+//        BigDecimal totalPayment = BigDecimal.ZERO;
+//        for (Entity item : items) {
+//            totalPayment = totalPayment.add(item.getPayment());
+//        }
+//        if (isFiltered() && totalPayment.compareTo(BigDecimal.ZERO) > 0) {
+//            BigDecimal filteredPayment = BigDecimal.ZERO;
+//            for (Entity item : items) {
+//                if (isIncluded(item)) filteredPayment = filteredPayment.add(item.getPayment());
+//            }
+//            secondLine = holder.getPaymentPercentage(filteredPayment, totalPayment);
+//        } else {
+//            secondLine = holder.getPaymentText(totalPayment);
+//        }
+//        holder.setupTotals(icon, title, secondLine);
+//    }
 
     @Override
     final boolean isFiltered() {
@@ -60,7 +76,7 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
     @CallSuper
     boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == getRowNumberTotalPayment()) {
-            bindTotalPayment(R.drawable.ic_dollar_black_24dp, getTotalPaymentTitle(), allItems, holder);
+            holder.setupTotals(R.drawable.ic_dollar_black_24dp, getTotalPaymentTitle(), getTotalPayment(allItems, holder));
             return true;
         } else return super.bindViewHolder(allItems, holder, position);
     }

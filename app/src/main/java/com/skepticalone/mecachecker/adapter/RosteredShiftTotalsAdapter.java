@@ -12,10 +12,10 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
 
     private static final int
             ROW_NUMBER_ALL_SHIFT_TOTAL = 0,
-            ROW_NUMBER_NORMAL_DAY_TOTAL = 1,
-            ROW_NUMBER_LONG_DAY_TOTAL = 2,
-            ROW_NUMBER_NIGHT_SHIFT_TOTAL = 3,
-            ROW_NUMBER_CUSTOM_SHIFT_TOTAL = 4,
+            ROW_NUMBER_NORMAL_DAY = 1,
+            ROW_NUMBER_LONG_DAY = 2,
+            ROW_NUMBER_NIGHT_SHIFT = 3,
+            ROW_NUMBER_CUSTOM_SHIFT = 4,
             ROW_COUNT = 5;
 
     @NonNull
@@ -57,26 +57,26 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     boolean bindViewHolder(@NonNull List<RosteredShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
         final ShiftUtil.ShiftType shiftType;
         switch (position) {
-            case ROW_NUMBER_NORMAL_DAY_TOTAL:
+            case ROW_NUMBER_NORMAL_DAY:
                 shiftType = ShiftUtil.ShiftType.NORMAL_DAY;
                 break;
-            case ROW_NUMBER_LONG_DAY_TOTAL:
+            case ROW_NUMBER_LONG_DAY:
                 shiftType = ShiftUtil.ShiftType.LONG_DAY;
                 break;
-            case ROW_NUMBER_NIGHT_SHIFT_TOTAL:
+            case ROW_NUMBER_NIGHT_SHIFT:
                 shiftType = ShiftUtil.ShiftType.NIGHT_SHIFT;
                 break;
-            case ROW_NUMBER_CUSTOM_SHIFT_TOTAL:
+            case ROW_NUMBER_CUSTOM_SHIFT:
                 shiftType = ShiftUtil.ShiftType.CUSTOM;
                 break;
             default:
                 return super.bindViewHolder(allShifts, holder, position);
         }
-        bindTotalNumber(
+        List<RosteredShiftEntity> filteredShifts = calculator.getFilteredShifts(allShifts, shiftType);
+        holder.setupTotals(
                 ShiftUtil.getShiftIcon(shiftType),
                 ShiftUtil.getShiftTitle(shiftType),
-                calculator.getFilteredShifts(allShifts, shiftType),
-                holder
+                getTotalNumber(filteredShifts, holder)
         );
         return true;
     }
