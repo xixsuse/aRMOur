@@ -9,9 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
+import com.skepticalone.mecachecker.data.model.Shift;
 import com.skepticalone.mecachecker.data.util.ShiftData;
 
 import org.joda.time.LocalTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ShiftUtil {
 
@@ -88,76 +92,89 @@ public final class ShiftUtil {
             nightShiftEndDefault = applicationContext.getResources().getInteger(R.integer.default_end_night_shift);
         }
 
-        public final Filter
-                normalDayFilter = new Filter() {
-                    @Override
-                    public boolean include(@NonNull ShiftData shiftdata) {
-                        return isNormalDay(shiftdata);
-                    }
-                },
-                longDayFilter = new Filter() {
-                    @Override
-                    public boolean include(@NonNull ShiftData shiftdata) {
-                        return isLongDay(shiftdata);
-                    }
-                },
-                nightShiftFilter = new Filter() {
-                    @Override
-                    public boolean include(@NonNull ShiftData shiftdata) {
-                        return isNightShift(shiftdata);
-                    }
-                },
-                customShiftFilter = new Filter() {
-                    @Override
-                    public boolean include(@NonNull ShiftData shiftdata) {
-                        return !isNormalDay(shiftdata) && !isLongDay(shiftdata) && !isNightShift(shiftdata);
-                    }
-                };
-
-        public boolean isNormalDay(@NonNull ShiftData shiftData) {
-            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(normalDayStartKey, normalDayStartDefault) &&
-                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(normalDayEndKey, normalDayEndDefault);
+        private int getNormalDayTotalMinutes(boolean start) {
+            return start ? mPreferences.getInt(normalDayStartKey, normalDayStartDefault) : mPreferences.getInt(normalDayEndKey, normalDayEndDefault);
         }
-
-        public boolean isLongDay(@NonNull ShiftData shiftData) {
-            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(longDayStartKey, longDayStartDefault) &&
-                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(longDayEndKey, longDayEndDefault);
+        private int getLongDayTotalMinutes(boolean start) {
+            return start ? mPreferences.getInt(longDayStartKey, longDayStartDefault) : mPreferences.getInt(longDayEndKey, longDayEndDefault);
         }
-
-        public boolean isNightShift(@NonNull ShiftData shiftData) {
-            return shiftData.getStart().getMinuteOfDay() == mPreferences.getInt(nightShiftStartKey, nightShiftStartDefault) &&
-                    shiftData.getEnd().getMinuteOfDay() == mPreferences.getInt(nightShiftEndKey, nightShiftEndDefault);
+        private int getNightShiftTotalMinutes(boolean start) {
+            return start ? mPreferences.getInt(nightShiftStartKey, nightShiftStartDefault) : mPreferences.getInt(nightShiftEndKey, nightShiftEndDefault);
         }
-
+        private boolean matches(int start1, int end1, int start2, int end2) {
+            return start1 == start2 && end1 == end2;
+        }
+        private boolean isSingleNormalDay(@NonNull ShiftData shiftData) {
+            return matches(shiftData.getStart().getMinuteOfDay(), shiftData.getEnd().getMinuteOfDay(), getNormalDayTotalMinutes(true), getNormalDayTotalMinutes(false));
+        }
+        private boolean isSingleLongDay(@NonNull ShiftData shiftData) {
+            return matches(shiftData.getStart().getMinuteOfDay(), shiftData.getEnd().getMinuteOfDay(), getLongDayTotalMinutes(true), getLongDayTotalMinutes(false));
+        }
+        private boolean isSingleNightShift(@NonNull ShiftData shiftData) {
+            return matches(shiftData.getStart().getMinuteOfDay(), shiftData.getEnd().getMinuteOfDay(), getNightShiftTotalMinutes(true), getNightShiftTotalMinutes(false));
+        }
         @NonNull
-        public ShiftType getShiftType(@NonNull ShiftData shiftData) {
-            if (isNormalDay(shiftData)) return ShiftType.NORMAL_DAY;
-            if (isLongDay(shiftData)) return ShiftType.LONG_DAY;
-            if (isNightShift(shiftData)) return ShiftType.NIGHT_SHIFT;
-            return ShiftType.OTHER;
+        private <Entity extends Shift> List<Entity> getFilteredShifts(@NonNull List<Entity> allShifts, @NonNull ShiftFilter filter) {
+            List<Entity> shifts = new ArrayList<>();
+            for (Entity shift : allShifts) {
+                if (filter.include(shift.getShiftData())) shifts.add(shift);
+            }
+            return shifts;
+        }
+        @NonNull
+        public <Entity extends Shift> List<Entity> getFilteredShifts(@NonNull List<Entity> allShifts, @NonNull ShiftType shiftType) {
+            final ShiftFilter filter;
+            if (shiftType == ShiftType.NORMAL_DAY) {
+                filter = new NormalDayFilter();
+            } else if (shiftType == ShiftType.LONG_DAY) {
+                filter = new LongDayFilter();
+            } else if (shiftType == ShiftType.NIGHT_SHIFT) {
+                filter = new NightShiftFilter();
+            } else {
+                filter = new CustomShiftFilter();
+            }
+            return getFilteredShifts(allShifts, filter);
+        }
+        @NonNull
+        public <Entity extends Shift> List<Entity> getNormalDays(@NonNull List<Entity> allShifts) {
+            return getFilteredShifts(allShifts, new NormalDayFilter());
+        }
+        @NonNull
+        public <Entity extends Shift> List<Entity> getLongDays(@NonNull List<Entity> allShifts) {
+            return getFilteredShifts(allShifts, new LongDayFilter());
+        }
+        @NonNull
+        public <Entity extends Shift> List<Entity> getNightShifts(@NonNull List<Entity> allShifts) {
+            return getFilteredShifts(allShifts, new NightShiftFilter());
+        }
+        @NonNull
+        public <Entity extends Shift> List<Entity> getCustomShifts(@NonNull List<Entity> allShifts) {
+            return getFilteredShifts(allShifts, new CustomShiftFilter());
+        }
+        @NonNull
+        public ShiftType getSingleShiftType(@NonNull ShiftData shiftData) {
+            if (isSingleNormalDay(shiftData)) return ShiftType.NORMAL_DAY;
+            if (isSingleLongDay(shiftData)) return ShiftType.LONG_DAY;
+            if (isSingleNightShift(shiftData)) return ShiftType.NIGHT_SHIFT;
+            return ShiftType.CUSTOM;
         }
 
         @NonNull
         private LocalTime getStartOrEndTime(ShiftType shiftType, boolean start) {
-            String key;
-            int defaultTotalMinutes;
+            final int totalMinutes;
             switch (shiftType) {
                 case NORMAL_DAY:
-                    key = start ? normalDayStartKey : normalDayEndKey;
-                    defaultTotalMinutes = start ? normalDayStartDefault : normalDayEndDefault;
+                    totalMinutes = getNormalDayTotalMinutes(start);
                     break;
                 case LONG_DAY:
-                    key = start ? longDayStartKey : longDayEndKey;
-                    defaultTotalMinutes = start ? longDayStartDefault : longDayEndDefault;
+                    totalMinutes = getLongDayTotalMinutes(start);
                     break;
                 case NIGHT_SHIFT:
-                    key = start ? nightShiftStartKey : nightShiftEndKey;
-                    defaultTotalMinutes = start ? nightShiftStartDefault : nightShiftEndDefault;
+                    totalMinutes = getNightShiftTotalMinutes(start);
                     break;
                 default:
                     throw new IllegalStateException();
             }
-            int totalMinutes = mPreferences.getInt(key, defaultTotalMinutes);
             return new LocalTime(DateTimeUtils.calculateHours(totalMinutes), DateTimeUtils.calculateMinutes(totalMinutes));
         }
 
@@ -171,17 +188,58 @@ public final class ShiftUtil {
             return getStartOrEndTime(shiftType, false);
         }
 
+        private abstract static class ShiftFilter {
+            abstract boolean include(@NonNull ShiftData shiftData);
+        }
+        private abstract class IncludeFilter extends ShiftFilter {
+            private final int startTotalMinutes, endTotalMinutes;
+            IncludeFilter(int startTotalMinutes, int endTotalMinutes) {
+                this.startTotalMinutes = startTotalMinutes;
+                this.endTotalMinutes = endTotalMinutes;
+            }
+            @Override
+            final boolean include(@NonNull ShiftData shiftData) {
+                return matches(shiftData.getStart().getMinuteOfDay(), shiftData.getEnd().getMinuteOfDay(), startTotalMinutes, endTotalMinutes);
+            }
+        }
+        private final class NormalDayFilter extends IncludeFilter {
+            NormalDayFilter() {
+                super(getNormalDayTotalMinutes(true), getNormalDayTotalMinutes(false));
+            }
+        }
+        private final class LongDayFilter extends IncludeFilter {
+            LongDayFilter() {
+                super(getLongDayTotalMinutes(true), getLongDayTotalMinutes(false));
+            }
+        }
+        private final class NightShiftFilter extends IncludeFilter {
+            NightShiftFilter() {
+                super(getNightShiftTotalMinutes(true), getNightShiftTotalMinutes(false));
+            }
+        }
+        private final class CustomShiftFilter extends ShiftFilter {
+            private final int
+                    normalDayStartTotalMinutes = getNormalDayTotalMinutes(true),
+                    normalDayEndTotalMinutes = getNormalDayTotalMinutes(false),
+                    longDayStartTotalMinutes = getLongDayTotalMinutes(true),
+                    longDayEndTotalMinutes = getLongDayTotalMinutes(false),
+                    nightShiftStartTotalMinutes = getNightShiftTotalMinutes(true),
+                    nightShiftEndTotalMinutes = getNightShiftTotalMinutes(false);
+            @Override
+            final boolean include(@NonNull ShiftData shiftData) {
+                final int startTotalMinutes = shiftData.getStart().getMinuteOfDay(), endTotalMinutes = shiftData.getEnd().getMinuteOfDay();
+                return !matches(startTotalMinutes, endTotalMinutes, normalDayStartTotalMinutes, normalDayEndTotalMinutes) &&
+                        !matches(startTotalMinutes, endTotalMinutes, longDayStartTotalMinutes, longDayEndTotalMinutes) &&
+                        !matches(startTotalMinutes, endTotalMinutes, nightShiftStartTotalMinutes, nightShiftEndTotalMinutes);
+            }
+        }
     }
 
     public enum ShiftType {
         NORMAL_DAY,
         LONG_DAY,
         NIGHT_SHIFT,
-        OTHER
-    }
-
-    public interface Filter {
-        boolean include(@NonNull ShiftData shiftdata);
+        CUSTOM
     }
 
 }

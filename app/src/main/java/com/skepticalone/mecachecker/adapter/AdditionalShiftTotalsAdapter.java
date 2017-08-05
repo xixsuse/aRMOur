@@ -8,7 +8,7 @@ import com.skepticalone.mecachecker.util.ShiftUtil;
 
 import java.util.List;
 
-public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<AdditionalShiftEntity> implements ShiftTotalsAdapterHelper.Callbacks<AdditionalShiftEntity> {
+public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<AdditionalShiftEntity> {
 
     private static final int
             ROW_NUMBER_NORMAL_DAY_TOTAL = 0,
@@ -23,11 +23,12 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
             ROW_NUMBER_ALL_SHIFT_PAYMENT = 9,
             ROW_COUNT = 10;
 
-    private final ShiftTotalsAdapterHelper<AdditionalShiftEntity> helper;
+    @NonNull
+    private final ShiftUtil.Calculator calculator;
 
     AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
         super(callbacks);
-        helper = new ShiftTotalsAdapterHelper<>(this, calculator);
+        this.calculator = calculator;
     }
 
     @Override
@@ -46,53 +47,58 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
     }
 
     @Override
-    public int getRowNumberNormalDayTotal() {
-        return ROW_NUMBER_NORMAL_DAY_TOTAL;
-    }
-
-    @Override
-    public int getRowNumberLongDayTotal() {
-        return ROW_NUMBER_LONG_DAY_TOTAL;
-    }
-
-    @Override
-    public int getRowNumberNightShiftTotal() {
-        return ROW_NUMBER_NIGHT_SHIFT_TOTAL;
-    }
-
-    @Override
-    public int getRowNumberCustomShiftTotal() {
-        return ROW_NUMBER_CUSTOM_SHIFT_TOTAL;
-    }
-
-    @Override
-    public int getRowNumberNormalDayPayment() {
-        return ROW_NUMBER_NORMAL_DAY_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberLongDayPayment() {
-        return ROW_NUMBER_LONG_DAY_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberNightShiftPayment() {
-        return ROW_NUMBER_NIGHT_SHIFT_PAYMENT;
-    }
-
-    @Override
-    public int getRowNumberCustomShiftPayment() {
-        return ROW_NUMBER_CUSTOM_SHIFT_PAYMENT;
-    }
-
-    @Override
     int getRowCount() {
         return ROW_COUNT;
     }
 
     @Override
-    boolean bindViewHolder(@NonNull List<AdditionalShiftEntity> allItems, @NonNull ItemViewHolder holder, int position) {
-        return helper.bindViewHolder(allItems, holder, position) || super.bindViewHolder(allItems, holder, position);
+    boolean bindViewHolder(@NonNull List<AdditionalShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
+        final ShiftUtil.ShiftType shiftType;
+        switch (position) {
+            case ROW_NUMBER_NORMAL_DAY_TOTAL:
+            case ROW_NUMBER_NORMAL_DAY_PAYMENT:
+                shiftType = ShiftUtil.ShiftType.NORMAL_DAY;
+                break;
+            case ROW_NUMBER_LONG_DAY_TOTAL:
+            case ROW_NUMBER_LONG_DAY_PAYMENT:
+                shiftType = ShiftUtil.ShiftType.LONG_DAY;
+                break;
+            case ROW_NUMBER_NIGHT_SHIFT_TOTAL:
+            case ROW_NUMBER_NIGHT_SHIFT_PAYMENT:
+                shiftType = ShiftUtil.ShiftType.NIGHT_SHIFT;
+                break;
+            case ROW_NUMBER_CUSTOM_SHIFT_TOTAL:
+            case ROW_NUMBER_CUSTOM_SHIFT_PAYMENT:
+                shiftType = ShiftUtil.ShiftType.CUSTOM;
+                break;
+            default:
+                return super.bindViewHolder(allShifts, holder, position);
+        }
+        switch (position) {
+            case ROW_NUMBER_NORMAL_DAY_TOTAL:
+            case ROW_NUMBER_LONG_DAY_TOTAL:
+            case ROW_NUMBER_NIGHT_SHIFT_TOTAL:
+            case ROW_NUMBER_CUSTOM_SHIFT_TOTAL:
+                bindTotalNumber(
+                        ShiftUtil.getShiftIcon(shiftType),
+                        ShiftUtil.getShiftTitle(shiftType),
+                        calculator.getFilteredShifts(allShifts, shiftType),
+                        holder
+                );
+                break;
+            case ROW_NUMBER_NORMAL_DAY_PAYMENT:
+            case ROW_NUMBER_LONG_DAY_PAYMENT:
+            case ROW_NUMBER_NIGHT_SHIFT_PAYMENT:
+            case ROW_NUMBER_CUSTOM_SHIFT_PAYMENT:
+                bindTotalPayment(
+                        ShiftUtil.getShiftIcon(shiftType),
+                        ShiftUtil.getShiftTitle(shiftType),
+                        calculator.getFilteredShifts(allShifts, shiftType),
+                        holder
+                );
+                break;
+        }
+        return true;
     }
 
 }

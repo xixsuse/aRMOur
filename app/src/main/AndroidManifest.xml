@@ -13,10 +13,10 @@
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTop">
-            <intent-shiftFilter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-shiftFilter>
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.DetailActivity"

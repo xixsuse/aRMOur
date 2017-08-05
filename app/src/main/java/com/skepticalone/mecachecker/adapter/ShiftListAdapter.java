@@ -29,7 +29,7 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
 
     @Override
     final void bindViewHolder(@NonNull Entity shift, ItemViewHolder holder) {
-        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getShiftType(shift.getShiftData())));
+        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getSingleShiftType(shift.getShiftData())));
         holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
         holder.setText(
                 DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()),
