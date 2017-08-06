@@ -9,7 +9,6 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
-import com.skepticalone.mecachecker.data.util.PaymentData;
 
 import org.joda.time.LocalDate;
 
@@ -45,13 +44,15 @@ public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity
         runAsync(new Runnable() {
             @Override
             public void run() {
-                synchronized (CrossCoverViewModel.this) {
-                    postSelectedId(getDao().insertItemSync(new CrossCoverEntity(
-                            CrossCoverEntity.getNewDate(getDao().getLastCrossCoverDateSync()),
-                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
-                            null
-                    )));
-                }
+                postSelectedId(AppDatabase.getInstance(getApplication()).crossCoverCustomDao().insertSync(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))));
+//
+//                synchronized (CrossCoverViewModel.this) {
+//                    postSelectedId(getDao().insertItemSync(new CrossCoverEntity(
+//                            CrossCoverEntity.getNewDate(getDao().getLastCrossCoverDateSync()),
+//                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
+//                            null
+//                    )));
+//                }
             }
         });
     }

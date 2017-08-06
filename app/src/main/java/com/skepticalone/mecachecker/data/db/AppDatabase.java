@@ -9,7 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
+import com.skepticalone.mecachecker.data.dao.CrossCoverCustomDao;
 import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
+import com.skepticalone.mecachecker.data.dao.ExpenseCustomDao;
 import com.skepticalone.mecachecker.data.dao.ExpenseDao;
 import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
@@ -20,7 +22,7 @@ import com.skepticalone.mecachecker.data.util.DateTimeConverter;
 import com.skepticalone.mecachecker.data.util.LocalDateConverter;
 import com.skepticalone.mecachecker.data.util.MoneyConverter;
 
-@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 40)
+@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 3)
 @TypeConverters({LocalDateConverter.class, DateTimeConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -34,7 +36,8 @@ public abstract class AppDatabase extends RoomDatabase {
         if (DATABASE == null) {
             DATABASE = Room
                     .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
-                    .openHelperFactory(new SQLiteOpenHelperFactory())
+                    .fallbackToDestructiveMigration()
+                    .addCallback(new DatabaseCallback())
                     .build();
         }
         return DATABASE;
@@ -47,5 +50,9 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CrossCoverDao crossCoverDao();
 
     public abstract ExpenseDao expenseDao();
+
+    public abstract CrossCoverCustomDao crossCoverCustomDao();
+
+    public abstract ExpenseCustomDao expenseCustomDao();
 
 }

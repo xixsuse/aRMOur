@@ -7,7 +7,6 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ExpenseDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
-import com.skepticalone.mecachecker.data.util.PaymentData;
 
 public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, ExpenseDao>
         implements SingleAddViewModelContract<ExpenseEntity> {
@@ -27,11 +26,12 @@ public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, Expe
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertItemSync(new ExpenseEntity(
-                        getApplication().getString(R.string.new_expense_title),
-                        PaymentData.fromPayment(0),
-                        null
-                )));
+                postSelectedId(AppDatabase.getInstance(getApplication()).expenseCustomDao().insertSync(getApplication().getString(R.string.new_expense_title)));
+//                postSelectedId(getDao().insertItemSync(new ExpenseEntity(
+//                        getApplication().getString(R.string.new_expense_title),
+//                        PaymentData.fromPayment(0),
+//                        null
+//                )));
             }
         });
     }
