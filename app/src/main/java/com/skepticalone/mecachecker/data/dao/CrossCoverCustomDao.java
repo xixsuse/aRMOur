@@ -79,7 +79,7 @@ public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract CrossCoverEntity getItemSync(long id);
+    abstract CrossCoverEntity getItemInternalSync(long id);
 
     @Override
     @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)

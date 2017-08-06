@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.data.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.db.SupportSQLiteStatement;
+import android.arch.persistence.room.Insert;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +12,7 @@ import com.skepticalone.mecachecker.data.db.Contract;
 
 import java.util.List;
 
-abstract class CustomDao<Entity> {
+public abstract class CustomDao<Entity> {
     @NonNull
     private final AppDatabase database;
     @NonNull
@@ -24,14 +25,31 @@ abstract class CustomDao<Entity> {
                 " WHERE " +
                 BaseColumns._ID +
                 " = ?");
-        setCommentStatement = database.compileStatement("UPDATE " +
+        setCommentStatement = getUpdateStatement(Contract.COLUMN_NAME_COMMENT);
+    }
+
+    @NonNull
+    final SupportSQLiteStatement getUpdateStatement(@NonNull String columnName) {
+        return getDatabase().compileStatement("UPDATE " +
                 getTableName() +
                 " SET " +
-                Contract.COLUMN_NAME_COMMENT +
+                columnName +
                 " = ? WHERE " +
                 BaseColumns._ID +
                 " = ?");
     }
+
+    final void updateInTransaction(@NonNull SupportSQLiteStatement boundStatement) {
+        getDatabase().beginTransaction();
+        try {
+            if (boundStatement.executeUpdateDelete() == 1) {
+                getDatabase().setTransactionSuccessful();
+            }
+        } finally {
+            getDatabase().endTransaction();
+        }
+    }
+
     @NonNull
     final AppDatabase getDatabase() {
         return database;
@@ -39,13 +57,16 @@ abstract class CustomDao<Entity> {
 
     public abstract LiveData<Entity> getItem(long id);
 
-    public abstract Entity getItemSync(long id);
+    @Insert
+    public abstract long restoreItemSync(Entity item);
+
+    abstract Entity getItemInternalSync(long id);
 
     public abstract LiveData<List<Entity>> getItems();
 
     @Nullable
     public final Entity deleteSync(long id){
-        Entity item = getItemSync(id);
+        Entity item = getItemInternalSync(id);
         if (item != null) {
             deleteStatement.bindLong(1, id);
             getDatabase().beginTransaction();
@@ -64,14 +85,7 @@ abstract class CustomDao<Entity> {
     public final void setCommentSync(long id, @Nullable String comment){
         setCommentStatement.bindString(1, comment);
         setCommentStatement.bindLong(2, id);
-        getDatabase().beginTransaction();
-        try {
-            if (setCommentStatement.executeUpdateDelete() == 1) {
-                getDatabase().setTransactionSuccessful();
-            }
-        } finally {
-            getDatabase().endTransaction();
-        }
+        updateInTransaction(setCommentStatement);
     }
 
     @NonNull

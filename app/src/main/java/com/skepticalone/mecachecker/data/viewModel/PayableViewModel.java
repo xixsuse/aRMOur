@@ -1,23 +1,29 @@
 package com.skepticalone.mecachecker.data.viewModel;
 
-import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.mecachecker.data.dao.PayableDaoContract;
-import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.dao.PayableDaoHelper;
+import com.skepticalone.mecachecker.data.model.Payable;
 
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
-abstract class PayableViewModel<Entity extends Item, Dao extends PayableDaoContract<Entity>> extends ItemViewModel<Entity, Dao> implements PayableViewModelContract<Entity> {
+abstract class PayableViewModelHelper<Entity extends Payable> {
 
-    PayableViewModel(Application application) {
-        super(application);
+    @NonNull
+    private final PayableDaoHelper<Entity> dao;
+    PayableViewModelHelper(@NonNull PayableDaoHelper<Entity> dao) {
+        this.dao = dao;
     }
 
-    @Override
     public final void saveNewPayment(final long id, @NonNull final BigDecimal payment) {
+        model.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                model.getDao().
+            }
+        });
         runAsync(new Runnable() {
             @Override
             public void run() {
@@ -26,7 +32,6 @@ abstract class PayableViewModel<Entity extends Item, Dao extends PayableDaoContr
         });
     }
 
-    @Override
     public final void setClaimed(final long id, final boolean claimed) {
         runAsync(new Runnable() {
             @Override
@@ -36,7 +41,6 @@ abstract class PayableViewModel<Entity extends Item, Dao extends PayableDaoContr
         });
     }
 
-    @Override
     public final void setPaid(final long id, final boolean paid) {
         runAsync(new Runnable() {
             @Override
@@ -45,4 +49,5 @@ abstract class PayableViewModel<Entity extends Item, Dao extends PayableDaoContr
             }
         });
     }
+
 }
