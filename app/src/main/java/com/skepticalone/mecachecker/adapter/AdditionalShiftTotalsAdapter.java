@@ -30,14 +30,8 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
 
     @NonNull
     @Override
-    public String getSecondLine(@NonNull List<AdditionalShiftEntity> shifts, @NonNull ItemViewHolder holder) {
-        return getTotalNumber(shifts, holder);
-    }
-
-    @NonNull
-    @Override
-    public String getThirdLine(@NonNull List<AdditionalShiftEntity> shifts, @NonNull ItemViewHolder holder) {
-        return getTotalPayment(shifts, holder);
+    public String getThirdLine(@NonNull String totalDuration, @NonNull List<AdditionalShiftEntity> shifts, @NonNull ItemViewHolder holder) {
+        return totalDuration + '\n' + getTotalPayment(shifts, holder);
     }
 
     @Override

@@ -8,6 +8,8 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Shift;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
+import org.joda.time.Duration;
+
 import java.util.List;
 
 final class ShiftTotalsAdapterHelper<Entity extends Shift> {
@@ -28,6 +30,23 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     ShiftTotalsAdapterHelper(@NonNull Callbacks<Entity> callbacks, @NonNull ShiftUtil.Calculator calculator) {
         this.callbacks = callbacks;
         this.calculator = calculator;
+    }
+
+    @NonNull
+    private String getTotalDuration(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
+        Duration totalDuration = Duration.ZERO;
+        for (Entity shift : shifts) {
+            totalDuration = totalDuration.plus(shift.getShiftData().getDuration());
+        }
+        if (callbacks.isFiltered() && !totalDuration.isEqual(Duration.ZERO)) {
+            Duration filteredDuration = Duration.ZERO;
+            for (Entity shift : shifts) {
+                if (callbacks.isIncluded(shift)) filteredDuration = filteredDuration.plus(shift.getShiftData().getDuration());
+            }
+            return holder.getDurationPercentage(filteredDuration, totalDuration);
+        } else {
+            return holder.getDurationString(totalDuration);
+        }
     }
 
     boolean bindViewHolder(@NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
@@ -63,14 +82,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             icon = ShiftUtil.getShiftIcon(shiftType);
             shifts = calculator.getFilteredShifts(allShifts, shiftType);
         }
-        holder.setupTotals(icon, firstLine, callbacks.getSecondLine(shifts, holder), callbacks.getThirdLine(shifts, holder));
+        holder.setupTotals(icon, firstLine, callbacks.getTotalNumber(shifts, holder), callbacks.getThirdLine(getTotalDuration(shifts, holder), shifts, holder));
         return true;
     }
 
-    interface Callbacks<Entity extends Shift> {
+    interface Callbacks<Entity extends Shift> extends TotalsAdapterCallbacks<Entity> {
         @StringRes int getAllShiftsTitle();
-        @NonNull String getSecondLine(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder);
-        @NonNull String getThirdLine(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder);
+        @NonNull String getThirdLine(@NonNull String totalDuration, @NonNull List<Entity> shifts, @NonNull ItemViewHolder holder);
     }
 
 }

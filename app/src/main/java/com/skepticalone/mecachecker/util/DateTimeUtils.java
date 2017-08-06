@@ -123,8 +123,8 @@ public final class DateTimeUtils {
         return periodFormatter.print(period);
     }
 
-    public static String getPeriodString(@NonNull Duration duration) {
-        return getPeriodString(duration.toPeriod());
+    public static String getDurationString(@NonNull Duration duration) {
+        return periodFormatter.print(duration.toPeriod());
     }
 
 }

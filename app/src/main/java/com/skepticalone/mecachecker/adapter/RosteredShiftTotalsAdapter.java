@@ -21,12 +21,12 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     }
 
     @Override
-    boolean isFiltered() {
+    public boolean isFiltered() {
         return !callbacks.includeCompliant() || !callbacks.includeNonCompliant();
     }
 
     @Override
-    boolean isIncluded(@NonNull RosteredShiftEntity shift) {
+    public boolean isIncluded(@NonNull RosteredShiftEntity shift) {
         return shift.isCompliant() ? callbacks.includeCompliant() : callbacks.includeNonCompliant();
     }
 
@@ -42,14 +42,8 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
 
     @NonNull
     @Override
-    public String getSecondLine(@NonNull List<RosteredShiftEntity> shifts, @NonNull ItemViewHolder holder) {
-        return getTotalNumber(shifts, holder);
-    }
-
-    @NonNull
-    @Override
-    public String getThirdLine(@NonNull List<RosteredShiftEntity> shifts, @NonNull ItemViewHolder holder) {
-        return null;
+    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShiftEntity> shifts, @NonNull ItemViewHolder holder) {
+        return totalDuration;
     }
 
     @Override

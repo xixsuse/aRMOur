@@ -31,7 +31,7 @@ public final class CrossCoverListAdapter extends ItemListAdapter<CrossCoverEntit
     @Override
     void bindViewHolder(@NonNull CrossCoverEntity crossCover, ItemViewHolder holder) {
         holder.secondaryIcon.setImageResource(crossCover.getPaymentData().getIcon());
-        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), holder.getPaymentText(crossCover.getPayment()), crossCover.getComment());
+        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), holder.getPaymentString(crossCover.getPayment()), crossCover.getComment());
     }
 
 }

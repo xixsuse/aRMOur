@@ -12,11 +12,7 @@ import com.skepticalone.mecachecker.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener {
-
-    abstract boolean isFiltered();
-
-    abstract boolean isIncluded(@NonNull Entity item);
+public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
 
     @Nullable
     private List<Entity> mItems;
@@ -59,7 +55,8 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
     }
 
     @NonNull
-    final String getTotalNumber(@NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
+    @Override
+    public final String getTotalNumber(@NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
         int totalCount = items.size();
         if (isFiltered() && totalCount > 0) {
             int filteredCount = 0;
@@ -68,7 +65,7 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
             }
             return holder.getCountPercentage(filteredCount, totalCount);
         } else {
-            return holder.getCount(totalCount);
+            return holder.getCountString(totalCount);
         }
     }
 
@@ -82,7 +79,7 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
 //            }
 //            secondLine = holder.getCountPercentage(filteredCount, totalCount);
 //        } else {
-//            secondLine = holder.getCount(totalCount);
+//            secondLine = holder.getCountString(totalCount);
 //        }
 //        holder.setupTotals(icon, title, secondLine);
 //    }

@@ -57,7 +57,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                     callbacks.changePayment();
                 }
             });
-            holder.setText(holder.getText(getPaymentTitle()), holder.getPaymentText(item.getPaymentData().getPayment()));
+            holder.setText(holder.getText(getPaymentTitle()), holder.getPaymentString(item.getPaymentData().getPayment()));
             return true;
         } else if (position == getRowNumberClaimed()) {
             CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {

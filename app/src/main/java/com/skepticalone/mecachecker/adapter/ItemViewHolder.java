@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
+import com.skepticalone.mecachecker.util.DateTimeUtils;
+
+import org.joda.time.Duration;
 
 import java.math.BigDecimal;
 
@@ -93,7 +96,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @NonNull
-    String getCount(int count) {
+    String getCountString(int count) {
         return text.getContext().getString(R.string.count_format, count);
     }
 
@@ -103,13 +106,23 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @NonNull
-    String getPaymentText(@NonNull BigDecimal payment) {
+    String getPaymentString(@NonNull BigDecimal payment) {
         return text.getContext().getString(R.string.payment_format, payment);
     }
 
     @NonNull
     String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
         return text.getContext().getString(R.string.payment_percentage_format, payment, payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP));
+    }
+
+    @NonNull
+    String getDurationString(@NonNull Duration duration) {
+        return DateTimeUtils.getDurationString(duration);
+    }
+
+    @NonNull
+    String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
+        return text.getContext().getString(R.string.duration_percentage_format, DateTimeUtils.getDurationString(duration), duration.getMillis() * 100f / totalDuration.getMillis());
     }
 
     void setText(@NonNull String firstLine) {

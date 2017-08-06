@@ -132,7 +132,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 secondLine = null;
             } else {
                 switchChecked = true;
-                secondLine = DateTimeUtils.getPeriodString(shift.getLoggedShiftData().getDuration());
+                secondLine = DateTimeUtils.getDurationString(shift.getLoggedShiftData().getDuration());
             }
             holder.setupSwitch(R.drawable.ic_clipboard_black_24dp, switchChecked, new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -193,7 +193,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_day),
-                    DateTimeUtils.getPeriodString(shift.getDurationOverDay())
+                    DateTimeUtils.getDurationString(shift.getDurationOverDay())
             );
             holder.setCompliant(!shift.exceedsMaximumDurationOverDay());
             return true;
@@ -206,7 +206,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_week),
-                    DateTimeUtils.getPeriodString(shift.getDurationOverWeek())
+                    DateTimeUtils.getDurationString(shift.getDurationOverWeek())
             );
             holder.setCompliant(!shift.exceedsMaximumDurationOverWeek());
             return true;
@@ -219,7 +219,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_fortnight),
-                    DateTimeUtils.getPeriodString(shift.getDurationOverFortnight())
+                    DateTimeUtils.getDurationString(shift.getDurationOverFortnight())
             );
             holder.setCompliant(!shift.exceedsMaximumDurationOverFortnight());
             return true;

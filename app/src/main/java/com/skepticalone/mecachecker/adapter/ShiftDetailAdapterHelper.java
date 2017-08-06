@@ -74,7 +74,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
         } else if (position == getRowNumberShiftType()) {
             ShiftUtil.ShiftType shiftType = calculator.getSingleShiftType(shift.getShiftData());
             holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
-            holder.setText(holder.getText(ShiftUtil.getShiftTitle(shiftType)), DateTimeUtils.getPeriodString(shift.getShiftData().getDuration()));
+            holder.setText(holder.getText(ShiftUtil.getShiftTitle(shiftType)), DateTimeUtils.getDurationString(shift.getShiftData().getDuration()));
             return true;
         } else return super.bindViewHolder(shift, holder, position);
     }

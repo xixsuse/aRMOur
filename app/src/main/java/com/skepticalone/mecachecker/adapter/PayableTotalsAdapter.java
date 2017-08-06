@@ -30,17 +30,17 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
             }
             return holder.getPaymentPercentage(filteredPayment, totalPayment);
         } else {
-            return holder.getPaymentText(totalPayment);
+            return holder.getPaymentString(totalPayment);
         }
     }
 
     @Override
-    final boolean isFiltered() {
+    public final boolean isFiltered() {
         return !callbacks.includeUnclaimed() || !callbacks.includeClaimed() || !callbacks.includePaid();
     }
 
     @Override
-    final boolean isIncluded(@NonNull Entity item) {
+    public final boolean isIncluded(@NonNull Entity item) {
         return item.getPaymentData().getClaimed() == null ? callbacks.includeUnclaimed() : item.getPaymentData().getPaid() == null ? callbacks.includeClaimed() : callbacks.includePaid();
     }
 
