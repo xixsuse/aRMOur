@@ -2,6 +2,7 @@ package com.skepticalone.mecachecker.data.viewModel;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.ExpenseDao;
@@ -45,4 +46,13 @@ public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, Expe
         });
     }
 
+    @Override
+    public void saveNewComment(final long id, @Nullable final String newComment) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase.getInstance(getApplication()).expenseCustomDao().setCommentSync(id, newComment);
+            }
+        });
+    }
 }

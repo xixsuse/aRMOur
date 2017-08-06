@@ -16,6 +16,8 @@ import com.skepticalone.mecachecker.data.util.LocalDateConverter;
 
 import org.joda.time.LocalDate;
 
+import java.util.List;
+
 @Dao
 public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
 
@@ -41,6 +43,12 @@ public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
                 ") VALUES (?,?)");
     }
 
+    @NonNull
+    @Override
+    String getTableName() {
+        return Contract.CrossCoverShifts.TABLE_NAME;
+    }
+
     synchronized public final long insertSync(int paymentInCents){
         insertStatement.bindLong(1, paymentInCents);
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_DATE, null);
@@ -63,6 +71,18 @@ public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract LiveData<CrossCoverEntity> getItem(long id);
+    public abstract LiveData<CrossCoverEntity> getItem(long id);
+
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    public abstract CrossCoverEntity getItemSync(long id);
+
+    @Override
+    @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
+    public abstract LiveData<List<CrossCoverEntity>> getItems();
 
 }

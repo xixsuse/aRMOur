@@ -163,7 +163,7 @@ public abstract class ItemViewModel<Entity extends Item, Dao extends ItemDaoCont
 //    }
 
     @Override
-    public final void saveNewComment(final long id, @Nullable final String newComment) {
+    public void saveNewComment(final long id, @Nullable final String newComment) {
         runAsync(new Runnable() {
             @Override
             public void run() {
