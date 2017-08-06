@@ -2,13 +2,9 @@ package com.skepticalone.mecachecker.data.dao;
 
 import android.arch.persistence.db.SupportSQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.data.db.Contract;
-import com.skepticalone.mecachecker.data.util.DateTimeConverter;
 import com.skepticalone.mecachecker.data.util.MoneyConverter;
-
-import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
@@ -32,19 +28,18 @@ public final class PayableDaoHelper {
         dao.updateInTransaction(setPaymentStatement);
     }
 
-    private void setClaimedOrPaidSync(long id, @Nullable DateTime claimedOrPaid, @NonNull SupportSQLiteStatement statement) {
-        Long millis = DateTimeConverter.dateTimeToMillis(claimedOrPaid);
-        if (millis == null) statement.bindNull(1);
-        else statement.bindLong(1, millis);
+    private void setClaimedOrPaidSync(long id, boolean claimedOrPaid, @NonNull SupportSQLiteStatement statement) {
+        if (claimedOrPaid) statement.bindLong(1, System.currentTimeMillis());
+        else statement.bindNull(1);
         statement.bindLong(2, id);
         dao.updateInTransaction(statement);
     }
 
-    public final void setClaimedSync(long id, @Nullable DateTime claimed) {
+    public final void setClaimedSync(long id, boolean claimed) {
         setClaimedOrPaidSync(id, claimed, setClaimedStatement);
     }
 
-    public final void setPaidSync(long id, @Nullable DateTime paid) {
+    public final void setPaidSync(long id, boolean paid) {
         setClaimedOrPaidSync(id, paid, setPaidStatement);
     }
 

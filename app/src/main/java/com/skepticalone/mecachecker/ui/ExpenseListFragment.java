@@ -1,20 +1,18 @@
 package com.skepticalone.mecachecker.ui;
 
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.content.Context;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ExpenseListAdapter;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
-import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
-import com.skepticalone.mecachecker.adapter.SinglePayableTotalsAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
 
-public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEntity, ExpenseViewModel> {
+public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEntity> {
+
+    private final ExpenseListAdapter adapter = new ExpenseListAdapter(this);
 
     @Override
     int getItemType() {
@@ -23,14 +21,19 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
 
     @NonNull
     @Override
-    ItemListAdapter<ExpenseEntity> createAdapter(Context context) {
-        return new ExpenseListAdapter(this);
+    ItemListAdapter<ExpenseEntity> getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    void addNewItem() {
+        getViewModel().addNewExpense();
     }
 
     @NonNull
     @Override
-    ExpenseViewModel createViewModel(@NonNull ViewModelProvider provider) {
-        return provider.get(ExpenseViewModel.class);
+    ExpenseViewModel getViewModel() {
+        return ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
     }
 
     @NonNull
@@ -39,19 +42,4 @@ public final class ExpenseListFragment extends SingleAddListFragment<ExpenseEnti
         return new ExpenseTotalsDialogFragment();
     }
 
-    public static final class ExpenseTotalsDialogFragment extends PayableTotalsDialogFragment<ExpenseEntity> {
-
-        @NonNull
-        @Override
-        ItemTotalsAdapter<ExpenseEntity> createAdapter(@NonNull Context context) {
-            return new SinglePayableTotalsAdapter<>(this, R.string.expenses);
-        }
-
-        @NonNull
-        @Override
-        ViewModelContract<ExpenseEntity> onCreateViewModel(@NonNull ViewModelProvider provider) {
-            return provider.get(ExpenseViewModel.class);
-        }
-
-    }
 }

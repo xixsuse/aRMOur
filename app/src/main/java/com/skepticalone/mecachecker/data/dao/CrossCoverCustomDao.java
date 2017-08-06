@@ -22,7 +22,9 @@ import java.util.List;
 public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
 
     @NonNull
-    private final SupportSQLiteStatement insertStatement;
+    private final SupportSQLiteStatement insertStatement, setDateStatement;
+    @NonNull
+    private final PayableDaoHelper payableDaoHelper;
 
     @NonNull
     private static final String GET_LAST_SHIFT_DATE =
@@ -41,11 +43,24 @@ public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
                 ", " +
                 Contract.CrossCoverShifts.COLUMN_NAME_DATE +
                 ") VALUES (?,?)");
+        setDateStatement = getUpdateStatement(Contract.CrossCoverShifts.COLUMN_NAME_DATE);
+        payableDaoHelper = new PayableDaoHelper(this);
+    }
+
+    @NonNull
+    public final PayableDaoHelper getPayableDaoHelper() {
+        return payableDaoHelper;
+    }
+
+    public final void setDateSync(long id, @NonNull LocalDate date) {
+        setDateStatement.bindLong(1, LocalDateConverter.dateToMillis(date));
+        setDateStatement.bindLong(2, id);
+        updateInTransaction(setDateStatement);
     }
 
     @NonNull
     @Override
-    String getTableName() {
+    final String getTableName() {
         return Contract.CrossCoverShifts.TABLE_NAME;
     }
 

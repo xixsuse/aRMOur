@@ -6,26 +6,33 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
+import com.skepticalone.mecachecker.data.dao.CrossCoverCustomDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 
 import org.joda.time.LocalDate;
 
-public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity, CrossCoverDao>
-        implements SingleAddViewModelContract<CrossCoverEntity>, DateViewModelContract<CrossCoverEntity> {
+public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> {
 
-    public CrossCoverViewModel(Application application) {
+    @NonNull
+    private final PayableViewModelHelper payableViewModelHelper;
+
+    public CrossCoverViewModel(@NonNull Application application) {
         super(application);
+        this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
+    }
+
+    @NonNull
+    public PayableViewModelHelper getPayableViewModelHelper() {
+        return payableViewModelHelper;
     }
 
     @NonNull
     @Override
-    CrossCoverDao onCreateDao(@NonNull AppDatabase database) {
-        return database.crossCoverDao();
+    CrossCoverCustomDao getDao() {
+        return AppDatabase.getInstance(getApplication()).crossCoverCustomDao();
     }
 
-    @Override
     public void saveNewDate(@NonNull final CrossCoverEntity item, @NonNull final LocalDate date) {
         runAsync(new Runnable() {
             @Override
@@ -39,12 +46,11 @@ public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity
         });
     }
 
-    @Override
-    public void addNewItem() {
+    public void addNewCrossCoverShift() {
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(AppDatabase.getInstance(getApplication()).crossCoverCustomDao().insertSync(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))));
+                postSelectedId(getDao().insertSync(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))));
 //
 //                synchronized (CrossCoverViewModel.this) {
 //                    postSelectedId(getDao().insertItemSync(new CrossCoverEntity(

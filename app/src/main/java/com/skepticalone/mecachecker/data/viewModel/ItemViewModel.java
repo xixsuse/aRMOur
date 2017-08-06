@@ -32,7 +32,7 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
         //noinspection unchecked
         NO_DATA.setValue(null);
     }
-    ItemViewModel(Application application) {
+    ItemViewModel(@NonNull Application application) {
         super(application);
 //        dao = onCreateDao(AppDatabase.getInstance(application));
         currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
@@ -56,7 +56,7 @@ public abstract class ItemViewModel<Entity> extends AndroidViewModel {
         return getDao().getItem(id);
     }
 
-    void runAsync(final Runnable runnable) {
+    static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
 //        new Thread(new Runnable() {
 //            @Override

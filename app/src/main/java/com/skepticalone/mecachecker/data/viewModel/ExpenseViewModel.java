@@ -5,29 +5,36 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.ExpenseDao;
+import com.skepticalone.mecachecker.data.dao.ExpenseCustomDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 
-public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, ExpenseDao>
-        implements SingleAddViewModelContract<ExpenseEntity> {
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> {
 
-    public ExpenseViewModel(Application application) {
+    @NonNull
+    private final PayableViewModelHelper payableViewModelHelper;
+
+    public ExpenseViewModel(@NonNull Application application) {
         super(application);
+        this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
+    }
+
+    @NonNull
+    public PayableViewModelHelper getPayableViewModelHelper() {
+        return payableViewModelHelper;
     }
 
     @NonNull
     @Override
-    ExpenseDao onCreateDao(@NonNull AppDatabase database) {
-        return database.expenseDao();
+    ExpenseCustomDao getDao() {
+        return AppDatabase.getInstance(getApplication()).expenseCustomDao();
     }
 
-    @Override
-    public void addNewItem() {
+    public void addNewExpense() {
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(AppDatabase.getInstance(getApplication()).expenseCustomDao().insertSync(getApplication().getString(R.string.new_expense_title)));
+                postSelectedId(getDao().insertSync(getApplication().getString(R.string.new_expense_title)));
 //                postSelectedId(getDao().insertItemSync(new ExpenseEntity(
 //                        getApplication().getString(R.string.new_expense_title),
 //                        PaymentData.fromPayment(0),
@@ -51,7 +58,7 @@ public final class ExpenseViewModel extends PayableViewModel<ExpenseEntity, Expe
         runAsync(new Runnable() {
             @Override
             public void run() {
-                AppDatabase.getInstance(getApplication()).expenseCustomDao().setCommentSync(id, newComment);
+                getDao().setCommentSync(id, newComment);
             }
         });
     }

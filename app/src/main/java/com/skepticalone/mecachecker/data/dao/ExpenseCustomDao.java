@@ -16,9 +16,11 @@ import java.util.List;
 @Dao
 public abstract class ExpenseCustomDao extends CustomDao<ExpenseEntity> {
 
+    @NonNull
+    private final SupportSQLiteStatement insertStatement, setTitleStatement;
 
     @NonNull
-    private final SupportSQLiteStatement insertStatement;
+    private final PayableDaoHelper payableDaoHelper;
 
     ExpenseCustomDao(@NonNull AppDatabase database) {
         super(database);
@@ -27,11 +29,24 @@ public abstract class ExpenseCustomDao extends CustomDao<ExpenseEntity> {
                 ", " +
                 Contract.Expenses.COLUMN_NAME_TITLE +
                 ") VALUES (0,?)");
+        setTitleStatement = getUpdateStatement(Contract.Expenses.COLUMN_NAME_TITLE);
+        payableDaoHelper = new PayableDaoHelper(this);
+    }
+
+    @NonNull
+    public final PayableDaoHelper getPayableDaoHelper() {
+        return payableDaoHelper;
+    }
+
+    public final void setTitleSync(long id, @NonNull String title){
+        setTitleStatement.bindString(1, title);
+        setTitleStatement.bindLong(2, id);
+        updateInTransaction(setTitleStatement);
     }
 
     @NonNull
     @Override
-    String getTableName() {
+    final String getTableName() {
         return Contract.Expenses.TABLE_NAME;
     }
 

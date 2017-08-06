@@ -22,11 +22,11 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 import java.util.List;
 
-abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelContract<Entity>> extends BaseFragment<ItemListAdapter<Entity>, ViewModel>
+abstract class ListFragment<Entity extends Item> extends BaseFragment<Entity>
         implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
 
     private Callbacks callbacks;
@@ -89,8 +89,9 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getItems().observe(this, this);
-        getViewModel().getDeletedItemRestorer().observe(this, new Observer<View.OnClickListener>() {
+        ItemViewModel<Entity> viewModel = getViewModel();
+        viewModel.getItems().observe(this, this);
+        viewModel.getDeletedItemRestorer().observe(this, new Observer<View.OnClickListener>() {
             @Override
             public void onChanged(@Nullable View.OnClickListener deletedItemRestorer) {
                 if (deletedItemRestorer != null && getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
@@ -100,6 +101,10 @@ abstract class ListFragment<Entity extends Item, ViewModel extends ViewModelCont
         });
         setupFab(callbacks);
     }
+
+    @NonNull
+    @Override
+    abstract ItemListAdapter<Entity> getAdapter();
 
     @Override
     @CallSuper

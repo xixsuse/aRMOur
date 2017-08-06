@@ -3,8 +3,6 @@ package com.skepticalone.mecachecker.ui;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -20,7 +18,7 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemTotalsAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
 
 import java.util.List;
 
@@ -29,12 +27,6 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
     private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
 
     private ItemTotalsAdapter<Entity> adapter;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        adapter = createAdapter(context);
-    }
 
     @Override
     public final LifecycleRegistry getLifecycle() {
@@ -50,7 +42,11 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
 //    }
 
     @NonNull
-    abstract ViewModelContract<Entity> onCreateViewModel(@NonNull ViewModelProvider provider);
+    abstract ItemViewModel<Entity> getViewModel();
+
+    final ItemTotalsAdapter<Entity> getAdapter() {
+        return adapter;
+    }
 
     @LayoutRes
     abstract int getLayout();
@@ -58,15 +54,16 @@ abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDial
     @NonNull
     abstract ItemTotalsAdapter<Entity> createAdapter(@NonNull Context context);
 
-    @NonNull
-    final ItemTotalsAdapter<Entity> getAdapter(){
-        return adapter;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = createAdapter(context);
     }
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        onCreateViewModel(ViewModelProviders.of(getActivity())).getItems().observe(this, this);
+        getViewModel().getItems().observe(this, this);
     }
 
     @Override
