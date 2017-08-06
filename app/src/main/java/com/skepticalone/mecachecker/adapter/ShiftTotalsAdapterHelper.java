@@ -54,7 +54,7 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
         @StringRes final int firstLine;
         @NonNull final List<Entity> shifts;
         if (position == ROW_NUMBER_ALL_SHIFTS) {
-            icon = R.drawable.ic_list_black_24dp;
+            icon = R.drawable.ic_sigma_black_24dp;
             firstLine = callbacks.getAllShiftsTitle();
             shifts = allShifts;
         } else {

@@ -4,7 +4,7 @@
 
     <item android:id="@+id/totals"
         android:title="@string/totals"
-        android:icon="@drawable/ic_info_white_24dp"
+        android:icon="@drawable/ic_sigma_white_24dp"
         app:showAsAction="ifRoom"
         />
 

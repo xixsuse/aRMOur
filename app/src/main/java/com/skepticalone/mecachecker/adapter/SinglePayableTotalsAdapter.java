@@ -31,7 +31,7 @@ public final class SinglePayableTotalsAdapter<Entity extends Payable> extends Pa
     @Override
     final boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
-            holder.setupTotals(R.drawable.ic_list_black_24dp, totalItemsTitle, getTotalNumber(allItems, holder), null);
+            holder.setupTotals(R.drawable.ic_sigma_black_24dp, totalItemsTitle, getTotalNumber(allItems, holder), null);
             return true;
         } else if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setupTotals(R.drawable.ic_dollar_black_24dp, R.string.total_payment, getTotalPayment(allItems, holder), null);
