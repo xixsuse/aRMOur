@@ -25,8 +25,11 @@
     <string name="skip_weekend_title">Skip weekends</string>
     <string name="skip_weekend_summary_on">New rostered shifts will always begin on weekdays</string>
     <string name="skip_weekend_summary_off">New rostered shifts may begin on weekends</string>
-    <string name="key_hourly_rate">key_hourly_rate</string>
-    <integer name="default_hourly_rate">5500</integer>
-    <string name="key_cross_cover_payment">key_cross_cover_payment</string>
+    <string name="key_default_hourly_rate_normal_day">key_default_hourly_rate_normal_day</string>
+    <string name="key_default_hourly_rate_long_day">key_default_hourly_rate_long_day</string>
+    <string name="key_default_hourly_rate_night_shift">key_default_hourly_rate_night_shift</string>
+    <integer name="default_hourly_rate_normal_hours">5500</integer>
+    <integer name="default_hourly_rate_after_hours">9000</integer>
+    <string name="key_default_cross_cover_payment">key_default_cross_cover_payment</string>
     <integer name="default_cross_cover_payment">15000</integer>
 </resources>

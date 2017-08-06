@@ -3,8 +3,10 @@ package com.skepticalone.mecachecker.data.viewModel;
 import android.app.Application;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
@@ -31,6 +33,29 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
         return database.additionalShiftDao();
     }
 
+    @NonNull
+    private PaymentData getPaymentData(@NonNull ShiftUtil.ShiftType shiftType) {
+        @StringRes final int hourlyRateKey;
+        @IntegerRes final int hourlyRateDefault;
+        switch (shiftType) {
+            case NORMAL_DAY:
+                hourlyRateKey = R.string.key_default_hourly_rate_normal_day;
+                hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
+                break;
+            case LONG_DAY:
+                hourlyRateKey = R.string.key_default_hourly_rate_long_day;
+                hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
+                break;
+            case NIGHT_SHIFT:
+                hourlyRateKey = R.string.key_default_hourly_rate_night_shift;
+                hourlyRateDefault = R.integer.default_hourly_rate_after_hours;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        return PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(hourlyRateKey), getApplication().getResources().getInteger(hourlyRateDefault)));
+    }
+
     @Override
     public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
         runAsync(new Runnable() {
@@ -38,7 +63,7 @@ public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalS
             public void run() {
                 synchronized (AdditionalShiftViewModel.this) {
                     postSelectedId(getDao().insertItemSync(new AdditionalShiftEntity(
-                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_hourly_rate), getApplication().getResources().getInteger(R.integer.default_hourly_rate))),
+                            getPaymentData(shiftType),
                             ShiftData.withEarliestStart(ShiftUtil.Calculator.getInstance(getApplication()).getStartTime(shiftType), ShiftUtil.Calculator.getInstance(getApplication()).getEndTime(shiftType), getDao().getLastShiftEndSync(), false),
                             null
                     )));

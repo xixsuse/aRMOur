@@ -37,10 +37,11 @@
     <string name="payment_percentage_format">$%.2f (%.0f%%)</string>
     <string name="duration_percentage_format">%s (%.0f%%)</string>
     <string name="hourly_rate">Hourly rate</string>
+    <string name="default_hourly_rate">Default hourly rate</string>
     <string name="title">Title</string>
     <string name="payment">Payment</string>
     <string name="total_payment">Total payment</string>
-    <string name="cross_cover_payment">Cross cover payment</string>
+    <string name="default_cross_cover_payment">Default cross cover payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
     <string name="compliant">Compliant</string>
     <string name="non_compliant">Non-compliant</string>

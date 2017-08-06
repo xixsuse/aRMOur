@@ -16,13 +16,8 @@ import org.joda.time.LocalDate;
 public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity, CrossCoverDao>
         implements SingleAddViewModelContract<CrossCoverEntity>, DateViewModelContract<CrossCoverEntity> {
 
-    private final String newCrossCoverPaymentKey;
-    private final int defaultNewCrossCoverPayment;
-
     public CrossCoverViewModel(Application application) {
         super(application);
-        newCrossCoverPaymentKey = application.getString(R.string.key_cross_cover_payment);
-        defaultNewCrossCoverPayment = application.getResources().getInteger(R.integer.default_cross_cover_payment);
     }
 
     @NonNull
@@ -53,7 +48,7 @@ public final class CrossCoverViewModel extends PayableViewModel<CrossCoverEntity
                 synchronized (CrossCoverViewModel.this) {
                     postSelectedId(getDao().insertItemSync(new CrossCoverEntity(
                             CrossCoverEntity.getNewDate(getDao().getLastCrossCoverDateSync()),
-                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(newCrossCoverPaymentKey, defaultNewCrossCoverPayment)),
+                            PaymentData.fromPayment(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))),
                             null
                     )));
                 }
