@@ -1,8 +1,11 @@
 package com.skepticalone.mecachecker.data.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.db.SupportSQLiteStatement;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Query;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -14,7 +17,7 @@ import com.skepticalone.mecachecker.data.util.LocalDateConverter;
 import org.joda.time.LocalDate;
 
 @Dao
-public abstract class CrossCoverCustomDao extends CustomDao {
+public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
 
     @NonNull
     private final SupportSQLiteStatement insertStatement;
@@ -53,5 +56,13 @@ public abstract class CrossCoverCustomDao extends CustomDao {
             getDatabase().endTransaction();
         }
     }
+
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract LiveData<CrossCoverEntity> getItem(long id);
 
 }
