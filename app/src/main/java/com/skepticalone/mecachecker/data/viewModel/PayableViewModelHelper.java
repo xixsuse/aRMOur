@@ -6,7 +6,7 @@ import com.skepticalone.mecachecker.data.dao.PayableDaoHelper;
 
 import java.math.BigDecimal;
 
-public final class PayableViewModelHelper {
+final class PayableViewModelHelper {
 
     @NonNull
     private final PayableDaoHelper dao;
@@ -15,7 +15,7 @@ public final class PayableViewModelHelper {
         this.dao = dao;
     }
 
-    public final void saveNewPayment(final long id, @NonNull final BigDecimal payment) {
+    final void saveNewPayment(final long id, @NonNull final BigDecimal payment) {
         ItemViewModel.runAsync(new Runnable() {
             @Override
             public void run() {
@@ -24,7 +24,7 @@ public final class PayableViewModelHelper {
         });
     }
 
-    public final void setClaimed(final long id, final boolean claimed) {
+    final void setClaimed(final long id, final boolean claimed) {
         ItemViewModel.runAsync(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +33,7 @@ public final class PayableViewModelHelper {
         });
     }
 
-    public final void setPaid(final long id, final boolean paid) {
+    final void setPaid(final long id, final boolean paid) {
         ItemViewModel.runAsync(new Runnable() {
             @Override
             public void run() {
