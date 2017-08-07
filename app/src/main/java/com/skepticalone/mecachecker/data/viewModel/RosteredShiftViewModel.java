@@ -1,33 +1,14 @@
-//package com.skepticalone.mecachecker.data.viewModel;
-//
-//import android.app.Application;
-//import android.arch.core.util.Function;
-//import android.arch.lifecycle.LiveData;
-//import android.arch.lifecycle.Transformations;
-//import android.database.sqlite.SQLiteConstraintException;
-//import android.preference.PreferenceManager;
-//import android.support.annotation.BoolRes;
-//import android.support.annotation.MainThread;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.annotation.StringRes;
-//import android.support.annotation.WorkerThread;
-//
-//import com.skepticalone.mecachecker.R;
-//import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
-//import com.skepticalone.mecachecker.data.db.AppDatabase;
-//import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
-//import com.skepticalone.mecachecker.data.util.ShiftData;
-//import com.skepticalone.mecachecker.util.ShiftUtil;
-//
-//import org.joda.time.DateTime;
-//import org.joda.time.LocalDate;
-//import org.joda.time.LocalTime;
-//
-//import java.util.List;
-//
-//public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity, RosteredShiftDao> implements ShiftViewModelContract<RosteredShiftEntity> {
-//
+package com.skepticalone.mecachecker.data.viewModel;
+
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+
+import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
+
+import org.joda.time.LocalTime;
+
+public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftItemViewModelContract<RosteredShiftEntity> {
+
 //    private final LiveData<List<RosteredShiftEntity>> items;
 //
 //    public RosteredShiftViewModel(@NonNull Application application) {
@@ -141,10 +122,11 @@
 //        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date));
 //    }
 //
-//    @MainThread
-//    public void saveNewTime(@NonNull RosteredShiftEntity shift, @NonNull LocalTime time, boolean start, boolean logged) {
-//        if (logged && shift.getLoggedShiftData() == null) throw new IllegalStateException();
-//        saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, start), logged ? shift.getLoggedShiftData().withNewTime(time, start) : shift.getLoggedShiftData());
-//    }
-//
-//}
+    @MainThread
+    public void saveNewTime(@NonNull LocalTime time, boolean start, boolean logged) {
+        RosteredShiftEntity shift = getCurrentItem().getValue();
+        if (shift == null || (logged && shift.getLoggedShiftData() == null)) throw new IllegalStateException();
+        saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, start), logged ? shift.getLoggedShiftData().withNewTime(time, start) : shift.getLoggedShiftData());
+    }
+
+}

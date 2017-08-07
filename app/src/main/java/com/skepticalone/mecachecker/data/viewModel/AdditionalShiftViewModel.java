@@ -1,27 +1,14 @@
-//package com.skepticalone.mecachecker.data.viewModel;
-//
-//import android.app.Application;
-//import android.database.sqlite.SQLiteConstraintException;
-//import android.preference.PreferenceManager;
-//import android.support.annotation.IntegerRes;
-//import android.support.annotation.MainThread;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.StringRes;
-//
-//import com.skepticalone.mecachecker.R;
-//import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
-//import com.skepticalone.mecachecker.data.db.AppDatabase;
-//import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
-//import com.skepticalone.mecachecker.data.util.PaymentData;
-//import com.skepticalone.mecachecker.data.util.ShiftData;
-//import com.skepticalone.mecachecker.util.ShiftUtil;
-//
-//import org.joda.time.LocalDate;
-//import org.joda.time.LocalTime;
-//
-//
-//public final class AdditionalShiftViewModel extends PayableViewModel<AdditionalShiftEntity, AdditionalShiftDao>
-//        implements ShiftViewModelContract<AdditionalShiftEntity> {
+package com.skepticalone.mecachecker.data.viewModel;
+
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+
+import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
+
+import org.joda.time.LocalTime;
+
+
+public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity> implements ShiftItemViewModelContract<AdditionalShiftEntity>, PayableItemViewModelContract<AdditionalShiftEntity> {
 //
 //    public AdditionalShiftViewModel(Application application) {
 //        super(application);
@@ -91,9 +78,11 @@
 //        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date));
 //    }
 //
-//    @MainThread
-//    public void saveNewTime(@NonNull AdditionalShiftEntity shift, @NonNull LocalTime time, boolean start) {
-//        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
-//    }
-//
-//}
+    @MainThread
+    public void saveNewTime(@NonNull LocalTime time, boolean start) {
+        AdditionalShiftEntity shift = getCurrentItem().getValue();
+        if (shift == null) throw new IllegalStateException();
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
+    }
+
+}
