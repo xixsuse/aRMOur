@@ -24,7 +24,9 @@ public abstract class ExpenseCustomDao extends CustomDao<ExpenseEntity> {
 
     ExpenseCustomDao(@NonNull AppDatabase database) {
         super(database);
-        insertStatement = getDatabase().compileStatement("INSERT INTO " + Contract.Expenses.TABLE_NAME + " (" +
+        insertStatement = getDatabase().compileStatement("INSERT INTO " +
+                Contract.Expenses.TABLE_NAME +
+                " (" +
                 Contract.COLUMN_NAME_PAYMENT +
                 ", " +
                 Contract.Expenses.COLUMN_NAME_TITLE +

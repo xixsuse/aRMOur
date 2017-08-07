@@ -38,7 +38,9 @@ public abstract class CrossCoverCustomDao extends CustomDao<CrossCoverEntity> {
 
     CrossCoverCustomDao(@NonNull AppDatabase database) {
         super(database);
-        insertStatement = getDatabase().compileStatement("INSERT INTO " + Contract.CrossCoverShifts.TABLE_NAME + " (" +
+        insertStatement = getDatabase().compileStatement("INSERT INTO " +
+                Contract.CrossCoverShifts.TABLE_NAME +
+                " (" +
                 Contract.COLUMN_NAME_PAYMENT +
                 ", " +
                 Contract.CrossCoverShifts.COLUMN_NAME_DATE +
