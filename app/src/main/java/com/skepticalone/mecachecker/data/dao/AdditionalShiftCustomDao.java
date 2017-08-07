@@ -80,9 +80,9 @@ public abstract class AdditionalShiftCustomDao extends CustomDao<AdditionalShift
     synchronized public final long insertSync(@NonNull LocalTime startTime, @NonNull LocalTime endTime, int paymentInCents){
         insertStatement.bindLong(1, paymentInCents);
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
-        @Nullable final DateTime earliestStart = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
+        @Nullable final DateTime lastShiftEnd = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStart(startTime, endTime, earliestStart, false);
+        ShiftData shiftData = ShiftData.withEarliestStart(startTime, endTime, lastShiftEnd, false);
         insertStatement.bindLong(2, shiftData.getStart().getMillis());
         insertStatement.bindLong(3, shiftData.getEnd().getMillis());
         getDatabase().beginTransaction();

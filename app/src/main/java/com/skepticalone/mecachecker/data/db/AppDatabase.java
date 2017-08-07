@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.data.dao.AdditionalShiftCustomDao;
 import com.skepticalone.mecachecker.data.dao.CrossCoverCustomDao;
 import com.skepticalone.mecachecker.data.dao.ExpenseCustomDao;
+import com.skepticalone.mecachecker.data.dao.RosteredShiftCustomDao;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
@@ -40,13 +41,9 @@ public abstract class AppDatabase extends RoomDatabase {
         return DATABASE;
     }
 
-//    public abstract RosteredShiftDao rosteredShiftDao();
-//
+    public abstract RosteredShiftCustomDao rosteredShiftCustomDao();
+
     public abstract AdditionalShiftCustomDao additionalShiftCustomDao();
-//
-//    public abstract CrossCoverDao crossCoverDao();
-//
-//    public abstract ExpenseDao expenseDao();
 
     public abstract CrossCoverCustomDao crossCoverCustomDao();
 

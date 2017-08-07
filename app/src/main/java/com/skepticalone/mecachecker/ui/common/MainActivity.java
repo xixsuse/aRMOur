@@ -33,7 +33,7 @@ public final class MainActivity extends CoordinatorActivity
     private LiveData<Long> selectedId;
 
     @Override
-    int getContentView() {
+    protected int getContentView() {
         return R.layout.main_activity;
     }
 
