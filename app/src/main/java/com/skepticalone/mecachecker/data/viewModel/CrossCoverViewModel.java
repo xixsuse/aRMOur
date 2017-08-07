@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.CrossCoverCustomDao;
+import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 
@@ -14,7 +14,7 @@ import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
-public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> implements DateItemViewModelContract<CrossCoverEntity>, PayableItemViewModelContract<CrossCoverEntity>, SingleAddItemViewModelContract<CrossCoverEntity> {
+public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> implements DateViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity>, SingleAddItemViewModelContract<CrossCoverEntity> {
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
@@ -26,8 +26,8 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> i
 
     @NonNull
     @Override
-    CrossCoverCustomDao getDao() {
-        return AppDatabase.getInstance(getApplication()).crossCoverCustomDao();
+    CrossCoverDao getDao() {
+        return AppDatabase.getInstance(getApplication()).crossCoverDao();
     }
 
     @Override

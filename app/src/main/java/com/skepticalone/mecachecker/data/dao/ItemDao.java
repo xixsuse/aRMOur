@@ -12,20 +12,12 @@ import com.skepticalone.mecachecker.data.db.Contract;
 
 import java.util.List;
 
-public abstract class CustomDao<Entity> {
+public abstract class ItemDao<Entity> {
     @NonNull
     private final AppDatabase database;
-    @NonNull
-    private final SupportSQLiteStatement deleteStatement, setCommentStatement;
 
-    CustomDao(@NonNull AppDatabase database) {
+    ItemDao(@NonNull AppDatabase database) {
         this.database = database;
-        deleteStatement = database.compileStatement("DELETE FROM " +
-                getTableName() +
-                " WHERE " +
-                BaseColumns._ID +
-                " = ?");
-        setCommentStatement = getUpdateStatement(Contract.COLUMN_NAME_COMMENT);
     }
 
     @NonNull
@@ -68,6 +60,11 @@ public abstract class CustomDao<Entity> {
     public final Entity deleteSync(long id){
         Entity item = getItemInternalSync(id);
         if (item != null) {
+            SupportSQLiteStatement deleteStatement = getDatabase().compileStatement("DELETE FROM " +
+                    getTableName() +
+                    " WHERE " +
+                    BaseColumns._ID +
+                    " = ?");
             deleteStatement.bindLong(1, id);
             getDatabase().beginTransaction();
             try {
@@ -83,6 +80,7 @@ public abstract class CustomDao<Entity> {
     }
 
     public final void setCommentSync(long id, @Nullable String comment){
+        SupportSQLiteStatement setCommentStatement = getUpdateStatement(Contract.COLUMN_NAME_COMMENT);
         setCommentStatement.bindString(1, comment);
         setCommentStatement.bindLong(2, id);
         updateInTransaction(setCommentStatement);

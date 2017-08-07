@@ -1,116 +1,103 @@
-//package com.skepticalone.mecachecker.data.dao;
-//
-//import android.arch.lifecycle.LiveData;
-//import android.arch.persistence.room.Dao;
-//import android.arch.persistence.room.Delete;
-//import android.arch.persistence.room.Insert;
-//import android.arch.persistence.room.Query;
-//import android.provider.BaseColumns;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.annotation.WorkerThread;
-//
-//import com.skepticalone.mecachecker.data.db.Contract;
-//import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
-//
-//import org.joda.time.DateTime;
-//import org.joda.time.LocalDate;
-//
-//import java.math.BigDecimal;
-//import java.util.List;
-//
-//@SuppressWarnings("NullableProblems")
-//@Dao
-//public interface CrossCoverDao extends PayableDaoContract<CrossCoverEntity> {
-//
-//    @Override
-//    @Insert
-//    long insertItemSync(@NonNull CrossCoverEntity crossCover);
-//
-//    @NonNull
-//    @Override
-//    @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-//    LiveData<List<CrossCoverEntity>> getItems();
-//
-//    @NonNull
-//    @Override
-//    @Query("SELECT * FROM " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    LiveData<CrossCoverEntity> getItem(long id);
-//
-//    @Nullable
-//    @Override
-//    @Query("SELECT * FROM " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    CrossCoverEntity getItemSync(long id);
-//
-//    @Override
-//    @Delete
-//    int deleteItemSync(@NonNull CrossCoverEntity crossCover);
-//
-//    @Override
-//    @Query("UPDATE " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " SET " +
-//            Contract.COLUMN_NAME_COMMENT +
-//            " = :comment WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    void setCommentSync(long id, @Nullable String comment);
-//
-//    @Override
-//    @Query("UPDATE " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " SET " +
-//            Contract.COLUMN_NAME_PAYMENT +
-//            " = :payment WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    void setPaymentSync(long id, @NonNull BigDecimal payment);
-//
-//    @Override
-//    @Query("UPDATE " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " SET " +
-//            Contract.COLUMN_NAME_CLAIMED +
-//            " = :claimed WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    void setClaimedSync(long id, @Nullable DateTime claimed);
-//
-//    @Override
-//    @Query("UPDATE " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " SET " +
-//            Contract.COLUMN_NAME_PAID +
-//            " = :paid WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    void setPaidSync(long id, @Nullable DateTime paid);
-//
-//    @Nullable
-//    @WorkerThread
-//    @Query("SELECT " + Contract.CrossCoverShifts.COLUMN_NAME_DATE + " FROM " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " ORDER BY " +
-//            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-//            " DESC LIMIT 1")
-//    LocalDate getLastCrossCoverDateSync();
-//
-//    @WorkerThread
-//    @Query("UPDATE " +
-//            Contract.CrossCoverShifts.TABLE_NAME +
-//            " SET " +
-//            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-//            " = :date WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    void setDateSync(long id, @NonNull LocalDate date);
-//
-//}
+package com.skepticalone.mecachecker.data.dao;
+
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.db.SupportSQLiteStatement;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Query;
+import android.database.Cursor;
+import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.skepticalone.mecachecker.data.db.AppDatabase;
+import com.skepticalone.mecachecker.data.db.Contract;
+import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
+import com.skepticalone.mecachecker.data.util.LocalDateConverter;
+
+import org.joda.time.LocalDate;
+
+import java.util.List;
+
+@Dao
+public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
+
+    @NonNull
+    private final PayableDaoHelper payableDaoHelper;
+
+    @NonNull
+    private static final String GET_LAST_SHIFT_DATE =
+            "SELECT " +
+            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
+            " FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " ORDER BY " +
+            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
+            " DESC LIMIT 1";
+
+    CrossCoverDao(@NonNull AppDatabase database) {
+        super(database);
+        payableDaoHelper = new PayableDaoHelper(this);
+    }
+
+    @NonNull
+    public final PayableDaoHelper getPayableDaoHelper() {
+        return payableDaoHelper;
+    }
+
+    public final void setDateSync(long id, @NonNull LocalDate date) {
+        SupportSQLiteStatement setDateStatement = getUpdateStatement(Contract.CrossCoverShifts.COLUMN_NAME_DATE);
+        setDateStatement.bindLong(1, LocalDateConverter.dateToMillis(date));
+        setDateStatement.bindLong(2, id);
+        updateInTransaction(setDateStatement);
+    }
+
+    @NonNull
+    @Override
+    final String getTableName() {
+        return Contract.CrossCoverShifts.TABLE_NAME;
+    }
+
+    synchronized public final long insertSync(int paymentInCents){
+        SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
+                Contract.CrossCoverShifts.TABLE_NAME +
+                " (" +
+                Contract.COLUMN_NAME_PAYMENT +
+                ", " +
+                Contract.CrossCoverShifts.COLUMN_NAME_DATE +
+                ") VALUES (?,?)");
+        insertStatement.bindLong(1, paymentInCents);
+        Cursor cursor = getDatabase().query(GET_LAST_SHIFT_DATE, null);
+        @Nullable final LocalDate lastDate = cursor.moveToFirst() ? LocalDateConverter.millisToDate(cursor.getLong(0)) : null;
+        cursor.close();
+        insertStatement.bindLong(2, LocalDateConverter.dateToMillis(CrossCoverEntity.getNewDate(lastDate)));
+        getDatabase().beginTransaction();
+        try {
+            long id = insertStatement.executeInsert();
+            getDatabase().setTransactionSuccessful();
+            return id;
+        } finally {
+            getDatabase().endTransaction();
+        }
+    }
+
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    public abstract LiveData<CrossCoverEntity> getItem(long id);
+
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract CrossCoverEntity getItemInternalSync(long id);
+
+    @Override
+    @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
+    public abstract LiveData<List<CrossCoverEntity>> getItems();
+
+}

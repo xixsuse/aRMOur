@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Payable;
-import com.skepticalone.mecachecker.data.viewModel.PayableItemViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
 
 import java.math.BigDecimal;
 
@@ -18,7 +18,7 @@ public abstract class PaymentDialogFragment<Entity extends Payable> extends Text
 
     @NonNull
     @Override
-    abstract PayableItemViewModelContract<Entity> getViewModel();
+    abstract PayableViewModelContract<Entity> getViewModel();
 
     @Nullable
     @Override

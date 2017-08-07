@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.viewModel.AdditionalShiftViewModel;
-import com.skepticalone.mecachecker.data.viewModel.PayableItemViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.PayableViewModelContract;
 
 public final class AdditionalShiftPaymentDialogFragment extends PaymentDialogFragment<AdditionalShiftEntity> {
 
@@ -17,7 +17,7 @@ public final class AdditionalShiftPaymentDialogFragment extends PaymentDialogFra
 
     @NonNull
     @Override
-    PayableItemViewModelContract<AdditionalShiftEntity> getViewModel() {
+    PayableViewModelContract<AdditionalShiftEntity> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
     }
 

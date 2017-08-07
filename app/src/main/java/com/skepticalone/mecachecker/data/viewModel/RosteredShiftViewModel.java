@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.RosteredShiftCustomDao;
+import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 import com.skepticalone.mecachecker.data.util.ShiftData;
@@ -24,7 +24,7 @@ import org.joda.time.LocalTime;
 
 import java.util.List;
 
-public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftItemViewModelContract<RosteredShiftEntity> {
+public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity> {
 
     @NonNull
     private final LiveData<List<RosteredShiftEntity>> items;
@@ -44,8 +44,8 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 
     @NonNull
     @Override
-    RosteredShiftCustomDao getDao() {
-        return AppDatabase.getInstance(getApplication()).rosteredShiftCustomDao();
+    RosteredShiftDao getDao() {
+        return AppDatabase.getInstance(getApplication()).rosteredShiftDao();
     }
 
     @NonNull

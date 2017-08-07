@@ -8,10 +8,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.mecachecker.data.dao.AdditionalShiftCustomDao;
-import com.skepticalone.mecachecker.data.dao.CrossCoverCustomDao;
-import com.skepticalone.mecachecker.data.dao.ExpenseCustomDao;
-import com.skepticalone.mecachecker.data.dao.RosteredShiftCustomDao;
+import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
+import com.skepticalone.mecachecker.data.dao.CrossCoverDao;
+import com.skepticalone.mecachecker.data.dao.ExpenseDao;
+import com.skepticalone.mecachecker.data.dao.RosteredShiftDao;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
@@ -41,12 +41,12 @@ public abstract class AppDatabase extends RoomDatabase {
         return DATABASE;
     }
 
-    public abstract RosteredShiftCustomDao rosteredShiftCustomDao();
+    public abstract RosteredShiftDao rosteredShiftDao();
 
-    public abstract AdditionalShiftCustomDao additionalShiftCustomDao();
+    public abstract AdditionalShiftDao additionalShiftDao();
 
-    public abstract CrossCoverCustomDao crossCoverCustomDao();
+    public abstract CrossCoverDao crossCoverDao();
 
-    public abstract ExpenseCustomDao expenseCustomDao();
+    public abstract ExpenseDao expenseDao();
 
 }

@@ -4,13 +4,13 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.ExpenseCustomDao;
+import com.skepticalone.mecachecker.data.dao.ExpenseDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 
 import java.math.BigDecimal;
 
-public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> implements PayableItemViewModelContract<ExpenseEntity>, SingleAddItemViewModelContract<ExpenseEntity> {
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> implements PayableViewModelContract<ExpenseEntity>, SingleAddItemViewModelContract<ExpenseEntity> {
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
@@ -22,8 +22,8 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> impleme
 
     @NonNull
     @Override
-    ExpenseCustomDao getDao() {
-        return AppDatabase.getInstance(getApplication()).expenseCustomDao();
+    ExpenseDao getDao() {
+        return AppDatabase.getInstance(getApplication()).expenseDao();
     }
 
     @Override

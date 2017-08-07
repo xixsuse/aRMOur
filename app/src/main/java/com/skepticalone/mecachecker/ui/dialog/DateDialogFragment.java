@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.DatePicker;
 
-import com.skepticalone.mecachecker.data.viewModel.DateItemViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 
 import org.joda.time.LocalDate;
 
@@ -17,7 +17,7 @@ abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> impleme
 
     @NonNull
     @Override
-    abstract DateItemViewModelContract<Entity> getViewModel();
+    abstract DateViewModelContract<Entity> getViewModel();
 
     @Override
     @NonNull

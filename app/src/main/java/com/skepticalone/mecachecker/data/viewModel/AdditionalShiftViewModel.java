@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.AdditionalShiftCustomDao;
+import com.skepticalone.mecachecker.data.dao.AdditionalShiftDao;
 import com.skepticalone.mecachecker.data.db.AppDatabase;
 import com.skepticalone.mecachecker.data.entity.AdditionalShiftEntity;
 import com.skepticalone.mecachecker.data.util.ShiftData;
@@ -21,7 +21,7 @@ import org.joda.time.LocalTime;
 import java.math.BigDecimal;
 
 
-public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity> implements ShiftItemViewModelContract<AdditionalShiftEntity>, PayableItemViewModelContract<AdditionalShiftEntity> {
+public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity> implements ShiftViewModelContract<AdditionalShiftEntity>, PayableViewModelContract<AdditionalShiftEntity> {
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
@@ -33,8 +33,8 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
 
     @NonNull
     @Override
-    AdditionalShiftCustomDao getDao() {
-        return AppDatabase.getInstance(getApplication()).additionalShiftCustomDao();
+    AdditionalShiftDao getDao() {
+        return AppDatabase.getInstance(getApplication()).additionalShiftDao();
     }
 
     private int getPaymentInCents(@NonNull ShiftUtil.ShiftType shiftType) {

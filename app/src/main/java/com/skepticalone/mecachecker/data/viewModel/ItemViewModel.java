@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.mecachecker.R;
-import com.skepticalone.mecachecker.data.dao.CustomDao;
+import com.skepticalone.mecachecker.data.dao.ItemDao;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
     }
 
     @NonNull
-    abstract CustomDao<Entity> getDao();
+    abstract ItemDao<Entity> getDao();
 
     @NonNull
     LiveData<Entity> fetchItem(long id) {

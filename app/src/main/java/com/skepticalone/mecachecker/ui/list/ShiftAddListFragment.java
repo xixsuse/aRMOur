@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ShiftItemViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ShiftViewModelContract;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
 abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<Entity> {
@@ -42,7 +42,7 @@ abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<En
 
     @NonNull
     @Override
-    protected abstract ShiftItemViewModelContract<Entity> getViewModel();
+    protected abstract ShiftViewModelContract<Entity> getViewModel();
 
 }
 

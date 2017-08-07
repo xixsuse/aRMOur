@@ -11,18 +11,14 @@ import java.math.BigDecimal;
 public final class PayableDaoHelper {
 
     @NonNull
-    private final CustomDao dao;
-    @NonNull
-    private final SupportSQLiteStatement setPaymentStatement, setClaimedStatement, setPaidStatement;
+    private final ItemDao dao;
 
-    PayableDaoHelper(@NonNull CustomDao dao) {
+    PayableDaoHelper(@NonNull ItemDao dao) {
         this.dao = dao;
-        setPaymentStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAYMENT);
-        setClaimedStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_CLAIMED);
-        setPaidStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAID);
     }
 
     public final void setPaymentSync(long id, @NonNull BigDecimal payment){
+        SupportSQLiteStatement setPaymentStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAYMENT);
         setPaymentStatement.bindLong(1, MoneyConverter.moneyToCents(payment));
         setPaymentStatement.bindLong(2, id);
         dao.updateInTransaction(setPaymentStatement);
@@ -36,10 +32,12 @@ public final class PayableDaoHelper {
     }
 
     public final void setClaimedSync(long id, boolean claimed) {
+        SupportSQLiteStatement setClaimedStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_CLAIMED);
         setClaimedOrPaidSync(id, claimed, setClaimedStatement);
     }
 
     public final void setPaidSync(long id, boolean paid) {
+        SupportSQLiteStatement setPaidStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAID);
         setClaimedOrPaidSync(id, paid, setPaidStatement);
     }
 

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
-import com.skepticalone.mecachecker.data.viewModel.DateItemViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.DateViewModelContract;
 
 import org.joda.time.LocalDate;
 
@@ -19,7 +19,7 @@ public final class CrossCoverDateDialogFragment extends DateDialogFragment<Cross
 
     @NonNull
     @Override
-    DateItemViewModelContract<CrossCoverEntity> getViewModel() {
+    DateViewModelContract<CrossCoverEntity> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
     }
 
