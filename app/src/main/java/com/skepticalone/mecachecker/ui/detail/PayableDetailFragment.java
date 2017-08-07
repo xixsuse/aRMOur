@@ -3,23 +3,32 @@ package com.skepticalone.mecachecker.ui.detail;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
-import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.PayableViewModelHelper;
+import com.skepticalone.mecachecker.data.model.Payable;
+import com.skepticalone.mecachecker.data.viewModel.PayableItemViewModelContract;
+import com.skepticalone.mecachecker.ui.dialog.PaymentDialogFragment;
 
-abstract class PayableDetailFragment<Entity extends Item> extends DetailFragment<Entity>
+abstract class PayableDetailFragment<Entity extends Payable> extends DetailFragment<Entity>
         implements PayableDetailAdapter.Callbacks {
 
     @Override
     public final void setClaimed(boolean claimed) {
-        getPayableViewModelHelper().setClaimed(getCurrentItem().getId(), claimed);
+        getViewModel().setClaimed(claimed);
     }
 
     @Override
     public final void setPaid(boolean paid) {
-        getPayableViewModelHelper().setPaid(getCurrentItem().getId(), paid);
+        getViewModel().setPaid(paid);
     }
 
     @NonNull
-    abstract PayableViewModelHelper getPayableViewModelHelper();
+    @Override
+    protected abstract PayableItemViewModelContract<Entity> getViewModel();
 
+    @NonNull
+    abstract PaymentDialogFragment<Entity> createPaymentDialogFragment();
+
+    @Override
+    public final void changePayment() {
+        showDialogFragment(createPaymentDialogFragment());
+    }
 }

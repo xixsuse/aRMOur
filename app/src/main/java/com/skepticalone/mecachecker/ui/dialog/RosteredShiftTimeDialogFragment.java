@@ -16,7 +16,7 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
     private static final String LOGGED = "LOGGED";
     private boolean logged;
 
-    private static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
+    public static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
         Bundle arguments = getArgs(start);
         arguments.putBoolean(LOGGED, logged);
         RosteredShiftTimeDialogFragment fragment = new RosteredShiftTimeDialogFragment();

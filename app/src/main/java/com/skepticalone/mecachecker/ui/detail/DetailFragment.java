@@ -12,6 +12,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.ui.common.BaseFragment;
+import com.skepticalone.mecachecker.ui.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.util.Snackbar;
 
 public abstract class DetailFragment<Entity extends Item> extends BaseFragment<Entity>
@@ -36,13 +37,13 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     }
 
     @Override
-    public final int getLayout() {
+    protected final int getLayout() {
         return R.layout.detail_recycler;
     }
 
     @NonNull
     @Override
-    public abstract ItemDetailAdapter<Entity> getAdapter();
+    protected abstract ItemDetailAdapter<Entity> getAdapter();
 
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -65,9 +66,10 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     }
 
     @NonNull
-    final Entity getCurrentItem() {
-        if (currentItem == null) throw new IllegalStateException();
-        return currentItem;
-    }
+    abstract CommentDialogFragment<Entity> createCommentDialogFragment();
 
+    @Override
+    public final void changeComment() {
+        showDialogFragment(createCommentDialogFragment());
+    }
 }

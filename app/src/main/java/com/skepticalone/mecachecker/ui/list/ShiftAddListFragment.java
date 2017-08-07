@@ -1,13 +1,14 @@
 package com.skepticalone.mecachecker.ui.list;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ShiftViewModelContract;
+import com.skepticalone.mecachecker.data.viewModel.ShiftItemViewModelContract;
 import com.skepticalone.mecachecker.util.ShiftUtil;
 
-abstract class ShiftAddListFragment<Entity extends Item, ViewModel extends ShiftViewModelContract<Entity>> extends ListFragment<Entity, ViewModel> {
+abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<Entity> {
 
     @Override
     final void setupFab(FabCallbacks callbacks) {
@@ -38,6 +39,10 @@ abstract class ShiftAddListFragment<Entity extends Item, ViewModel extends Shift
             }
         });
     }
+
+    @NonNull
+    @Override
+    protected abstract ShiftItemViewModelContract<Entity> getViewModel();
 
 }
 

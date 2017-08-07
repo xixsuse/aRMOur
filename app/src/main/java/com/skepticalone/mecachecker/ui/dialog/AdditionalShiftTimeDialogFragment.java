@@ -11,7 +11,7 @@ import org.joda.time.LocalTime;
 
 public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<AdditionalShiftEntity> {
 
-    static AdditionalShiftTimeDialogFragment newInstance(boolean start) {
+    public static AdditionalShiftTimeDialogFragment newInstance(boolean start) {
         AdditionalShiftTimeDialogFragment fragment = new AdditionalShiftTimeDialogFragment();
         fragment.setArguments(getArgs(start));
         return fragment;

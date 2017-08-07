@@ -1,32 +1,33 @@
 package com.skepticalone.mecachecker.ui.detail;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.content.Context;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.CrossCoverDetailAdapter;
-import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 import com.skepticalone.mecachecker.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.mecachecker.ui.dialog.CommentDialogFragment;
+import com.skepticalone.mecachecker.ui.dialog.CrossCoverCommentDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.CrossCoverDateDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.CrossCoverPaymentDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.PaymentDialogFragment;
 
 public final class CrossCoverDetailFragment
-        extends PayableDetailFragment<CrossCoverEntity, CrossCoverViewModel>
+        extends PayableDetailFragment<CrossCoverEntity>
         implements CrossCoverDetailAdapter.Callbacks {
+
+    private final CrossCoverDetailAdapter adapter = new CrossCoverDetailAdapter(this);
 
     @NonNull
     @Override
-    PayableDetailAdapter<CrossCoverEntity> createAdapter(Context context) {
-        return new CrossCoverDetailAdapter(this);
+    protected CrossCoverDetailAdapter getAdapter() {
+        return adapter;
     }
 
     @NonNull
     @Override
-    CrossCoverViewModel createViewModel(@NonNull ViewModelProvider provider) {
-        return provider.get(CrossCoverViewModel.class);
+    protected CrossCoverViewModel getViewModel() {
+        return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
     }
 
     @Override
@@ -36,14 +37,14 @@ public final class CrossCoverDetailFragment
 
     @NonNull
     @Override
-    CommentDialogFragment getNewCommentDialogFragment() {
-        return new CrossCoverCommentDialogFragment();
+    PaymentDialogFragment<CrossCoverEntity> createPaymentDialogFragment() {
+        return new CrossCoverPaymentDialogFragment();
     }
 
     @NonNull
     @Override
-    PaymentDialogFragment getNewPaymentDialogFragment() {
-        return new CrossCoverPaymentDialogFragment();
+    CommentDialogFragment<CrossCoverEntity> createCommentDialogFragment() {
+        return new CrossCoverCommentDialogFragment();
     }
 
 }

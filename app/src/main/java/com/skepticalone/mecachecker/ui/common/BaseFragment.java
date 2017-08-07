@@ -18,13 +18,13 @@ public abstract class BaseFragment<Entity> extends LifecycleFragment {
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
 
     @LayoutRes
-    public abstract int getLayout();
+    protected abstract int getLayout();
 
     @NonNull
-    public abstract RecyclerView.Adapter getAdapter();
+    protected abstract RecyclerView.Adapter getAdapter();
 
     @NonNull
-    public abstract ItemViewModelContract<Entity> getViewModel();
+    protected abstract ItemViewModelContract<Entity> getViewModel();
 
     @NonNull
     @Override
@@ -35,7 +35,7 @@ public abstract class BaseFragment<Entity> extends LifecycleFragment {
         return recyclerView;
     }
 
-    public final void showDialogFragment(AppCompatDialogFragment dialogFragment) {
+    protected final void showDialogFragment(AppCompatDialogFragment dialogFragment) {
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
 }

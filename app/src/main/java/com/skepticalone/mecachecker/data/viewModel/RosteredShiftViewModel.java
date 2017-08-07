@@ -87,21 +87,21 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 //    }
 //
 //    @MainThread
-//    public void setLogged(final long id, final boolean logged) {
-//        runAsync(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (logged) {
-//                    try {
-//                        getDao().switchOnLogSync(id);
-//                    } catch (SQLiteConstraintException e) {
-//                        postOverlappingShifts();
-//                    }
-//                }
-//                else getDao().switchOffLogSync(id);
-//            }
-//        });
-//    }
+    public void setLogged(final boolean logged) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                if (logged) {
+                    try {
+                        getDao().switchOnLogSync(id);
+                    } catch (SQLiteConstraintException e) {
+                        postOverlappingShifts();
+                    }
+                }
+                else getDao().switchOffLogSync(id);
+            }
+        });
+    }
 //
 //    @MainThread
 //    private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData, @Nullable final ShiftData loggedShiftData) {

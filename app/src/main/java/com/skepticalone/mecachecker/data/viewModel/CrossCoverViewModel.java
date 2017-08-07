@@ -2,7 +2,7 @@ package com.skepticalone.mecachecker.data.viewModel;
 
 import com.skepticalone.mecachecker.data.entity.CrossCoverEntity;
 
-public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> implements DateItemViewModelContract<CrossCoverEntity>, PayableItemViewModelContract<CrossCoverEntity> {
+public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> implements DateItemViewModelContract<CrossCoverEntity>, PayableItemViewModelContract<CrossCoverEntity>, SingleAddItemViewModelContract<CrossCoverEntity> {
 //
 //    @NonNull
 //    private final PayableViewModelHelper payableViewModelHelper;

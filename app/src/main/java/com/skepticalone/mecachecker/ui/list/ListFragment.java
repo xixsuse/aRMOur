@@ -20,8 +20,9 @@ import android.view.ViewGroup;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemListAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModelContract;
 import com.skepticalone.mecachecker.ui.common.BaseFragment;
+import com.skepticalone.mecachecker.ui.totals.TotalsDialogFragment;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     }
 
     @Override
-    final int getLayout() {
+    protected final int getLayout() {
         return R.layout.list_recycler;
     }
 
@@ -88,7 +89,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ItemViewModel<Entity> viewModel = getViewModel();
+        ItemViewModelContract<Entity> viewModel = getViewModel();
         viewModel.getItems().observe(this, this);
         viewModel.getDeletedItemRestorer().observe(this, new Observer<View.OnClickListener>() {
             @Override
@@ -103,7 +104,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
 
     @NonNull
     @Override
-    abstract ItemListAdapter<Entity> getAdapter();
+    protected abstract ItemListAdapter<Entity> getAdapter();
 
     @Override
     @CallSuper

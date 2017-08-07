@@ -1,17 +1,13 @@
 package com.skepticalone.mecachecker.ui.detail;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.content.Context;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.adapter.ExpenseDetailAdapter;
-import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
-import com.skepticalone.mecachecker.adapter.PayableDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.ExpenseEntity;
 import com.skepticalone.mecachecker.data.viewModel.ExpenseViewModel;
-import com.skepticalone.mecachecker.data.viewModel.ItemViewModel;
-import com.skepticalone.mecachecker.data.viewModel.PayableViewModelHelper;
 import com.skepticalone.mecachecker.ui.dialog.CommentDialogFragment;
+import com.skepticalone.mecachecker.ui.dialog.ExpenseCommentDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.ExpensePaymentDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.ExpenseTitleDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.PaymentDialogFragment;
@@ -22,39 +18,16 @@ public final class ExpenseDetailFragment
 
     private final ExpenseDetailAdapter adapter = new ExpenseDetailAdapter(this);
 
+    @NonNull
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    protected ExpenseDetailAdapter getAdapter() {
+        return adapter;
     }
 
     @NonNull
     @Override
-    PayableViewModelHelper getPayableViewModelHelper() {
-        return null;
-    }
-
-    @NonNull
-    @Override
-    ItemViewModel<ExpenseEntity> getViewModel() {
-        return null;
-    }
-
-    @NonNull
-    @Override
-    ItemDetailAdapter<ExpenseEntity> getAdapter() {
-        return null;
-    }
-
-    @NonNull
-    @Override
-    PayableDetailAdapter<ExpenseEntity> createAdapter(Context context) {
-        return new ExpenseDetailAdapter(this);
-    }
-
-    @NonNull
-    @Override
-    ExpenseViewModel createViewModel(@NonNull ViewModelProvider provider) {
-        return provider.get(ExpenseViewModel.class);
+    protected ExpenseViewModel getViewModel() {
+        return ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
     }
 
     @Override
@@ -64,13 +37,13 @@ public final class ExpenseDetailFragment
 
     @NonNull
     @Override
-    PaymentDialogFragment getNewPaymentDialogFragment() {
+    PaymentDialogFragment<ExpenseEntity> createPaymentDialogFragment() {
         return new ExpensePaymentDialogFragment();
     }
 
     @NonNull
     @Override
-    CommentDialogFragment getNewCommentDialogFragment() {
+    CommentDialogFragment<ExpenseEntity> createCommentDialogFragment() {
         return new ExpenseCommentDialogFragment();
     }
 
