@@ -1,10 +1,8 @@
 package com.skepticalone.mecachecker.ui.list;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
+import android.support.design.widget.FloatingActionButton;
 
 interface FabCallbacks {
-    FloatingActionMenu getFloatingActionMenu();
 
     FloatingActionButton getFabNormalDay();
 

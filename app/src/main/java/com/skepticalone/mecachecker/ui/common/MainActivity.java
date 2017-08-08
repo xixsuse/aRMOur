@@ -8,14 +8,13 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.settings.SettingsActivity;
 import com.skepticalone.mecachecker.ui.detail.DetailActivity;
@@ -26,7 +25,6 @@ public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, ListFragment.Callbacks {
     private static final String ITEM_TYPE = "ITEM_TYPE";
     private BottomNavigationView navigation;
-    private FloatingActionMenu mFabMenu;
     private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
     @Nullable
@@ -52,11 +50,9 @@ public final class MainActivity extends CoordinatorActivity
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
-        mFabMenu = findViewById(R.id.fab_menu);
-        mFabNormalDay = mFabMenu.findViewById(R.id.fab_normal_day);
-        mFabLongDay = mFabMenu.findViewById(R.id.fab_long_day);
-        mFabNightShift = mFabMenu.findViewById(R.id.fab_night_shift);
-        mFabMenu.close(false);
+        mFabNormalDay = findViewById(R.id.fab_normal_day);
+        mFabLongDay = findViewById(R.id.fab_long_day);
+        mFabNightShift = findViewById(R.id.fab_night_shift);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         int itemType = savedInstanceState == null ? navigation.getSelectedItemId() : savedInstanceState.getInt(ITEM_TYPE);
@@ -113,11 +109,6 @@ public final class MainActivity extends CoordinatorActivity
     @Override
     public final void onItemRemoved(@IdRes int itemType, @NonNull View.OnClickListener listener) {
         Snackbar.make(mCoordinatorLayout, getString(R.string.item_removed, getString(getName(itemType))), Snackbar.LENGTH_LONG).setAction(R.string.undo, listener).show();
-    }
-
-    @Override
-    public FloatingActionMenu getFloatingActionMenu() {
-        return mFabMenu;
     }
 
     @Override

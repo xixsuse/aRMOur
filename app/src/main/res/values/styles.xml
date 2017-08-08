@@ -10,9 +10,10 @@
     <style name="fab">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="fab_colorNormal">@color/fabColorNormal</item>
-        <item name="fab_colorPressed">@color/fabColorPressed</item>
-        <item name="fab_colorRipple">@color/fabColorRipple</item>
+        <item name="android:layout_margin">16dp</item>
+        <!--<item name="fab_colorNormal">@color/fabColorNormal</item>-->
+        <!--<item name="fab_colorPressed">@color/fabColorPressed</item>-->
+        <!--<item name="fab_colorRipple">@color/fabColorRipple</item>-->
     </style>
 
 </resources>
