@@ -10,6 +10,8 @@ abstract class SingleAddListFragment<Entity extends Item> extends ListFragment<E
 
     @Override
     final void setupFab(FabCallbacks callbacks) {
+        callbacks.getFabLongDay().hide();
+        callbacks.getFabNightShift().hide();
         callbacks.getFabNormalDay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -17,8 +19,16 @@ abstract class SingleAddListFragment<Entity extends Item> extends ListFragment<E
             }
         });
         callbacks.getFabNormalDay().show();
-        callbacks.getFabLongDay().hide();
-        callbacks.getFabNightShift().hide();
+    }
+
+    @Override
+    final void hideFab(FabCallbacks callbacks) {
+        callbacks.getFabNormalDay().hide();
+    }
+
+    @Override
+    final void showFab(FabCallbacks callbacks) {
+        callbacks.getFabNormalDay().show();
     }
 
     @NonNull

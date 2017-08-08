@@ -39,6 +39,10 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
 
     abstract void setupFab(FabCallbacks callbacks);
 
+    abstract void hideFab(FabCallbacks callbacks);
+
+    abstract void showFab(FabCallbacks callbacks);
+
     @Override
     @CallSuper
     public void onAttach(Context context) {
@@ -74,6 +78,22 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
         RecyclerView recyclerView = super.onCreateView(inflater, container, savedInstanceState);
         mLayoutManager = recyclerView.getLayoutManager();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hideFab(callbacks);
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    showFab(callbacks);
+                }
+            }
+
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if (dy > 0) {
+//                }
+//            }
+        });
         return recyclerView;
     }
 

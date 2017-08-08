@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="fabColorNormal">#43A047</color>
-    <color name="fabColorPressed">#2E7D32</color>
-    <color name="fabColorRipple">#1B5E20</color>
+    <!--<color name="colorPrimary">#f44336</color>-->
+    <!--<color name="colorPrimaryDark">#ba000d</color>-->
+    <color name="colorAccent">#ff5722</color>
+    <!--<color name="fabColorNormal">#43A047</color>-->
+    <!--<color name="fabColorPressed">#2E7D32</color>-->
+    <!--<color name="fabColorRipple">#1B5E20</color>-->
 </resources>

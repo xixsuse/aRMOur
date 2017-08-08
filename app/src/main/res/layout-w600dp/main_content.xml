@@ -1,50 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:divider="?android:attr/listDivider"
-        android:orientation="horizontal"
-        android:showDividers="middle">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/list_fragment_container"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/detail_fragment_container"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/detail_fragment_container"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            tools:ignore="InconsistentLayout" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toEndOf="@id/list_fragment_container"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_normal_day"
+            style="@style/fab"
+            app:layout_constraintBottom_toBottomOf="@id/list_fragment_container"
+            app:layout_constraintStart_toStartOf="@id/list_fragment_container"
+            app:srcCompat="@drawable/ic_normal_day_white_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_normal_day"
-        style="@style/fab"
-        android:layout_gravity="bottom|start"
-        app:srcCompat="@drawable/ic_normal_day_white_24dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_long_day"
+            style="@style/fab"
+            app:layout_constraintBottom_toBottomOf="@id/list_fragment_container"
+            app:layout_constraintEnd_toEndOf="@id/list_fragment_container"
+            app:layout_constraintStart_toStartOf="@id/list_fragment_container"
+            app:srcCompat="@drawable/ic_long_day_white_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_long_day"
-        style="@style/fab"
-        android:layout_gravity="bottom|center_horizontal"
-        app:srcCompat="@drawable/ic_long_day_white_24dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_night_shift"
+            style="@style/fab"
+            app:layout_constraintBottom_toBottomOf="@id/list_fragment_container"
+            app:layout_constraintEnd_toEndOf="@id/list_fragment_container"
+            app:srcCompat="@drawable/ic_night_shift_white_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_night_shift"
-        style="@style/fab"
-        android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/ic_night_shift_white_24dp" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>

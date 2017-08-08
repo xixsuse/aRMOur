@@ -17,23 +17,36 @@ abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<En
                 getViewModel().addNewShift(ShiftUtil.ShiftType.NORMAL_DAY);
             }
         });
-        callbacks.getFabNormalDay().show();
         callbacks.getFabLongDay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getViewModel().addNewShift(ShiftUtil.ShiftType.LONG_DAY);
             }
         });
-        callbacks.getFabLongDay().show();
         callbacks.getFabNightShift().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getViewModel().addNewShift(ShiftUtil.ShiftType.NIGHT_SHIFT);
             }
         });
+        callbacks.getFabNormalDay().show();
+        callbacks.getFabLongDay().show();
         callbacks.getFabNightShift().show();
     }
 
+    @Override
+    final void hideFab(FabCallbacks callbacks) {
+        callbacks.getFabNormalDay().hide();
+        callbacks.getFabLongDay().hide();
+        callbacks.getFabNightShift().hide();
+    }
+
+    @Override
+    final void showFab(FabCallbacks callbacks) {
+        callbacks.getFabNormalDay().show();
+        callbacks.getFabLongDay().show();
+        callbacks.getFabNightShift().show();
+    }
 
     @NonNull
     @Override
