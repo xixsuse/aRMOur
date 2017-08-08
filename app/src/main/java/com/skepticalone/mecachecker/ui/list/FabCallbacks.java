@@ -4,7 +4,7 @@ import android.support.design.widget.FloatingActionButton;
 
 interface FabCallbacks {
 
-    FloatingActionButton getFabNormalDay();
+    FloatingActionButton getFabPrimary();
 
     FloatingActionButton getFabLongDay();
 

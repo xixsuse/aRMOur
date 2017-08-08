@@ -3,6 +3,7 @@ package com.skepticalone.mecachecker.ui.list;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.data.viewModel.SingleAddItemViewModelContract;
 
@@ -12,23 +13,24 @@ abstract class SingleAddListFragment<Entity extends Item> extends ListFragment<E
     final void setupFab(FabCallbacks callbacks) {
         callbacks.getFabLongDay().hide();
         callbacks.getFabNightShift().hide();
-        callbacks.getFabNormalDay().setOnClickListener(new View.OnClickListener() {
+        callbacks.getFabPrimary().setImageResource(R.drawable.ic_add_white_24dp);
+        callbacks.getFabPrimary().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getViewModel().addNewItem();
             }
         });
-        callbacks.getFabNormalDay().show();
+        callbacks.getFabPrimary().show();
     }
 
     @Override
     final void hideFab(FabCallbacks callbacks) {
-        callbacks.getFabNormalDay().hide();
+        callbacks.getFabPrimary().hide();
     }
 
     @Override
     final void showFab(FabCallbacks callbacks) {
-        callbacks.getFabNormalDay().show();
+        callbacks.getFabPrimary().show();
     }
 
     @NonNull

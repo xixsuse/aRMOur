@@ -25,7 +25,7 @@ public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, ListFragment.Callbacks {
     private static final String ITEM_TYPE = "ITEM_TYPE";
     private BottomNavigationView navigation;
-    private FloatingActionButton mFabNormalDay, mFabLongDay, mFabNightShift;
+    private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
     @Nullable
     private LiveData<Long> selectedId;
@@ -50,7 +50,7 @@ public final class MainActivity extends CoordinatorActivity
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
-        mFabNormalDay = findViewById(R.id.fab_normal_day);
+        mFabPrimary = findViewById(R.id.fab_primary);
         mFabLongDay = findViewById(R.id.fab_long_day);
         mFabNightShift = findViewById(R.id.fab_night_shift);
         navigation = findViewById(R.id.navigation);
@@ -112,8 +112,8 @@ public final class MainActivity extends CoordinatorActivity
     }
 
     @Override
-    public FloatingActionButton getFabNormalDay() {
-        return mFabNormalDay;
+    public FloatingActionButton getFabPrimary() {
+        return mFabPrimary;
     }
 
     @Override

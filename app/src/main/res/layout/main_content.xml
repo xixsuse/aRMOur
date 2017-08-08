@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,21 +10,20 @@
         android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_normal_day"
+        android:id="@+id/fab_primary"
         style="@style/fab"
-        android:layout_gravity="bottom|start"
-        app:srcCompat="@drawable/ic_normal_day_white_24dp" />
+        android:layout_gravity="bottom|start" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_long_day"
         style="@style/fab"
         android:layout_gravity="bottom|center_horizontal"
-        app:srcCompat="@drawable/ic_long_day_white_24dp" />
+        android:src="@drawable/ic_long_day_white_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_night_shift"
         style="@style/fab"
         android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/ic_night_shift_white_24dp" />
+        android:src="@drawable/ic_night_shift_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>
