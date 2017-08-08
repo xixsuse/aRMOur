@@ -48,7 +48,7 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             " = :loggedEnd WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract void setShiftTimesSync(long id, @NonNull DateTime start, @NonNull DateTime end, @Nullable DateTime loggedStart, @Nullable DateTime loggedEnd);
+    public abstract void setShiftTimesSync(long id, DateTime start, DateTime end, @Nullable DateTime loggedStart, @Nullable DateTime loggedEnd);
 
     synchronized public final long insertSync(@NonNull LocalTime startTime, @NonNull LocalTime endTime, boolean skipWeekends){
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
