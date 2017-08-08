@@ -11,16 +11,14 @@ import android.support.annotation.Nullable;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.adapter.ItemDetailAdapter;
 import com.skepticalone.mecachecker.data.model.Item;
+import com.skepticalone.mecachecker.data.viewModel.ItemViewModelContract;
 import com.skepticalone.mecachecker.ui.common.BaseFragment;
 import com.skepticalone.mecachecker.ui.dialog.CommentDialogFragment;
 import com.skepticalone.mecachecker.util.Snackbar;
 
-public abstract class DetailFragment<Entity extends Item> extends BaseFragment<Entity>
-        implements ItemDetailAdapter.Callbacks {
+public abstract class DetailFragment<Entity extends Item> extends BaseFragment<Entity> implements ItemDetailAdapter.Callbacks {
 
     private Snackbar snackbar;
-    @Nullable
-    private Entity currentItem;
 
     public static DetailFragment getNewDetailFragment(@IdRes int itemType) {
         if (itemType == R.id.rostered) return new RosteredShiftDetailFragment();
@@ -48,14 +46,9 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getCurrentItem().observe(this, new Observer<Entity>() {
-            @Override
-            public void onChanged(@Nullable Entity entity) {
-                currentItem = entity;
-                getAdapter().setItem(entity);
-            }
-        });
-        getViewModel().getErrorMessage().observe(this, new Observer<Integer>() {
+        ItemViewModelContract<Entity> viewModel = getViewModel();
+        viewModel.getCurrentItem().observe(this, getAdapter());
+        viewModel.getErrorMessage().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer text) {
                 if (text != null && getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {

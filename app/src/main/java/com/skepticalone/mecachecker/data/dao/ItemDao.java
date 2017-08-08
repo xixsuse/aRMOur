@@ -47,13 +47,16 @@ public abstract class ItemDao<Entity> {
         return database;
     }
 
+    @SuppressWarnings("EmptyMethod")
     public abstract LiveData<Entity> getItem(long id);
 
     @Insert
     public abstract long restoreItemSync(Entity item);
 
+    @SuppressWarnings("EmptyMethod")
     abstract Entity getItemInternalSync(long id);
 
+    @SuppressWarnings("EmptyMethod")
     public abstract LiveData<List<Entity>> getItems();
 
     @Nullable

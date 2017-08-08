@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +15,7 @@ import com.skepticalone.mecachecker.util.Comparators;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback {
+public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback, Observer<List<Entity>> {
 
     @NonNull
     private final Callbacks mCallbacks;
@@ -58,9 +59,14 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         return mItems.get(position).getId();
     }
 
-    public final void setItems(final List<Entity> items) {
-        if (mItems == null) {
+    @Override
+    public final void onChanged(@Nullable final List<Entity> items) {
+        if (mItems == null && items == null) {
+            return;
+        } else if (mItems == null) {
             notifyItemRangeInserted(0, items.size());
+        } else if (items == null) {
+            notifyItemRangeRemoved(0, mItems.size());
         } else {
             DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
@@ -130,23 +136,23 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     }
 
     @Override
-    public void onInserted(int position, int count) {
+    public final void onInserted(int position, int count) {
         notifyItemRangeInserted(position, count);
         mCallbacks.scrollToPosition(position + count - 1);
     }
 
     @Override
-    public void onRemoved(int position, int count) {
+    public final void onRemoved(int position, int count) {
         notifyItemRangeRemoved(position, count);
     }
 
     @Override
-    public void onMoved(int fromPosition, int toPosition) {
+    public final void onMoved(int fromPosition, int toPosition) {
         notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
-    public void onChanged(int position, int count, Object payload) {
+    public final void onChanged(int position, int count, Object payload) {
         notifyItemRangeChanged(position, count, payload);
     }
 

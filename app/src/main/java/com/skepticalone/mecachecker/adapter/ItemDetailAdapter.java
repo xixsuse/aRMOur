@@ -1,5 +1,6 @@
 package com.skepticalone.mecachecker.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +12,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.data.model.Item;
 import com.skepticalone.mecachecker.util.Comparators;
 
-public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> {
+public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements Observer<Entity> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -56,7 +57,8 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
         } else return false;
     }
 
-    public final void setItem(@Nullable Entity item) {
+    @Override
+    public final void onChanged(@Nullable Entity item) {
         if (mItem == null && item == null) {
             return;
         } else if (mItem == null) {

@@ -19,17 +19,18 @@ import java.util.List;
 
 abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemViewModelContract<Entity> {
 
-    private final LiveData<Entity> currentItem;
-    @NonNull
-    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
-    private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
-    private final MutableLiveData<View.OnClickListener> deletedItemRestorer = new MutableLiveData<>();
 
     static {
         //noinspection unchecked
         NO_DATA.setValue(null);
     }
+
+    private final LiveData<Entity> currentItem;
+    @NonNull
+    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<View.OnClickListener> deletedItemRestorer = new MutableLiveData<>();
     ItemViewModel(@NonNull Application application) {
         super(application);
         currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
@@ -45,20 +46,6 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
         });
     }
 
-    @NonNull
-    abstract ItemDao<Entity> getDao();
-
-    @NonNull
-    LiveData<Entity> fetchItem(long id) {
-        return getDao().getItem(id);
-    }
-
-    final long getCurrentItemId(){
-        Long id = selectedId.getValue();
-        if (id == null) throw new IllegalStateException();
-        return id;
-    }
-
     static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
 //        new Thread(new Runnable() {
@@ -72,6 +59,20 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
 //                }
 //            }
 //        }).start();
+    }
+
+    @NonNull
+    abstract ItemDao<Entity> getDao();
+
+    @NonNull
+    LiveData<Entity> fetchItem(long id) {
+        return getDao().getItem(id);
+    }
+
+    final long getCurrentItemId() {
+        Long id = selectedId.getValue();
+        if (id == null) throw new IllegalStateException();
+        return id;
     }
 
     @Override
@@ -122,7 +123,7 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
                                         long id = getDao().restoreItemSync(item);
                                         postSelectedId(id);
                                     } catch (SQLiteConstraintException e) {
-                                        postOverlappingShifts();
+//                                        postOverlappingShifts();
                                     }
                                 }
                             });

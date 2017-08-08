@@ -24,12 +24,10 @@ import com.skepticalone.mecachecker.data.viewModel.ItemViewModelContract;
 import com.skepticalone.mecachecker.ui.common.BaseFragment;
 import com.skepticalone.mecachecker.ui.totals.TotalsDialogFragment;
 
-import java.util.List;
-
-public abstract class ListFragment<Entity extends Item> extends BaseFragment<Entity>
-        implements ItemListAdapter.Callbacks, Observer<List<Entity>> {
+public abstract class ListFragment<Entity extends Item> extends BaseFragment<Entity> implements ItemListAdapter.Callbacks {
 
     private Callbacks callbacks;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public static ListFragment getNewListFragment(@IdRes int itemType) {
         if (itemType == R.id.rostered) return new RosteredShiftListFragment();
@@ -38,8 +36,6 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
         if (itemType == R.id.expenses) return new ExpenseListFragment();
         throw new IllegalStateException();
     }
-
-    private RecyclerView.LayoutManager mLayoutManager;
 
     abstract void setupFab(FabCallbacks callbacks);
 
@@ -90,7 +86,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ItemViewModelContract<Entity> viewModel = getViewModel();
-        viewModel.getItems().observe(this, this);
+        viewModel.getItems().observe(this, getAdapter());
         viewModel.getDeletedItemRestorer().observe(this, new Observer<View.OnClickListener>() {
             @Override
             public void onChanged(@Nullable View.OnClickListener deletedItemRestorer) {
@@ -106,19 +102,13 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     @Override
     protected abstract ItemListAdapter<Entity> getAdapter();
 
-    @Override
-    @CallSuper
-    public void onChanged(@Nullable List<Entity> entities) {
-        getAdapter().setItems(entities);
-    }
-
     @IdRes
     abstract int getItemType();
 
     @Override
     public final void onClick(long itemId) {
         getViewModel().selectItem(itemId);
-        callbacks.showDetail(getItemType(), itemId);
+        callbacks.onClick(getItemType(), itemId);
     }
 
     @Override
@@ -127,7 +117,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     }
 
     public interface Callbacks extends FabCallbacks {
-        void showDetail(int itemType, long itemId);
+        void onClick(@IdRes int itemType, long itemId);
         void onItemRemoved(@IdRes int itemType, @NonNull View.OnClickListener listener);
     }
 

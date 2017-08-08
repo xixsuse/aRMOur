@@ -38,7 +38,7 @@ public final class MainActivity extends CoordinatorActivity
     }
 
     @Override
-    public void showDetail(int itemType, long itemId) {
+    public void onClick(@IdRes int itemType, long itemId) {
         if (!mTwoPane) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(DetailActivity.ITEM_TYPE, itemType);

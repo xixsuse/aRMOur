@@ -8,6 +8,7 @@ import com.skepticalone.mecachecker.adapter.RosteredShiftDetailAdapter;
 import com.skepticalone.mecachecker.data.entity.RosteredShiftEntity;
 import com.skepticalone.mecachecker.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.mecachecker.ui.dialog.CommentDialogFragment;
+import com.skepticalone.mecachecker.ui.dialog.MessageDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.RosteredShiftCommentDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.RosteredShiftDateDialogFragment;
 import com.skepticalone.mecachecker.ui.dialog.RosteredShiftTimeDialogFragment;
@@ -60,6 +61,6 @@ public final class RosteredShiftDetailFragment
 
     @Override
     public void showMessage(@NonNull String message) {
-
+        showDialogFragment(MessageDialogFragment.newInstance(message));
     }
 }

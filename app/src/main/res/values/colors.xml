@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="one">#d07f00</color>
-    <color name="two">#07198f</color>
-    <color name="three">#82c200</color>
     <color name="fabColorNormal">#43A047</color>
     <color name="fabColorPressed">#2E7D32</color>
     <color name="fabColorRipple">#1B5E20</color>
