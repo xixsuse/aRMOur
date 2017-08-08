@@ -1,19 +1,18 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="colorButtonNormal"></item>-->
     </style>
 
     <style name="fab">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_margin">16dp</item>
-        <!--<item name="fab_colorNormal">@color/fabColorNormal</item>-->
-        <!--<item name="fab_colorPressed">@color/fabColorPressed</item>-->
-        <!--<item name="fab_colorRipple">@color/fabColorRipple</item>-->
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>

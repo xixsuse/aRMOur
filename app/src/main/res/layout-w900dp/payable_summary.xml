@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,22 +13,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textOn="@string/unclaimed"
-            android:textOff="@string/unclaimed"
+            android:checked="true"
             android:drawableLeft="@drawable/unclaimed_black_24dp"
             android:drawableStart="@drawable/unclaimed_black_24dp"
-            android:checked="true"
+            android:textOff="@string/unclaimed"
+            android:textOn="@string/unclaimed"
             />
         <ToggleButton
             android:id="@+id/claimed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textOn="@string/claimed"
-            android:textOff="@string/claimed"
-            android:drawableRight="@drawable/claimed_black_24dp"
-            android:drawableEnd="@drawable/claimed_black_24dp"
             android:checked="true"
+            android:drawableEnd="@drawable/claimed_black_24dp"
+            android:drawableRight="@drawable/claimed_black_24dp"
+            android:textOff="@string/claimed"
+            android:textOn="@string/claimed"
             />
 
         <ToggleButton
@@ -36,11 +36,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textOn="@string/paid"
-            android:textOff="@string/paid"
-            android:drawableRight="@drawable/paid_black_24dp"
-            android:drawableEnd="@drawable/paid_black_24dp"
             android:checked="true"
+            android:drawableEnd="@drawable/paid_black_24dp"
+            android:drawableRight="@drawable/paid_black_24dp"
+            android:textOff="@string/paid"
+            android:textOn="@string/paid"
             />
 
     </LinearLayout>
