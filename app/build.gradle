@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.0'
     defaultConfig {
-        applicationId "com.skepticalone.mecachecker"
+        applicationId 'com.skepticalone.armour'
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
