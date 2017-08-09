@@ -23,6 +23,7 @@ import com.skepticalone.mecachecker.util.DateTimeUtils;
 import org.joda.time.Duration;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -40,6 +41,11 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         firstLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Subhead);
         secondLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Body1);
         thirdLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Small);
+    }
+
+    @NonNull
+    private static String getPercentage(@NonNull String value, int percentage) {
+        return String.format(Locale.US, "%s (%d%%)", value, percentage);
     }
 
     private void setup(
@@ -97,12 +103,12 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     String getCountString(int count) {
-        return text.getContext().getString(R.string.count_format, count);
+        return Integer.toString(count);
     }
 
     @NonNull
     String getCountPercentage(int count, int totalCount) {
-        return text.getContext().getString(R.string.count_percentage_format, count, count * 100f / totalCount);
+        return getPercentage(getCountString(count), Math.round(count * 100f / totalCount));
     }
 
     @NonNull
@@ -112,7 +118,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
-        return text.getContext().getString(R.string.payment_percentage_format, payment, payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP));
+        return getPercentage(getPaymentString(payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
     }
 
     @NonNull
@@ -122,7 +128,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
-        return text.getContext().getString(R.string.duration_percentage_format, DateTimeUtils.getDurationString(duration), duration.getMillis() * 100f / totalDuration.getMillis());
+        return getPercentage(DateTimeUtils.getDurationString(duration), Math.round(duration.getMillis() * 100f / totalDuration.getMillis()));
     }
 
     void setText(@NonNull String firstLine) {
