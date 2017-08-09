@@ -13,8 +13,7 @@ import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.AppConstants;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
-@SuppressWarnings("WeakerAccess")
-public class TimePreference extends DialogPreference {
+public final class TimePreference extends DialogPreference {
 
     private int mTotalMinutes;
     private TimePicker mTimePicker;
@@ -25,7 +24,6 @@ public class TimePreference extends DialogPreference {
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
     }
-
 
     @Override
     protected void onBindDialogView(View view) {

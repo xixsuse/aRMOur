@@ -13,8 +13,7 @@ import com.skepticalone.mecachecker.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@SuppressWarnings("WeakerAccess")
-public class CurrencyPreference extends DialogPreference {
+public final class CurrencyPreference extends DialogPreference {
 
     private static final int DEFAULT_VALUE = 0;
     private EditText mEditText;

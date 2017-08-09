@@ -42,12 +42,10 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @Override
-    public final void onChanged(@Nullable Entity item) {
-        if (item != null) {
-            String textForDisplay = getTextForDisplay(item);
-            if (textForDisplay != null) {
-                editText.setText(textForDisplay);
-            }
+    final void onUpdateView(@NonNull Entity item) {
+        String textForDisplay = getTextForDisplay(item);
+        if (textForDisplay != null) {
+            editText.setText(textForDisplay);
         }
     }
 

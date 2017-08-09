@@ -1,13 +1,12 @@
 package com.skepticalone.mecachecker.ui.dialog;
 
-import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.mecachecker.data.viewModel.ItemViewModelContract;
 import com.skepticalone.mecachecker.ui.common.LifecycleDialogFragment;
 
-abstract class DialogFragment<Entity> extends LifecycleDialogFragment implements Observer<Entity> {
+abstract class DialogFragment<Entity> extends LifecycleDialogFragment {
 
 //    private Callbacks<Entity> callbacks;
 //
@@ -22,6 +21,8 @@ abstract class DialogFragment<Entity> extends LifecycleDialogFragment implements
     @NonNull
     abstract ItemViewModelContract<Entity> getViewModel();
 
+    abstract void onUpdateView(@NonNull Entity item);
+
 //    @NonNull
 //    Entity getCurrentItem() {
 //        Entity currentItem = getViewModel().getCurrentItem().getValue();
@@ -32,7 +33,12 @@ abstract class DialogFragment<Entity> extends LifecycleDialogFragment implements
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getCurrentItem().observe(this, this);
+        if (savedInstanceState == null) {
+            Entity item = getViewModel().getCurrentItem().getValue();
+            if (item != null) {
+                onUpdateView(item);
+            }
+        }
     }
 //
 //    public interface Callbacks<Entity> {

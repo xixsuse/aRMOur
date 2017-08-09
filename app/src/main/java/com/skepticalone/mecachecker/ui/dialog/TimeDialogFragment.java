@@ -2,10 +2,10 @@ package com.skepticalone.mecachecker.ui.dialog;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
@@ -43,17 +43,17 @@ abstract class TimeDialogFragment<Entity> extends DialogFragment<Entity> impleme
     abstract ShiftData getShiftDataForDisplay(@NonNull Entity item);
 
     @Override
-    public final void onChanged(@Nullable Entity item) {
-        if (item != null) {
-            ShiftData shiftData = getShiftDataForDisplay(item);
-            LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
-            timePickerDialog.updateTime(time.getHourOfDay(), time.getMinuteOfHour());
-        }
+    final void onUpdateView(@NonNull Entity item) {
+        ShiftData shiftData = getShiftDataForDisplay(item);
+        LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
+        timePickerDialog.updateTime(time.getHourOfDay(), time.getMinuteOfHour());
     }
 
     @Override
     public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minuteOfHour) {
-        saveNewTime(new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minuteOfHour)), start);
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            saveNewTime(new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minuteOfHour)), start);
+        }
     }
 
     abstract void saveNewTime(@NonNull LocalTime time, boolean start);
