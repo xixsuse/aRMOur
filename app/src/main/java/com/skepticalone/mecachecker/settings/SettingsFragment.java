@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import com.skepticalone.mecachecker.R;
 import com.skepticalone.mecachecker.util.DateTimeUtils;
 
-public class SettingsFragment extends PreferenceFragment
+public final class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private String mKeyStartNormalDay, mKeyEndNormalDay,

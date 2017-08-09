@@ -3,7 +3,7 @@ package com.skepticalone.mecachecker.settings;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class SettingsActivity extends AppCompatActivity {
+public final class SettingsActivity extends AppCompatActivity {
 
     private static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
 
