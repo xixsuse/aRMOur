@@ -2,6 +2,7 @@ package com.skepticalone.armour.ui.common;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
@@ -73,18 +74,16 @@ public final class MainActivity extends CoordinatorActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        } else return super.onOptionsItemSelected(item);
-//
-//        switch (item.getItemId()) {
-//            case R.id.settings:
-//                startActivity(new Intent(this, SettingsActivity.class));
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
+        switch (item.getItemId()) {
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.feedback:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

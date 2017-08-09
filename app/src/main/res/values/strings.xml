@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">aRMOur</string>
     <string name="settings">Settings</string>
+    <string name="feedback">Feedback</string>
     <string name="totals">Totals</string>
     <string name="date">Date</string>
     <string name="start">Start</string>

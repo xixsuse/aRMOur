@@ -7,4 +7,9 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/feedback"
+        android:title="@string/feedback"
+        app:showAsAction="never" />
+
 </menu>
