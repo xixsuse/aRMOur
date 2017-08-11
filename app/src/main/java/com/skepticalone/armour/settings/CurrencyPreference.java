@@ -13,6 +13,7 @@ import com.skepticalone.armour.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@SuppressWarnings("WeakerAccess")
 public final class CurrencyPreference extends DialogPreference {
 
     private static final int DEFAULT_VALUE = 0;

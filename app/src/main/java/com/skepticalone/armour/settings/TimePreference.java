@@ -13,6 +13,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.DateTimeUtils;
 
+@SuppressWarnings("WeakerAccess")
 public final class TimePreference extends DialogPreference {
 
     private int mTotalMinutes;
