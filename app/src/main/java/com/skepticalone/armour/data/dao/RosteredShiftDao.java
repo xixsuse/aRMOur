@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.util.DateTimeConverter;
-import com.skepticalone.armour.data.util.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;

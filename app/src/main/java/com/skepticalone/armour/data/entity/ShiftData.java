@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.util;
+package com.skepticalone.armour.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Ignore;
@@ -13,20 +13,21 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
 
 public final class ShiftData {
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_START)
-    private final DateTime start;
+    final DateTime start;
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_END)
-    private final DateTime end;
+    final DateTime end;
 
     @NonNull
     @Ignore
-    private final Duration duration;
+    final Duration duration;
 
     @SuppressWarnings("WeakerAccess")
     public ShiftData(
@@ -107,4 +108,8 @@ public final class ShiftData {
         }
     }
 
+    @Override
+    public String toString() {
+        return DateTimeFormat.shortDateTime().print(start) + " - " + DateTimeFormat.shortDateTime().print(end);
+    }
 }

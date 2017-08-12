@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.util;
+package com.skepticalone.armour.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.support.annotation.DrawableRes;
@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
+import com.skepticalone.armour.data.util.MoneyConverter;
 
 import org.joda.time.DateTime;
 

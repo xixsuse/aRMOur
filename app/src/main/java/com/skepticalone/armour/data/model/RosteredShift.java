@@ -3,7 +3,7 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;

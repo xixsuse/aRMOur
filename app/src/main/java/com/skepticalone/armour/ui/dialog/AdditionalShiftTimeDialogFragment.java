@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 
 import org.joda.time.LocalTime;

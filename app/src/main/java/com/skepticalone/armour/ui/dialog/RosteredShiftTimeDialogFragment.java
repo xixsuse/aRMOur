@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 
 import org.joda.time.LocalTime;

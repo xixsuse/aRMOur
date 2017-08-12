@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.Expense;
-import com.skepticalone.armour.data.util.PaymentData;
 
 import java.math.BigDecimal;
 

@@ -12,7 +12,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftUtil;
 
 import org.joda.time.LocalDate;

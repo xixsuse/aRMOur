@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.AppConstants;
 
 import org.joda.time.LocalTime;

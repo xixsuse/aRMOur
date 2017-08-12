@@ -2,7 +2,7 @@ package com.skepticalone.armour.data.model;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.util.PaymentData;
+import com.skepticalone.armour.data.entity.PaymentData;
 
 import java.math.BigDecimal;
 

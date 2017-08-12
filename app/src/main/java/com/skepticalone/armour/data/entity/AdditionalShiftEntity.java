@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.AdditionalShift;
-import com.skepticalone.armour.data.util.PaymentData;
-import com.skepticalone.armour.data.util.ShiftData;
 
 import org.joda.time.DateTimeConstants;
 

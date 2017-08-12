@@ -3,8 +3,8 @@ package com.skepticalone.armour.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.util.PaymentData;
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.PaymentData;
+import com.skepticalone.armour.data.entity.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

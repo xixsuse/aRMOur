@@ -16,7 +16,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftUtil;
 
 import org.joda.time.LocalDate;
@@ -31,15 +31,13 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 
     public RosteredShiftViewModel(@NonNull Application application) {
         super(application);
-        items = Transformations.map(getDao().getItems(), new Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>>() {
-            @Override
-            public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
-                for (int i = 0, count = shifts.size(); i < count; i++) {
-                    shifts.get(i).setup(shifts, i);
-                }
-                return shifts;
-            }
-        });
+        items = Transformations.map(getDao().getItems(), new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                true,
+                true
+        ));
     }
 
     @NonNull

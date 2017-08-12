@@ -3,7 +3,7 @@ package com.skepticalone.armour.util;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.util.ShiftData;
+import com.skepticalone.armour.data.entity.ShiftData;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;

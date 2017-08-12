@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.CrossCover;
-import com.skepticalone.armour.data.util.PaymentData;
 
 import org.joda.time.LocalDate;
 

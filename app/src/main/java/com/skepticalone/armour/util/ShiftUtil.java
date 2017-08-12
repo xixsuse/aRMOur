@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.model.Shift;
-import com.skepticalone.armour.data.util.ShiftData;
 
 import org.joda.time.LocalTime;
 
