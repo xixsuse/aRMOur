@@ -1,7 +1,6 @@
 package com.skepticalone.armour.util;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.joda.time.Duration;
 
@@ -24,8 +23,8 @@ public final class AppConstants {
         return minutes - minutes % MINUTES_PER_STEP;
     }
 
-    public static boolean insufficientDurationBetweenShifts(@Nullable Duration duration) {
-        return duration != null && duration.isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
+    public static boolean insufficientDurationBetweenShifts(@NonNull Duration duration) {
+        return duration.isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
     }
 
     public static boolean exceedsMaximumDurationOverDay(@NonNull Duration duration) {

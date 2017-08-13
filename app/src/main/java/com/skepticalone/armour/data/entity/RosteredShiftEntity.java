@@ -189,12 +189,10 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
                 shift.exceedsMaximumDurationOverDay = checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(shift.durationOverDay);
                 shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(1));
                 shift.exceedsMaximumDurationOverWeek = checkDurationOverWeek && AppConstants.exceedsMaximumDurationOverWeek(shift.durationOverWeek);
-                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(1));
+                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(2));
                 shift.exceedsMaximumDurationOverFortnight = checkDurationOverFortnight && AppConstants.exceedsMaximumDurationOverFortnight(shift.durationOverFortnight);
-                if (currentIndex > 0) {
-                    shift.durationBetweenShifts = new Duration(shifts.get(currentIndex - 1).shiftData.end, shift.shiftData.start);
-                    shift.insufficientDurationBetweenShifts = checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
-                }
+                shift.durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).shiftData.end, shift.shiftData.start);
+                shift.insufficientDurationBetweenShifts = shift.durationBetweenShifts != null && checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
                 DateTime weekendStart = shift.shiftData.start.withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
                 if (weekendStart.isBefore(shift.shiftData.end) && shift.shiftData.start.isBefore(weekendStart.plusDays(2))) {
                     // I am working this weekend
@@ -204,13 +202,12 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
                         lastElapsedWeekendWorked = lastWeekendProcessed;
                     }
                     shift.lastWeekendWorked = lastElapsedWeekendWorked;
+                    //noinspection ConstantConditions
                     shift.consecutiveWeekendsWorked = checkConsecutiveWeekends && shift.lastWeekendWorked != null && !shift.lastWeekendWorked.isEqual(shift.currentWeekend) && shift.lastWeekendWorked.isEqual(shift.currentWeekend.minusWeeks(1));
-//                    if (shift.lastWeekendWorked != null && !shift.lastWeekendWorked.isEqual(shift.currentWeekend)) {
-//                        // I have worked a weekend before, but not this one
-//                        shift.consecutiveWeekendsWorked = shift.lastWeekendWorked.isEqual(shift.currentWeekend.minusWeeks(1));
-////                        lastElapsedWeekendWorked = lastWeekendProcessed;
-//                    }
                     lastWeekendProcessed = shift.currentWeekend;
+                } else {
+                    shift.currentWeekend = shift.lastWeekendWorked = null;
+                    shift.consecutiveWeekendsWorked = false;
                 }
                 shift.compliant =
                         !shift.exceedsMaximumDurationOverDay &&
