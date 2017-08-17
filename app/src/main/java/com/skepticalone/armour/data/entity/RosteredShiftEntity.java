@@ -179,6 +179,7 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
             return totalDuration;
         }
 
+        @SuppressWarnings("ConstantConditions")
         @Override
         public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
             @Nullable LocalDate lastElapsedWeekendWorked = null;

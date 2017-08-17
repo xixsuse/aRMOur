@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/meca-checker.iml" filepath="$PROJECT_DIR$/meca-checker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/armour.iml" filepath="$PROJECT_DIR$/armour.iml" />
     </modules>
   </component>
 </project>

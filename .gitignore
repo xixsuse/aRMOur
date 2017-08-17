@@ -4,7 +4,5 @@
 /.idea/misc.xml
 /.idea/workspace.xml
 /.idea/libraries
-.DS_Store
 /build
-/captures
-.externalNativeBuild
+keystore.properties

@@ -48,7 +48,7 @@ public abstract class ItemDao<Entity> {
     }
 
     @SuppressWarnings("EmptyMethod")
-    public abstract LiveData<Entity> getItem(long id);
+    public abstract LiveData<Entity> getItem(@SuppressWarnings("unused") long id);
 
     @Insert
     public abstract long restoreItemSync(Entity item);
@@ -84,7 +84,11 @@ public abstract class ItemDao<Entity> {
 
     public final void setCommentSync(long id, @Nullable String comment){
         SupportSQLiteStatement setCommentStatement = getUpdateStatement(Contract.COLUMN_NAME_COMMENT);
-        setCommentStatement.bindString(1, comment);
+        if (comment == null) {
+            setCommentStatement.bindNull(1);
+        } else {
+            setCommentStatement.bindString(1, comment);
+        }
         setCommentStatement.bindLong(2, id);
         updateInTransaction(setCommentStatement);
     }

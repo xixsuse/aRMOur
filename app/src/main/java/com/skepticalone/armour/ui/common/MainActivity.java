@@ -1,6 +1,5 @@
 package com.skepticalone.armour.ui.common;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,8 +27,6 @@ public final class MainActivity extends CoordinatorActivity
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
-    @Nullable
-    private LiveData<Long> selectedId;
 
     @Override
     protected int getContentView() {

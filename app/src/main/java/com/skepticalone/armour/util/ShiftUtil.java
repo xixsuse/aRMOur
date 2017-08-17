@@ -139,22 +139,7 @@ public final class ShiftUtil {
             }
             return getFilteredShifts(allShifts, filter);
         }
-        @NonNull
-        public <Entity extends Shift> List<Entity> getNormalDays(@NonNull List<Entity> allShifts) {
-            return getFilteredShifts(allShifts, new NormalDayFilter());
-        }
-        @NonNull
-        public <Entity extends Shift> List<Entity> getLongDays(@NonNull List<Entity> allShifts) {
-            return getFilteredShifts(allShifts, new LongDayFilter());
-        }
-        @NonNull
-        public <Entity extends Shift> List<Entity> getNightShifts(@NonNull List<Entity> allShifts) {
-            return getFilteredShifts(allShifts, new NightShiftFilter());
-        }
-        @NonNull
-        public <Entity extends Shift> List<Entity> getCustomShifts(@NonNull List<Entity> allShifts) {
-            return getFilteredShifts(allShifts, new CustomShiftFilter());
-        }
+
         @NonNull
         public ShiftType getSingleShiftType(@NonNull ShiftData shiftData) {
             if (isSingleNormalDay(shiftData)) return ShiftType.NORMAL_DAY;

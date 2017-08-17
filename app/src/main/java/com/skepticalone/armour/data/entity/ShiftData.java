@@ -27,7 +27,7 @@ public final class ShiftData {
 
     @NonNull
     @Ignore
-    final Duration duration;
+    private final Duration duration;
 
     @SuppressWarnings("WeakerAccess")
     public ShiftData(
@@ -82,14 +82,6 @@ public final class ShiftData {
     @NonNull
     public Duration getDuration() {
         return duration;
-    }
-
-    @Nullable
-    public LocalDate getWeekend() {
-        DateTime weekendStart = start.withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
-        if (weekendStart.isBefore(end) && start.isBefore(weekendStart.plusDays(2))) {
-            return weekendStart.toLocalDate();
-        } else return null;
     }
 
     @NonNull
