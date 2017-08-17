@@ -32,4 +32,21 @@
     <integer name="default_hourly_rate_after_hours">9000</integer>
     <string name="key_default_cross_cover_payment">key_default_cross_cover_payment</string>
     <integer name="default_cross_cover_payment">15000</integer>
+
+    <string name="key_check_duration_over_day">key_check_duration_over_day</string>
+    <string name="check_duration_over_day_title">Check duration over day</string>
+    <bool name="default_check_duration_over_day">true</bool>
+    <string name="key_check_duration_over_week">key_check_duration_over_week</string>
+    <string name="check_duration_over_week_title">Check duration over week</string>
+    <bool name="default_check_duration_over_week">true</bool>
+    <string name="key_check_duration_over_fortnight">key_check_duration_over_fortnight</string>
+    <string name="check_duration_over_fortnight_title">Check duration over fortnight</string>
+    <bool name="default_check_duration_over_fortnight">true</bool>
+    <string name="key_check_duration_between_shifts">key_check_duration_between_shifts</string>
+    <string name="check_duration_between_shifts_title">Check duration between shifts</string>
+    <bool name="default_check_duration_between_shifts">true</bool>
+    <string name="key_check_consecutive_weekends">key_check_consecutive_weekends</string>
+    <string name="check_consecutive_weekends_title">Check consecutive weekends</string>
+    <bool name="default_check_consecutive_weekends">true</bool>
+
 </resources>

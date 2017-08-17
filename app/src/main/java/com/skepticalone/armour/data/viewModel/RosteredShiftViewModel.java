@@ -24,20 +24,14 @@ import org.joda.time.LocalTime;
 
 import java.util.List;
 
-public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity> {
+public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity>, RosteredShiftEntity.ComplianceChecker.Callbacks {
 
     @NonNull
     private final LiveData<List<RosteredShiftEntity>> items;
 
     public RosteredShiftViewModel(@NonNull Application application) {
         super(application);
-        items = Transformations.map(getDao().getItems(), new RosteredShiftEntity.ComplianceChecker(
-                true,
-                true,
-                true,
-                true,
-                true
-        ));
+        items = Transformations.map(getDao().getItems(), new RosteredShiftEntity.ComplianceChecker(this));
     }
 
     @NonNull
@@ -81,7 +75,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
             skipWeekendsKey = R.string.key_skip_weekend_night_shift;
             defaultSkipWeekends = R.bool.default_skip_weekend_night_shift;
         } else throw new IllegalStateException();
-        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(skipWeekendsKey), getApplication().getResources().getBoolean(defaultSkipWeekends));
+        return getBooleanPreference(skipWeekendsKey, defaultSkipWeekends);
     }
 
     @Override
@@ -142,4 +136,32 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, start), logged ? shift.getLoggedShiftData().withNewTime(time, start) : shift.getLoggedShiftData());
     }
 
+    private boolean getBooleanPreference(@StringRes int preferenceKey, @BoolRes int defaultValue) {
+        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(preferenceKey), getApplication().getResources().getBoolean(defaultValue));
+    }
+
+    @Override
+    public boolean checkDurationOverDay() {
+        return getBooleanPreference(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day);
+    }
+
+    @Override
+    public boolean checkDurationOverWeek() {
+        return getBooleanPreference(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week);
+    }
+
+    @Override
+    public boolean checkDurationOverFortnight() {
+        return getBooleanPreference(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight);
+    }
+
+    @Override
+    public boolean checkDurationBetweenShifts() {
+        return getBooleanPreference(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts);
+    }
+
+    @Override
+    public boolean checkConsecutiveWeekends() {
+        return getBooleanPreference(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends);
+    }
 }

@@ -1,5 +1,7 @@
 package com.skepticalone.armour.adapter;
 
+import android.preference.PreferenceManager;
+import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -157,8 +159,12 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         text.setText(ssb);
     }
 
-    void setCompliant(boolean compliant) {
-        secondaryIcon.setImageResource(RosteredShiftEntity.getComplianceIcon(compliant));
-        secondaryIcon.setVisibility(View.VISIBLE);
+    void setCompliant(@StringRes int checkPreferenceKey, @BoolRes int defaultCheck, boolean compliant) {
+        if (PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getBoolean(itemView.getContext().getString(checkPreferenceKey), itemView.getResources().getBoolean(defaultCheck))) {
+            secondaryIcon.setImageResource(RosteredShiftEntity.getComplianceIcon(compliant));
+            secondaryIcon.setVisibility(View.VISIBLE);
+        } else {
+            secondaryIcon.setVisibility(View.GONE);
+        }
     }
 }

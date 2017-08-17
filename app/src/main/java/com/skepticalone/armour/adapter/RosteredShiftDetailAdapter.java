@@ -181,7 +181,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                         holder.getText(R.string.time_between_shifts),
                         DateTimeUtils.getPeriodString(shift.getDurationBetweenShifts().toPeriodTo(shift.getShiftData().getStart()))
                 );
-                holder.setCompliant(!shift.insufficientDurationBetweenShifts());
+                holder.setCompliant(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts, !shift.insufficientDurationBetweenShifts());
             }
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, shift)) {
@@ -195,7 +195,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     holder.getText(R.string.duration_worked_over_day),
                     DateTimeUtils.getDurationString(shift.getDurationOverDay())
             );
-            holder.setCompliant(!shift.exceedsMaximumDurationOverDay());
+            holder.setCompliant(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day, !shift.exceedsMaximumDurationOverDay());
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, shift)) {
             holder.setupPlain(R.drawable.ic_week_black_24dp, new View.OnClickListener() {
@@ -208,7 +208,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     holder.getText(R.string.duration_worked_over_week),
                     DateTimeUtils.getDurationString(shift.getDurationOverWeek())
             );
-            holder.setCompliant(!shift.exceedsMaximumDurationOverWeek());
+            holder.setCompliant(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week, !shift.exceedsMaximumDurationOverWeek());
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, shift)) {
             holder.setupPlain(R.drawable.ic_fortnight_black_24dp, new View.OnClickListener() {
@@ -221,7 +221,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     holder.getText(R.string.duration_worked_over_fortnight),
                     DateTimeUtils.getDurationString(shift.getDurationOverFortnight())
             );
-            holder.setCompliant(!shift.exceedsMaximumDurationOverFortnight());
+            holder.setCompliant(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight, !shift.exceedsMaximumDurationOverFortnight());
             return true;
         } else if (shift.getCurrentWeekend() != null && position == adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, shift)) {
             holder.setupPlain(R.drawable.ic_weekend_black_24dp, new View.OnClickListener() {
@@ -239,7 +239,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 thirdLine = DateTimeUtils.getWeeksAgo(shift.getLastWeekendWorked(), shift.getCurrentWeekend());
             }
             holder.setText(holder.getText(R.string.last_weekend_worked), secondLine, thirdLine);
-            holder.setCompliant(!shift.consecutiveWeekendsWorked());
+            holder.setCompliant(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends, !shift.consecutiveWeekendsWorked());
             return true;
         } else {
             holder.secondaryIcon.setVisibility(View.GONE);

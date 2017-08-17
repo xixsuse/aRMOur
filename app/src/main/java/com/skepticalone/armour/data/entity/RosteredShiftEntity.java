@@ -148,25 +148,11 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
 
     public static final class ComplianceChecker implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
 
-        private final boolean
-                checkDurationOverDay,
-                checkDurationOverWeek,
-                checkDurationOverFortnight,
-                checkDurationBetweenShifts,
-                checkConsecutiveWeekends;
+        @NonNull
+        private final Callbacks callbacks;
 
-        public ComplianceChecker(
-                boolean checkDurationOverDay,
-                boolean checkDurationOverWeek,
-                boolean checkDurationOverFortnight,
-                boolean checkDurationBetweenShifts,
-                boolean checkConsecutiveWeekends
-        ) {
-            this.checkDurationOverDay = checkDurationOverDay;
-            this.checkDurationOverWeek = checkDurationOverWeek;
-            this.checkDurationOverFortnight = checkDurationOverFortnight;
-            this.checkDurationBetweenShifts = checkDurationBetweenShifts;
-            this.checkConsecutiveWeekends = checkConsecutiveWeekends;
+        public ComplianceChecker(@NonNull Callbacks callbacks) {
+            this.callbacks = callbacks;
         }
 
         private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
@@ -182,6 +168,12 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         @SuppressWarnings("ConstantConditions")
         @Override
         public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
+            final boolean
+                    checkDurationOverDay = callbacks.checkDurationOverDay(),
+                    checkDurationOverWeek = callbacks.checkDurationOverWeek(),
+                    checkDurationOverFortnight = callbacks.checkDurationOverFortnight(),
+                    checkDurationBetweenShifts = callbacks.checkDurationBetweenShifts(),
+                    checkConsecutiveWeekends = callbacks.checkConsecutiveWeekends();
             @Nullable LocalDate lastElapsedWeekendWorked = null;
             @Nullable LocalDate lastWeekendProcessed = null;
             for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
@@ -218,6 +210,18 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
                                 !shift.consecutiveWeekendsWorked;
             }
             return shifts;
+        }
+
+        public interface Callbacks {
+            boolean checkDurationOverDay();
+
+            boolean checkDurationOverWeek();
+
+            boolean checkDurationOverFortnight();
+
+            boolean checkDurationBetweenShifts();
+
+            boolean checkConsecutiveWeekends();
         }
     }
 }
