@@ -3,7 +3,9 @@ package com.skepticalone.armour.data.viewModel;
 import android.app.Application;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
@@ -24,14 +26,56 @@ import org.joda.time.LocalTime;
 
 import java.util.List;
 
-public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity>, RosteredShiftEntity.ComplianceChecker.Callbacks {
+public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity> {
 
     @NonNull
     private final LiveData<List<RosteredShiftEntity>> items;
 
+    @NonNull
+    private final MutableLiveData<RosteredShiftEntity.ComplianceChecker> complianceChecker = new MutableLiveData<>();
+
+    @NonNull
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (
+                    key.equals(getApplication().getString(R.string.key_check_duration_over_day)) ||
+                            key.equals(getApplication().getString(R.string.key_check_duration_over_week)) ||
+                            key.equals(getApplication().getString(R.string.key_check_duration_over_fortnight)) ||
+                            key.equals(getApplication().getString(R.string.key_check_duration_between_shifts)) ||
+                            key.equals(getApplication().getString(R.string.key_check_consecutive_weekends))
+                    ) {
+                updateComplianceChecker();
+            }
+        }
+    };
+
     public RosteredShiftViewModel(@NonNull Application application) {
         super(application);
-        items = Transformations.map(getDao().getItems(), new RosteredShiftEntity.ComplianceChecker(this));
+        PreferenceManager.getDefaultSharedPreferences(application).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        updateComplianceChecker();
+        items = Transformations.switchMap(complianceChecker, new Function<RosteredShiftEntity.ComplianceChecker, LiveData<List<RosteredShiftEntity>>>() {
+            @Override
+            public LiveData<List<RosteredShiftEntity>> apply(RosteredShiftEntity.ComplianceChecker checker) {
+                return Transformations.map(getDao().getItems(), checker);
+            }
+        });
+    }
+
+    private void updateComplianceChecker() {
+        complianceChecker.setValue(new RosteredShiftEntity.ComplianceChecker(
+                getBooleanPreference(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day),
+                getBooleanPreference(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week),
+                getBooleanPreference(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight),
+                getBooleanPreference(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts),
+                getBooleanPreference(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends)
+        ));
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        PreferenceManager.getDefaultSharedPreferences(getApplication()).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
     @NonNull
@@ -140,28 +184,4 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(preferenceKey), getApplication().getResources().getBoolean(defaultValue));
     }
 
-    @Override
-    public boolean checkDurationOverDay() {
-        return getBooleanPreference(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day);
-    }
-
-    @Override
-    public boolean checkDurationOverWeek() {
-        return getBooleanPreference(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week);
-    }
-
-    @Override
-    public boolean checkDurationOverFortnight() {
-        return getBooleanPreference(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight);
-    }
-
-    @Override
-    public boolean checkDurationBetweenShifts() {
-        return getBooleanPreference(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts);
-    }
-
-    @Override
-    public boolean checkConsecutiveWeekends() {
-        return getBooleanPreference(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends);
-    }
 }

@@ -8,6 +8,7 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
@@ -148,11 +149,25 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
 
     public static final class ComplianceChecker implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
 
-        @NonNull
-        private final Callbacks callbacks;
+        private final boolean
+                checkDurationOverDay,
+                checkDurationOverWeek,
+                checkDurationOverFortnight,
+                checkDurationBetweenShifts,
+                checkConsecutiveWeekends;
 
-        public ComplianceChecker(@NonNull Callbacks callbacks) {
-            this.callbacks = callbacks;
+        public ComplianceChecker(
+                boolean checkDurationOverDay,
+                boolean checkDurationOverWeek,
+                boolean checkDurationOverFortnight,
+                boolean checkDurationBetweenShifts,
+                boolean checkConsecutiveWeekends
+        ) {
+            this.checkDurationOverDay = checkDurationOverDay;
+            this.checkDurationOverWeek = checkDurationOverWeek;
+            this.checkDurationOverFortnight = checkDurationOverFortnight;
+            this.checkDurationBetweenShifts = checkDurationBetweenShifts;
+            this.checkConsecutiveWeekends = checkConsecutiveWeekends;
         }
 
         private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
@@ -168,12 +183,7 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
         @SuppressWarnings("ConstantConditions")
         @Override
         public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
-            final boolean
-                    checkDurationOverDay = callbacks.checkDurationOverDay(),
-                    checkDurationOverWeek = callbacks.checkDurationOverWeek(),
-                    checkDurationOverFortnight = callbacks.checkDurationOverFortnight(),
-                    checkDurationBetweenShifts = callbacks.checkDurationBetweenShifts(),
-                    checkConsecutiveWeekends = callbacks.checkConsecutiveWeekends();
+            Log.d("Checker", "checking...");
             @Nullable LocalDate lastElapsedWeekendWorked = null;
             @Nullable LocalDate lastWeekendProcessed = null;
             for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
@@ -210,18 +220,6 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
                                 !shift.consecutiveWeekendsWorked;
             }
             return shifts;
-        }
-
-        public interface Callbacks {
-            boolean checkDurationOverDay();
-
-            boolean checkDurationOverWeek();
-
-            boolean checkDurationOverFortnight();
-
-            boolean checkDurationBetweenShifts();
-
-            boolean checkConsecutiveWeekends();
         }
     }
 }

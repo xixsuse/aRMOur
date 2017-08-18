@@ -9,19 +9,11 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChecker.Callbacks {
+public class ComplianceCheckerTest {
 
     private static final int DEFAULT_YEAR = 2017;
-
-    private final RosteredShiftEntity.ComplianceChecker checker = new RosteredShiftEntity.ComplianceChecker(this);
     private final ArrayList<RosteredShiftEntity> shifts = new ArrayList<>();
-
-    private boolean
-            checkDurationOverDay,
-            checkDurationOverWeek,
-            checkDurationOverFortnight,
-            checkDurationBetweenShifts,
-            checkConsecutiveWeekends;
+    private RosteredShiftEntity.ComplianceChecker checker;
 
     @SuppressWarnings("SameParameterValue")
     private static RosteredShiftEntity newShift(int month, int startDayOfMonth, int startHour, int startMinute, int endHour, int endMinute) {
@@ -44,8 +36,13 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
 
     @Before
     public void setUp() {
-        checkDurationOverDay = checkDurationOverWeek = checkDurationOverFortnight = checkDurationBetweenShifts = checkConsecutiveWeekends = true;
-
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                true,
+                true
+        );
         shifts.clear();
 
         shifts.add(0, newShift(5, 1, 8, 0, 16, 0));
@@ -133,8 +130,13 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(11, -1, -1);
         assertFalse(shifts.get(11).isCompliant());
         assertTrue(shifts.get(11).insufficientDurationBetweenShifts());
-        checkDurationBetweenShifts = false;
-        checker.apply(shifts);
+        new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                false,
+                true
+        ).apply(shifts);
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).insufficientDurationBetweenShifts());
     }
@@ -147,8 +149,13 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(31, 0, 1);
         assertFalse(shifts.get(31).isCompliant());
         assertTrue(shifts.get(31).exceedsMaximumDurationOverDay());
-        checkDurationOverDay = false;
-        checker.apply(shifts);
+        new RosteredShiftEntity.ComplianceChecker(
+                false,
+                true,
+                true,
+                true,
+                true
+        ).apply(shifts);
         assertTrue(shifts.get(31).isCompliant());
         assertFalse(shifts.get(31).exceedsMaximumDurationOverDay());
     }
@@ -161,15 +168,26 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(7, 0, 1);
         assertFalse(shifts.get(7).isCompliant());
         assertTrue(shifts.get(7).exceedsMaximumDurationOverWeek());
-        checkDurationOverWeek = false;
-        checker.apply(shifts);
+        new RosteredShiftEntity.ComplianceChecker(
+                true,
+                false,
+                true,
+                true,
+                true
+        ).apply(shifts);
         assertTrue(shifts.get(7).isCompliant());
         assertFalse(shifts.get(7).exceedsMaximumDurationOverWeek());
     }
 
     @Test
     public void exceedsMaximumDurationOverFortnight() {
-        checkDurationOverWeek = false;
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                false,
+                true,
+                true,
+                true
+        );
         adjustByMinutesAndCheck(0, 0, 180);
         adjustByMinutesAndCheck(1, 0, 240);
         adjustByMinutesAndCheck(2, 0, 180);
@@ -185,7 +203,13 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(11, 0, 1);
         assertFalse(shifts.get(11).isCompliant());
         assertTrue(shifts.get(11).exceedsMaximumDurationOverFortnight());
-        checkDurationOverFortnight = false;
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                false,
+                false,
+                true,
+                true
+        );
         checker.apply(shifts);
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).exceedsMaximumDurationOverFortnight());
@@ -200,11 +224,23 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(11, 1, 1);
         assertFalse(shifts.get(17).isCompliant());
         assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-        checkConsecutiveWeekends = false;
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                true,
+                false
+        );
         checker.apply(shifts);
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
-        checkConsecutiveWeekends = true;
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                true,
+                true
+        );
         adjustByMinutesAndCheck(11, -481, -481);
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
@@ -214,34 +250,16 @@ public class ComplianceCheckerTest implements RosteredShiftEntity.ComplianceChec
         adjustByMinutesAndCheck(12, -1, -1);
         assertFalse(shifts.get(17).isCompliant());
         assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-        checkConsecutiveWeekends = false;
+        checker = new RosteredShiftEntity.ComplianceChecker(
+                true,
+                true,
+                true,
+                true,
+                false
+        );
         checker.apply(shifts);
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
     }
 
-    @Override
-    public boolean checkDurationOverDay() {
-        return checkDurationOverDay;
-    }
-
-    @Override
-    public boolean checkDurationOverWeek() {
-        return checkDurationOverWeek;
-    }
-
-    @Override
-    public boolean checkDurationOverFortnight() {
-        return checkDurationOverFortnight;
-    }
-
-    @Override
-    public boolean checkDurationBetweenShifts() {
-        return checkDurationBetweenShifts;
-    }
-
-    @Override
-    public boolean checkConsecutiveWeekends() {
-        return checkConsecutiveWeekends;
-    }
 }
