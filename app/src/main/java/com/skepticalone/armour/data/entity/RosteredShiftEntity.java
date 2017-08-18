@@ -24,11 +24,8 @@ import org.joda.time.ReadableInstant;
 import java.util.List;
 
 @Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class RosteredShiftEntity extends ItemEntity implements RosteredShift {
+public final class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 
-    @NonNull
-    @Embedded
-    final ShiftData shiftData;
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
     private final ShiftData loggedShiftData;
@@ -54,20 +51,13 @@ public final class RosteredShiftEntity extends ItemEntity implements RosteredShi
             @SuppressWarnings("SameParameterValue") @Nullable ShiftData loggedShiftData,
             @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
-        super(comment);
-        this.shiftData = shiftData;
+        super(shiftData, comment);
         this.loggedShiftData = loggedShiftData;
     }
 
     @DrawableRes
     public static int getComplianceIcon(boolean compliant) {
         return compliant ? R.drawable.compliant_black_24dp : R.drawable.non_compliant_red_24dp;
-    }
-
-    @NonNull
-    @Override
-    public ShiftData getShiftData() {
-        return shiftData;
     }
 
     @Nullable
