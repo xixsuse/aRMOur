@@ -16,6 +16,7 @@ import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
 import com.skepticalone.armour.data.entity.CrossCoverEntity;
 import com.skepticalone.armour.data.entity.ExpenseEntity;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.newData.NewRosteredShiftDao;
 import com.skepticalone.armour.data.util.DateTimeConverter;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 import com.skepticalone.armour.data.util.MoneyConverter;
@@ -47,5 +48,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CrossCoverDao crossCoverDao();
 
     public abstract ExpenseDao expenseDao();
+
+    public abstract NewRosteredShiftDao newRosteredShiftDao();
 
 }

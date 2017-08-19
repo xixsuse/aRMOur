@@ -15,11 +15,8 @@ import org.joda.time.DateTimeConstants;
 import java.math.BigDecimal;
 
 @Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class AdditionalShiftEntity extends ItemEntity implements AdditionalShift {
+public final class AdditionalShiftEntity extends ShiftEntity implements AdditionalShift {
 
-    @NonNull
-    @Embedded
-    private final ShiftData shiftData;
     @NonNull
     @Embedded
     private final PaymentData paymentData;
@@ -27,23 +24,12 @@ public final class AdditionalShiftEntity extends ItemEntity implements Additiona
     @Ignore
     private final BigDecimal totalPayment;
 
-    public AdditionalShiftEntity(
-            @NonNull PaymentData paymentData,
-            @NonNull ShiftData shiftData,
-            @SuppressWarnings("SameParameterValue") @Nullable String comment
-    ) {
-        super(comment);
-        this.shiftData = shiftData;
+    public AdditionalShiftEntity(@NonNull ShiftData shiftData, @Nullable String comment, @NonNull PaymentData paymentData) {
+        super(shiftData, comment);
         this.paymentData = paymentData;
         totalPayment = this.paymentData.getPayment()
                 .multiply(BigDecimal.valueOf(this.shiftData.getDuration().getMillis()))
                 .divide(BigDecimal.valueOf(DateTimeConstants.MILLIS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
-    }
-
-    @NonNull
-    @Override
-    public ShiftData getShiftData() {
-        return shiftData;
     }
 
     @NonNull
