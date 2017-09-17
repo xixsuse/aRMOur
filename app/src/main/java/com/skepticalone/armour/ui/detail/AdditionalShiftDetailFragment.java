@@ -1,7 +1,6 @@
 package com.skepticalone.armour.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftDetailAdapter;
@@ -13,19 +12,12 @@ import com.skepticalone.armour.ui.dialog.AdditionalShiftPaymentDialogFragment;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftTimeDialogFragment;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.PaymentDialogFragment;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class AdditionalShiftDetailFragment
         extends PayableDetailFragment<AdditionalShiftEntity>
         implements AdditionalShiftDetailAdapter.Callbacks {
 
-    private AdditionalShiftDetailAdapter adapter;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        adapter = new AdditionalShiftDetailAdapter(this, ShiftUtil.Calculator.getInstance(context));
-    }
+    private final AdditionalShiftDetailAdapter adapter = new AdditionalShiftDetailAdapter(this);
 
     @NonNull
     @Override

@@ -9,7 +9,6 @@ import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShiftEntity> {
 
@@ -35,11 +34,11 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
 
     @NonNull
     private final Callbacks callbacks;
-    
-    public RosteredShiftDetailAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+
+    public RosteredShiftDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
         this.callbacks = callbacks;
-        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RosteredShiftEntity>(callbacks, calculator) {
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RosteredShiftEntity>(callbacks) {
             
             @Override
             int getRowNumberDate() {

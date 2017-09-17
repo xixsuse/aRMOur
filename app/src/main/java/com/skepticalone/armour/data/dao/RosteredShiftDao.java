@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
@@ -50,11 +51,11 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             " = :id")
     public abstract void setShiftTimesSync(long id, DateTime start, DateTime end, @Nullable DateTime loggedStart, @Nullable DateTime loggedEnd);
 
-    synchronized public final long insertSync(@NonNull LocalTime startTime, @NonNull LocalTime endTime, boolean skipWeekends){
+    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, boolean skipWeekends) {
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
         @Nullable final DateTime lastShiftEnd = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(startTime, endTime, lastShiftEnd, skipWeekends);
+        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, skipWeekends);
         SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
                 Contract.RosteredShifts.TABLE_NAME +
                 " (" +

@@ -8,16 +8,11 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
-import com.skepticalone.armour.util.ShiftUtil;
 
 abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<Entity> {
 
-    @NonNull
-    private final ShiftUtil.Calculator calculator;
-
-    ShiftListAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    ShiftListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
-        this.calculator = calculator;
     }
 
     @Override
@@ -29,7 +24,7 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
 
     @Override
     final void bindViewHolder(@NonNull Entity shift, ItemViewHolder holder) {
-        holder.primaryIcon.setImageResource(ShiftUtil.getShiftIcon(calculator.getSingleShiftType(shift.getShiftData())));
+        holder.primaryIcon.setImageResource(shift.getShiftType().getIcon());
         holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
         holder.setText(
                 DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()),

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<AdditionalShiftEntity> {
 
@@ -25,9 +24,9 @@ public final class AdditionalShiftDetailAdapter extends PayableDetailAdapter<Add
     @NonNull
     private final ShiftDetailAdapterHelper<AdditionalShiftEntity> shiftDetailAdapterHelper;
 
-    public AdditionalShiftDetailAdapter(@NonNull final Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    public AdditionalShiftDetailAdapter(@NonNull final Callbacks callbacks) {
         super(callbacks);
-        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<AdditionalShiftEntity>(callbacks, calculator) {
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<AdditionalShiftEntity>(callbacks) {
             @Override
             int getRowNumberDate() {
                 return ROW_NUMBER_DATE;

@@ -29,7 +29,7 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         snackbar = (Snackbar) context;
     }

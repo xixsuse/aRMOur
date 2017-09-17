@@ -1,7 +1,6 @@
 package com.skepticalone.armour.ui.totals;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import com.skepticalone.armour.adapter.RosteredShiftTotalsAdapter;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragment<RosteredShiftEntity> implements RosteredShiftTotalsAdapter.Callbacks {
 
@@ -24,8 +22,8 @@ public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragmen
 
     @NonNull
     @Override
-    ItemTotalsAdapter<RosteredShiftEntity> createAdapter(@NonNull Context context) {
-        return new RosteredShiftTotalsAdapter(this, ShiftUtil.Calculator.getInstance(context));
+    ItemTotalsAdapter<RosteredShiftEntity> createAdapter() {
+        return new RosteredShiftTotalsAdapter(this);
     }
 
     @NonNull

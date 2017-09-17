@@ -2,11 +2,11 @@ package com.skepticalone.armour.ui.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDialogFragment;
 
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
-import com.skepticalone.armour.ui.common.LifecycleDialogFragment;
 
-abstract class DialogFragment<Entity> extends LifecycleDialogFragment {
+abstract class DialogFragment<Entity> extends AppCompatDialogFragment {
 
 //    private Callbacks<Entity> callbacks;
 //

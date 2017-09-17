@@ -1,6 +1,5 @@
 package com.skepticalone.armour.data.entity;
 
-import android.arch.core.util.Function;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -8,7 +7,6 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
@@ -24,7 +22,7 @@ import org.joda.time.ReadableInstant;
 import java.util.List;
 
 @Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
+public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
@@ -48,8 +46,8 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
 
     public RosteredShiftEntity(
             @NonNull ShiftData shiftData,
-            @SuppressWarnings("SameParameterValue") @Nullable ShiftData loggedShiftData,
-            @SuppressWarnings("SameParameterValue") @Nullable String comment
+            @Nullable ShiftData loggedShiftData,
+            @Nullable String comment
     ) {
         super(shiftData, comment);
         this.loggedShiftData = loggedShiftData;
@@ -132,12 +130,90 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
         return compliant;
     }
 
-    @DrawableRes
-    public int getComplianceIcon(){
-        return getComplianceIcon(compliant);
+    @NonNull
+    RosteredShiftEntity copy() {
+        RosteredShiftEntity shift = new RosteredShiftEntity(getShiftData(), loggedShiftData, getComment());
+        shift.setId(getId());
+        return shift;
     }
 
-    public static final class ComplianceChecker implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
+//    public static final class ComplianceChecker implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
+//
+//        private final boolean
+//                checkDurationOverDay,
+//                checkDurationOverWeek,
+//                checkDurationOverFortnight,
+//                checkDurationBetweenShifts,
+//                checkConsecutiveWeekends;
+//
+//        public ComplianceChecker(
+//                boolean checkDurationOverDay,
+//                boolean checkDurationOverWeek,
+//                boolean checkDurationOverFortnight,
+//                boolean checkDurationBetweenShifts,
+//                boolean checkConsecutiveWeekends
+//        ) {
+//            this.checkDurationOverDay = checkDurationOverDay;
+//            this.checkDurationOverWeek = checkDurationOverWeek;
+//            this.checkDurationOverFortnight = checkDurationOverFortnight;
+//            this.checkDurationBetweenShifts = checkDurationBetweenShifts;
+//            this.checkConsecutiveWeekends = checkConsecutiveWeekends;
+//        }
+//
+//        private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
+//            Duration totalDuration = Duration.ZERO;
+//            do {
+//                RosteredShiftEntity shift = shifts.get(currentIndex);
+//                if (!shift.shiftData.end.isAfter(cutOff)) break;
+//                totalDuration = totalDuration.plus(shift.shiftData.start.isBefore(cutOff) ? new Duration(cutOff, shift.shiftData.end) : shift.shiftData.getDuration());
+//            } while (--currentIndex >= 0);
+//            return totalDuration;
+//        }
+//
+//        @SuppressWarnings("ConstantConditions")
+//        @Override
+//        public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
+//            Log.d("Checker", "checking...");
+//            @Nullable LocalDate lastElapsedWeekendWorked = null;
+//            @Nullable LocalDate lastWeekendProcessed = null;
+//            for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
+//                RosteredShiftEntity shift = shifts.get(currentIndex);
+//                shift.durationOverDay = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusDays(1));
+//                shift.exceedsMaximumDurationOverDay = checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(shift.durationOverDay);
+//                shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(1));
+//                shift.exceedsMaximumDurationOverWeek = checkDurationOverWeek && AppConstants.exceedsMaximumDurationOverWeek(shift.durationOverWeek);
+//                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(2));
+//                shift.exceedsMaximumDurationOverFortnight = checkDurationOverFortnight && AppConstants.exceedsMaximumDurationOverFortnight(shift.durationOverFortnight);
+//                shift.durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).shiftData.end, shift.shiftData.start);
+//                shift.insufficientDurationBetweenShifts = shift.durationBetweenShifts != null && checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
+//                DateTime weekendStart = shift.shiftData.start.withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
+//                if (weekendStart.isBefore(shift.shiftData.end) && shift.shiftData.start.isBefore(weekendStart.plusDays(2))) {
+//                    // I am working this weekend
+//                    shift.currentWeekend = weekendStart.toLocalDate();
+//                    if (lastWeekendProcessed != null && !shift.currentWeekend.isEqual(lastWeekendProcessed)) {
+//                        // the last weekend processed was different to this one
+//                        lastElapsedWeekendWorked = lastWeekendProcessed;
+//                    }
+//                    shift.lastWeekendWorked = lastElapsedWeekendWorked;
+//                    //noinspection ConstantConditions
+//                    shift.consecutiveWeekendsWorked = checkConsecutiveWeekends && shift.lastWeekendWorked != null && !shift.lastWeekendWorked.isEqual(shift.currentWeekend) && shift.lastWeekendWorked.isEqual(shift.currentWeekend.minusWeeks(1));
+//                    lastWeekendProcessed = shift.currentWeekend;
+//                } else {
+//                    shift.currentWeekend = shift.lastWeekendWorked = null;
+//                    shift.consecutiveWeekendsWorked = false;
+//                }
+//                shift.compliant =
+//                        !shift.exceedsMaximumDurationOverDay &&
+//                                !shift.exceedsMaximumDurationOverWeek &&
+//                                !shift.exceedsMaximumDurationOverFortnight &&
+//                                !shift.insufficientDurationBetweenShifts &&
+//                                !shift.consecutiveWeekendsWorked;
+//            }
+//            return shifts;
+//        }
+//    }
+
+    static final class ComplianceConfiguration implements ComplianceChecker {
 
         private final boolean
                 checkDurationOverDay,
@@ -146,7 +222,7 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
                 checkDurationBetweenShifts,
                 checkConsecutiveWeekends;
 
-        public ComplianceChecker(
+        ComplianceConfiguration(
                 boolean checkDurationOverDay,
                 boolean checkDurationOverWeek,
                 boolean checkDurationOverFortnight,
@@ -163,31 +239,30 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
         private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
             Duration totalDuration = Duration.ZERO;
             do {
-                RosteredShiftEntity shift = shifts.get(currentIndex);
-                if (!shift.shiftData.end.isAfter(cutOff)) break;
-                totalDuration = totalDuration.plus(shift.shiftData.start.isBefore(cutOff) ? new Duration(cutOff, shift.shiftData.end) : shift.shiftData.getDuration());
+                ShiftData shiftData = shifts.get(currentIndex).getShiftData();
+                if (!shiftData.getEnd().isAfter(cutOff)) break;
+                totalDuration = totalDuration.plus(shiftData.getStart().isBefore(cutOff) ? new Duration(cutOff, shiftData.getEnd()) : shiftData.getDuration());
             } while (--currentIndex >= 0);
             return totalDuration;
         }
 
         @SuppressWarnings("ConstantConditions")
         @Override
-        public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
-            Log.d("Checker", "checking...");
+        public void process(@NonNull List<RosteredShiftEntity> shifts) {
             @Nullable LocalDate lastElapsedWeekendWorked = null;
             @Nullable LocalDate lastWeekendProcessed = null;
             for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
                 RosteredShiftEntity shift = shifts.get(currentIndex);
-                shift.durationOverDay = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusDays(1));
+                shift.durationOverDay = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusDays(1));
                 shift.exceedsMaximumDurationOverDay = checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(shift.durationOverDay);
-                shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(1));
+                shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusWeeks(1));
                 shift.exceedsMaximumDurationOverWeek = checkDurationOverWeek && AppConstants.exceedsMaximumDurationOverWeek(shift.durationOverWeek);
-                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(2));
+                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusWeeks(2));
                 shift.exceedsMaximumDurationOverFortnight = checkDurationOverFortnight && AppConstants.exceedsMaximumDurationOverFortnight(shift.durationOverFortnight);
-                shift.durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).shiftData.end, shift.shiftData.start);
+                shift.durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).getShiftData().getEnd(), shift.getShiftData().getStart());
                 shift.insufficientDurationBetweenShifts = shift.durationBetweenShifts != null && checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
-                DateTime weekendStart = shift.shiftData.start.withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
-                if (weekendStart.isBefore(shift.shiftData.end) && shift.shiftData.start.isBefore(weekendStart.plusDays(2))) {
+                DateTime weekendStart = shift.getShiftData().getStart().withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
+                if (weekendStart.isBefore(shift.getShiftData().getEnd()) && shift.getShiftData().getStart().isBefore(weekendStart.plusDays(2))) {
                     // I am working this weekend
                     shift.currentWeekend = weekendStart.toLocalDate();
                     if (lastWeekendProcessed != null && !shift.currentWeekend.isEqual(lastWeekendProcessed)) {
@@ -195,7 +270,6 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
                         lastElapsedWeekendWorked = lastWeekendProcessed;
                     }
                     shift.lastWeekendWorked = lastElapsedWeekendWorked;
-                    //noinspection ConstantConditions
                     shift.consecutiveWeekendsWorked = checkConsecutiveWeekends && shift.lastWeekendWorked != null && !shift.lastWeekendWorked.isEqual(shift.currentWeekend) && shift.lastWeekendWorked.isEqual(shift.currentWeekend.minusWeeks(1));
                     lastWeekendProcessed = shift.currentWeekend;
                 } else {
@@ -209,7 +283,6 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
                                 !shift.insufficientDurationBetweenShifts &&
                                 !shift.consecutiveWeekendsWorked;
             }
-            return shifts;
         }
     }
 }

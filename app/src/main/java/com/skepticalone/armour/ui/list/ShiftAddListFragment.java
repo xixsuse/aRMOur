@@ -6,7 +6,7 @@ import android.view.View;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.viewModel.ShiftViewModelContract;
-import com.skepticalone.armour.util.ShiftUtil;
+import com.skepticalone.armour.util.ShiftType;
 
 abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<Entity> {
 
@@ -16,19 +16,19 @@ abstract class ShiftAddListFragment<Entity extends Item> extends ListFragment<En
         callbacks.getFabPrimary().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getViewModel().addNewShift(ShiftUtil.ShiftType.NORMAL_DAY);
+                getViewModel().addNewShift(ShiftType.NORMAL_DAY);
             }
         });
         callbacks.getFabLongDay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getViewModel().addNewShift(ShiftUtil.ShiftType.LONG_DAY);
+                getViewModel().addNewShift(ShiftType.LONG_DAY);
             }
         });
         callbacks.getFabNightShift().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getViewModel().addNewShift(ShiftUtil.ShiftType.NIGHT_SHIFT);
+                getViewModel().addNewShift(ShiftType.NIGHT_SHIFT);
             }
         });
         callbacks.getFabPrimary().show();

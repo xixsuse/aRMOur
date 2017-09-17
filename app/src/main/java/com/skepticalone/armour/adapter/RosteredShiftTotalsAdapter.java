@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
-import com.skepticalone.armour.util.ShiftUtil;
 
 import java.util.List;
 
@@ -15,9 +14,9 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     @NonNull
     private final ShiftTotalsAdapterHelper<RosteredShiftEntity> helper;
 
-    public RosteredShiftTotalsAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    public RosteredShiftTotalsAdapter(@NonNull Callbacks callbacks) {
         this.callbacks = callbacks;
-        helper = new ShiftTotalsAdapterHelper<>(this, calculator);
+        helper = new ShiftTotalsAdapterHelper<>(this);
     }
 
     @Override

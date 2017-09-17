@@ -1,7 +1,6 @@
 package com.skepticalone.armour.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.RosteredShiftDetailAdapter;
@@ -12,19 +11,12 @@ import com.skepticalone.armour.ui.dialog.MessageDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftCommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftDateDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftTimeDialogFragment;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class RosteredShiftDetailFragment
         extends DetailFragment<RosteredShiftEntity>
         implements RosteredShiftDetailAdapter.Callbacks {
 
-    private RosteredShiftDetailAdapter adapter;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        adapter = new RosteredShiftDetailAdapter(this, ShiftUtil.Calculator.getInstance(context));
-    }
+    private final RosteredShiftDetailAdapter adapter = new RosteredShiftDetailAdapter(this);
 
     @NonNull
     @Override

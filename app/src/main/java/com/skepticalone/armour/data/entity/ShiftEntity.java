@@ -1,24 +1,21 @@
 package com.skepticalone.armour.data.entity;
 
-import android.arch.core.util.Function;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.Shift;
-import com.skepticalone.armour.util.ShiftUtil;
-
-import java.util.List;
+import com.skepticalone.armour.util.ShiftType;
 
 
 abstract class ShiftEntity extends ItemEntity implements Shift {
 
     @NonNull
     @Embedded
-    final ShiftData shiftData;
+    private final ShiftData shiftData;
     @Ignore
-    ShiftUtil.ShiftType shiftType;
+    private ShiftType shiftType;
 
     ShiftEntity(@NonNull ShiftData shiftData, @Nullable String comment) {
         super(comment);
@@ -31,7 +28,13 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
         return shiftData;
     }
 
-    public static final class ShiftTypeChecker<Entity extends ShiftEntity> implements Function<List<Entity>, List<Entity>> {
+    @NonNull
+    @Override
+    public ShiftType getShiftType() {
+        return shiftType;
+    }
+
+    static final class ShiftTypeConfiguration implements ShiftTypeCalculator {
 
         private final int
                 normalDayStart,
@@ -41,7 +44,7 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
                 nightShiftStart,
                 nightShiftEnd;
 
-        public ShiftTypeChecker(
+        ShiftTypeConfiguration(
                 int normalDayStart,
                 int normalDayEnd,
                 int longDayStart,
@@ -58,17 +61,17 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
         }
 
         @Override
-        public List<Entity> apply(List<Entity> shifts) {
-            for (Entity shift : shifts) {
-                int start = shift.shiftData.start.getMinuteOfDay(), end = shift.shiftData.end.getMinuteOfDay();
-                shift.shiftType =
-                        (start == normalDayStart && end == normalDayEnd) ? ShiftUtil.ShiftType.NORMAL_DAY :
-                                (start == longDayStart && end == longDayEnd) ? ShiftUtil.ShiftType.LONG_DAY :
-                                        (start == nightShiftStart && end == nightShiftEnd) ? ShiftUtil.ShiftType.NIGHT_SHIFT :
-                                                ShiftUtil.ShiftType.CUSTOM;
+        public void process(@NonNull ShiftEntity shift) {
+            int start = shift.shiftData.getStart().getMinuteOfDay(), end = shift.shiftData.getEnd().getMinuteOfDay();
+            if (start == normalDayStart && end == normalDayEnd) {
+                shift.shiftType = ShiftType.NORMAL_DAY;
+            } else if (start == longDayStart && end == longDayEnd) {
+                shift.shiftType = ShiftType.LONG_DAY;
+            } else if (start == nightShiftStart && end == nightShiftEnd) {
+                shift.shiftType = ShiftType.NIGHT_SHIFT;
+            } else {
+                shift.shiftType = ShiftType.CUSTOM;
             }
-            return shifts;
         }
     }
-
 }

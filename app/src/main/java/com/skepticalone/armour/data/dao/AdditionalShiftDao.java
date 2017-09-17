@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
@@ -65,7 +66,7 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         return Contract.AdditionalShifts.TABLE_NAME;
     }
 
-    synchronized public final long insertSync(@NonNull LocalTime startTime, @NonNull LocalTime endTime, int paymentInCents){
+    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, int paymentInCents) {
         SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
                 Contract.AdditionalShifts.TABLE_NAME +
                 " (" +
@@ -79,7 +80,7 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
         @Nullable final DateTime lastShiftEnd = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStart(startTime, endTime, lastShiftEnd, false);
+        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, false);
         insertStatement.bindLong(2, shiftData.getStart().getMillis());
         insertStatement.bindLong(3, shiftData.getEnd().getMillis());
         getDatabase().beginTransaction();

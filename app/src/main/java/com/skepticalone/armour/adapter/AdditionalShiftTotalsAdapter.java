@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.util.ShiftUtil;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
     @NonNull
     private final ShiftTotalsAdapterHelper<AdditionalShiftEntity> helper;
 
-    public AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    public AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
-        helper = new ShiftTotalsAdapterHelper<>(this, calculator);
+        helper = new ShiftTotalsAdapterHelper<>(this);
     }
 
     @Override

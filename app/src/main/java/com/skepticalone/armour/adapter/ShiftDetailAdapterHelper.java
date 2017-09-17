@@ -8,18 +8,13 @@ import android.view.View;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.DateTimeUtils;
-import com.skepticalone.armour.util.ShiftUtil;
 
 import org.joda.time.LocalDate;
 
 abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetailAdapterHelper<Entity> {
 
-    @NonNull
-    private final ShiftUtil.Calculator calculator;
-
-    ShiftDetailAdapterHelper(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    ShiftDetailAdapterHelper(@NonNull Callbacks callbacks) {
         super(callbacks);
-        this.calculator = calculator;
     }
 
     abstract int getRowNumberStart();
@@ -72,9 +67,8 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
             holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd(), shift.getShiftData().getStart().toLocalDate()));
             return true;
         } else if (position == getRowNumberShiftType()) {
-            ShiftUtil.ShiftType shiftType = calculator.getSingleShiftType(shift.getShiftData());
-            holder.setupPlain(ShiftUtil.getShiftIcon(shiftType), null);
-            holder.setText(holder.getText(ShiftUtil.getShiftTitle(shiftType)), DateTimeUtils.getDurationString(shift.getShiftData().getDuration()));
+            holder.setupPlain(shift.getShiftType().getIcon(), null);
+            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(shift.getShiftData().getDuration()));
             return true;
         } else return super.bindViewHolder(shift, holder, position);
     }

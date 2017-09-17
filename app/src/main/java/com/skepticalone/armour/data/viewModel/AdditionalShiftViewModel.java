@@ -1,24 +1,31 @@
 package com.skepticalone.armour.data.viewModel;
 
 import android.app.Application;
+import android.arch.core.util.Function;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Pair;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
+import com.skepticalone.armour.data.entity.LiveAdditionalShifts;
+import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
 import com.skepticalone.armour.data.entity.ShiftData;
-import com.skepticalone.armour.util.ShiftUtil;
+import com.skepticalone.armour.util.ShiftType;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity> implements ShiftViewModelContract<AdditionalShiftEntity>, PayableViewModelContract<AdditionalShiftEntity> {
@@ -26,8 +33,12 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
+    @NonNull
+    private final LiveData<List<AdditionalShiftEntity>> items;
+
     public AdditionalShiftViewModel(@NonNull Application application) {
         super(application);
+        items = new LiveAdditionalShifts(application, getDao().getItems());
         this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
     }
 
@@ -37,7 +48,29 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         return AppDatabase.getInstance(getApplication()).additionalShiftDao();
     }
 
-    private int getPaymentInCents(@NonNull ShiftUtil.ShiftType shiftType) {
+    @NonNull
+    @Override
+    public LiveData<List<AdditionalShiftEntity>> getItems() {
+        return items;
+    }
+
+    @NonNull
+    @Override
+    LiveData<AdditionalShiftEntity> fetchItem(final long id) {
+        return Transformations.map(items, new Function<List<AdditionalShiftEntity>, AdditionalShiftEntity>() {
+            @Override
+            public AdditionalShiftEntity apply(List<AdditionalShiftEntity> shifts) {
+                if (shifts != null) {
+                    for (AdditionalShiftEntity shift : shifts) {
+                        if (shift.getId() == id) return shift;
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
+    private int getPaymentInCents(@NonNull ShiftType shiftType) {
         @StringRes final int hourlyRateKey;
         @IntegerRes final int hourlyRateDefault;
         switch (shiftType) {
@@ -60,14 +93,13 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     }
 
     @Override
-    public void addNewShift(@NonNull final ShiftUtil.ShiftType shiftType) {
+    public void addNewShift(@NonNull final ShiftType shiftType) {
+        final Pair<LocalTime, LocalTime> times = LiveShiftTypeCalculator.getInstance(getApplication()).getPair(shiftType, PreferenceManager.getDefaultSharedPreferences(getApplication()));
         runAsync(new Runnable() {
             @Override
             public void run() {
-                ShiftUtil.Calculator calculator = ShiftUtil.Calculator.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
-                        calculator.getStartTime(shiftType),
-                        calculator.getEndTime(shiftType),
+                        times,
                         getPaymentInCents(shiftType)
                 ));
             }

@@ -1,7 +1,5 @@
 package com.skepticalone.armour.ui.totals;
 
-import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
@@ -22,16 +20,9 @@ import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
 import java.util.List;
 
-public abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDialogFragment implements LifecycleRegistryOwner, Observer<List<Entity>> {
-
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+public abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDialogFragment implements Observer<List<Entity>> {
 
     private ItemTotalsAdapter<Entity> adapter;
-
-    @Override
-    public final LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
-    }
 
 //    static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
 ////        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
@@ -52,12 +43,12 @@ public abstract class TotalsDialogFragment<Entity extends Item> extends BottomSh
     abstract int getLayout();
 
     @NonNull
-    abstract ItemTotalsAdapter<Entity> createAdapter(@NonNull Context context);
+    abstract ItemTotalsAdapter<Entity> createAdapter();
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = createAdapter(context);
+        adapter = createAdapter();
     }
 
     @Override

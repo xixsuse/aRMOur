@@ -66,7 +66,7 @@ public final class DateTimeUtils {
         return main + " (" + qualifier + ")";
     }
 
-    private static LocalTime getTime(int totalMinutes) {
+    public static LocalTime getTime(int totalMinutes) {
         return new LocalTime(calculateHours(totalMinutes), calculateMinutes(totalMinutes));
     }
 

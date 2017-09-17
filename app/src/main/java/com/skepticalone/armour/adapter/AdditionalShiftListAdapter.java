@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
 import com.skepticalone.armour.util.Comparators;
-import com.skepticalone.armour.util.ShiftUtil;
 
 public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShiftEntity> {
 
-    public AdditionalShiftListAdapter(@NonNull Callbacks callbacks, @NonNull ShiftUtil.Calculator calculator) {
-        super(callbacks, calculator);
+    public AdditionalShiftListAdapter(@NonNull Callbacks callbacks) {
+        super(callbacks);
     }
 
     @Override

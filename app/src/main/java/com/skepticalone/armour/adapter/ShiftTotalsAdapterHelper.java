@@ -6,10 +6,11 @@ import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
-import com.skepticalone.armour.util.ShiftUtil;
+import com.skepticalone.armour.util.ShiftType;
 
 import org.joda.time.Duration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 final class ShiftTotalsAdapterHelper<Entity extends Shift> {
@@ -23,12 +24,9 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             ROW_NUMBER_CUSTOM_SHIFT = 4;
     @NonNull
     private final Callbacks<Entity> callbacks;
-    @NonNull
-    private final ShiftUtil.Calculator calculator;
 
-    ShiftTotalsAdapterHelper(@NonNull Callbacks<Entity> callbacks, @NonNull ShiftUtil.Calculator calculator) {
+    ShiftTotalsAdapterHelper(@NonNull Callbacks<Entity> callbacks) {
         this.callbacks = callbacks;
-        this.calculator = calculator;
     }
 
     @NonNull
@@ -57,29 +55,18 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             firstLine = callbacks.getAllShiftsTitle();
             shifts = allShifts;
         } else {
-            final ShiftUtil.ShiftType shiftType;
-            switch (position) {
-                case ROW_NUMBER_NORMAL_DAY:
-                    shiftType = ShiftUtil.ShiftType.NORMAL_DAY;
-                    firstLine = R.string.normal_days;
-                    break;
-                case ROW_NUMBER_LONG_DAY:
-                    shiftType = ShiftUtil.ShiftType.LONG_DAY;
-                    firstLine = R.string.long_days;
-                    break;
-                case ROW_NUMBER_NIGHT_SHIFT:
-                    shiftType = ShiftUtil.ShiftType.NIGHT_SHIFT;
-                    firstLine = R.string.night_shifts;
-                    break;
-                case ROW_NUMBER_CUSTOM_SHIFT:
-                    shiftType = ShiftUtil.ShiftType.CUSTOM;
-                    firstLine = R.string.custom_shifts;
-                    break;
-                default:
-                    return false;
+            ShiftType shiftType;
+            if (position == ROW_NUMBER_NORMAL_DAY) shiftType = ShiftType.NORMAL_DAY;
+            else if (position == ROW_NUMBER_LONG_DAY) shiftType = ShiftType.LONG_DAY;
+            else if (position == ROW_NUMBER_NIGHT_SHIFT) shiftType = ShiftType.NIGHT_SHIFT;
+            else if (position == ROW_NUMBER_CUSTOM_SHIFT) shiftType = ShiftType.CUSTOM;
+            else return false;
+            icon = shiftType.getIcon();
+            firstLine = shiftType.getPluralTitle();
+            shifts = new ArrayList<>();
+            for (Entity shift : allShifts) {
+                if (shift.getShiftType() == shiftType) shifts.add(shift);
             }
-            icon = ShiftUtil.getShiftIcon(shiftType);
-            shifts = calculator.getFilteredShifts(allShifts, shiftType);
         }
         holder.setupTotals(icon, firstLine, callbacks.getTotalNumber(shifts, holder), callbacks.getThirdLine(getTotalDuration(shifts, holder), shifts, holder));
         return true;

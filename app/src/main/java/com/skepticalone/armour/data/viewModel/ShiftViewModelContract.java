@@ -2,8 +2,8 @@ package com.skepticalone.armour.data.viewModel;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.util.ShiftUtil;
+import com.skepticalone.armour.util.ShiftType;
 
 public interface ShiftViewModelContract<Entity> extends DateViewModelContract<Entity> {
-    void addNewShift(@NonNull ShiftUtil.ShiftType shiftType);
+    void addNewShift(@NonNull ShiftType shiftType);
 }
