@@ -10,6 +10,10 @@ import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
+import org.threeten.bp.Duration;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShiftEntity> {
 
     private static final int
@@ -86,16 +90,16 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     void onItemUpdated(@NonNull RosteredShiftEntity oldShift, @NonNull RosteredShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        if (oldShift.getDurationBetweenShifts() == null ? newShift.getDurationBetweenShifts() != null : (newShift.getDurationBetweenShifts() == null || !oldShift.getDurationBetweenShifts().isEqual(newShift.getDurationBetweenShifts()))) {
+        if (oldShift.getDurationBetweenShifts() == null ? newShift.getDurationBetweenShifts() != null : (newShift.getDurationBetweenShifts() == null || !oldShift.getDurationBetweenShifts().equals(newShift.getDurationBetweenShifts()))) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getDurationOverDay().isEqual(newShift.getDurationOverDay())) {
+        if (!oldShift.getDurationOverDay().equals(newShift.getDurationOverDay())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getDurationOverWeek().isEqual(newShift.getDurationOverWeek())) {
+        if (!oldShift.getDurationOverWeek().equals(newShift.getDurationOverWeek())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getDurationOverFortnight().isEqual(newShift.getDurationOverFortnight())) {
+        if (!oldShift.getDurationOverFortnight().equals(newShift.getDurationOverFortnight())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, oldShift));
         }
         if (oldShift.getCurrentWeekend() == null ? newShift.getCurrentWeekend() != null : (newShift.getCurrentWeekend() == null || !oldShift.getCurrentWeekend().isEqual(newShift.getCurrentWeekend()) || (oldShift.getLastWeekendWorked() == null ? newShift.getLastWeekendWorked() != null : (newShift.getLastWeekendWorked() == null || !oldShift.getLastWeekendWorked().isEqual(newShift.getLastWeekendWorked()))))) {
@@ -108,14 +112,20 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null) {
-            boolean dateChanged = !Comparators.equalLocalDates(oldShift.getShiftData().getStart().toLocalDate(), newShift.getShiftData().getStart().toLocalDate());
-            if (dateChanged || !oldShift.getLoggedShiftData().getStart().toLocalTime().isEqual(newShift.getLoggedShiftData().getStart().toLocalTime())) {
+            final ZoneId zoneId = ZoneId.systemDefault();
+            final boolean dateChanged = !Comparators.equalLocalDates(oldShift.getShiftData().getStart().atZone(zoneId).toLocalDate(), newShift.getShiftData().getStart().atZone(zoneId).toLocalDate());
+            final ZonedDateTime
+                    oldLoggedStart = oldShift.getLoggedShiftData().getStart().atZone(zoneId),
+                    oldLoggedEnd = oldShift.getLoggedShiftData().getEnd().atZone(zoneId),
+                    newLoggedStart = newShift.getLoggedShiftData().getStart().atZone(zoneId),
+                    newLoggedEnd = newShift.getLoggedShiftData().getEnd().atZone(zoneId);
+            if (dateChanged || !oldLoggedStart.toLocalTime().equals(newLoggedStart.toLocalTime())) {
                 notifyItemChanged(ROW_NUMBER_LOGGED_START);
             }
-            if (dateChanged || !oldShift.getLoggedShiftData().getEnd().toLocalTime().isEqual(newShift.getLoggedShiftData().getEnd().toLocalTime())) {
+            if (dateChanged || !oldLoggedEnd.toLocalTime().equals(newLoggedEnd.toLocalTime())) {
                 notifyItemChanged(ROW_NUMBER_LOGGED_END);
             }
-            if (!oldShift.getLoggedShiftData().getDuration().isEqual(newShift.getLoggedShiftData().getDuration())) {
+            if (!Duration.between(oldShift.getLoggedShiftData().getStart(), oldShift.getLoggedShiftData().getEnd()).equals(Duration.between(newShift.getLoggedShiftData().getStart(), newShift.getLoggedShiftData().getEnd()))) {
                 notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             }
         }
@@ -123,6 +133,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
 
     @Override
     boolean bindViewHolder(@NonNull RosteredShiftEntity shift, ItemViewHolder holder, int position) {
+        final ZoneId zoneId = ZoneId.systemDefault();
         if (position == ROW_NUMBER_TOGGLE_LOGGED) {
             final boolean switchChecked;
             final String secondLine;
@@ -131,7 +142,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 secondLine = null;
             } else {
                 switchChecked = true;
-                secondLine = DateTimeUtils.getDurationString(shift.getLoggedShiftData().getDuration());
+                secondLine = DateTimeUtils.getDurationString(Duration.between(shift.getLoggedShiftData().getStart(), shift.getLoggedShiftData().getEnd()));
             }
             holder.setupSwitch(R.drawable.ic_clipboard_black_24dp, switchChecked, new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -149,7 +160,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.changeTime(true, true);
                 }
             });
-            holder.setText(holder.getText(R.string.logged_start), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getStart(), shift.getShiftData().getStart().toLocalDate()));
+            holder.setText(holder.getText(R.string.logged_start), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getStart().atZone(zoneId).toLocalDateTime(), shift.getShiftData().getStart().atZone(zoneId).toLocalDate()));
             holder.secondaryIcon.setVisibility(View.GONE);
             return true;
         } else if (position == ROW_NUMBER_LOGGED_END && shift.getLoggedShiftData() != null) {
@@ -159,7 +170,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.changeTime(false, true);
                 }
             });
-            holder.setText(holder.getText(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd(), shift.getShiftData().getStart().toLocalDate()));
+            holder.setText(holder.getText(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd().atZone(zoneId).toLocalDateTime(), shift.getShiftData().getStart().atZone(zoneId).toLocalDate()));
             holder.secondaryIcon.setVisibility(View.GONE);
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, shift)) {
@@ -178,7 +189,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             } else {
                 holder.setText(
                         holder.getText(R.string.time_between_shifts),
-                        DateTimeUtils.getPeriodString(shift.getDurationBetweenShifts().toPeriodTo(shift.getShiftData().getStart()))
+                        DateTimeUtils.getDurationString(shift.getDurationBetweenShifts())
                 );
                 holder.setCompliant(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts, !shift.insufficientDurationBetweenShifts());
             }

@@ -89,7 +89,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                 holder.setText(holder.getText(R.string.paid));
             } else {
                 holder.setupSwitch(R.drawable.paid_black_24dp, true, onPaidCheckedChangeListener);
-                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid));
+                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid.atZone(ZoneId.systemDefault()).toLocalDateTime()));
             }
             return true;
         } else return super.bindViewHolder(item, holder, position);

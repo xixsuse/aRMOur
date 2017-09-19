@@ -5,8 +5,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
+
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShiftEntity> {
 
@@ -30,7 +34,13 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
     @Nullable
     @Override
     String getThirdLine(@NonNull RosteredShiftEntity shift) {
-        return shift.getLoggedShiftData() == null ? null : DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData());
+        ShiftData loggedShiftData = shift.getLoggedShiftData();
+        if (loggedShiftData == null) return null;
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final ZonedDateTime
+                loggedStart = loggedShiftData.getStart().atZone(zoneId),
+                loggedEnd = loggedShiftData.getEnd().atZone(zoneId);
+        return DateTimeUtils.getTimeSpanString(loggedStart.toLocalDateTime(), loggedEnd.toLocalDateTime());
     }
 
 }

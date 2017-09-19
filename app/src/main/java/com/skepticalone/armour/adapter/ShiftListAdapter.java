@@ -9,6 +9,9 @@ import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<Entity> {
 
     ShiftListAdapter(@NonNull Callbacks callbacks) {
@@ -26,9 +29,13 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     final void bindViewHolder(@NonNull Entity shift, ItemViewHolder holder) {
         holder.primaryIcon.setImageResource(shift.getShiftType().getIcon());
         holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final ZonedDateTime
+                start = shift.getShiftData().getStart().atZone(zoneId),
+                end = shift.getShiftData().getEnd().atZone(zoneId);
         holder.setText(
-                DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()),
-                DateTimeUtils.getTimeSpanString(shift.getShiftData()),
+                DateTimeUtils.getFullDateString(start.toLocalDate()),
+                DateTimeUtils.getTimeSpanString(start.toLocalDateTime(), end.toLocalDateTime()),
                 getThirdLine(shift)
         );
     }

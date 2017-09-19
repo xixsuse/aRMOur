@@ -2,7 +2,8 @@ package com.skepticalone.armour.data.entity;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.DateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
 
@@ -17,21 +18,22 @@ public class ComplianceCheckerTest {
 
     @SuppressWarnings("SameParameterValue")
     private static RosteredShiftEntity newShift(int month, int startDayOfMonth, int startHour, int startMinute, int endHour, int endMinute) {
-        DateTime start = new DateTime(DEFAULT_YEAR, month, startDayOfMonth, startHour, startMinute),
-                end = new DateTime(DEFAULT_YEAR, month, startDayOfMonth, endHour, endMinute);
+        final ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime start = ZonedDateTime.of(DEFAULT_YEAR, month, startDayOfMonth, startHour, startMinute, 0, 0, zoneId),
+                end = ZonedDateTime.of(DEFAULT_YEAR, month, startDayOfMonth, endHour, endMinute, 0, 0, zoneId);
         while (!end.isAfter(start)) {
             end = end.plusDays(1);
         }
-        return new RosteredShiftEntity(new ShiftData(start, end), null, null);
+        return new RosteredShiftEntity(new ShiftData(start.toInstant(), end.toInstant()), null, null);
     }
 
     private void adjustByMinutesAndCheck(int shiftIndex, int startMinutes, int endMinutes) {
         RosteredShiftEntity shift = shifts.get(shiftIndex);
         shifts.set(shiftIndex, new RosteredShiftEntity(new ShiftData(
-                shift.getShiftData().start.plusMinutes(startMinutes),
-                shift.getShiftData().end.plusMinutes(endMinutes)
+                shift.getShiftData().start.plusSeconds(startMinutes * 60),
+                shift.getShiftData().end.plusSeconds(endMinutes * 60)
         ), null, null));
-        checker.process(shifts, );
+        checker.process(shifts, ZoneId.systemDefault());
     }
 
     @Before
@@ -111,7 +113,7 @@ public class ComplianceCheckerTest {
 
     @Test
     public void initialData() {
-        checker.process(shifts, );
+        checker.process(shifts, ZoneId.systemDefault());
         for (RosteredShiftEntity shift : shifts) {
             assertTrue(shift.isCompliant());
             assertFalse("exceedsMaximumDurationOverDay: " + shift.getShiftData().toString(), shift.exceedsMaximumDurationOverDay());
@@ -136,7 +138,7 @@ public class ComplianceCheckerTest {
                 true,
                 false,
                 true
-        ).process(shifts, );
+        ).process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).insufficientDurationBetweenShifts());
     }
@@ -155,7 +157,7 @@ public class ComplianceCheckerTest {
                 true,
                 true,
                 true
-        ).process(shifts, );
+        ).process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(31).isCompliant());
         assertFalse(shifts.get(31).exceedsMaximumDurationOverDay());
     }
@@ -174,7 +176,7 @@ public class ComplianceCheckerTest {
                 true,
                 true,
                 true
-        ).process(shifts, );
+        ).process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(7).isCompliant());
         assertFalse(shifts.get(7).exceedsMaximumDurationOverWeek());
     }
@@ -210,7 +212,7 @@ public class ComplianceCheckerTest {
                 true,
                 true
         );
-        checker.process(shifts, );
+        checker.process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).exceedsMaximumDurationOverFortnight());
     }
@@ -231,7 +233,7 @@ public class ComplianceCheckerTest {
                 true,
                 false
         );
-        checker.process(shifts, );
+        checker.process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
         checker = new RosteredShiftEntity.ComplianceConfiguration(
@@ -257,7 +259,7 @@ public class ComplianceCheckerTest {
                 true,
                 false
         );
-        checker.process(shifts, );
+        checker.process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
     }
