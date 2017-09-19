@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.util.DateTimeUtils;
 import com.skepticalone.armour.util.ShiftType;
 
+import org.threeten.bp.ZoneId;
 
 abstract class ShiftEntity extends ItemEntity implements Shift {
 
@@ -44,13 +46,17 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
                 nightShiftStart,
                 nightShiftEnd;
 
+        @NonNull
+        private final ZoneId zoneId;
+
         ShiftTypeConfiguration(
                 int normalDayStart,
                 int normalDayEnd,
                 int longDayStart,
                 int longDayEnd,
                 int nightShiftStart,
-                int nightShiftEnd
+                int nightShiftEnd,
+                @NonNull ZoneId zoneId
         ) {
             this.normalDayStart = normalDayStart;
             this.normalDayEnd = normalDayEnd;
@@ -58,11 +64,19 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
             this.longDayEnd = longDayEnd;
             this.nightShiftStart = nightShiftStart;
             this.nightShiftEnd = nightShiftEnd;
+            this.zoneId = zoneId;
+        }
+
+        @NonNull
+        @Override
+        public ZoneId getZoneId() {
+            return zoneId;
         }
 
         @Override
         public void process(@NonNull ShiftEntity shift) {
-            int start = shift.shiftData.getStart().getMinuteOfDay(), end = shift.shiftData.getEnd().getMinuteOfDay();
+            final int start = DateTimeUtils.calculateTotalMinutes(shift.getShiftData().getStart().atZone(zoneId).toLocalTime()),
+                    end = DateTimeUtils.calculateTotalMinutes(shift.getShiftData().getEnd().atZone(zoneId).toLocalTime());
             if (start == normalDayStart && end == normalDayEnd) {
                 shift.shiftType = ShiftType.NORMAL_DAY;
             } else if (start == longDayStart && end == longDayEnd) {

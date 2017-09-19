@@ -22,7 +22,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -130,7 +130,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
-        return getPercentage(DateTimeUtils.getDurationString(duration), Math.round(duration.getMillis() * 100f / totalDuration.getMillis()));
+        return getPercentage(DateTimeUtils.getDurationString(duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
 
     void setText(@NonNull String firstLine) {

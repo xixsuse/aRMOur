@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 
@@ -20,17 +20,16 @@ public final class PaymentData {
 
     @Nullable
     @ColumnInfo(name = Contract.COLUMN_NAME_CLAIMED)
-    private final DateTime claimed;
+    private final Instant claimed;
 
     @Nullable
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
-    private final DateTime paid;
+    private final Instant paid;
 
-    @SuppressWarnings("WeakerAccess")
     public PaymentData(
             @NonNull BigDecimal payment,
-            @SuppressWarnings("SameParameterValue") @Nullable DateTime claimed,
-            @SuppressWarnings("SameParameterValue") @Nullable DateTime paid
+            @Nullable Instant claimed,
+            @Nullable Instant paid
     ) {
         this.payment = payment;
         this.claimed = claimed;
@@ -43,12 +42,12 @@ public final class PaymentData {
     }
 
     @Nullable
-    public DateTime getClaimed() {
+    public Instant getClaimed() {
         return claimed;
     }
 
     @Nullable
-    public DateTime getPaid() {
+    public Instant getPaid() {
         return paid;
     }
 

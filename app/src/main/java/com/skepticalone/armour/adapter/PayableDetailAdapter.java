@@ -12,7 +12,8 @@ import com.skepticalone.armour.data.model.Payable;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
 
 public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemDetailAdapter<Entity> {
 
@@ -31,7 +32,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
         if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
             notifyItemChanged(getRowNumberPayment());
         }
-        if (!Comparators.equalDateTimes(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalDateTimes(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
+        if (!Comparators.equalInstants(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalInstants(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
             notifyItemChanged(getRowNumberClaimed());
             notifyItemChanged(getRowNumberPaid());
         }
@@ -66,13 +67,13 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                     callbacks.setClaimed(claimed);
                 }
             } : null;
-            DateTime claimed = item.getPaymentData().getClaimed();
+            Instant claimed = item.getPaymentData().getClaimed();
             if (claimed == null) {
                 holder.setupSwitch(0, false, onClaimedCheckedChangeListener);
                 holder.setText(holder.getText(R.string.claimed));
             } else {
                 holder.setupSwitch(R.drawable.claimed_black_24dp, true, onClaimedCheckedChangeListener);
-                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed));
+                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed.atZone(ZoneId.systemDefault()).toLocalDateTime()));
             }
             return true;
         } else if (position == getRowNumberPaid()) {
@@ -82,7 +83,7 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                     callbacks.setPaid(paid);
                 }
             };
-            DateTime paid = item.getPaymentData().getPaid();
+            Instant paid = item.getPaymentData().getPaid();
             if (paid == null) {
                 holder.setupSwitch(0, false, onPaidCheckedChangeListener);
                 holder.setText(holder.getText(R.string.paid));

@@ -7,7 +7,7 @@ import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalTime;
 
 public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<AdditionalShiftEntity> {
 
@@ -30,8 +30,8 @@ public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<
     }
 
     @Override
-    void saveNewTime(@NonNull LocalTime time, boolean start) {
-        getViewModel().saveNewTime(time, start);
+    void saveNewTime(@NonNull LocalTime time, boolean isStart) {
+        getViewModel().saveNewTime(time, isStart);
     }
 
 }

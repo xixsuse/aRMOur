@@ -9,10 +9,11 @@ import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
+import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.AppConstants;
 
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalTime;
 
 abstract class TimeDialogFragment<Entity> extends DialogFragment<Entity> implements TimePickerDialog.OnTimeSetListener {
 
@@ -45,17 +46,17 @@ abstract class TimeDialogFragment<Entity> extends DialogFragment<Entity> impleme
     @Override
     final void onUpdateView(@NonNull Entity item) {
         ShiftData shiftData = getShiftDataForDisplay(item);
-        LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
-        timePickerDialog.updateTime(time.getHourOfDay(), time.getMinuteOfHour());
+        LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).atZone(LiveShiftTypeCalculator.getInstance(getActivity()).getZoneId(getActivity())).toLocalTime();
+        timePickerDialog.updateTime(time.getHour(), time.getMinute());
     }
 
     @Override
     public final void onTimeSet(TimePicker timePicker, int hourOfDay, int minuteOfHour) {
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            saveNewTime(new LocalTime(hourOfDay, AppConstants.getSteppedMinutes(minuteOfHour)), start);
+            saveNewTime(LocalTime.of(hourOfDay, AppConstants.getSteppedMinutes(minuteOfHour)), start);
         }
     }
 
-    abstract void saveNewTime(@NonNull LocalTime time, boolean start);
+    abstract void saveNewTime(@NonNull LocalTime time, boolean isStart);
 
 }

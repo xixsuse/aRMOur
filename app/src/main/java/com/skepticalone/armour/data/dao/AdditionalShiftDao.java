@@ -14,10 +14,11 @@ import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
-import com.skepticalone.armour.data.util.DateTimeConverter;
+import com.skepticalone.armour.data.util.InstantConverter;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         return payableDaoHelper;
     }
 
-    public final void setTimesSync(long id, @NonNull DateTime start, @NonNull DateTime end) {
+    public final void setTimesSync(long id, @NonNull Instant start, @NonNull Instant end) {
         SupportSQLiteStatement setTimesStatement = getDatabase().compileStatement("UPDATE " +
                 Contract.AdditionalShifts.TABLE_NAME +
                 " SET " +
@@ -54,8 +55,8 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
                 " = ? WHERE " +
                 BaseColumns._ID +
                 " = ?");
-        setTimesStatement.bindLong(1, start.getMillis());
-        setTimesStatement.bindLong(2, end.getMillis());
+        setTimesStatement.bindLong(1, start.getEpochSecond());
+        setTimesStatement.bindLong(2, end.getEpochSecond());
         setTimesStatement.bindLong(3, id);
         updateInTransaction(setTimesStatement);
     }
@@ -66,7 +67,7 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         return Contract.AdditionalShifts.TABLE_NAME;
     }
 
-    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, int paymentInCents) {
+    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int paymentInCents) {
         SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
                 Contract.AdditionalShifts.TABLE_NAME +
                 " (" +
@@ -78,11 +79,11 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
                 ") VALUES (?,?,?)");
         insertStatement.bindLong(1, paymentInCents);
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
-        @Nullable final DateTime lastShiftEnd = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
+        @Nullable final Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, false);
-        insertStatement.bindLong(2, shiftData.getStart().getMillis());
-        insertStatement.bindLong(3, shiftData.getEnd().getMillis());
+        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, false);
+        insertStatement.bindLong(2, shiftData.getStart().getEpochSecond());
+        insertStatement.bindLong(3, shiftData.getEnd().getEpochSecond());
         getDatabase().beginTransaction();
         try {
             long id = insertStatement.executeInsert();

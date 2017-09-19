@@ -13,11 +13,13 @@ import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.AppConstants;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.ReadableInstant;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Duration;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
@@ -236,33 +238,41 @@ public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
             this.checkConsecutiveWeekends = checkConsecutiveWeekends;
         }
 
-        private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
+        private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull Instant cutOff) {
             Duration totalDuration = Duration.ZERO;
             do {
                 ShiftData shiftData = shifts.get(currentIndex).getShiftData();
                 if (!shiftData.getEnd().isAfter(cutOff)) break;
-                totalDuration = totalDuration.plus(shiftData.getStart().isBefore(cutOff) ? new Duration(cutOff, shiftData.getEnd()) : shiftData.getDuration());
+                totalDuration = totalDuration.plus(Duration.between(shiftData.getStart().isBefore(cutOff) ? cutOff : shiftData.getStart(), shiftData.getEnd()));
             } while (--currentIndex >= 0);
             return totalDuration;
         }
 
         @SuppressWarnings("ConstantConditions")
         @Override
-        public void process(@NonNull List<RosteredShiftEntity> shifts) {
+        public void process(@NonNull List<RosteredShiftEntity> shifts, @NonNull ZoneId zoneId) {
             @Nullable LocalDate lastElapsedWeekendWorked = null;
             @Nullable LocalDate lastWeekendProcessed = null;
             for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
-                RosteredShiftEntity shift = shifts.get(currentIndex);
-                shift.durationOverDay = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusDays(1));
+                final RosteredShiftEntity shift = shifts.get(currentIndex);
+                final ZonedDateTime start = shift.getShiftData().getStart().atZone(zoneId),
+                        end = shift.getShiftData().getEnd().atZone(zoneId);
+                shift.durationOverDay = getDurationSince(shifts, currentIndex, end.minusDays(1).toInstant());
                 shift.exceedsMaximumDurationOverDay = checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(shift.durationOverDay);
-                shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusWeeks(1));
+                shift.durationOverWeek = getDurationSince(shifts, currentIndex, end.minusWeeks(1).toInstant());
                 shift.exceedsMaximumDurationOverWeek = checkDurationOverWeek && AppConstants.exceedsMaximumDurationOverWeek(shift.durationOverWeek);
-                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, shift.getShiftData().getEnd().minusWeeks(2));
+                shift.durationOverFortnight = getDurationSince(shifts, currentIndex, end.minusWeeks(2).toInstant());
                 shift.exceedsMaximumDurationOverFortnight = checkDurationOverFortnight && AppConstants.exceedsMaximumDurationOverFortnight(shift.durationOverFortnight);
-                shift.durationBetweenShifts = currentIndex == 0 ? null : new Duration(shifts.get(currentIndex - 1).getShiftData().getEnd(), shift.getShiftData().getStart());
-                shift.insufficientDurationBetweenShifts = shift.durationBetweenShifts != null && checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
-                DateTime weekendStart = shift.getShiftData().getStart().withDayOfWeek(DateTimeConstants.SATURDAY).withTimeAtStartOfDay();
-                if (weekendStart.isBefore(shift.getShiftData().getEnd()) && shift.getShiftData().getStart().isBefore(weekendStart.plusDays(2))) {
+                if (currentIndex == 0) {
+                    shift.durationBetweenShifts = null;
+                    shift.insufficientDurationBetweenShifts = false;
+                } else {
+                    shift.durationBetweenShifts = Duration.between(shifts.get(currentIndex - 1).getShiftData().getEnd(), shift.getShiftData().getStart());
+                    shift.insufficientDurationBetweenShifts = checkDurationBetweenShifts && AppConstants.insufficientDurationBetweenShifts(shift.durationBetweenShifts);
+                }
+                final ZonedDateTime weekendStart = start.with(DayOfWeek.SATURDAY).with(LocalTime.MIN),
+                        weekendEnd = weekendStart.plusDays(2);
+                if (weekendStart.isBefore(end) && start.isBefore(weekendEnd)) {
                     // I am working this weekend
                     shift.currentWeekend = weekendStart.toLocalDate();
                     if (lastWeekendProcessed != null && !shift.currentWeekend.isEqual(lastWeekendProcessed)) {

@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.entity.PaymentData;
 import com.skepticalone.armour.data.entity.ShiftData;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 
 import java.math.BigDecimal;
 
@@ -17,8 +17,8 @@ public final class Comparators {
         return string1 == null ? string2 == null : string1.equals(string2);
     }
 
-    public static boolean equalDateTimes(@Nullable final DateTime date1, @Nullable final DateTime date2) {
-        return date1 == null ? date2 == null : (date2 != null && date1.getMillis() == date2.getMillis());
+    public static boolean equalInstants(@Nullable final Instant instant1, @Nullable final Instant instant2) {
+        return instant1 == null ? instant2 == null : (instant2 != null && instant1.getEpochSecond() == instant2.getEpochSecond());
     }
 
     public static boolean equalLocalDates(@NonNull final LocalDate date1, @NonNull final LocalDate date2) {
@@ -31,13 +31,13 @@ public final class Comparators {
 
     public static boolean equalPaymentData(@NonNull final PaymentData paymentData1, @NonNull final PaymentData paymentData2) {
         return equalBigDecimals(paymentData1.getPayment(), paymentData2.getPayment()) &&
-                equalDateTimes(paymentData1.getClaimed(), paymentData2.getClaimed()) &&
-                equalDateTimes(paymentData1.getPaid(), paymentData2.getPaid());
+                equalInstants(paymentData1.getClaimed(), paymentData2.getClaimed()) &&
+                equalInstants(paymentData1.getPaid(), paymentData2.getPaid());
     }
 
     public static boolean equalShiftData(@NonNull final ShiftData shiftData1, @NonNull final ShiftData shiftData2) {
-        return shiftData1.getStart().getMillis() == shiftData2.getStart().getMillis() &&
-                shiftData1.getEnd().getMillis() == shiftData2.getEnd().getMillis();
+        return shiftData1.getStart().getEpochSecond() == shiftData2.getStart().getEpochSecond() &&
+                shiftData1.getEnd().getEpochSecond() == shiftData2.getEnd().getEpochSecond();
     }
 
 }

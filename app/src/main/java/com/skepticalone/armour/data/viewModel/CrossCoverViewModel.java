@@ -10,7 +10,7 @@ import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.CrossCoverEntity;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 import java.math.BigDecimal;
 

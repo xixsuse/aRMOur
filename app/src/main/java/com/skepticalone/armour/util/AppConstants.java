@@ -2,7 +2,7 @@ package com.skepticalone.armour.util;
 
 import android.support.annotation.NonNull;
 
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 public final class AppConstants {
 
@@ -10,10 +10,6 @@ public final class AppConstants {
     public static final int MAXIMUM_HOURS_OVER_DAY = 16;
     public static final int MAXIMUM_HOURS_OVER_WEEK = 72;
     public static final int MAXIMUM_HOURS_OVER_FORTNIGHT = 144;
-    public static final Duration MINIMUM_DURATION_BETWEEN_SHIFTS = Duration.standardHours(MINIMUM_HOURS_BETWEEN_SHIFTS);
-    private static final Duration MAXIMUM_DURATION_OVER_DAY = Duration.standardHours(MAXIMUM_HOURS_OVER_DAY);
-    private static final Duration MAXIMUM_DURATION_OVER_WEEK = Duration.standardHours(MAXIMUM_HOURS_OVER_WEEK);
-    private static final Duration MAXIMUM_DURATION_OVER_FORTNIGHT = Duration.standardHours(MAXIMUM_HOURS_OVER_FORTNIGHT);
     private static final int MINUTES_PER_STEP = 5;
 
     private AppConstants() {
@@ -24,19 +20,19 @@ public final class AppConstants {
     }
 
     public static boolean insufficientDurationBetweenShifts(@NonNull Duration duration) {
-        return duration.isShorterThan(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS);
+        return duration.compareTo(Duration.ofHours(MINIMUM_HOURS_BETWEEN_SHIFTS)) == -1;
     }
 
     public static boolean exceedsMaximumDurationOverDay(@NonNull Duration duration) {
-        return duration.isLongerThan(MAXIMUM_DURATION_OVER_DAY);
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_DAY)) == 1;
     }
 
     public static boolean exceedsMaximumDurationOverWeek(@NonNull Duration duration) {
-        return duration.isLongerThan(MAXIMUM_DURATION_OVER_WEEK);
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_WEEK)) == 1;
     }
 
     public static boolean exceedsMaximumDurationOverFortnight(@NonNull Duration duration) {
-        return duration.isLongerThan(MAXIMUM_DURATION_OVER_FORTNIGHT);
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_FORTNIGHT)) == 1;
     }
 
 }

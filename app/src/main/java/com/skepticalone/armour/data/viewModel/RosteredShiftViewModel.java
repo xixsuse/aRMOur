@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
@@ -11,7 +12,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.util.Pair;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
@@ -22,8 +22,9 @@ import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftType;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
@@ -148,12 +149,14 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 
     @Override
     public void addNewShift(@NonNull final ShiftType shiftType) {
-        final Pair<LocalTime, LocalTime> times = LiveShiftTypeCalculator.getInstance(getApplication()).getPair(shiftType, PreferenceManager.getDefaultSharedPreferences(getApplication()));
         runAsync(new Runnable() {
             @Override
             public void run() {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                LiveShiftTypeCalculator calculator = LiveShiftTypeCalculator.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
-                        times,
+                        calculator.getPair(shiftType, sharedPreferences),
+                        calculator.getZoneId(sharedPreferences),
                         skipWeekends(shiftType)
                 ));
             }
@@ -194,17 +197,15 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     public void saveNewDate(@NonNull LocalDate date) {
         RosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date));
+        ZoneId zoneId = getZoneId();
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date, zoneId), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date, zoneId));
     }
 
     public void saveNewTime(@NonNull LocalTime time, boolean start, boolean logged) {
         RosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null || (logged && shift.getLoggedShiftData() == null)) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, start), logged ? shift.getLoggedShiftData().withNewTime(time, start) : shift.getLoggedShiftData());
+        ZoneId zoneId = getZoneId();
+        saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, zoneId, start), logged ? shift.getLoggedShiftData().withNewTime(time, zoneId, start) : shift.getLoggedShiftData());
     }
-//
-//    private boolean getBooleanPreference(@StringRes int preferenceKey, @BoolRes int defaultValue) {
-//        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(preferenceKey), getApplication().getResources().getBoolean(defaultValue));
-//    }
 
 }

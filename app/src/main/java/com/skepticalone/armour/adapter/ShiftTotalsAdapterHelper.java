@@ -8,7 +8,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.ShiftType;
 
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 import java.util.ArrayList;
 import java.util.List;

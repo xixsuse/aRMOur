@@ -9,7 +9,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetailAdapterHelper<Entity> {
 

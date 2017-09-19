@@ -10,12 +10,14 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.AdditionalShift;
 
-import org.joda.time.DateTimeConstants;
+import org.threeten.bp.Duration;
 
 import java.math.BigDecimal;
 
 @Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
 public final class AdditionalShiftEntity extends ShiftEntity implements AdditionalShift {
+
+    private static final long SECONDS_PER_HOUR = 3600L;
 
     @NonNull
     @Embedded
@@ -32,8 +34,8 @@ public final class AdditionalShiftEntity extends ShiftEntity implements Addition
         super(shiftData, comment);
         this.paymentData = paymentData;
         totalPayment = this.paymentData.getPayment()
-                .multiply(BigDecimal.valueOf(getShiftData().getDuration().getMillis()))
-                .divide(BigDecimal.valueOf(DateTimeConstants.MILLIS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
+                .multiply(BigDecimal.valueOf(Duration.between(getShiftData().getStart(), getShiftData().getEnd()).getSeconds()))
+                .divide(BigDecimal.valueOf(SECONDS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
     }
 
     @NonNull

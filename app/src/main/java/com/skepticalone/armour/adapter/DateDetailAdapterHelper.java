@@ -9,7 +9,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 abstract class DateDetailAdapterHelper<Entity> {
 

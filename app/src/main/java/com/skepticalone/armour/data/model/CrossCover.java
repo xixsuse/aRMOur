@@ -2,7 +2,7 @@ package com.skepticalone.armour.data.model;
 
 import android.support.annotation.NonNull;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 public interface CrossCover extends Payable {
 

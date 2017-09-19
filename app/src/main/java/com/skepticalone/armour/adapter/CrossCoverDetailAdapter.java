@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.data.entity.CrossCoverEntity;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 public final class CrossCoverDetailAdapter extends PayableDetailAdapter<CrossCoverEntity> {
 

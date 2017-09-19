@@ -4,13 +4,13 @@ import android.app.Application;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.util.Pair;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
@@ -21,8 +21,8 @@ import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftType;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -94,12 +94,14 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
 
     @Override
     public void addNewShift(@NonNull final ShiftType shiftType) {
-        final Pair<LocalTime, LocalTime> times = LiveShiftTypeCalculator.getInstance(getApplication()).getPair(shiftType, PreferenceManager.getDefaultSharedPreferences(getApplication()));
         runAsync(new Runnable() {
             @Override
             public void run() {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                LiveShiftTypeCalculator calculator = LiveShiftTypeCalculator.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
-                        times,
+                        calculator.getPair(shiftType, sharedPreferences),
+                        calculator.getZoneId(sharedPreferences),
                         getPaymentInCents(shiftType)
                 ));
             }
@@ -124,14 +126,14 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     public void saveNewDate(@NonNull LocalDate date) {
         AdditionalShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date));
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date, getZoneId()));
     }
 
     @MainThread
-    public void saveNewTime(@NonNull LocalTime time, boolean start) {
+    public void saveNewTime(@NonNull LocalTime time, boolean isStart) {
         AdditionalShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, start));
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, getZoneId(), isStart));
     }
 
     @Override

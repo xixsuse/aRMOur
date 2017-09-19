@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.entity.ShiftData;
 
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDate;
 
 public interface RosteredShift extends Shift {
 

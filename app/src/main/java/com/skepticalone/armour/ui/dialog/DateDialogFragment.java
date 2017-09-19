@@ -9,7 +9,7 @@ import android.widget.DatePicker;
 
 import com.skepticalone.armour.data.viewModel.DateViewModelContract;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> implements DatePickerDialog.OnDateSetListener {
 
@@ -26,7 +26,7 @@ abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> impleme
         datePickerDialog = new DatePickerDialog(
                 getActivity(), this,
                 today.getYear(),
-                today.getMonthOfYear() - 1,
+                today.getMonthValue() - 1,
                 today.getDayOfMonth()
         );
         return datePickerDialog;
@@ -38,13 +38,13 @@ abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> impleme
     @Override
     final void onUpdateView(@NonNull Entity item) {
         LocalDate date = getDateForDisplay(item);
-        datePickerDialog.updateDate(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth());
+        datePickerDialog.updateDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
     }
 
     @Override
     public final void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            getViewModel().saveNewDate(new LocalDate(year, month + 1, dayOfMonth));
+            getViewModel().saveNewDate(LocalDate.of(year, month + 1, dayOfMonth));
         }
     }
 

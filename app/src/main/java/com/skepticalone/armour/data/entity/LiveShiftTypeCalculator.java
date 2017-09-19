@@ -13,7 +13,8 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.DateTimeUtils;
 import com.skepticalone.armour.util.ShiftType;
 
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
 
 public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -27,7 +28,8 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
             keyLongDayStart,
             keyLongDayEnd,
             keyNightShiftStart,
-            keyNightShiftEnd;
+            keyNightShiftEnd,
+            keyTimeZoneId;
 
     private final int
             defaultNormalDayStart,
@@ -44,6 +46,7 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
         keyLongDayEnd = resources.getString(R.string.key_end_long_day);
         keyNightShiftStart = resources.getString(R.string.key_start_night_shift);
         keyNightShiftEnd = resources.getString(R.string.key_end_night_shift);
+        keyTimeZoneId = resources.getString(R.string.key_time_zone_id);
         defaultNormalDayStart = resources.getInteger(R.integer.default_start_normal_day);
         defaultNormalDayEnd = resources.getInteger(R.integer.default_end_normal_day);
         defaultLongDayStart = resources.getInteger(R.integer.default_start_long_day);
@@ -84,8 +87,20 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
                 sharedPreferences.getInt(keyLongDayStart, defaultLongDayStart),
                 sharedPreferences.getInt(keyLongDayEnd, defaultLongDayEnd),
                 sharedPreferences.getInt(keyNightShiftStart, defaultNightShiftStart),
-                sharedPreferences.getInt(keyNightShiftEnd, defaultNightShiftEnd)
+                sharedPreferences.getInt(keyNightShiftEnd, defaultNightShiftEnd),
+                getZoneId(sharedPreferences)
         ));
+    }
+
+    @NonNull
+    public ZoneId getZoneId(@NonNull SharedPreferences sharedPreferences) {
+        String zoneId = sharedPreferences.getString(keyTimeZoneId, null);
+        return zoneId == null ? ZoneId.systemDefault() : ZoneId.of(zoneId);
+    }
+
+    @NonNull
+    public ZoneId getZoneId(@NonNull Context context) {
+        return getZoneId(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
     @NonNull

@@ -13,6 +13,9 @@ import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
+import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
+
+import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
@@ -143,13 +146,18 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
     }
 
     @Override
-    public void saveNewComment(@Nullable final String comment) {
+    public final void saveNewComment(@Nullable final String comment) {
         runAsync(new Runnable() {
             @Override
             public void run() {
                 getDao().setCommentSync(getCurrentItemId(), comment);
             }
         });
+    }
+
+    @NonNull
+    final ZoneId getZoneId() {
+        return LiveShiftTypeCalculator.getInstance(getApplication()).getZoneId(getApplication());
     }
 
 }

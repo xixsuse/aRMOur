@@ -1,56 +1,41 @@
 package com.skepticalone.armour.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.util.AppConstants;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Duration;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 public final class ShiftData {
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_START)
-    final DateTime start;
+    final Instant start;
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_END)
-    final DateTime end;
+    final Instant end;
 
-    @NonNull
-    @Ignore
-    private final Duration duration;
-
-    @SuppressWarnings("WeakerAccess")
     public ShiftData(
-            @NonNull DateTime start,
-            @NonNull DateTime end
+            @NonNull Instant start,
+            @NonNull Instant end
     ) {
         this.start = start;
         this.end = end;
-        duration = new Duration(start, end);
     }
 
     @NonNull
-    private static DateTime getNewStart(@NonNull final LocalTime start, @Nullable final DateTime earliestStart, boolean skipWeekends) {
-        DateTime newStart = (earliestStart == null ? DateTime.now() : earliestStart).withTime(start);
-        while ((earliestStart != null && newStart.isBefore(earliestStart)) || (skipWeekends && newStart.getDayOfWeek() >= DateTimeConstants.SATURDAY)) {
-            newStart = newStart.plusDays(1);
-        }
-        return newStart;
-    }
-
-    @NonNull
-    private static DateTime getNewEnd(@NonNull final DateTime start, @NonNull final LocalTime end) {
-        DateTime newEnd = start.withTime(end);
+    private static ZonedDateTime getNewEnd(@NonNull final ZonedDateTime start, @NonNull final LocalTime endTime) {
+        ZonedDateTime newEnd = start.with(endTime);
         while (!newEnd.isAfter(start)) {
             newEnd = newEnd.plusDays(1);
         }
@@ -58,50 +43,55 @@ public final class ShiftData {
     }
 
     @NonNull
-    public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart, boolean skipWeekends) {
-        final DateTime newStart = getNewStart(startTime, earliestStart, skipWeekends),
-                newEnd = getNewEnd(newStart, endTime);
-        return new ShiftData(newStart, newEnd);
+    public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
+        ZonedDateTime newStart = ZonedDateTime.ofInstant(earliestStart == null ? Instant.now() : earliestStart, zoneId).with(startTime);
+        while ((earliestStart != null && newStart.toInstant().isBefore(earliestStart)) || (skipWeekends && (newStart.getDayOfWeek() == DayOfWeek.SATURDAY || newStart.getDayOfWeek() == DayOfWeek.SUNDAY))) {
+            newStart = newStart.plusDays(1);
+        }
+        return new ShiftData(newStart.toInstant(), getNewEnd(newStart, endTime).toInstant());
     }
 
     @NonNull
-    public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final DateTime earliestStart, boolean skipWeekends) {
-        return withEarliestStart(startTime, endTime, earliestStart == null ? null : earliestStart.plus(AppConstants.MINIMUM_DURATION_BETWEEN_SHIFTS), skipWeekends);
+    public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
+        return withEarliestStart(startTime, endTime, earliestStart == null ? null : earliestStart.plus(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)), zoneId, skipWeekends);
     }
 
     @NonNull
-    public DateTime getStart() {
+    public Instant getStart() {
         return start;
     }
 
     @NonNull
-    public DateTime getEnd() {
+    public Instant getEnd() {
         return end;
     }
+//
+//    @NonNull
+//    public Duration getDuration() {
+//        return Duration.between(start, end);
+//    }
 
     @NonNull
-    public Duration getDuration() {
-        return duration;
+    public ShiftData withNewDate(@NonNull final LocalDate newDate, @NonNull ZoneId zoneId) {
+        final ZonedDateTime newStart = getStart().atZone(zoneId).with(newDate), newEnd = getNewEnd(newStart, getEnd().atZone(zoneId).toLocalTime());
+        return new ShiftData(newStart.toInstant(), newEnd.toInstant());
     }
 
     @NonNull
-    public ShiftData withNewDate(@NonNull final LocalDate newDate) {
-        final DateTime newStart = start.withDate(newDate), newEnd = getNewEnd(newStart, end.toLocalTime());
-        return new ShiftData(newStart, newEnd);
-    }
-
-    @NonNull
-    public ShiftData withNewTime(@NonNull final LocalTime time, boolean isStart) {
+    public ShiftData withNewTime(@NonNull final LocalTime time, @NonNull ZoneId zoneId, boolean isStart) {
+        final ZonedDateTime oldStart = getStart().atZone(zoneId);
+        final LocalTime oldEndTime = getEnd().atZone(zoneId).toLocalTime();
         if (isStart) {
-            final DateTime newStart = start.withTime(time);
-            return new ShiftData(newStart, getNewEnd(newStart, end.toLocalTime()));
+            final ZonedDateTime newStart = oldStart.with(time);
+            return new ShiftData(newStart.toInstant(), getNewEnd(newStart, oldEndTime).toInstant());
         } else {
-            return new ShiftData(start, getNewEnd(start, time));
+            return new ShiftData(getStart(), getNewEnd(oldStart, oldEndTime).toInstant());
         }
     }
 
     @Override
     public String toString() {
-        return DateTimeFormat.shortDateTime().print(start) + " - " + DateTimeFormat.shortDateTime().print(end);
+        return getStart().toString() + " - " + getEnd().toString();
     }
+
 }

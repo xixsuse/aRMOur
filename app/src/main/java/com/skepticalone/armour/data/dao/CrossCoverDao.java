@@ -14,7 +14,7 @@ import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.entity.CrossCoverEntity;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
 
     public final void setDateSync(long id, @NonNull LocalDate date) {
         SupportSQLiteStatement setDateStatement = getUpdateStatement(Contract.CrossCoverShifts.COLUMN_NAME_DATE);
-        setDateStatement.bindLong(1, LocalDateConverter.dateToMillis(date));
+        setDateStatement.bindLong(1, LocalDateConverter.dateToEpochDay(date));
         setDateStatement.bindLong(2, id);
         updateInTransaction(setDateStatement);
     }
@@ -66,9 +66,9 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
                 ") VALUES (?,?)");
         insertStatement.bindLong(1, paymentInCents);
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_DATE, null);
-        @Nullable final LocalDate lastDate = cursor.moveToFirst() ? LocalDateConverter.millisToDate(cursor.getLong(0)) : null;
+        @Nullable final LocalDate lastDate = cursor.moveToFirst() ? LocalDateConverter.epochDayToDate(cursor.getLong(0)) : null;
         cursor.close();
-        insertStatement.bindLong(2, LocalDateConverter.dateToMillis(CrossCoverEntity.getNewDate(lastDate)));
+        insertStatement.bindLong(2, LocalDateConverter.dateToEpochDay(CrossCoverEntity.getNewDate(lastDate)));
         getDatabase().beginTransaction();
         try {
             long id = insertStatement.executeInsert();

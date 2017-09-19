@@ -33,6 +33,8 @@
     <string name="key_default_cross_cover_payment">key_default_cross_cover_payment</string>
     <integer name="default_cross_cover_payment">15000</integer>
 
+    <string name="key_time_zone_id">key_time_zone_id</string>
+
     <string name="key_check_duration_over_day">key_check_duration_over_day</string>
     <string name="check_duration_over_day_title">Check duration over day</string>
     <bool name="default_check_duration_over_day">true</bool>

@@ -7,7 +7,7 @@ import com.skepticalone.armour.data.entity.CrossCoverEntity;
 import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.armour.data.viewModel.DateViewModelContract;
 
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
 
 public final class CrossCoverDateDialogFragment extends DateDialogFragment<CrossCoverEntity> {
 

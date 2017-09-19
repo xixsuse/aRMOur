@@ -1,8 +1,8 @@
 package com.skepticalone.armour.data.entity;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.threeten.bp.DateTime;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class ComplianceCheckerTest {
                 shift.getShiftData().start.plusMinutes(startMinutes),
                 shift.getShiftData().end.plusMinutes(endMinutes)
         ), null, null));
-        checker.process(shifts);
+        checker.process(shifts, );
     }
 
     @Before
@@ -111,7 +111,7 @@ public class ComplianceCheckerTest {
 
     @Test
     public void initialData() {
-        checker.process(shifts);
+        checker.process(shifts, );
         for (RosteredShiftEntity shift : shifts) {
             assertTrue(shift.isCompliant());
             assertFalse("exceedsMaximumDurationOverDay: " + shift.getShiftData().toString(), shift.exceedsMaximumDurationOverDay());
@@ -136,7 +136,7 @@ public class ComplianceCheckerTest {
                 true,
                 false,
                 true
-        ).process(shifts);
+        ).process(shifts, );
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).insufficientDurationBetweenShifts());
     }
@@ -155,7 +155,7 @@ public class ComplianceCheckerTest {
                 true,
                 true,
                 true
-        ).process(shifts);
+        ).process(shifts, );
         assertTrue(shifts.get(31).isCompliant());
         assertFalse(shifts.get(31).exceedsMaximumDurationOverDay());
     }
@@ -174,7 +174,7 @@ public class ComplianceCheckerTest {
                 true,
                 true,
                 true
-        ).process(shifts);
+        ).process(shifts, );
         assertTrue(shifts.get(7).isCompliant());
         assertFalse(shifts.get(7).exceedsMaximumDurationOverWeek());
     }
@@ -210,7 +210,7 @@ public class ComplianceCheckerTest {
                 true,
                 true
         );
-        checker.process(shifts);
+        checker.process(shifts, );
         assertTrue(shifts.get(11).isCompliant());
         assertFalse(shifts.get(11).exceedsMaximumDurationOverFortnight());
     }
@@ -231,7 +231,7 @@ public class ComplianceCheckerTest {
                 true,
                 false
         );
-        checker.process(shifts);
+        checker.process(shifts, );
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
         checker = new RosteredShiftEntity.ComplianceConfiguration(
@@ -257,7 +257,7 @@ public class ComplianceCheckerTest {
                 true,
                 false
         );
-        checker.process(shifts);
+        checker.process(shifts, );
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
     }

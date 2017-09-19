@@ -9,7 +9,7 @@ import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 
-import org.joda.time.LocalTime;
+import org.threeten.bp.LocalTime;
 
 public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<RosteredShiftEntity> {
 
@@ -50,8 +50,8 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
     }
 
     @Override
-    void saveNewTime(@NonNull LocalTime time, boolean start) {
-        getViewModel().saveNewTime(time, start, logged);
+    void saveNewTime(@NonNull LocalTime time, boolean isStart) {
+        getViewModel().saveNewTime(time, isStart, logged);
     }
 
 }

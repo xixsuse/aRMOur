@@ -51,7 +51,7 @@ public final class LiveRosteredShifts extends MediatorLiveData<List<RosteredShif
                 shiftTypeCalculator.process(shift);
                 result.add(shift);
             }
-            complianceChecker.process(result);
+            complianceChecker.process(result, shiftTypeCalculator.getZoneId());
             setValue(result);
         }
     }

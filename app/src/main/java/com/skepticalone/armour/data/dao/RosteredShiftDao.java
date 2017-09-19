@@ -14,10 +14,11 @@ import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
-import com.skepticalone.armour.data.util.DateTimeConverter;
+import com.skepticalone.armour.data.util.InstantConverter;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
@@ -49,13 +50,13 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             " = :loggedEnd WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract void setShiftTimesSync(long id, DateTime start, DateTime end, @Nullable DateTime loggedStart, @Nullable DateTime loggedEnd);
+    public abstract void setShiftTimesSync(long id, @NonNull Instant start, @NonNull Instant end, @Nullable Instant loggedStart, @Nullable Instant loggedEnd);
 
-    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, boolean skipWeekends) {
+    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
         Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
-        @Nullable final DateTime lastShiftEnd = cursor.moveToFirst() ? DateTimeConverter.millisToDateTime(cursor.getLong(0)) : null;
+        @Nullable final Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, skipWeekends);
+        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
         SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
                 Contract.RosteredShifts.TABLE_NAME +
                 " (" +
@@ -63,8 +64,8 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
                 ", " +
                 Contract.COLUMN_NAME_SHIFT_END +
                 ") VALUES (?,?)");
-        insertStatement.bindLong(1, shiftData.getStart().getMillis());
-        insertStatement.bindLong(2, shiftData.getEnd().getMillis());
+        insertStatement.bindLong(1, shiftData.getStart().getEpochSecond());
+        insertStatement.bindLong(2, shiftData.getEnd().getEpochSecond());
         getDatabase().beginTransaction();
         try {
             long id = insertStatement.executeInsert();
