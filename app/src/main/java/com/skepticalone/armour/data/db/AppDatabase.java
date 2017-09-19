@@ -22,7 +22,7 @@ import com.skepticalone.armour.data.util.InstantConverter;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 import com.skepticalone.armour.data.util.MoneyConverter;
 
-@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 2)
+@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 3)
 @TypeConverters({LocalDateConverter.class, InstantConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -40,10 +40,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     .addMigrations(new Migration(1, 2) {
                         @Override
                         public void migrate(SupportSQLiteDatabase database) {
-                            // TODO: 17/09/17  update LocalDate from millis to epochDay
-                            // TODO: 17/09/17  update TimeStamps from millis to epochSeconds
                         }
-                    })
+                    }, new Migration2to3())
                     .build();
         }
         return DATABASE;
