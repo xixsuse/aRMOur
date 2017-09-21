@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.util.MoneyConverter;
 
+import org.threeten.bp.Instant;
+
 import java.math.BigDecimal;
 
 public final class PayableDaoHelper {
@@ -25,7 +27,7 @@ public final class PayableDaoHelper {
     }
 
     private void setClaimedOrPaidSync(long id, boolean claimedOrPaid, @NonNull SupportSQLiteStatement statement) {
-        if (claimedOrPaid) statement.bindLong(1, System.currentTimeMillis());
+        if (claimedOrPaid) statement.bindLong(1, Instant.now().getEpochSecond());
         else statement.bindNull(1);
         statement.bindLong(2, id);
         dao.updateInTransaction(statement);

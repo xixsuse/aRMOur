@@ -18,8 +18,8 @@ android {
         applicationId 'com.skepticalone.armour'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 5
-        versionName '0.0.5'
+        versionCode 6
+        versionName "1.0.2"
         resConfigs "en"
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         javaCompileOptions {
