@@ -1,13 +1,13 @@
 package com.skepticalone.armour.data.dao;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.persistence.db.SupportSQLiteStatement;
+import android.arch.persistence.db.SupportSQLiteQueryBuilder;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
@@ -22,15 +22,6 @@ import java.util.List;
 public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
 
     @NonNull
-    private static final String GET_LAST_SHIFT_DATE =
-            "SELECT " +
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-            " FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " ORDER BY " +
-            Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-            " DESC LIMIT 1";
-    @NonNull
     private final PayableDaoHelper payableDaoHelper;
 
     CrossCoverDao(@NonNull AppDatabase database) {
@@ -44,10 +35,9 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
     }
 
     public final void setDateSync(long id, @NonNull LocalDate date) {
-        SupportSQLiteStatement setDateStatement = getUpdateStatement(Contract.CrossCoverShifts.COLUMN_NAME_DATE);
-        setDateStatement.bindLong(1, LocalDateConverter.dateToEpochDay(date));
-        setDateStatement.bindLong(2, id);
-        updateInTransaction(setDateStatement);
+        ContentValues values = new ContentValues();
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, LocalDateConverter.dateToEpochDay(date));
+        updateInTransaction(id, values);
     }
 
     @NonNull
@@ -57,26 +47,19 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
     }
 
     synchronized public final long insertSync(int paymentInCents){
-        SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
-                Contract.CrossCoverShifts.TABLE_NAME +
-                " (" +
-                Contract.COLUMN_NAME_PAYMENT +
-                ", " +
-                Contract.CrossCoverShifts.COLUMN_NAME_DATE +
-                ") VALUES (?,?)");
-        insertStatement.bindLong(1, paymentInCents);
-        Cursor cursor = getDatabase().query(GET_LAST_SHIFT_DATE, null);
-        @Nullable final LocalDate lastDate = cursor.moveToFirst() ? LocalDateConverter.epochDayToDate(cursor.getLong(0)) : null;
+        Cursor cursor = getDatabase().getOpenHelper().getReadableDatabase().query(
+                SupportSQLiteQueryBuilder.builder(getTableName())
+                        .columns(new String[]{Contract.CrossCoverShifts.COLUMN_NAME_DATE})
+                        .orderBy(Contract.CrossCoverShifts.COLUMN_NAME_DATE + " DESC")
+                        .limit("1")
+                        .create()
+        );
+        LocalDate lastDate = cursor.moveToFirst() ? LocalDateConverter.epochDayToDate(cursor.getLong(0)) : null;
         cursor.close();
-        insertStatement.bindLong(2, LocalDateConverter.dateToEpochDay(CrossCoverEntity.getNewDate(lastDate)));
-        getDatabase().beginTransaction();
-        try {
-            long id = insertStatement.executeInsert();
-            getDatabase().setTransactionSuccessful();
-            return id;
-        } finally {
-            getDatabase().endTransaction();
-        }
+        ContentValues values = new ContentValues();
+        values.put(Contract.COLUMN_NAME_PAYMENT, paymentInCents);
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, LocalDateConverter.dateToEpochDay(CrossCoverEntity.getNewDate(lastDate)));
+        return insertInTransaction(values);
     }
 
     @Override

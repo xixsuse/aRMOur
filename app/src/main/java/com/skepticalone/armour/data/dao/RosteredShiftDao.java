@@ -1,9 +1,10 @@
 package com.skepticalone.armour.data.dao;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.persistence.db.SupportSQLiteStatement;
+import android.arch.persistence.db.SupportSQLiteQueryBuilder;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
@@ -25,18 +26,11 @@ import java.util.List;
 @Dao
 public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
 
-    @NonNull
-    private static final String GET_LAST_SHIFT_END =
-            "SELECT " + Contract.COLUMN_NAME_SHIFT_END + " FROM " +
-                    Contract.RosteredShifts.TABLE_NAME +
-                    " ORDER BY " +
-                    Contract.COLUMN_NAME_SHIFT_END +
-                    " DESC LIMIT 1";
-
     RosteredShiftDao(@NonNull AppDatabase database) {
         super(database);
     }
 
+    @SuppressWarnings("NullableProblems")
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
             " SET " +
@@ -53,27 +47,21 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
     public abstract void setShiftTimesSync(long id, @NonNull Instant start, @NonNull Instant end, @Nullable Instant loggedStart, @Nullable Instant loggedEnd);
 
     synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
-        Cursor cursor = getDatabase().query(GET_LAST_SHIFT_END, null);
-        @Nullable final Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
+
+        Cursor cursor = getDatabase().getOpenHelper().getReadableDatabase().query(
+                SupportSQLiteQueryBuilder.builder(getTableName())
+                        .columns(new String[]{Contract.COLUMN_NAME_SHIFT_END})
+                        .orderBy(Contract.COLUMN_NAME_SHIFT_END + " DESC")
+                        .limit("1")
+                        .create()
+        );
+        Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
-        SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
-                Contract.RosteredShifts.TABLE_NAME +
-                " (" +
-                Contract.COLUMN_NAME_SHIFT_START +
-                ", " +
-                Contract.COLUMN_NAME_SHIFT_END +
-                ") VALUES (?,?)");
-        insertStatement.bindLong(1, shiftData.getStart().getEpochSecond());
-        insertStatement.bindLong(2, shiftData.getEnd().getEpochSecond());
-        getDatabase().beginTransaction();
-        try {
-            long id = insertStatement.executeInsert();
-            getDatabase().setTransactionSuccessful();
-            return id;
-        } finally {
-            getDatabase().endTransaction();
-        }
+        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
+        ContentValues values = new ContentValues();
+        values.put(Contract.COLUMN_NAME_SHIFT_START, shiftData.getStart().getEpochSecond());
+        values.put(Contract.COLUMN_NAME_SHIFT_END, shiftData.getEnd().getEpochSecond());
+        return insertInTransaction(values);
     }
 
 

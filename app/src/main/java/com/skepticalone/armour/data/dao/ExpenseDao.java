@@ -1,9 +1,9 @@
 package com.skepticalone.armour.data.dao;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.persistence.db.SupportSQLiteStatement;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.content.ContentValues;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 
@@ -30,10 +30,9 @@ public abstract class ExpenseDao extends ItemDao<ExpenseEntity> {
     }
 
     public final void setTitleSync(long id, @NonNull String title){
-        SupportSQLiteStatement setTitleStatement = getUpdateStatement(Contract.Expenses.COLUMN_NAME_TITLE);
-        setTitleStatement.bindString(1, title);
-        setTitleStatement.bindLong(2, id);
-        updateInTransaction(setTitleStatement);
+        ContentValues values = new ContentValues();
+        values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
+        updateInTransaction(id, values);
     }
 
     @NonNull
@@ -42,23 +41,11 @@ public abstract class ExpenseDao extends ItemDao<ExpenseEntity> {
         return Contract.Expenses.TABLE_NAME;
     }
 
-    synchronized public final long insertSync(@NonNull String title){
-        SupportSQLiteStatement insertStatement = getDatabase().compileStatement("INSERT INTO " +
-                Contract.Expenses.TABLE_NAME +
-                " (" +
-                Contract.COLUMN_NAME_PAYMENT +
-                ", " +
-                Contract.Expenses.COLUMN_NAME_TITLE +
-                ") VALUES (0,?)");
-        insertStatement.bindString(1, title);
-        getDatabase().beginTransaction();
-        try {
-            long id = insertStatement.executeInsert();
-            getDatabase().setTransactionSuccessful();
-            return id;
-        } finally {
-            getDatabase().endTransaction();
-        }
+    public final long insertSync(@NonNull String title) {
+        ContentValues values = new ContentValues();
+        values.put(Contract.COLUMN_NAME_PAYMENT, 0);
+        values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
+        return insertInTransaction(values);
     }
 
     @Override

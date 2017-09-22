@@ -1,6 +1,6 @@
 package com.skepticalone.armour.data.dao;
 
-import android.arch.persistence.db.SupportSQLiteStatement;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.db.Contract;
@@ -20,27 +20,23 @@ public final class PayableDaoHelper {
     }
 
     public final void setPaymentSync(long id, @NonNull BigDecimal payment){
-        SupportSQLiteStatement setPaymentStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAYMENT);
-        setPaymentStatement.bindLong(1, MoneyConverter.moneyToCents(payment));
-        setPaymentStatement.bindLong(2, id);
-        dao.updateInTransaction(setPaymentStatement);
+        ContentValues values = new ContentValues();
+        values.put(Contract.COLUMN_NAME_PAYMENT, MoneyConverter.moneyToCents(payment));
+        dao.updateInTransaction(id, values);
     }
 
-    private void setClaimedOrPaidSync(long id, boolean claimedOrPaid, @NonNull SupportSQLiteStatement statement) {
-        if (claimedOrPaid) statement.bindLong(1, Instant.now().getEpochSecond());
-        else statement.bindNull(1);
-        statement.bindLong(2, id);
-        dao.updateInTransaction(statement);
+    private void setClaimedOrPaidSync(long id, @NonNull String columnName, boolean claimedOrPaid) {
+        ContentValues values = new ContentValues();
+        values.put(columnName, claimedOrPaid ? Instant.now().getEpochSecond() : null);
+        dao.updateInTransaction(id, values);
     }
 
     public final void setClaimedSync(long id, boolean claimed) {
-        SupportSQLiteStatement setClaimedStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_CLAIMED);
-        setClaimedOrPaidSync(id, claimed, setClaimedStatement);
+        setClaimedOrPaidSync(id, Contract.COLUMN_NAME_CLAIMED, claimed);
     }
 
     public final void setPaidSync(long id, boolean paid) {
-        SupportSQLiteStatement setPaidStatement = dao.getUpdateStatement(Contract.COLUMN_NAME_PAID);
-        setClaimedOrPaidSync(id, paid, setPaidStatement);
+        setClaimedOrPaidSync(id, Contract.COLUMN_NAME_PAID, paid);
     }
 
 }

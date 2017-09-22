@@ -112,7 +112,7 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
         runAsync(new Runnable() {
             @Override
             public void run() {
-                final Entity item = getDao().deleteSync(id);
+                final Entity item = getDao().deleteInTransaction(id);
                 if (item != null) {
                     postSelectedId(null);
                     deletedItemRestorer.postValue(new View.OnClickListener() {
