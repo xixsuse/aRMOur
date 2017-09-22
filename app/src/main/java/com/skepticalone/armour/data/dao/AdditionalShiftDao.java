@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.db.SupportSQLiteQueryBuilder;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.RoomWarnings;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.BaseColumns;
@@ -69,6 +70,8 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         return insertInTransaction(values);
     }
 
+    // FIXME: 22/09/17 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Override
     @Query("SELECT * FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
@@ -77,6 +80,8 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
             " = :id")
     public abstract LiveData<AdditionalShiftEntity> getItem(long id);
 
+    // FIXME: 22/09/17 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Override
     @Query("SELECT * FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
@@ -85,6 +90,8 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
             " = :id")
     abstract AdditionalShiftEntity getItemInternalSync(long id);
 
+    // FIXME: 22/09/17 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Override
     @Query("SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<AdditionalShiftEntity>> getItems();
