@@ -19,11 +19,11 @@ public final class ShiftData {
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_START)
-    final Instant start;
+    private final Instant start;
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_SHIFT_END)
-    final Instant end;
+    private final Instant end;
 
     public ShiftData(
             @NonNull Instant start,

@@ -57,7 +57,7 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
         );
         Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
+        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
         ContentValues values = new ContentValues();
         values.put(Contract.COLUMN_NAME_SHIFT_START, shiftData.getStart().getEpochSecond());
         values.put(Contract.COLUMN_NAME_SHIFT_END, shiftData.getEnd().getEpochSecond());

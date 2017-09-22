@@ -30,8 +30,8 @@ public class ComplianceCheckerTest {
     private void adjustByMinutesAndCheck(int shiftIndex, int startMinutes, int endMinutes) {
         RosteredShiftEntity shift = shifts.get(shiftIndex);
         shifts.set(shiftIndex, new RosteredShiftEntity(new ShiftData(
-                shift.getShiftData().start.plusSeconds(startMinutes * 60),
-                shift.getShiftData().end.plusSeconds(endMinutes * 60)
+                shift.getShiftData().getStart().plusSeconds(startMinutes * 60),
+                shift.getShiftData().getEnd().plusSeconds(endMinutes * 60)
         ), null, null));
         checker.process(shifts, ZoneId.systemDefault());
     }
