@@ -25,15 +25,15 @@ public final class SettingsFragment extends PreferenceFragment
         mKeyStartNormalDay = getString(R.string.key_start_normal_day);
         mKeyEndNormalDay = getString(R.string.key_end_normal_day);
         mPreferenceNormalDay = getPreferenceScreen().findPreference(getString(R.string.key_normal_day));
-        mPreferenceNormalDay.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartNormalDay, mKeyEndNormalDay));
+        mPreferenceNormalDay.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartNormalDay), TimePreference.getTime(sharedPreferences, mKeyEndNormalDay)));
         mKeyStartLongDay = getString(R.string.key_start_long_day);
         mKeyEndLongDay = getString(R.string.key_end_long_day);
         mPreferenceLongDay = getPreferenceScreen().findPreference(getString(R.string.key_long_day));
-        mPreferenceLongDay.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartLongDay, mKeyEndLongDay));
+        mPreferenceLongDay.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartLongDay), TimePreference.getTime(sharedPreferences, mKeyEndLongDay)));
         mKeyStartNightShift = getString(R.string.key_start_night_shift);
         mKeyEndNightShift = getString(R.string.key_end_night_shift);
         mPreferenceNightShift = getPreferenceScreen().findPreference(getString(R.string.key_night_shift));
-        mPreferenceNightShift.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartNightShift, mKeyEndNightShift));
+        mPreferenceNightShift.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartNightShift), TimePreference.getTime(sharedPreferences, mKeyEndNightShift)));
     }
 
     @Override
@@ -51,11 +51,11 @@ public final class SettingsFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(mKeyStartNormalDay) || key.equals(mKeyEndNormalDay)) {
-            mPreferenceNormalDay.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartNormalDay, mKeyEndNormalDay));
+            mPreferenceNormalDay.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartNormalDay), TimePreference.getTime(sharedPreferences, mKeyEndNormalDay)));
         } else if (key.equals(mKeyStartLongDay) || key.equals(mKeyEndLongDay)) {
-            mPreferenceLongDay.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartLongDay, mKeyEndLongDay));
+            mPreferenceLongDay.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartLongDay), TimePreference.getTime(sharedPreferences, mKeyEndLongDay)));
         } else if (key.equals(mKeyStartNightShift) || key.equals(mKeyEndNightShift)) {
-            mPreferenceNightShift.setSummary(DateTimeUtils.getTimeSpanString(sharedPreferences, mKeyStartNightShift, mKeyEndNightShift));
+            mPreferenceNightShift.setSummary(DateTimeUtils.getTimeSpanString(TimePreference.getTime(sharedPreferences, mKeyStartNightShift), TimePreference.getTime(sharedPreferences, mKeyEndNightShift)));
         } else {
             return;
         }

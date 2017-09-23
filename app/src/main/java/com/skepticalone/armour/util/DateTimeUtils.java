@@ -1,6 +1,5 @@
 package com.skepticalone.armour.util;
 
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import org.threeten.bp.Duration;
@@ -18,7 +17,6 @@ import java.util.Locale;
 
 public final class DateTimeUtils {
 
-    private final static int MINUTES_PER_HOUR = 60;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
     private static final DateTimeFormatter fullDateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
@@ -48,35 +46,12 @@ public final class DateTimeUtils {
 //            .appendSuffix(" week ago", " weeks ago")
 //            .toFormatter();
 
-    public static int calculateTotalMinutes(int hours, int minutes) {
-        return hours * MINUTES_PER_HOUR + minutes;
-    }
-
-    public static int calculateTotalMinutes(LocalTime time) {
-        return calculateTotalMinutes(time.getHour(), time.getMinute());
-    }
-
-    public static int calculateHours(int totalMinutes) {
-        return totalMinutes / MINUTES_PER_HOUR;
-    }
-
-    public static int calculateMinutes(int totalMinutes) {
-        return totalMinutes % MINUTES_PER_HOUR;
-    }
 
     private static String getQualifiedString(@NonNull String main, @NonNull String qualifier) {
         return main + " (" + qualifier + ")";
     }
 
-    public static LocalTime getTime(int totalMinutes) {
-        return LocalTime.of(calculateHours(totalMinutes), calculateMinutes(totalMinutes));
-    }
-
-    public static String getTimeString(int totalMinutes) {
-        return timeFormatter.format(getTime(totalMinutes));
-    }
-
-    public static String getStartTimeString(@NonNull LocalTime time) {
+    public static String getTimeString(@NonNull LocalTime time) {
         return timeFormatter.format(time);
     }
 
@@ -108,11 +83,8 @@ public final class DateTimeUtils {
         return getSpanString(timeFormatter.format(start), getEndTimeString(end, start.toLocalDate()));
     }
 
-    public static String getTimeSpanString(@NonNull SharedPreferences sharedPreferences, @NonNull String startKey, @NonNull String endKey) {
-        return getSpanString(
-                timeFormatter.format(getTime(sharedPreferences.getInt(startKey, 0))),
-                timeFormatter.format(getTime(sharedPreferences.getInt(endKey, 0)))
-        );
+    public static String getTimeSpanString(@NonNull LocalTime start, @NonNull LocalTime end) {
+        return getSpanString(timeFormatter.format(start), timeFormatter.format(end));
     }
 
     public static String getWeeksAgo(@NonNull LocalDate lastWeekendWorked, @NonNull LocalDate currentWeekend) {

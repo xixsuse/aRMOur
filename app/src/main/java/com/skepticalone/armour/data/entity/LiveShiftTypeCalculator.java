@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.util.DateTimeUtils;
+import com.skepticalone.armour.settings.TimePreference;
 import com.skepticalone.armour.util.ShiftType;
 
 import org.threeten.bp.LocalTime;
@@ -129,7 +129,7 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
             default:
                 throw new IllegalStateException();
         }
-        return new Pair<>(DateTimeUtils.getTime(sharedPreferences.getInt(keyStart, defaultStart)), DateTimeUtils.getTime(sharedPreferences.getInt(keyEnd, defaultEnd)));
+        return new Pair<>(TimePreference.getTime(sharedPreferences.getInt(keyStart, defaultStart)), TimePreference.getTime(sharedPreferences.getInt(keyEnd, defaultEnd)));
     }
 //
 //    @NonNull

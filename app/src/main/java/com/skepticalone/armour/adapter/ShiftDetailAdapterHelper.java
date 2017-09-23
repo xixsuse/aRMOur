@@ -64,7 +64,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
                     changeTime(true);
                 }
             });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getStartTimeString(shift.getShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalTime()));
+            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalTime()));
             return true;
         } else if (position == getRowNumberEnd()) {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {

@@ -46,6 +46,8 @@ public final class MainActivity extends CoordinatorActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        // TODO: 22/09/17
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().commit();
         PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         mFabPrimary = findViewById(R.id.fab_primary);

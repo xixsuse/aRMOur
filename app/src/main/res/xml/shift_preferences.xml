@@ -123,4 +123,9 @@
             android:key="@string/key_check_consecutive_weekends"
             android:title="@string/check_consecutive_weekends_title" />
     </PreferenceCategory>
+    <com.skepticalone.armour.settings.TimeZoneListPreference
+        android:icon="@drawable/ic_globe_black_24dp"
+        android:key="@string/key_time_zone_id"
+        android:title="@string/time_zone" />
+
 </PreferenceScreen>

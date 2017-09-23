@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.Shift;
-import com.skepticalone.armour.util.DateTimeUtils;
+import com.skepticalone.armour.settings.TimePreference;
 import com.skepticalone.armour.util.ShiftType;
 
 import org.threeten.bp.ZoneId;
@@ -75,8 +75,8 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
 
         @Override
         public void process(@NonNull ShiftEntity shift) {
-            final int start = DateTimeUtils.calculateTotalMinutes(shift.getShiftData().getStart().atZone(zoneId).toLocalTime()),
-                    end = DateTimeUtils.calculateTotalMinutes(shift.getShiftData().getEnd().atZone(zoneId).toLocalTime());
+            final int start = TimePreference.getTotalMinutes(shift.getShiftData().getStart().atZone(zoneId).toLocalTime()),
+                    end = TimePreference.getTotalMinutes(shift.getShiftData().getEnd().atZone(zoneId).toLocalTime());
             if (start == normalDayStart && end == normalDayEnd) {
                 shift.shiftType = ShiftType.NORMAL_DAY;
             } else if (start == longDayStart && end == longDayEnd) {
