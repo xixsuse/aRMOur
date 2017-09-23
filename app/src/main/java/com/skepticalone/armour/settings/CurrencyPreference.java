@@ -3,6 +3,7 @@ package com.skepticalone.armour.settings;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +14,6 @@ import com.skepticalone.armour.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@SuppressWarnings("WeakerAccess")
 public final class CurrencyPreference extends DialogPreference {
 
     private static final int DEFAULT_VALUE = 0;
@@ -25,6 +25,11 @@ public final class CurrencyPreference extends DialogPreference {
         setDialogLayoutResource(R.layout.currency_edit_text);
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
+    }
+
+    @NonNull
+    private static BigDecimal getMoney(int cents) {
+        return BigDecimal.valueOf(cents, 2);
     }
 
     @Override
@@ -44,14 +49,14 @@ public final class CurrencyPreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return getContext().getString(R.string.payment_format, BigDecimal.valueOf(mValue, 2));
+        return getContext().getString(R.string.payment_format, getMoney(mValue));
     }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mEditText = (EditText) view;
-        mEditText.setText(BigDecimal.valueOf(mValue, 2).toPlainString());
+        mEditText.setText(getMoney(mValue).toPlainString());
     }
 
     @Override
