@@ -1,8 +1,6 @@
 package com.skepticalone.armour.settings;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,11 +12,9 @@ import com.skepticalone.armour.R;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public final class CurrencyPreference extends DialogPreference {
+public final class CurrencyPreference extends IntegerPreference {
 
-    private static final int DEFAULT_VALUE = 0;
     private EditText mEditText;
-    private int mValue;
 
     public CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -33,30 +29,15 @@ public final class CurrencyPreference extends DialogPreference {
     }
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInteger(index, DEFAULT_VALUE);
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        if (restorePersistedValue) {
-            mValue = getPersistedInt(DEFAULT_VALUE);
-        } else {
-            mValue = (int) defaultValue;
-            persistInt(mValue);
-        }
-    }
-
-    @Override
     public CharSequence getSummary() {
-        return getContext().getString(R.string.payment_format, getMoney(mValue));
+        return getContext().getString(R.string.payment_format, getMoney(getValue()));
     }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mEditText = (EditText) view;
-        mEditText.setText(getMoney(mValue).toPlainString());
+        mEditText.setText(getMoney(getValue()).toPlainString());
     }
 
     @Override
@@ -67,8 +48,7 @@ public final class CurrencyPreference extends DialogPreference {
                 Toast.makeText(getContext(), R.string.value_required, Toast.LENGTH_SHORT).show();
             } else {
                 try {
-                    mValue = new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue();
-                    persistInt(mValue);
+                    setValue(new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).unscaledValue().intValue());
                 } catch (NumberFormatException e) {
                     Toast.makeText(getContext(), R.string.invalid_format, Toast.LENGTH_SHORT).show();
                 }
