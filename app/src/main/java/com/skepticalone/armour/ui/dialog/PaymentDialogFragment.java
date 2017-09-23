@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 public abstract class PaymentDialogFragment<Entity extends Payable> extends TextDialogFragment<Entity> {
 
     @Override
-    final int getEditText() {
-        return R.layout.currency_edit_text;
+    final int getLayout() {
+        return R.layout.currency_layout;
     }
 
     @NonNull

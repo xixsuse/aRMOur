@@ -8,8 +8,8 @@ import com.skepticalone.armour.R;
 abstract class PlainTextDialogFragment<Entity> extends TextDialogFragment<Entity> {
 
     @Override
-    final int getEditText() {
-        return R.layout.plain_edit_text;
+    final int getLayout() {
+        return R.layout.plain_layout;
     }
 
     @Override

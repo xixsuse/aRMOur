@@ -18,7 +18,7 @@ public final class CurrencyPreference extends IntegerPreference {
 
     public CurrencyPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setDialogLayoutResource(R.layout.currency_edit_text);
+        setDialogLayoutResource(R.layout.currency_layout);
         setPositiveButtonText(R.string.set);
         setNegativeButtonText(R.string.cancel);
     }
@@ -36,7 +36,7 @@ public final class CurrencyPreference extends IntegerPreference {
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-        mEditText = (EditText) view;
+        mEditText = view.findViewById(R.id.edit_text);
         mEditText.setText(getMoney(getValue()).toPlainString());
     }
 

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 
 import com.skepticalone.armour.R;
@@ -18,6 +19,7 @@ import com.skepticalone.armour.util.Snackbar;
 
 abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> implements AlertDialog.OnClickListener {
 
+    private View layout;
     private EditText editText;
     private Snackbar snackbar;
 
@@ -27,7 +29,7 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     abstract void saveText(@Nullable String text);
 
     @LayoutRes
-    abstract int getEditText();
+    abstract int getLayout();
 
     void onEditTextCreated(@NonNull EditText editText) {
     }
@@ -37,7 +39,8 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     public final void onAttach(Context context) {
         super.onAttach(context);
         snackbar = (Snackbar) context;
-        editText = (EditText) LayoutInflater.from(context).inflate(getEditText(), null, false);
+        layout = LayoutInflater.from(context).inflate(getLayout(), null, false);
+        editText = layout.findViewById(R.id.edit_text);
         onEditTextCreated(editText);
     }
 
@@ -57,7 +60,7 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     public final Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity(), getTheme())
                 .setTitle(getTitle())
-                .setView(editText)
+                .setView(layout)
                 .setPositiveButton(R.string.save, this)
                 .setNegativeButton(R.string.cancel, this)
                 .create();
