@@ -2,6 +2,7 @@ package com.skepticalone.armour.data.model;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Pair;
 
@@ -20,7 +21,14 @@ public abstract class Shift extends Item {
     @NonNull
     private final ShiftType shiftType;
 
+//    Shift(long id, @Nullable String comment, @NonNull ShiftData shiftData, @NonNull ShiftType.Configuration configuration) {
+//        super(id, comment);
+//        this.shiftData = shiftData;
+//        shiftType = ShiftType.from(getShiftData().getStart().toLocalTime(), getShiftData().getEnd().toLocalTime(), configuration);
+//    }
+
     Shift(@NonNull RawShift rawShift, @NonNull ZoneId zoneId, @NonNull ShiftType.Configuration configuration) {
+//        this(rawShift.getId(), rawShift.getComment(), new ShiftData(rawShift.getShiftData(), zoneId), configuration);
         super(rawShift.getId(), rawShift.getComment());
         shiftData = new ShiftData(rawShift.getShiftData(), zoneId);
         shiftType = ShiftType.from(shiftData.getStart().toLocalTime(), shiftData.getEnd().toLocalTime(), configuration);

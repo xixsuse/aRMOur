@@ -11,7 +11,6 @@ import com.skepticalone.armour.data.db.Contract;
 @Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
 public final class RawAdditionalShiftEntity extends RawShift {
 
-
     @NonNull
     @Embedded
     private final RawPaymentData paymentData;
