@@ -6,6 +6,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,8 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.model.LiveTimeZone;
+import com.skepticalone.armour.data.model.RawShift;
+import com.skepticalone.armour.data.model.Shift;
 
 import org.threeten.bp.ZoneId;
 
@@ -145,8 +148,18 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
     }
 
     @NonNull
+    final SharedPreferences getDefaultSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(getApplication());
+    }
+
+    @NonNull
     final ZoneId getFreshTimezone() {
-        return LiveTimeZone.getInstance(getApplication()).getNewValue(PreferenceManager.getDefaultSharedPreferences(getApplication()));
+        return LiveTimeZone.getInstance(getApplication()).getNewValue(getDefaultSharedPreferences());
+    }
+
+    @NonNull
+    final Shift.ShiftType.Configuration getFreshShiftConfiguration() {
+        return Shift.ShiftType.LiveShiftConfig.getInstance(getApplication()).getNewValue(getDefaultSharedPreferences());
     }
 
     @NonNull

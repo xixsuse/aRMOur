@@ -143,7 +143,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
             skipWeekendsKey = R.string.key_skip_weekend_night_shift;
             defaultSkipWeekends = R.bool.default_skip_weekend_night_shift;
         } else throw new IllegalStateException();
-        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean(getApplication().getString(skipWeekendsKey), getApplication().getResources().getBoolean(defaultSkipWeekends));
+        return getDefaultSharedPreferences().getBoolean(getApplication().getString(skipWeekendsKey), getApplication().getResources().getBoolean(defaultSkipWeekends));
     }
 
     @Override
@@ -151,7 +151,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
         runAsync(new Runnable() {
             @Override
             public void run() {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences sharedPreferences = getDefaultSharedPreferences();
                 LiveShiftConfig calculator = LiveShiftConfig.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
                         calculator.getPair(shiftType, sharedPreferences),

@@ -1,23 +1,15 @@
 package com.skepticalone.armour.data.viewModel;
 
 import android.app.Application;
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
-import android.preference.PreferenceManager;
-import android.support.annotation.IntegerRes;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
-import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.dao.RawAdditionalShiftDao;
+import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
+import com.skepticalone.armour.data.model.AdditionalShift;
 import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 import com.skepticalone.armour.data.model.LiveAdditionalShifts;
-import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.model.Shift;
 
@@ -27,69 +19,24 @@ import org.threeten.bp.LocalTime;
 import java.math.BigDecimal;
 import java.util.List;
 
+public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalShiftEntity, AdditionalShift> implements ShiftViewModelContract<AdditionalShift>, PayableViewModelContract<AdditionalShift> {
 
-public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalShiftEntity> implements ShiftViewModelContract<RawAdditionalShiftEntity>, PayableViewModelContract<RawAdditionalShiftEntity> {
+    @NonNull
+    private final LiveData<List<AdditionalShift>> additionalShifts;
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
-    @NonNull
-    private final LiveData<List<RawAdditionalShiftEntity>> items;
-
     public AdditionalShiftViewModel(@NonNull Application application) {
         super(application);
-        items = new LiveAdditionalShifts(application, getDao().fetchItems());
-        this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
+        payableViewModelHelper = new PayableViewModelHelper(getDao());
+        additionalShifts = new LiveAdditionalShifts(application, getDao().fetchItems());
     }
 
     @NonNull
     @Override
-    RawAdditionalShiftDao getDao() {
+    AdditionalShiftDao getDao() {
         return AppDatabase.getInstance(getApplication()).additionalShiftDao();
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<RawAdditionalShiftEntity>> getItems() {
-        return items;
-    }
-
-    @NonNull
-    @Override
-    LiveData<RawAdditionalShiftEntity> fetchItem(final long id) {
-        return Transformations.map(items, new Function<List<RawAdditionalShiftEntity>, RawAdditionalShiftEntity>() {
-            @Override
-            public RawAdditionalShiftEntity apply(List<RawAdditionalShiftEntity> shifts) {
-                if (shifts != null) {
-                    for (RawAdditionalShiftEntity shift : shifts) {
-                        if (shift.getId() == id) return shift;
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    private int getPaymentInCents(@NonNull Shift.ShiftType shiftType) {
-        @StringRes final int hourlyRateKey;
-        @IntegerRes final int hourlyRateDefault;
-        switch (shiftType) {
-            case NORMAL_DAY:
-                hourlyRateKey = R.string.key_default_hourly_rate_normal_day;
-                hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
-                break;
-            case LONG_DAY:
-                hourlyRateKey = R.string.key_default_hourly_rate_long_day;
-                hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
-                break;
-            case NIGHT_SHIFT:
-                hourlyRateKey = R.string.key_default_hourly_rate_night_shift;
-                hourlyRateDefault = R.integer.default_hourly_rate_after_hours;
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        return PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(hourlyRateKey), getApplication().getResources().getInteger(hourlyRateDefault));
     }
 
     @Override
@@ -97,43 +44,13 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
         runAsync(new Runnable() {
             @Override
             public void run() {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                LiveShiftConfig calculator = LiveShiftConfig.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
-                        calculator.getPair(shiftType, sharedPreferences),
-                        calculator.getFreshZoneId(sharedPreferences),
-                        getPaymentInCents(shiftType)
+                        shiftType.getTimes(getFreshShiftConfiguration()),
+                        getFreshTimezone(),
+                        shiftType.getHourlyRateInCents(getApplication())
                 ));
             }
         });
-    }
-
-    @MainThread
-    private void saveNewShiftTimes(final long id, @NonNull final RawShift.RawShiftData rawShiftData) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    getDao().setTimesSync(id, rawShiftData.getStart(), rawShiftData.getEnd());
-                } catch (SQLiteConstraintException e) {
-                    postOverlappingShifts();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void saveNewDate(@NonNull LocalDate date) {
-        RawAdditionalShiftEntity shift = getCurrentItem().getValue();
-        if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewDate(date, getFreshTimezone()));
-    }
-
-    @MainThread
-    public void saveNewTime(@NonNull LocalTime time, boolean isStart) {
-        RawAdditionalShiftEntity shift = getCurrentItem().getValue();
-        if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewTime(time, getFreshTimezone(), isStart));
     }
 
     @Override
@@ -151,4 +68,35 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
         payableViewModelHelper.saveNewPayment(getCurrentItemId(), payment);
     }
 
+    private void saveNewShiftTimes(final long id, @NonNull final RawShift.ShiftData shiftData) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getDao().setTimesSync(id, shiftData.getStart(), shiftData.getEnd());
+                } catch (SQLiteConstraintException e) {
+                    postOverlappingShifts();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void saveNewDate(@NonNull LocalDate date) {
+        AdditionalShift shift = getCurrentItem().getValue();
+        if (shift == null) throw new IllegalStateException();
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date));
+    }
+
+    public void saveNewTime(@NonNull LocalTime time, boolean isStart) {
+        AdditionalShift shift = getCurrentItem().getValue();
+        if (shift == null) throw new IllegalStateException();
+        saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, isStart));
+    }
+
+    @NonNull
+    @Override
+    public LiveData<List<AdditionalShift>> getItems() {
+        return additionalShifts;
+    }
 }

@@ -25,7 +25,7 @@ public final class RawPaymentData {
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
     private final Instant paid;
 
-    public RawPaymentData(
+    RawPaymentData(
             @NonNull BigDecimal payment,
             @Nullable Instant claimed,
             @Nullable Instant paid
@@ -53,10 +53,5 @@ public final class RawPaymentData {
     public Instant getPaid() {
         return paid;
     }
-//
-//    @DrawableRes
-//    public int getIcon() {
-//        return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
-//    }
 
 }

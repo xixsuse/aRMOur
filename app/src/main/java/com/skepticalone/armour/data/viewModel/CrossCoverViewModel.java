@@ -44,8 +44,7 @@ public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity
             @Override
             public void run() {
                 postSelectedId(getDao().insertSync(
-                        PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment)),
-                        getFreshTimezone()
+                        getFreshTimezone(), getDefaultSharedPreferences().getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))
                 ));
             }
         });

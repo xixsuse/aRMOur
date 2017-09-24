@@ -3,7 +3,9 @@ package com.skepticalone.armour.data.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -105,6 +107,28 @@ public abstract class Shift extends Item {
             return new Pair<>(TimePreference.getTime(startTotalMinutes), TimePreference.getTime(endTotalMinutes));
         }
 
+        public final int getHourlyRateInCents(@NonNull Context context){
+            @StringRes final int hourlyRateKey;
+            @IntegerRes final int hourlyRateDefault;
+            switch (this) {
+                case NORMAL_DAY:
+                    hourlyRateKey = R.string.key_default_hourly_rate_normal_day;
+                    hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
+                    break;
+                case LONG_DAY:
+                    hourlyRateKey = R.string.key_default_hourly_rate_long_day;
+                    hourlyRateDefault = R.integer.default_hourly_rate_normal_hours;
+                    break;
+                case NIGHT_SHIFT:
+                    hourlyRateKey = R.string.key_default_hourly_rate_night_shift;
+                    hourlyRateDefault = R.integer.default_hourly_rate_after_hours;
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
+            return PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(hourlyRateKey), context.getResources().getInteger(hourlyRateDefault));
+        }
+
         @NonNull
         public static ShiftType from(@NonNull LocalTime start, @NonNull LocalTime end, @NonNull Configuration configuration){
             final int startTotalMinutes = TimePreference.getTotalMinutes(start),
@@ -120,7 +144,7 @@ public abstract class Shift extends Item {
             }
         }
 
-        static final class Configuration {
+        public static final class Configuration {
 
             private final int
                     normalDayStart,
@@ -148,7 +172,7 @@ public abstract class Shift extends Item {
 
         }
 
-        static final class LiveShiftConfig extends LiveConfig<Configuration> {
+        public static final class LiveShiftConfig extends LiveConfig<Configuration> {
 
             @Nullable
             private static LiveShiftConfig INSTANCE;
@@ -218,7 +242,7 @@ public abstract class Shift extends Item {
 
             @NonNull
             @Override
-            Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
+            public Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
                 return new Configuration(
                         sharedPreferences.getInt(keyNormalDayStart, defaultNormalDayStart),
                         sharedPreferences.getInt(keyNormalDayEnd, defaultNormalDayEnd),
@@ -232,7 +256,7 @@ public abstract class Shift extends Item {
         }
     }
 
-    static final class ShiftData {
+    public static final class ShiftData {
 
         @NonNull
         private final ZonedDateTime start, end;
@@ -265,6 +289,21 @@ public abstract class Shift extends Item {
             ZonedDateTime weekendStart = getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
             return weekendStart.isBefore(getEnd()) && getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
         }
+
+        @NonNull
+        public RawShift.ShiftData withNewDate(@NonNull LocalDate newDate) {
+            return RawShift.ShiftData.from(getStart().with(newDate), getEnd().toLocalTime());
+        }
+
+        @NonNull
+        public RawShift.ShiftData withNewTime(@NonNull LocalTime time, boolean isStart) {
+            if (isStart) {
+                return RawShift.ShiftData.from(getStart().with(time), getEnd().toLocalTime());
+            } else {
+                return RawShift.ShiftData.from(getStart(), time);
+            }
+        }
+
     }
 
 }

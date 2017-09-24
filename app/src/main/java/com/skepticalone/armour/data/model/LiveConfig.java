@@ -29,5 +29,5 @@ abstract class LiveConfig<T> extends LiveData<T> implements SharedPreferences.On
 
     abstract String[] getWatchKeys();
     @NonNull
-    abstract T getNewValue(@NonNull SharedPreferences sharedPreferences);
+    public abstract T getNewValue(@NonNull SharedPreferences sharedPreferences);
 }

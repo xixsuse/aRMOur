@@ -10,7 +10,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.dao.RawAdditionalShiftDao;
+import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.dao.ExpenseDao;
 import com.skepticalone.armour.data.dao.RawRosteredShiftDao;
@@ -49,7 +49,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract RawRosteredShiftDao rosteredShiftDao();
 
-    public abstract RawAdditionalShiftDao additionalShiftDao();
+    public abstract AdditionalShiftDao additionalShiftDao();
 
     public abstract CrossCoverDao crossCoverDao();
 

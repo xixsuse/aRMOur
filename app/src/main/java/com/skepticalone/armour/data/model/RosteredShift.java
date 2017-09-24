@@ -263,7 +263,7 @@ public final class RosteredShift extends Shift {
 
             @NonNull
             @Override
-            Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
+            public Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
                 return new Configuration(
                         sharedPreferences.getBoolean(keyCheckDurationOverDay, defaultCheckDurationOverDay),
                         sharedPreferences.getBoolean(keyCheckDurationOverWeek, defaultCheckDurationOverWeek),

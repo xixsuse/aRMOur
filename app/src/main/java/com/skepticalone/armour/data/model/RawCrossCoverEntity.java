@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.db.Contract;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
 public final class RawCrossCoverEntity extends Item {
@@ -30,8 +31,13 @@ public final class RawCrossCoverEntity extends Item {
         this.paymentData = paymentData;
     }
 
-    public static RawCrossCoverEntity from(@NonNull LocalDate date, int cents) {
-        return new RawCrossCoverEntity(NO_ID, null, date, RawPaymentData.from(cents));
+    public static RawCrossCoverEntity from(@Nullable final LocalDate lastShiftDate, @NonNull ZoneId timeZone, int paymentInCents) {
+        LocalDate newDate = LocalDate.now(timeZone);
+        if (lastShiftDate != null) {
+            LocalDate earliestShiftDate = lastShiftDate.plusDays(1);
+            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+        }
+        return new RawCrossCoverEntity(NO_ID, null, newDate, RawPaymentData.from(paymentInCents));
     }
 
     @NonNull

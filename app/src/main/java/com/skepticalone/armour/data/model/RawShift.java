@@ -6,9 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
-import org.threeten.bp.Instant;
 
-abstract class RawShift extends Item {
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
+public abstract class RawShift extends Item {
 
     @NonNull
     @Embedded
@@ -56,25 +61,28 @@ abstract class RawShift extends Item {
             return end;
         }
 
-        //
-//
-//        @NonNull
-//        private static ZonedDateTime getNewEnd(@NonNull final ZonedDateTime start, @NonNull final LocalTime endTime) {
-//            ZonedDateTime newEnd = start.with(endTime);
-//            while (!newEnd.isAfter(start)) {
-//                newEnd = newEnd.plusDays(1);
-//            }
-//            return newEnd;
-//        }
-//
-//        @NonNull
-//        public static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
-//            ZonedDateTime newStart = ZonedDateTime.ofInstant(earliestStart == null ? Instant.now() : earliestStart, zoneId).with(startTime);
-//            while ((earliestStart != null && newStart.toInstant().isBefore(earliestStart)) || (skipWeekends && (newStart.getDayOfWeek() == DayOfWeek.SATURDAY || newStart.getDayOfWeek() == DayOfWeek.SUNDAY))) {
-//                newStart = newStart.plusDays(1);
-//            }
-//            return new ShiftData(newStart.toInstant(), getNewEnd(newStart, endTime).toInstant());
-//        }
+        @NonNull
+        static ShiftData from(@NonNull final ZonedDateTime start, @NonNull final LocalTime endTime){
+            return new ShiftData(start.toInstant(), getNewEnd(start, endTime).toInstant());
+        }
+
+        @NonNull
+        static ZonedDateTime getNewEnd(@NonNull final ZonedDateTime start, @NonNull final LocalTime endTime) {
+            ZonedDateTime newEnd = start.with(endTime);
+            while (!newEnd.isAfter(start)) {
+                newEnd = newEnd.plusDays(1);
+            }
+            return newEnd;
+        }
+
+        @NonNull
+        static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
+            ZonedDateTime newStart = ZonedDateTime.ofInstant(earliestStart == null ? Instant.now() : earliestStart, zoneId).with(startTime);
+            while ((earliestStart != null && newStart.toInstant().isBefore(earliestStart)) || (skipWeekends && (newStart.getDayOfWeek() == DayOfWeek.SATURDAY || newStart.getDayOfWeek() == DayOfWeek.SUNDAY))) {
+                newStart = newStart.plusDays(1);
+            }
+            return new ShiftData(newStart.toInstant(), getNewEnd(newStart, endTime).toInstant());
+        }
 //
 //        @NonNull
 //        public static ShiftData withEarliestStartAfterMinimumDurationBetweenShifts(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
