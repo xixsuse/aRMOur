@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.entity;
+package com.skepticalone.armour.data.model;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.entity.ComplianceConfig;
 import com.skepticalone.armour.util.AppConstants;
 
 import org.threeten.bp.DayOfWeek;
@@ -24,11 +24,11 @@ import org.threeten.bp.ZonedDateTime;
 import java.util.List;
 
 @Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
+public final class RawRosteredShiftEntity extends RawShift implements RosteredShift {
 
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
-    private final ShiftData loggedShiftData;
+    private final RawShift.ShiftData loggedShiftData;
     @Ignore
     private Duration durationOverDay, durationOverWeek, durationOverFortnight;
     @Nullable
@@ -46,10 +46,10 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
             consecutiveWeekendsWorked,
             compliant;
 
-    public RosteredShiftEntity(
+    public RawRosteredShiftEntity(
             long id,
-            @NonNull ShiftData shiftData,
-            @Nullable ShiftData loggedShiftData,
+            @NonNull RawShift.ShiftData shiftData,
+            @Nullable RawShift.ShiftData loggedShiftData,
             @Nullable String comment
     ) {
         super(id, shiftData, comment);
@@ -63,7 +63,7 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
 
     @Nullable
     @Override
-    public ShiftData getLoggedShiftData() {
+    public RawShift.ShiftData getLoggedShiftData() {
         return loggedShiftData;
     }
 
@@ -134,11 +134,11 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
     }
 
     @NonNull
-    RosteredShiftEntity copy() {
-        return new RosteredShiftEntity(getId(), getShiftData(), loggedShiftData, getComment());
+    RawRosteredShiftEntity copy() {
+        return new RawRosteredShiftEntity(getId(), getShiftData(), loggedShiftData, getComment());
     }
 
-//    public static final class ComplianceConfig implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
+//    public static final class ComplianceConfig implements Function<List<RawRosteredShiftEntity>, List<RawRosteredShiftEntity>> {
 //
 //        private final boolean
 //                checkDurationOverDay,
@@ -161,10 +161,10 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
 //            this.checkConsecutiveWeekends = checkConsecutiveWeekends;
 //        }
 //
-//        private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
+//        private static Duration getDurationSince(@NonNull List<RawRosteredShiftEntity> shifts, int currentIndex, @NonNull ReadableInstant cutOff) {
 //            Duration totalDuration = Duration.ZERO;
 //            do {
-//                RosteredShiftEntity shift = shifts.get(currentIndex);
+//                RawRosteredShiftEntity shift = shifts.get(currentIndex);
 //                if (!shift.shiftData.end.isAfter(cutOff)) break;
 //                totalDuration = totalDuration.plus(shift.shiftData.start.isBefore(cutOff) ? new Duration(cutOff, shift.shiftData.end) : shift.shiftData.getDuration());
 //            } while (--currentIndex >= 0);
@@ -173,12 +173,12 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
 //
 //        @SuppressWarnings("ConstantConditions")
 //        @Override
-//        public List<RosteredShiftEntity> apply(List<RosteredShiftEntity> shifts) {
+//        public List<RawRosteredShiftEntity> apply(List<RawRosteredShiftEntity> shifts) {
 //            Log.d("Checker", "checking...");
 //            @Nullable LocalDate lastElapsedWeekendWorked = null;
 //            @Nullable LocalDate lastWeekendProcessed = null;
 //            for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
-//                RosteredShiftEntity shift = shifts.get(currentIndex);
+//                RawRosteredShiftEntity shift = shifts.get(currentIndex);
 //                shift.durationOverDay = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusDays(1));
 //                shift.exceedsMaximumDurationOverDay = checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(shift.durationOverDay);
 //                shift.durationOverWeek = getDurationSince(shifts, currentIndex, shift.shiftData.end.minusWeeks(1));
@@ -237,10 +237,10 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
             this.checkConsecutiveWeekends = checkConsecutiveWeekends;
         }
 
-        private static Duration getDurationSince(@NonNull List<RosteredShiftEntity> shifts, int currentIndex, @NonNull Instant cutOff) {
+        private static Duration getDurationSince(@NonNull List<RawRosteredShiftEntity> shifts, int currentIndex, @NonNull Instant cutOff) {
             Duration totalDuration = Duration.ZERO;
             do {
-                ShiftData shiftData = shifts.get(currentIndex).getShiftData();
+                RawShift.ShiftData shiftData = shifts.get(currentIndex).getShiftData();
                 if (!shiftData.getEnd().isAfter(cutOff)) break;
                 totalDuration = totalDuration.plus(Duration.between(shiftData.getStart().isBefore(cutOff) ? cutOff : shiftData.getStart(), shiftData.getEnd()));
             } while (--currentIndex >= 0);
@@ -249,11 +249,11 @@ public final class RosteredShiftEntity extends ShiftEntity implements RosteredSh
 
         @SuppressWarnings("ConstantConditions")
         @Override
-        public void process(@NonNull List<RosteredShiftEntity> shifts, @NonNull ZoneId zoneId) {
+        public void process(@NonNull List<RawRosteredShiftEntity> shifts, @NonNull ZoneId zoneId) {
             @Nullable LocalDate lastElapsedWeekendWorked = null;
             @Nullable LocalDate lastWeekendProcessed = null;
             for (int currentIndex = 0, count = shifts.size(); currentIndex < count; currentIndex++) {
-                final RosteredShiftEntity shift = shifts.get(currentIndex);
+                final RawRosteredShiftEntity shift = shifts.get(currentIndex);
                 final ZonedDateTime start = shift.getShiftData().getStart().atZone(zoneId),
                         end = shift.getShiftData().getEnd().atZone(zoneId);
                 shift.durationOverDay = getDurationSince(shifts, currentIndex, end.minusDays(1).toInstant());

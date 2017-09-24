@@ -7,11 +7,11 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.RosteredShiftListAdapter;
 import com.skepticalone.armour.data.entity.LiveShiftConfig;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.armour.ui.totals.RosteredShiftTotalsDialogFragment;
 
-public final class RosteredShiftListFragment extends ShiftAddListFragment<RosteredShiftEntity> {
+public final class RosteredShiftListFragment extends ShiftAddListFragment<RawRosteredShiftEntity> {
 
     private RosteredShiftListAdapter adapter;
 

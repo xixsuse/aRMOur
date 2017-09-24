@@ -6,7 +6,6 @@ import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
-import com.skepticalone.armour.util.ShiftType;
 
 import org.threeten.bp.Duration;
 
@@ -33,13 +32,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     private String getTotalDuration(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
         Duration totalDuration = Duration.ZERO;
         for (Entity shift : shifts) {
-            totalDuration = totalDuration.plus(Duration.between(shift.getShiftData().getStart(), shift.getShiftData().getEnd()));
+            totalDuration = totalDuration.plus(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd()));
         }
         if (callbacks.isFiltered() && !totalDuration.equals(Duration.ZERO)) {
             Duration filteredDuration = Duration.ZERO;
             for (Entity shift : shifts) {
                 if (callbacks.isIncluded(shift))
-                    filteredDuration = filteredDuration.plus(Duration.between(shift.getShiftData().getStart(), shift.getShiftData().getEnd()));
+                    filteredDuration = filteredDuration.plus(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd()));
             }
             return holder.getDurationPercentage(filteredDuration, totalDuration);
         } else {
@@ -56,11 +55,11 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             firstLine = callbacks.getAllShiftsTitle();
             shifts = allShifts;
         } else {
-            ShiftType shiftType;
-            if (position == ROW_NUMBER_NORMAL_DAY) shiftType = ShiftType.NORMAL_DAY;
-            else if (position == ROW_NUMBER_LONG_DAY) shiftType = ShiftType.LONG_DAY;
-            else if (position == ROW_NUMBER_NIGHT_SHIFT) shiftType = ShiftType.NIGHT_SHIFT;
-            else if (position == ROW_NUMBER_CUSTOM_SHIFT) shiftType = ShiftType.CUSTOM;
+            Shift.ShiftType shiftType;
+            if (position == ROW_NUMBER_NORMAL_DAY) shiftType = Shift.ShiftType.NORMAL_DAY;
+            else if (position == ROW_NUMBER_LONG_DAY) shiftType = Shift.ShiftType.LONG_DAY;
+            else if (position == ROW_NUMBER_NIGHT_SHIFT) shiftType = Shift.ShiftType.NIGHT_SHIFT;
+            else if (position == ROW_NUMBER_CUSTOM_SHIFT) shiftType = Shift.ShiftType.CUSTOM;
             else return false;
             icon = shiftType.getIcon();
             firstLine = shiftType.getPluralTitle();

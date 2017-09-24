@@ -12,7 +12,7 @@ abstract class ShiftDateDialogFragment<Entity extends Shift> extends DateDialogF
     @NonNull
     @Override
     final LocalDate getDateForDisplay(@NonNull Entity shift) {
-        return shift.getShiftData().getStart().atZone(LiveShiftConfig.getInstance(getActivity()).getFreshZoneId(getActivity())).toLocalDate();
+        return shift.getRawShiftData().getStart().atZone(LiveShiftConfig.getInstance(getActivity()).getFreshZoneId(getActivity())).toLocalDate();
     }
 
 }

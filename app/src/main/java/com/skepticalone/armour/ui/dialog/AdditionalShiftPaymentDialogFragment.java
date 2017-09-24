@@ -4,11 +4,11 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.data.viewModel.PayableViewModelContract;
 
-public final class AdditionalShiftPaymentDialogFragment extends PaymentDialogFragment<AdditionalShiftEntity> {
+public final class AdditionalShiftPaymentDialogFragment extends PaymentDialogFragment<RawAdditionalShiftEntity> {
 
     @Override
     int getTitle() {
@@ -17,7 +17,7 @@ public final class AdditionalShiftPaymentDialogFragment extends PaymentDialogFra
 
     @NonNull
     @Override
-    PayableViewModelContract<AdditionalShiftEntity> getViewModel() {
+    PayableViewModelContract<RawAdditionalShiftEntity> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
     }
 

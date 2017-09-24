@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftDetailAdapter;
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftCommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftDateDialogFragment;
@@ -14,7 +14,7 @@ import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.PaymentDialogFragment;
 
 public final class AdditionalShiftDetailFragment
-        extends PayableDetailFragment<AdditionalShiftEntity>
+        extends PayableDetailFragment<RawAdditionalShiftEntity>
         implements AdditionalShiftDetailAdapter.Callbacks {
 
     private final AdditionalShiftDetailAdapter adapter = new AdditionalShiftDetailAdapter(this);
@@ -43,13 +43,13 @@ public final class AdditionalShiftDetailFragment
 
     @NonNull
     @Override
-    PaymentDialogFragment<AdditionalShiftEntity> createPaymentDialogFragment() {
+    PaymentDialogFragment<RawAdditionalShiftEntity> createPaymentDialogFragment() {
         return new AdditionalShiftPaymentDialogFragment();
     }
 
     @NonNull
     @Override
-    CommentDialogFragment<AdditionalShiftEntity> createCommentDialogFragment() {
+    CommentDialogFragment<RawAdditionalShiftEntity> createCommentDialogFragment() {
         return new AdditionalShiftCommentDialogFragment();
     }
 

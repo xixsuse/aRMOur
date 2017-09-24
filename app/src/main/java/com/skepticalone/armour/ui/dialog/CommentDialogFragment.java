@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Item;
 
 public abstract class CommentDialogFragment<Entity extends Item> extends PlainTextDialogFragment<Entity> {
 

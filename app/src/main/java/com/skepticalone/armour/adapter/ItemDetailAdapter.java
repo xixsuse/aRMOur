@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.util.Comparators;
 
 public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements Observer<Entity> {

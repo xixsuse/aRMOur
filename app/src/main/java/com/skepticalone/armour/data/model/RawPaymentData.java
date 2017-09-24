@@ -1,18 +1,16 @@
-package com.skepticalone.armour.data.entity;
+package com.skepticalone.armour.data.model;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.db.Contract;
 
 import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 
-public final class PaymentData {
+public final class RawPaymentData {
 
     @NonNull
     @ColumnInfo(name = Contract.COLUMN_NAME_PAYMENT)
@@ -26,7 +24,7 @@ public final class PaymentData {
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
     private final Instant paid;
 
-    public PaymentData(
+    public RawPaymentData(
             @NonNull BigDecimal payment,
             @Nullable Instant claimed,
             @Nullable Instant paid
@@ -50,10 +48,10 @@ public final class PaymentData {
     public Instant getPaid() {
         return paid;
     }
-
-    @DrawableRes
-    public int getIcon() {
-        return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
-    }
+//
+//    @DrawableRes
+//    public int getIcon() {
+//        return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
+//    }
 
 }

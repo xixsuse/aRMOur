@@ -21,12 +21,12 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
     final String getTotalPayment(@NonNull List<Entity> items, @NonNull ItemViewHolder holder) {
         BigDecimal totalPayment = BigDecimal.ZERO;
         for (Entity item : items) {
-            totalPayment = totalPayment.add(item.getPayment());
+            totalPayment = totalPayment.add(item.getTotalPayment());
         }
         if (isFiltered() && totalPayment.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal filteredPayment = BigDecimal.ZERO;
             for (Entity item : items) {
-                if (isIncluded(item)) filteredPayment = filteredPayment.add(item.getPayment());
+                if (isIncluded(item)) filteredPayment = filteredPayment.add(item.getTotalPayment());
             }
             return holder.getPaymentPercentage(filteredPayment, totalPayment);
         } else {

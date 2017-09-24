@@ -10,8 +10,9 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.data.model.ShiftEntity;
 import com.skepticalone.armour.settings.TimePreference;
-import com.skepticalone.armour.util.ShiftType;
 
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
@@ -108,7 +109,7 @@ public final class LiveShiftConfig extends LiveData<ShiftConfig> implements Shar
     }
 
     @NonNull
-    public Pair<LocalTime, LocalTime> getPair(@NonNull ShiftType shiftType, @NonNull SharedPreferences sharedPreferences) {
+    public Pair<LocalTime, LocalTime> getPair(@NonNull Shift.ShiftType shiftType, @NonNull SharedPreferences sharedPreferences) {
         @NonNull final String keyStart, keyEnd;
         final int defaultStart, defaultEnd;
         switch (shiftType) {

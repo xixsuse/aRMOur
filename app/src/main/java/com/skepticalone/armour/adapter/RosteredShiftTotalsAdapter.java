@@ -3,16 +3,16 @@ package com.skepticalone.armour.adapter;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 
 import java.util.List;
 
-public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<RosteredShiftEntity> implements ShiftTotalsAdapterHelper.Callbacks<RosteredShiftEntity> {
+public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<RawRosteredShiftEntity> implements ShiftTotalsAdapterHelper.Callbacks<RawRosteredShiftEntity> {
 
     @NonNull
     private final Callbacks callbacks;
     @NonNull
-    private final ShiftTotalsAdapterHelper<RosteredShiftEntity> helper;
+    private final ShiftTotalsAdapterHelper<RawRosteredShiftEntity> helper;
 
     public RosteredShiftTotalsAdapter(@NonNull Callbacks callbacks) {
         this.callbacks = callbacks;
@@ -25,7 +25,7 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     }
 
     @Override
-    public boolean isIncluded(@NonNull RosteredShiftEntity shift) {
+    public boolean isIncluded(@NonNull RawRosteredShiftEntity shift) {
         return shift.isCompliant() ? callbacks.includeCompliant() : callbacks.includeNonCompliant();
     }
 
@@ -41,12 +41,12 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
 
     @NonNull
     @Override
-    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShiftEntity> shifts, @NonNull ItemViewHolder holder) {
+    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RawRosteredShiftEntity> shifts, @NonNull ItemViewHolder holder) {
         return totalDuration;
     }
 
     @Override
-    boolean bindViewHolder(@NonNull List<RosteredShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull List<RawRosteredShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
         return helper.bindViewHolder(allShifts, holder, position);
     }
 

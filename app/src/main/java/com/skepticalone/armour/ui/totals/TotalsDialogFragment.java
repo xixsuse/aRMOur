@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
-import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
 import java.util.List;

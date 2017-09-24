@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.entity;
+package com.skepticalone.armour.data.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
@@ -7,41 +7,46 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.Expense;
-
-import java.math.BigDecimal;
 
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
-public final class ExpenseEntity extends ItemEntity implements Expense {
+public final class RawExpenseEntity extends Item {
     @NonNull
     @ColumnInfo(name = Contract.Expenses.COLUMN_NAME_TITLE)
     private final String title;
     @NonNull
     @Embedded
-    private final PaymentData paymentData;
-    public ExpenseEntity(
+    private final RawPaymentData paymentData;
+    public RawExpenseEntity(
             long id,
-            @NonNull String title, @NonNull PaymentData paymentData, @SuppressWarnings("SameParameterValue") @Nullable String comment
+            @Nullable String comment,
+            @NonNull String title,
+            @NonNull RawPaymentData paymentData
     ) {
         super(id, comment);
-        this.paymentData = paymentData;
         this.title = title;
+        this.paymentData = paymentData;
     }
+
     @NonNull
-    @Override
     public String getTitle() {
         return title;
     }
 
     @NonNull
-    @Override
-    public PaymentData getPaymentData() {
+    public RawPaymentData getPaymentData() {
         return paymentData;
     }
-
-    @NonNull
-    @Override
-    public BigDecimal getPayment() {
-        return paymentData.getPayment();
-    }
+//
+//    //
+////    @NonNull
+////    @Override
+////    public RawPaymentData getPaymentData() {
+////        return paymentData;
+////    }
+//
+//    @NonNull
+//    @Override
+//    public BigDecimal getTotalPayment() {
+//        return paymentData.getPayment();
+//    }
 }

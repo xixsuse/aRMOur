@@ -12,23 +12,23 @@ import android.widget.CompoundButton;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
 import com.skepticalone.armour.adapter.RosteredShiftTotalsAdapter;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 
-public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragment<RosteredShiftEntity> implements RosteredShiftTotalsAdapter.Callbacks {
+public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragment<RawRosteredShiftEntity> implements RosteredShiftTotalsAdapter.Callbacks {
 
     private CompoundButton compliant, nonCompliant;
 
     @NonNull
     @Override
-    ItemTotalsAdapter<RosteredShiftEntity> createAdapter() {
+    ItemTotalsAdapter<RawRosteredShiftEntity> createAdapter() {
         return new RosteredShiftTotalsAdapter(this);
     }
 
     @NonNull
     @Override
-    ItemViewModelContract<RosteredShiftEntity> getViewModel() {
+    ItemViewModelContract<RawRosteredShiftEntity> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(RosteredShiftViewModel.class);
     }
 

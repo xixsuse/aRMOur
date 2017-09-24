@@ -27,7 +27,7 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     @CallSuper
     boolean areContentsTheSame(@NonNull Entity shift1, @NonNull Entity shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                Comparators.equalShiftData(shift1.getShiftData(), shift2.getShiftData());
+                Comparators.equalShiftData(shift1.getRawShiftData(), shift2.getRawShiftData());
     }
 
     @Override
@@ -36,8 +36,8 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
         holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
         final ZoneId zoneId = liveShiftConfig.getFreshZoneId(holder.getContext());
         final ZonedDateTime
-                start = shift.getShiftData().getStart().atZone(zoneId),
-                end = shift.getShiftData().getEnd().atZone(zoneId);
+                start = shift.getRawShiftData().getStart().atZone(zoneId),
+                end = shift.getRawShiftData().getEnd().atZone(zoneId);
         holder.setText(
                 DateTimeUtils.getFullDateString(start.toLocalDate()),
                 DateTimeUtils.getTimeSpanString(start.toLocalDateTime(), end.toLocalDateTime()),

@@ -13,8 +13,8 @@ import android.util.Pair;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.data.entity.ShiftData;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.util.InstantConverter;
 
 import org.threeten.bp.Instant;
@@ -24,12 +24,12 @@ import org.threeten.bp.ZoneId;
 import java.util.List;
 
 @Dao
-public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> {
+public abstract class RawAdditionalShiftDao extends ItemDao<RawAdditionalShiftEntity> {
 
     @NonNull
     private final PayableDaoHelper payableDaoHelper;
 
-    AdditionalShiftDao(@NonNull AppDatabase database) {
+    RawAdditionalShiftDao(@NonNull AppDatabase database) {
         super(database);
         payableDaoHelper = new PayableDaoHelper(this);
     }
@@ -64,9 +64,9 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
         cursor.close();
         ContentValues values = new ContentValues();
         values.put(Contract.COLUMN_NAME_PAYMENT, paymentInCents);
-        ShiftData shiftData = ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, false);
-        values.put(Contract.COLUMN_NAME_SHIFT_START, shiftData.getStart().getEpochSecond());
-        values.put(Contract.COLUMN_NAME_SHIFT_END, shiftData.getEnd().getEpochSecond());
+        RawShift.RawShiftData rawShiftData = RawShift.RawShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, false);
+        values.put(Contract.COLUMN_NAME_SHIFT_START, rawShiftData.getStart().getEpochSecond());
+        values.put(Contract.COLUMN_NAME_SHIFT_END, rawShiftData.getEnd().getEpochSecond());
         return insertInTransaction(values);
     }
 
@@ -78,7 +78,7 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract LiveData<AdditionalShiftEntity> getItem(long id);
+    public abstract LiveData<RawAdditionalShiftEntity> getItem(long id);
 
     // FIXME: 22/09/17 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
@@ -88,12 +88,12 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract AdditionalShiftEntity getItemInternalSync(long id);
+    abstract RawAdditionalShiftEntity getItemInternalSync(long id);
 
     // FIXME: 22/09/17 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Override
     @Query("SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<AdditionalShiftEntity>> getItems();
+    public abstract LiveData<List<RawAdditionalShiftEntity>> getItems();
 
 }

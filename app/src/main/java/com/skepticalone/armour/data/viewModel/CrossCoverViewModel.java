@@ -8,13 +8,13 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.db.AppDatabase;
-import com.skepticalone.armour.data.entity.CrossCoverEntity;
+import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 
 import org.threeten.bp.LocalDate;
 
 import java.math.BigDecimal;
 
-public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity> implements DateViewModelContract<CrossCoverEntity>, PayableViewModelContract<CrossCoverEntity>, SingleAddItemViewModelContract<CrossCoverEntity> {
+public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity> implements DateViewModelContract<RawCrossCoverEntity>, PayableViewModelContract<RawCrossCoverEntity>, SingleAddItemViewModelContract<RawCrossCoverEntity> {
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;

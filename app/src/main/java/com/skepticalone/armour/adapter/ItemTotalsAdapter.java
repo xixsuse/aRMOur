@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.skepticalone.armour.data.model.Item;
-
 import java.util.List;
 
 public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {

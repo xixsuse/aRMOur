@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 
 final class LiveComplianceConfig extends LiveData<ComplianceConfig> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -72,7 +73,7 @@ final class LiveComplianceConfig extends LiveData<ComplianceConfig> implements S
     }
 
     private void updateChecker(@NonNull SharedPreferences sharedPreferences) {
-        setValue(new RosteredShiftEntity.ComplianceConfiguration(
+        setValue(new RawRosteredShiftEntity.ComplianceConfiguration(
                 sharedPreferences.getBoolean(keyCheckDurationOverDay, defaultCheckDurationOverDay),
                 sharedPreferences.getBoolean(keyCheckDurationOverWeek, defaultCheckDurationOverWeek),
                 sharedPreferences.getBoolean(keyCheckDurationOverFortnight, defaultCheckDurationOverFortnight),

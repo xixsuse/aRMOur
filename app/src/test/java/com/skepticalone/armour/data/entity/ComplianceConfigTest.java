@@ -1,5 +1,8 @@
 package com.skepticalone.armour.data.entity;
 
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawShift;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.ZoneId;
@@ -13,23 +16,23 @@ import static org.junit.Assert.assertTrue;
 public class ComplianceConfigTest {
 
     private static final int DEFAULT_YEAR = 2017;
-    private final ArrayList<RosteredShiftEntity> shifts = new ArrayList<>();
-    private RosteredShiftEntity.ComplianceConfiguration checker;
+    private final ArrayList<RawRosteredShiftEntity> shifts = new ArrayList<>();
+    private RawRosteredShiftEntity.ComplianceConfiguration checker;
 
     @SuppressWarnings("SameParameterValue")
-    private static RosteredShiftEntity newShift(int month, int startDayOfMonth, int startHour, int startMinute, int endHour, int endMinute) {
+    private static RawRosteredShiftEntity newShift(int month, int startDayOfMonth, int startHour, int startMinute, int endHour, int endMinute) {
         final ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime start = ZonedDateTime.of(DEFAULT_YEAR, month, startDayOfMonth, startHour, startMinute, 0, 0, zoneId),
                 end = ZonedDateTime.of(DEFAULT_YEAR, month, startDayOfMonth, endHour, endMinute, 0, 0, zoneId);
         while (!end.isAfter(start)) {
             end = end.plusDays(1);
         }
-        return new RosteredShiftEntity(new ShiftData(start.toInstant(), end.toInstant()), null, null);
+        return new RawRosteredShiftEntity(new RawShift.RawShiftData(start.toInstant(), end.toInstant()), null, null);
     }
 
     private void adjustByMinutesAndCheck(int shiftIndex, int startMinutes, int endMinutes) {
-        RosteredShiftEntity shift = shifts.get(shiftIndex);
-        shifts.set(shiftIndex, new RosteredShiftEntity(new ShiftData(
+        RawRosteredShiftEntity shift = shifts.get(shiftIndex);
+        shifts.set(shiftIndex, new RawRosteredShiftEntity(new RawShift.RawShiftData(
                 shift.getShiftData().getStart().plusSeconds(startMinutes * 60),
                 shift.getShiftData().getEnd().plusSeconds(endMinutes * 60)
         ), null, null));
@@ -38,7 +41,7 @@ public class ComplianceConfigTest {
 
     @Before
     public void setUp() {
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 true,
                 true,
@@ -114,7 +117,7 @@ public class ComplianceConfigTest {
     @Test
     public void initialData() {
         checker.process(shifts, ZoneId.systemDefault());
-        for (RosteredShiftEntity shift : shifts) {
+        for (RawRosteredShiftEntity shift : shifts) {
             assertTrue(shift.isCompliant());
             assertFalse("exceedsMaximumDurationOverDay: " + shift.getShiftData().toString(), shift.exceedsMaximumDurationOverDay());
             assertFalse("exceedsMaximumDurationOverWeek: " + shift.getShiftData().toString(), shift.exceedsMaximumDurationOverWeek());
@@ -132,7 +135,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(11, -1, -1);
         assertFalse(shifts.get(11).isCompliant());
         assertTrue(shifts.get(11).insufficientDurationBetweenShifts());
-        new RosteredShiftEntity.ComplianceConfiguration(
+        new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 true,
                 true,
@@ -151,7 +154,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(31, 0, 1);
         assertFalse(shifts.get(31).isCompliant());
         assertTrue(shifts.get(31).exceedsMaximumDurationOverDay());
-        new RosteredShiftEntity.ComplianceConfiguration(
+        new RawRosteredShiftEntity.ComplianceConfiguration(
                 false,
                 true,
                 true,
@@ -170,7 +173,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(7, 0, 1);
         assertFalse(shifts.get(7).isCompliant());
         assertTrue(shifts.get(7).exceedsMaximumDurationOverWeek());
-        new RosteredShiftEntity.ComplianceConfiguration(
+        new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 false,
                 true,
@@ -183,7 +186,7 @@ public class ComplianceConfigTest {
 
     @Test
     public void exceedsMaximumDurationOverFortnight() {
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 false,
                 true,
@@ -205,7 +208,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(11, 0, 1);
         assertFalse(shifts.get(11).isCompliant());
         assertTrue(shifts.get(11).exceedsMaximumDurationOverFortnight());
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 false,
                 false,
@@ -226,7 +229,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(11, 1, 1);
         assertFalse(shifts.get(17).isCompliant());
         assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 true,
                 true,
@@ -236,7 +239,7 @@ public class ComplianceConfigTest {
         checker.process(shifts, ZoneId.systemDefault());
         assertTrue(shifts.get(17).isCompliant());
         assertFalse(shifts.get(17).consecutiveWeekendsWorked());
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 true,
                 true,
@@ -252,7 +255,7 @@ public class ComplianceConfigTest {
         adjustByMinutesAndCheck(12, -1, -1);
         assertFalse(shifts.get(17).isCompliant());
         assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-        checker = new RosteredShiftEntity.ComplianceConfiguration(
+        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
                 true,
                 true,
                 true,

@@ -28,7 +28,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
     @NonNull
     @Override
     final LocalDate getDate(@NonNull Entity shift) {
-        return shift.getShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate();
+        return shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     @Override
@@ -37,10 +37,10 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
         super.onItemUpdated(oldShift, newShift, adapter);
         final ZoneId zoneId = ZoneId.systemDefault();
         final ZonedDateTime
-                oldStart = oldShift.getShiftData().getStart().atZone(zoneId),
-                oldEnd = oldShift.getShiftData().getEnd().atZone(zoneId),
-                newStart = newShift.getShiftData().getStart().atZone(zoneId),
-                newEnd = newShift.getShiftData().getEnd().atZone(zoneId);
+                oldStart = oldShift.getRawShiftData().getStart().atZone(zoneId),
+                oldEnd = oldShift.getRawShiftData().getEnd().atZone(zoneId),
+                newStart = newShift.getRawShiftData().getStart().atZone(zoneId),
+                newEnd = newShift.getRawShiftData().getEnd().atZone(zoneId);
         final boolean startTimeChanged = !oldStart.toLocalTime().equals(newStart.toLocalTime()),
                 endTimeChanged = !oldEnd.toLocalTime().equals(newEnd.toLocalTime());
         if (startTimeChanged) {
@@ -49,7 +49,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
         if (endTimeChanged || !oldStart.toLocalDate().isEqual(newStart.toLocalDate())) {
             adapter.notifyItemChanged(getRowNumberEnd());
         }
-        if (startTimeChanged || endTimeChanged || !Duration.between(oldShift.getShiftData().getStart(), oldShift.getShiftData().getEnd()).equals(Duration.between(newShift.getShiftData().getStart(), newShift.getShiftData().getEnd()))) {
+        if (startTimeChanged || endTimeChanged || !Duration.between(oldShift.getRawShiftData().getStart(), oldShift.getRawShiftData().getEnd()).equals(Duration.between(newShift.getRawShiftData().getStart(), newShift.getRawShiftData().getEnd()))) {
             adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }
@@ -64,7 +64,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
                     changeTime(true);
                 }
             });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalTime()));
+            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalTime()));
             return true;
         } else if (position == getRowNumberEnd()) {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
@@ -73,11 +73,11 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
                     changeTime(false);
                 }
             });
-            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd().atZone(ZoneId.systemDefault()).toLocalDateTime(), shift.getShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate()));
+            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getRawShiftData().getEnd().atZone(ZoneId.systemDefault()).toLocalDateTime(), shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate()));
             return true;
         } else if (position == getRowNumberShiftType()) {
             holder.setupPlain(shift.getShiftType().getIcon(), null);
-            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(Duration.between(shift.getShiftData().getStart(), shift.getShiftData().getEnd())));
+            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd())));
             return true;
         } else return super.bindViewHolder(shift, holder, position);
     }

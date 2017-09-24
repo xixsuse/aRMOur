@@ -13,8 +13,8 @@ import android.util.Pair;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
-import com.skepticalone.armour.data.entity.ShiftData;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.util.InstantConverter;
 
 import org.threeten.bp.Instant;
@@ -24,9 +24,9 @@ import org.threeten.bp.ZoneId;
 import java.util.List;
 
 @Dao
-public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
+public abstract class RawRosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
 
-    RosteredShiftDao(@NonNull AppDatabase database) {
+    RawRosteredShiftDao(@NonNull AppDatabase database) {
         super(database);
     }
 
@@ -57,10 +57,10 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
         );
         Instant lastShiftEnd = cursor.moveToFirst() ? InstantConverter.epochSecondToInstant(cursor.getLong(0)) : null;
         cursor.close();
-        ShiftData shiftData = ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
+        RawShift.RawShiftData rawShiftData = RawShift.RawShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends);
         ContentValues values = new ContentValues();
-        values.put(Contract.COLUMN_NAME_SHIFT_START, shiftData.getStart().getEpochSecond());
-        values.put(Contract.COLUMN_NAME_SHIFT_END, shiftData.getEnd().getEpochSecond());
+        values.put(Contract.COLUMN_NAME_SHIFT_START, rawShiftData.getStart().getEpochSecond());
+        values.put(Contract.COLUMN_NAME_SHIFT_END, rawShiftData.getEnd().getEpochSecond());
         return insertInTransaction(values);
     }
 
@@ -97,7 +97,7 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract LiveData<RosteredShiftEntity> getItem(long id);
+    public abstract LiveData<RawRosteredShiftEntity> getItem(long id);
 
     @Override
     @Query("SELECT * FROM " +
@@ -105,7 +105,7 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract RosteredShiftEntity getItemInternalSync(long id);
+    abstract RawRosteredShiftEntity getItemInternalSync(long id);
 
     @NonNull
     @Override
@@ -115,5 +115,5 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
 
     @Override
     @Query("SELECT * FROM " + Contract.RosteredShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<RosteredShiftEntity>> getItems();
+    public abstract LiveData<List<RawRosteredShiftEntity>> getItems();
 }

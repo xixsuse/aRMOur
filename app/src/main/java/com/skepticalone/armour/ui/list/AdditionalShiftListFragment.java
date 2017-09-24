@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.AdditionalShiftListAdapter;
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 import com.skepticalone.armour.data.entity.LiveShiftConfig;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.ui.totals.AdditionalShiftTotalsDialogFragment;
 
-public final class AdditionalShiftListFragment extends ShiftAddListFragment<AdditionalShiftEntity> {
+public final class AdditionalShiftListFragment extends ShiftAddListFragment<RawAdditionalShiftEntity> {
 
     private AdditionalShiftListAdapter adapter;
 

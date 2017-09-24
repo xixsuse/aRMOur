@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.CrossCoverDetailAdapter;
-import com.skepticalone.armour.data.entity.CrossCoverEntity;
+import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.CrossCoverCommentDialogFragment;
@@ -13,7 +13,7 @@ import com.skepticalone.armour.ui.dialog.CrossCoverPaymentDialogFragment;
 import com.skepticalone.armour.ui.dialog.PaymentDialogFragment;
 
 public final class CrossCoverDetailFragment
-        extends PayableDetailFragment<CrossCoverEntity>
+        extends PayableDetailFragment<RawCrossCoverEntity>
         implements CrossCoverDetailAdapter.Callbacks {
 
     private final CrossCoverDetailAdapter adapter = new CrossCoverDetailAdapter(this);
@@ -37,13 +37,13 @@ public final class CrossCoverDetailFragment
 
     @NonNull
     @Override
-    PaymentDialogFragment<CrossCoverEntity> createPaymentDialogFragment() {
+    PaymentDialogFragment<RawCrossCoverEntity> createPaymentDialogFragment() {
         return new CrossCoverPaymentDialogFragment();
     }
 
     @NonNull
     @Override
-    CommentDialogFragment<CrossCoverEntity> createCommentDialogFragment() {
+    CommentDialogFragment<RawCrossCoverEntity> createCommentDialogFragment() {
         return new CrossCoverCommentDialogFragment();
     }
 

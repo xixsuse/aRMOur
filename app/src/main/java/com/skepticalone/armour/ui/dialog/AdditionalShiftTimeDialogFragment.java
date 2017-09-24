@@ -3,13 +3,13 @@ package com.skepticalone.armour.ui.dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.data.entity.ShiftData;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 
 import org.threeten.bp.LocalTime;
 
-public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<AdditionalShiftEntity> {
+public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<RawAdditionalShiftEntity> {
 
     public static AdditionalShiftTimeDialogFragment newInstance(boolean start) {
         AdditionalShiftTimeDialogFragment fragment = new AdditionalShiftTimeDialogFragment();
@@ -19,8 +19,8 @@ public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<
 
     @NonNull
     @Override
-    ShiftData getShiftDataForDisplay(@NonNull AdditionalShiftEntity shift) {
-        return shift.getShiftData();
+    RawShift.RawShiftData getShiftDataForDisplay(@NonNull RawAdditionalShiftEntity shift) {
+        return shift.getRawShiftData();
     }
 
     @NonNull

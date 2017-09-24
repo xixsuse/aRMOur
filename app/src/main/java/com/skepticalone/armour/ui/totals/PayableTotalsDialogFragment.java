@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.PayableTotalsAdapter;
-import com.skepticalone.armour.data.model.Item;
 
 abstract class PayableTotalsDialogFragment<Entity extends Item> extends TotalsDialogFragment<Entity> implements PayableTotalsAdapter.Callbacks {
 

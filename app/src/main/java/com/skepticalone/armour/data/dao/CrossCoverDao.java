@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.entity.CrossCoverEntity;
+import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 
 import org.threeten.bp.LocalDate;
@@ -19,7 +19,7 @@ import org.threeten.bp.LocalDate;
 import java.util.List;
 
 @Dao
-public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
+public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> {
 
     @NonNull
     private final PayableDaoHelper payableDaoHelper;
@@ -58,7 +58,7 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
         cursor.close();
         ContentValues values = new ContentValues();
         values.put(Contract.COLUMN_NAME_PAYMENT, paymentInCents);
-        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, LocalDateConverter.dateToEpochDay(CrossCoverEntity.getNewDate(lastDate)));
+        values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, LocalDateConverter.dateToEpochDay(RawCrossCoverEntity.getNewDate(lastDate)));
         return insertInTransaction(values);
     }
 
@@ -68,7 +68,7 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    public abstract LiveData<CrossCoverEntity> getItem(long id);
+    public abstract LiveData<RawCrossCoverEntity> getItem(long id);
 
     @Override
     @Query("SELECT * FROM " +
@@ -76,10 +76,10 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract CrossCoverEntity getItemInternalSync(long id);
+    abstract RawCrossCoverEntity getItemInternalSync(long id);
 
     @Override
     @Query("SELECT * FROM " + Contract.CrossCoverShifts.TABLE_NAME + " ORDER BY " + Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    public abstract LiveData<List<CrossCoverEntity>> getItems();
+    public abstract LiveData<List<RawCrossCoverEntity>> getItems();
 
 }

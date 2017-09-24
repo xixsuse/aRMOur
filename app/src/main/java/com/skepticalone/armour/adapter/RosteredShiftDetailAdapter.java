@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
@@ -14,7 +14,7 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShiftEntity> {
+public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RawRosteredShiftEntity> {
 
     private static final int
             ROW_NUMBER_DATE = 0,
@@ -34,7 +34,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             NUMBER_OF_ROWS_FOR_LOGGED = 2;
 
     @NonNull
-    private final ShiftDetailAdapterHelper<RosteredShiftEntity> shiftDetailAdapterHelper;
+    private final ShiftDetailAdapterHelper<RawRosteredShiftEntity> shiftDetailAdapterHelper;
 
     @NonNull
     private final Callbacks callbacks;
@@ -42,7 +42,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     public RosteredShiftDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
         this.callbacks = callbacks;
-        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RosteredShiftEntity>(callbacks) {
+        shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RawRosteredShiftEntity>(callbacks) {
             
             @Override
             int getRowNumberDate() {
@@ -72,22 +72,22 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         };
     }
 
-    private static int adjustForLogged(int valueIfLogged, @NonNull RosteredShiftEntity shift) {
+    private static int adjustForLogged(int valueIfLogged, @NonNull RawRosteredShiftEntity shift) {
         return valueIfLogged - (shift.getLoggedShiftData() == null ? NUMBER_OF_ROWS_FOR_LOGGED : 0);
     }
 
     @Override
-    int getRowNumberComment(@NonNull RosteredShiftEntity shift) {
+    int getRowNumberComment(@NonNull RawRosteredShiftEntity shift) {
         return adjustForLogged(ROW_NUMBER_COMMENT_IF_LOGGED, shift);
     }
 
     @Override
-    int getRowCount(@NonNull RosteredShiftEntity shift) {
+    int getRowCount(@NonNull RawRosteredShiftEntity shift) {
         return adjustForLogged(ROW_COUNT_IF_LOGGED, shift) - (shift.getCurrentWeekend() == null ? 1 : 0);
     }
     
     @Override
-    void onItemUpdated(@NonNull RosteredShiftEntity oldShift, @NonNull RosteredShiftEntity newShift) {
+    void onItemUpdated(@NonNull RawRosteredShiftEntity oldShift, @NonNull RawRosteredShiftEntity newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         if (oldShift.getDurationBetweenShifts() == null ? newShift.getDurationBetweenShifts() != null : (newShift.getDurationBetweenShifts() == null || !oldShift.getDurationBetweenShifts().equals(newShift.getDurationBetweenShifts()))) {
@@ -132,7 +132,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    boolean bindViewHolder(@NonNull RosteredShiftEntity shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull RawRosteredShiftEntity shift, ItemViewHolder holder, int position) {
         final ZoneId zoneId = ZoneId.systemDefault();
         if (position == ROW_NUMBER_TOGGLE_LOGGED) {
             final boolean switchChecked;

@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.CrossCoverListAdapter;
-import com.skepticalone.armour.data.entity.CrossCoverEntity;
+import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.armour.ui.totals.CrossCoverTotalsDialogFragment;
 
-public final class CrossCoverListFragment extends SingleAddListFragment<CrossCoverEntity> {
+public final class CrossCoverListFragment extends SingleAddListFragment<RawCrossCoverEntity> {
 
     private final CrossCoverListAdapter adapter = new CrossCoverListAdapter(this);
 

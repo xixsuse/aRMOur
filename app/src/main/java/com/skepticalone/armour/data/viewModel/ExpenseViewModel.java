@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ExpenseDao;
 import com.skepticalone.armour.data.db.AppDatabase;
-import com.skepticalone.armour.data.entity.ExpenseEntity;
+import com.skepticalone.armour.data.model.RawExpenseEntity;
 
 import java.math.BigDecimal;
 
-public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity> implements PayableViewModelContract<ExpenseEntity>, SingleAddItemViewModelContract<ExpenseEntity> {
+public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity> implements PayableViewModelContract<RawExpenseEntity>, SingleAddItemViewModelContract<RawExpenseEntity> {
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;

@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.entity.ExpenseEntity;
+import com.skepticalone.armour.data.model.RawExpenseEntity;
 import com.skepticalone.armour.util.Comparators;
 
-public final class ExpenseDetailAdapter extends PayableDetailAdapter<ExpenseEntity> {
+public final class ExpenseDetailAdapter extends PayableDetailAdapter<RawExpenseEntity> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,
@@ -42,12 +42,12 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<ExpenseEnti
     }
 
     @Override
-    int getRowNumberComment(@NonNull ExpenseEntity expense) {
+    int getRowNumberComment(@NonNull RawExpenseEntity expense) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull ExpenseEntity expense) {
+    int getRowCount(@NonNull RawExpenseEntity expense) {
         return ROW_COUNT;
     }
 
@@ -59,7 +59,7 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<ExpenseEnti
     }
 
     @Override
-    void onItemUpdated(@NonNull ExpenseEntity oldExpense, @NonNull ExpenseEntity newExpense) {
+    void onItemUpdated(@NonNull RawExpenseEntity oldExpense, @NonNull RawExpenseEntity newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
         if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);
@@ -67,7 +67,7 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<ExpenseEnti
     }
 
     @Override
-    boolean bindViewHolder(@NonNull ExpenseEntity expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull RawExpenseEntity expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override

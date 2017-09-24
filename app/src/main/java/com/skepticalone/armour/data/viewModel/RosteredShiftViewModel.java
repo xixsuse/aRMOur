@@ -14,13 +14,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.dao.RosteredShiftDao;
+import com.skepticalone.armour.data.dao.RawRosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.LiveRosteredShifts;
 import com.skepticalone.armour.data.entity.LiveShiftConfig;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
-import com.skepticalone.armour.data.entity.ShiftData;
-import com.skepticalone.armour.util.ShiftType;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
+import com.skepticalone.armour.data.model.RawShift;
+import com.skepticalone.armour.data.model.Shift;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
@@ -28,7 +28,7 @@ import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity> implements ShiftViewModelContract<RosteredShiftEntity> {
+public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShiftEntity> implements ShiftViewModelContract<RawRosteredShiftEntity> {
 //
 //    @NonNull
 //    private final String
@@ -46,10 +46,10 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 //            defaultCheckConsecutiveWeekends;
 
     @NonNull
-    private final LiveData<List<RosteredShiftEntity>> items;
+    private final LiveData<List<RawRosteredShiftEntity>> items;
 
 //    @NonNull
-//    private final MutableLiveData<RosteredShiftEntity.ComplianceChecker> complianceChecker = new MutableLiveData<>();
+//    private final MutableLiveData<RawRosteredShiftEntity.ComplianceChecker> complianceChecker = new MutableLiveData<>();
 //
 //    @NonNull
 //    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -87,7 +87,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     }
 //
 //    private void updateComplianceChecker(@NonNull SharedPreferences sharedPreferences) {
-//        complianceChecker.setValue(new RosteredShiftEntity.ComplianceChecker(
+//        complianceChecker.setValue(new RawRosteredShiftEntity.ComplianceChecker(
 //                sharedPreferences.getBoolean(keyCheckDurationOverDay, defaultCheckDurationOverDay),
 //                sharedPreferences.getBoolean(keyCheckDurationOverWeek, defaultCheckDurationOverWeek),
 //                sharedPreferences.getBoolean(keyCheckDurationOverFortnight, defaultCheckDurationOverFortnight),
@@ -105,24 +105,24 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 
     @NonNull
     @Override
-    RosteredShiftDao getDao() {
+    RawRosteredShiftDao getDao() {
         return AppDatabase.getInstance(getApplication()).rosteredShiftDao();
     }
 
     @NonNull
     @Override
-    public LiveData<List<RosteredShiftEntity>> getItems() {
+    public LiveData<List<RawRosteredShiftEntity>> getItems() {
         return items;
     }
 
     @NonNull
     @Override
-    LiveData<RosteredShiftEntity> fetchItem(final long id) {
-        return Transformations.map(items, new Function<List<RosteredShiftEntity>, RosteredShiftEntity>() {
+    LiveData<RawRosteredShiftEntity> fetchItem(final long id) {
+        return Transformations.map(items, new Function<List<RawRosteredShiftEntity>, RawRosteredShiftEntity>() {
             @Override
-            public RosteredShiftEntity apply(List<RosteredShiftEntity> shifts) {
+            public RawRosteredShiftEntity apply(List<RawRosteredShiftEntity> shifts) {
                 if (shifts != null) {
-                    for (RosteredShiftEntity shift : shifts) {
+                    for (RawRosteredShiftEntity shift : shifts) {
                         if (shift.getId() == id) return shift;
                     }
                 }
@@ -131,16 +131,16 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         });
     }
 
-    private boolean skipWeekends(@NonNull final ShiftType shiftType) {
+    private boolean skipWeekends(@NonNull final Shift.ShiftType shiftType) {
         @StringRes final int skipWeekendsKey;
         @BoolRes final int defaultSkipWeekends;
-        if (shiftType == ShiftType.NORMAL_DAY) {
+        if (shiftType == Shift.ShiftType.NORMAL_DAY) {
             skipWeekendsKey = R.string.key_skip_weekend_normal_day;
             defaultSkipWeekends = R.bool.default_skip_weekend_normal_day;
-        } else if (shiftType == ShiftType.LONG_DAY) {
+        } else if (shiftType == Shift.ShiftType.LONG_DAY) {
             skipWeekendsKey = R.string.key_skip_weekend_long_day;
             defaultSkipWeekends = R.bool.default_skip_weekend_long_day;
-        } else if (shiftType == ShiftType.NIGHT_SHIFT) {
+        } else if (shiftType == Shift.ShiftType.NIGHT_SHIFT) {
             skipWeekendsKey = R.string.key_skip_weekend_night_shift;
             defaultSkipWeekends = R.bool.default_skip_weekend_night_shift;
         } else throw new IllegalStateException();
@@ -148,7 +148,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     }
 
     @Override
-    public void addNewShift(@NonNull final ShiftType shiftType) {
+    public void addNewShift(@NonNull final Shift.ShiftType shiftType) {
         runAsync(new Runnable() {
             @Override
             public void run() {
@@ -180,12 +180,12 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     }
 
     @MainThread
-    private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData, @Nullable final ShiftData loggedShiftData) {
+    private void saveNewShiftTimes(final long id, @NonNull final RawShift.RawShiftData rawShiftData, @Nullable final RawShift.RawShiftData loggedRawShiftData) {
         runAsync(new Runnable() {
             @Override
             public void run() {
                 try {
-                    getDao().setShiftTimesSync(id, shiftData.getStart(), shiftData.getEnd(), loggedShiftData == null ? null : loggedShiftData.getStart(), loggedShiftData == null ? null : loggedShiftData.getEnd());
+                    getDao().setShiftTimesSync(id, rawShiftData.getStart(), rawShiftData.getEnd(), loggedRawShiftData == null ? null : loggedRawShiftData.getStart(), loggedRawShiftData == null ? null : loggedRawShiftData.getEnd());
                 } catch (SQLiteConstraintException e) {
                     postOverlappingShifts();
                 }
@@ -195,14 +195,14 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
 
     @Override
     public void saveNewDate(@NonNull LocalDate date) {
-        RosteredShiftEntity shift = getCurrentItem().getValue();
+        RawRosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
         ZoneId zoneId = getZoneId();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date, zoneId), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date, zoneId));
     }
 
     public void saveNewTime(@NonNull LocalTime time, boolean start, boolean logged) {
-        RosteredShiftEntity shift = getCurrentItem().getValue();
+        RawRosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null || (logged && shift.getLoggedShiftData() == null)) throw new IllegalStateException();
         ZoneId zoneId = getZoneId();
         saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, zoneId, start), logged ? shift.getLoggedShiftData().withNewTime(time, zoneId, start) : shift.getLoggedShiftData());

@@ -3,8 +3,8 @@ package com.skepticalone.armour.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.entity.PaymentData;
-import com.skepticalone.armour.data.entity.ShiftData;
+import com.skepticalone.armour.data.model.RawPaymentData;
+import com.skepticalone.armour.data.model.RawShift;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
@@ -29,15 +29,15 @@ public final class Comparators {
         return bigDecimal1.equals(bigDecimal2);
     }
 
-    public static boolean equalPaymentData(@NonNull final PaymentData paymentData1, @NonNull final PaymentData paymentData2) {
+    public static boolean equalPaymentData(@NonNull final RawPaymentData paymentData1, @NonNull final RawPaymentData paymentData2) {
         return equalBigDecimals(paymentData1.getPayment(), paymentData2.getPayment()) &&
                 equalInstants(paymentData1.getClaimed(), paymentData2.getClaimed()) &&
                 equalInstants(paymentData1.getPaid(), paymentData2.getPaid());
     }
 
-    public static boolean equalShiftData(@NonNull final ShiftData shiftData1, @NonNull final ShiftData shiftData2) {
-        return shiftData1.getStart().getEpochSecond() == shiftData2.getStart().getEpochSecond() &&
-                shiftData1.getEnd().getEpochSecond() == shiftData2.getEnd().getEpochSecond();
+    public static boolean equalShiftData(@NonNull final RawShift.RawShiftData rawShiftData1, @NonNull final RawShift.RawShiftData rawShiftData2) {
+        return rawShiftData1.getStart().getEpochSecond() == rawShiftData2.getStart().getEpochSecond() &&
+                rawShiftData1.getEnd().getEpochSecond() == rawShiftData2.getEnd().getEpochSecond();
     }
 
 }

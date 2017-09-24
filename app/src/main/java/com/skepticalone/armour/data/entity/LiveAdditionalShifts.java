@@ -7,18 +7,20 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-public final class LiveAdditionalShifts extends MediatorLiveData<List<AdditionalShiftEntity>> {
+public final class LiveAdditionalShifts extends MediatorLiveData<List<RawAdditionalShiftEntity>> {
 
-    public LiveAdditionalShifts(@NonNull Application application, final @NonNull LiveData<List<AdditionalShiftEntity>> shifts) {
+    public LiveAdditionalShifts(@NonNull Application application, final @NonNull LiveData<List<RawAdditionalShiftEntity>> shifts) {
         super();
         final LiveShiftConfig liveShiftConfig = LiveShiftConfig.getInstance(application);
-        addSource(shifts, new Observer<List<AdditionalShiftEntity>>() {
+        addSource(shifts, new Observer<List<RawAdditionalShiftEntity>>() {
             @Override
-            public void onChanged(@Nullable List<AdditionalShiftEntity> rawShifts) {
+            public void onChanged(@Nullable List<RawAdditionalShiftEntity> rawShifts) {
                 updateSelf(rawShifts, liveShiftConfig.getValue());
             }
         });
@@ -30,10 +32,10 @@ public final class LiveAdditionalShifts extends MediatorLiveData<List<Additional
         });
     }
 
-    private void updateSelf(@Nullable List<AdditionalShiftEntity> shifts, @Nullable ShiftConfig shiftConfig) {
+    private void updateSelf(@Nullable List<RawAdditionalShiftEntity> shifts, @Nullable ShiftConfig shiftConfig) {
         if (shifts != null && shiftConfig != null) {
             ZoneId zoneId = shiftConfig.getZoneId();
-            for (AdditionalShiftEntity shift : shifts) {
+            for (RawAdditionalShiftEntity shift : shifts) {
                 shiftConfig.process(shift, zoneId);
             }
             setValue(shifts);

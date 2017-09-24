@@ -10,19 +10,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.dao.AdditionalShiftDao;
+import com.skepticalone.armour.data.dao.RawAdditionalShiftDao;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.dao.ExpenseDao;
-import com.skepticalone.armour.data.dao.RosteredShiftDao;
-import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
-import com.skepticalone.armour.data.entity.CrossCoverEntity;
-import com.skepticalone.armour.data.entity.ExpenseEntity;
-import com.skepticalone.armour.data.entity.RosteredShiftEntity;
+import com.skepticalone.armour.data.dao.RawRosteredShiftDao;
+import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.data.util.InstantConverter;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 import com.skepticalone.armour.data.util.MoneyConverter;
 
-@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 3)
+@Database(entities = {RawRosteredShiftEntity.class, RawAdditionalShiftEntity.class, RawCrossCoverEntity.class, RawExpenseEntity.class}, version = 3)
 @TypeConverters({LocalDateConverter.class, InstantConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -47,9 +47,9 @@ public abstract class AppDatabase extends RoomDatabase {
         return DATABASE;
     }
 
-    public abstract RosteredShiftDao rosteredShiftDao();
+    public abstract RawRosteredShiftDao rosteredShiftDao();
 
-    public abstract AdditionalShiftDao additionalShiftDao();
+    public abstract RawAdditionalShiftDao additionalShiftDao();
 
     public abstract CrossCoverDao crossCoverDao();
 
