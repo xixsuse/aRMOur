@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.util.Comparators;

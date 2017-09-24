@@ -1,5 +1,8 @@
 package com.skepticalone.armour.data.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +47,7 @@ public abstract class Shift extends Item {
         return shiftType;
     }
 
-    enum ShiftType {
+    public enum ShiftType {
 
         NORMAL_DAY(R.drawable.ic_normal_day_black_24dp, R.string.normal_day, R.string.normal_days),
         LONG_DAY(R.drawable.ic_long_day_black_24dp, R.string.long_day, R.string.long_days),
@@ -139,6 +142,89 @@ public abstract class Shift extends Item {
                 this.longDayEnd = longDayEnd;
                 this.nightShiftStart = nightShiftStart;
                 this.nightShiftEnd = nightShiftEnd;
+            }
+
+        }
+
+        static final class LiveShiftConfig extends LiveConfig<Configuration> {
+
+            @Nullable
+            private static LiveShiftConfig INSTANCE;
+
+            @NonNull
+            private final String
+                    keyNormalDayStart,
+                    keyNormalDayEnd,
+                    keyLongDayStart,
+                    keyLongDayEnd,
+                    keyNightShiftStart,
+                    keyNightShiftEnd;
+
+            private final int
+                    defaultNormalDayStart,
+                    defaultNormalDayEnd,
+                    defaultLongDayStart,
+                    defaultLongDayEnd,
+                    defaultNightShiftStart,
+                    defaultNightShiftEnd;
+
+            @NonNull
+            private final String[] watchKeys;
+
+            private LiveShiftConfig(@NonNull Resources resources) {
+                keyNormalDayStart = resources.getString(R.string.key_start_normal_day);
+                keyNormalDayEnd = resources.getString(R.string.key_end_normal_day);
+                keyLongDayStart = resources.getString(R.string.key_start_long_day);
+                keyLongDayEnd = resources.getString(R.string.key_end_long_day);
+                keyNightShiftStart = resources.getString(R.string.key_start_night_shift);
+                keyNightShiftEnd = resources.getString(R.string.key_end_night_shift);
+//                keyTimeZoneId = resources.getString(R.string.key_time_zone_id);
+                defaultNormalDayStart = resources.getInteger(R.integer.default_start_normal_day);
+                defaultNormalDayEnd = resources.getInteger(R.integer.default_end_normal_day);
+                defaultLongDayStart = resources.getInteger(R.integer.default_start_long_day);
+                defaultLongDayEnd = resources.getInteger(R.integer.default_end_long_day);
+                defaultNightShiftStart = resources.getInteger(R.integer.default_start_night_shift);
+                defaultNightShiftEnd = resources.getInteger(R.integer.default_end_night_shift);
+                watchKeys = new String[]{
+                        keyNormalDayStart,
+                        keyNormalDayEnd,
+                        keyLongDayStart,
+                        keyLongDayEnd,
+                        keyNightShiftStart,
+                        keyNightShiftEnd
+                };
+            }
+
+            @NonNull
+            public static LiveShiftConfig getInstance(@NonNull Context context) {
+                if (INSTANCE == null) {
+                    synchronized (LiveShiftConfig.class) {
+                        if (INSTANCE == null) {
+                            INSTANCE = new LiveShiftConfig(context.getResources());
+                            INSTANCE.init(context);
+                        }
+                    }
+                }
+                return INSTANCE;
+            }
+
+            @Override
+            @NonNull
+            String[] getWatchKeys() {
+                return watchKeys;
+            }
+
+            @NonNull
+            @Override
+            Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
+                return new Configuration(
+                        sharedPreferences.getInt(keyNormalDayStart, defaultNormalDayStart),
+                        sharedPreferences.getInt(keyNormalDayEnd, defaultNormalDayEnd),
+                        sharedPreferences.getInt(keyLongDayStart, defaultLongDayStart),
+                        sharedPreferences.getInt(keyLongDayEnd, defaultLongDayEnd),
+                        sharedPreferences.getInt(keyNightShiftStart, defaultNightShiftStart),
+                        sharedPreferences.getInt(keyNightShiftEnd, defaultNightShiftEnd)
+                );
             }
 
         }

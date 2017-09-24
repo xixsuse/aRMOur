@@ -16,8 +16,7 @@ import android.support.annotation.StringRes;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RawRosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
-import com.skepticalone.armour.data.entity.LiveRosteredShifts;
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.model.Shift;
@@ -111,7 +110,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
 
     @NonNull
     @Override
-    public LiveData<List<RawRosteredShiftEntity>> getItems() {
+    public LiveData<List<RawRosteredShiftEntity>> fetchItems() {
         return items;
     }
 

@@ -6,21 +6,20 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
+import com.skepticalone.armour.data.model.Item;
 
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-
-abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemViewModelContract<Entity> {
+abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidViewModel implements ItemViewModelContract<FinalItem> {
 
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
 
@@ -29,16 +28,16 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
         NO_DATA.setValue(null);
     }
 
-    private final LiveData<Entity> currentItem;
+    private final LiveData<FinalItem> currentItem;
     @NonNull
     private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
     private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<View.OnClickListener> deletedItemRestorer = new MutableLiveData<>();
     ItemViewModel(@NonNull Application application) {
         super(application);
-        currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<Entity>>() {
+        currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<FinalItem>>() {
             @Override
-            public LiveData<Entity> apply(Long id) {
+            public LiveData<FinalItem> apply(Long id) {
                 if (id == null){
                     //noinspection unchecked
                     return NO_DATA;
@@ -64,13 +63,9 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
 //        }).start();
     }
 
-    @NonNull
-    abstract ItemDao<Entity> getDao();
-
-    @NonNull
-    LiveData<Entity> fetchItem(long id) {
-        return getDao().getItem(id);
-    }
+//    {
+//        return getDao().getItem(id);
+//    }
 
     final long getCurrentItemId() {
         Long id = selectedId.getValue();
@@ -97,45 +92,42 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
 
     @NonNull
     @Override
-    public LiveData<List<Entity>> getItems() {
-        return getDao().getItems();
-    }
-
-    @NonNull
-    @Override
-    public LiveData<Entity> getCurrentItem() {
+    public LiveData<FinalItem> getCurrentItem() {
         return currentItem;
     }
 
-    @Override
-    public final void deleteItem(final long id) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                final Entity item = getDao().deleteInTransaction(id);
-                if (item != null) {
-                    postSelectedId(null);
-                    deletedItemRestorer.postValue(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            runAsync(new Runnable() {
-                                @Override
-                                public void run() {
-                                    deletedItemRestorer.postValue(null);
-                                    try {
-                                        long id = getDao().restoreItemSync(item);
-                                        postSelectedId(id);
-                                    } catch (SQLiteConstraintException e) {
-//                                        postOverlappingShifts();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-    }
+    @NonNull
+    abstract ItemDao<Entity> getDao();
+//
+//    @Override
+//    public final void deleteItem(final long id) {
+//        runAsync(new Runnable() {
+//            @Override
+//            public void run() {
+//                final FinalItem item = getDao().deleteInTransactionSync(id);
+//                if (item != null) {
+//                    postSelectedId(null);
+//                    deletedItemRestorer.postValue(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            runAsync(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    deletedItemRestorer.postValue(null);
+//                                    try {
+//                                        long id = getDao().restoreItemSync(item);
+//                                        postSelectedId(id);
+//                                    } catch (SQLiteConstraintException e) {
+////                                        postOverlappingShifts();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
 
     final void postOverlappingShifts() {
         errorMessage.postValue(R.string.overlapping_shifts);
@@ -160,4 +152,17 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
         return LiveShiftConfig.getInstance(getApplication()).getFreshZoneId(getApplication());
     }
 
+    @NonNull
+    @Override
+    public LiveData<FinalItem> fetchItem(final long id) {
+        return Transformations.map(fetchItems(), new Function<List<FinalItem>, FinalItem>() {
+            @Override
+            public FinalItem apply(List<FinalItem> items) {
+                for (FinalItem item: items) {
+                    if (item.getId() == id) return item;
+                }
+                return null;
+            }
+        });
+    }
 }

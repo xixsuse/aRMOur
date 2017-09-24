@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.util.AppConstants;
 

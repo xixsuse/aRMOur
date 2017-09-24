@@ -34,6 +34,10 @@ public final class RawPaymentData {
         this.paid = claimed == null ? null : paid;
     }
 
+    static RawPaymentData from(@NonNull BigDecimal payment) {
+        return new RawPaymentData(payment, null, null);
+    }
+
     @NonNull
     public BigDecimal getPayment() {
         return payment;

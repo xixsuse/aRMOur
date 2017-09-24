@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 
+import java.math.BigDecimal;
+
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
 public final class RawExpenseEntity extends Item {
     @NonNull
@@ -25,6 +27,10 @@ public final class RawExpenseEntity extends Item {
         super(id, comment);
         this.title = title;
         this.paymentData = paymentData;
+    }
+
+    public static RawExpenseEntity from(@NonNull String title) {
+        return new RawExpenseEntity(NO_ID, null, title, RawPaymentData.from(BigDecimal.ZERO));
     }
 
     @NonNull

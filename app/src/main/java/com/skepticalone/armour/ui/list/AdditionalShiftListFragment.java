@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.AdditionalShiftListAdapter;
 import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.ui.totals.AdditionalShiftTotalsDialogFragment;
 

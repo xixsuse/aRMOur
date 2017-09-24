@@ -16,8 +16,8 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RawAdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
-import com.skepticalone.armour.data.entity.LiveAdditionalShifts;
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveAdditionalShifts;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.model.Shift;
 
@@ -50,7 +50,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
 
     @NonNull
     @Override
-    public LiveData<List<RawAdditionalShiftEntity>> getItems() {
+    public LiveData<List<RawAdditionalShiftEntity>> fetchItems() {
         return items;
     }
 

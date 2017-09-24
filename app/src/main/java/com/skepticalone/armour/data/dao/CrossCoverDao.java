@@ -19,19 +19,10 @@ import org.threeten.bp.LocalDate;
 import java.util.List;
 
 @Dao
-public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> {
-
-    @NonNull
-    private final PayableDaoHelper payableDaoHelper;
+public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> implements PayableDao {
 
     CrossCoverDao(@NonNull AppDatabase database) {
         super(database);
-        payableDaoHelper = new PayableDaoHelper(this);
-    }
-
-    @NonNull
-    public final PayableDaoHelper getPayableDaoHelper() {
-        return payableDaoHelper;
     }
 
     public final void setDateSync(long id, @NonNull LocalDate date) {

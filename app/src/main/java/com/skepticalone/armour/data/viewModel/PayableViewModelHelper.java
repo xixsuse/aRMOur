@@ -2,16 +2,18 @@ package com.skepticalone.armour.data.viewModel;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.dao.PayableDaoHelper;
+import com.skepticalone.armour.data.dao.PayableDao;
+
+import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 
 final class PayableViewModelHelper {
 
     @NonNull
-    private final PayableDaoHelper dao;
+    private final PayableDao dao;
 
-    PayableViewModelHelper(@NonNull PayableDaoHelper dao) {
+    PayableViewModelHelper(@NonNull PayableDao dao) {
         this.dao = dao;
     }
 
@@ -28,7 +30,7 @@ final class PayableViewModelHelper {
         ItemViewModel.runAsync(new Runnable() {
             @Override
             public void run() {
-                dao.setClaimedSync(id, claimed);
+                dao.setClaimedSync(id, claimed ? Instant.now() : null);
             }
         });
     }
@@ -37,7 +39,7 @@ final class PayableViewModelHelper {
         ItemViewModel.runAsync(new Runnable() {
             @Override
             public void run() {
-                dao.setPaidSync(id, paid);
+                dao.setPaidSync(id, paid ? Instant.now() : null);
             }
         });
     }

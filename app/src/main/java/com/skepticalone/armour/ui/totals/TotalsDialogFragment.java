@@ -53,7 +53,7 @@ public abstract class TotalsDialogFragment<Entity extends Item> extends BottomSh
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getViewModel().getItems().observe(this, this);
+        getViewModel().fetchItems().observe(this, this);
     }
 
     @Override

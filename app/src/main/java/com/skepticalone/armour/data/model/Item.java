@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.db.Contract;
 
 public abstract class Item {
+    final static long NO_ID = 0L;
     @Nullable
     @ColumnInfo(name = Contract.COLUMN_NAME_COMMENT)
     private final String comment;

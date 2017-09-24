@@ -14,10 +14,10 @@ public final class Expense extends Item implements Payable {
     @NonNull
     private final PaymentData paymentData;
 
-    public Expense(@NonNull RawExpenseEntity rawExpense, @NonNull ZoneId zoneId) {
+    public Expense(@NonNull RawExpenseEntity rawExpense, @NonNull ZoneId timeZone) {
         super(rawExpense.getId(), rawExpense.getComment());
         title = rawExpense.getTitle();
-        paymentData = new PaymentData(rawExpense.getPaymentData(), zoneId);
+        paymentData = new PaymentData(rawExpense.getPaymentData(), timeZone);
     }
 
     @NonNull
@@ -36,4 +36,5 @@ public final class Expense extends Item implements Payable {
     public final BigDecimal getTotalPayment() {
         return getPaymentData().getPayment();
     }
+
 }

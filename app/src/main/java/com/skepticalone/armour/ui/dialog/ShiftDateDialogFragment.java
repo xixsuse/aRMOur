@@ -2,7 +2,7 @@ package com.skepticalone.armour.ui.dialog;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.entity.LiveShiftConfig;
+import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.Shift;
 
 import org.threeten.bp.LocalDate;

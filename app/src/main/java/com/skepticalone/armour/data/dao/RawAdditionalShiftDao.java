@@ -24,18 +24,14 @@ import org.threeten.bp.ZoneId;
 import java.util.List;
 
 @Dao
-public abstract class RawAdditionalShiftDao extends ItemDao<RawAdditionalShiftEntity> {
-
-    @NonNull
-    private final PayableDaoHelper payableDaoHelper;
+public abstract class RawAdditionalShiftDao extends ItemDao<RawAdditionalShiftEntity> implements PayableDao {
 
     RawAdditionalShiftDao(@NonNull AppDatabase database) {
         super(database);
-        payableDaoHelper = new PayableDaoHelper(this);
     }
 
     @NonNull
-    public final PayableDaoHelper getPayableDaoHelper() {
+    public final PayableDao getPayableDaoHelper() {
         return payableDaoHelper;
     }
 
