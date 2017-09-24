@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.dao.ExpenseDao;
-import com.skepticalone.armour.data.dao.RawRosteredShiftDao;
+import com.skepticalone.armour.data.dao.RosteredShiftDao;
 import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 import com.skepticalone.armour.data.model.RawExpenseEntity;
@@ -47,7 +47,7 @@ public abstract class AppDatabase extends RoomDatabase {
         return DATABASE;
     }
 
-    public abstract RawRosteredShiftDao rosteredShiftDao();
+    public abstract RosteredShiftDao rosteredShiftDao();
 
     public abstract AdditionalShiftDao additionalShiftDao();
 

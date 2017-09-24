@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
@@ -70,6 +71,21 @@ public abstract class Shift extends Item {
             this.pluralTitle = pluralTitle;
         }
 
+        @NonNull
+        public static ShiftType from(@NonNull LocalTime start, @NonNull LocalTime end, @NonNull Configuration configuration) {
+            final int startTotalMinutes = TimePreference.getTotalMinutes(start),
+                    endTotalMinutes = TimePreference.getTotalMinutes(end);
+            if (startTotalMinutes == configuration.normalDayStart && endTotalMinutes == configuration.normalDayEnd) {
+                return NORMAL_DAY;
+            } else if (startTotalMinutes == configuration.longDayStart && endTotalMinutes == configuration.longDayEnd) {
+                return LONG_DAY;
+            } else if (startTotalMinutes == configuration.nightShiftStart && endTotalMinutes == configuration.nightShiftEnd) {
+                return NIGHT_SHIFT;
+            } else {
+                return CUSTOM;
+            }
+        }
+
         @DrawableRes
         public final int getIcon() {
             return icon;
@@ -129,19 +145,26 @@ public abstract class Shift extends Item {
             return PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(hourlyRateKey), context.getResources().getInteger(hourlyRateDefault));
         }
 
-        @NonNull
-        public static ShiftType from(@NonNull LocalTime start, @NonNull LocalTime end, @NonNull Configuration configuration){
-            final int startTotalMinutes = TimePreference.getTotalMinutes(start),
-                    endTotalMinutes = TimePreference.getTotalMinutes(end);
-            if (startTotalMinutes == configuration.normalDayStart && endTotalMinutes == configuration.normalDayEnd) {
-                return NORMAL_DAY;
-            } else if (startTotalMinutes == configuration.longDayStart && endTotalMinutes == configuration.longDayEnd) {
-                return LONG_DAY;
-            } else if (startTotalMinutes == configuration.nightShiftStart && endTotalMinutes == configuration.nightShiftEnd) {
-                return NIGHT_SHIFT;
-            } else {
-                return CUSTOM;
+        public final boolean skipWeekends(@NonNull Context context) {
+            @StringRes final int skipWeekendsKey;
+            @BoolRes final int skipWeekendsDefault;
+            switch (this) {
+                case NORMAL_DAY:
+                    skipWeekendsKey = R.string.key_skip_weekend_normal_day;
+                    skipWeekendsDefault = R.bool.default_skip_weekend_normal_day;
+                    break;
+                case LONG_DAY:
+                    skipWeekendsKey = R.string.key_skip_weekend_long_day;
+                    skipWeekendsDefault = R.bool.default_skip_weekend_long_day;
+                    break;
+                case NIGHT_SHIFT:
+                    skipWeekendsKey = R.string.key_skip_weekend_night_shift;
+                    skipWeekendsDefault = R.bool.default_skip_weekend_night_shift;
+                    break;
+                default:
+                    throw new IllegalStateException();
             }
+            return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(skipWeekendsKey), context.getResources().getBoolean(skipWeekendsDefault));
         }
 
         public static final class Configuration {
@@ -302,6 +325,11 @@ public abstract class Shift extends Item {
             } else {
                 return RawShift.ShiftData.from(getStart(), time);
             }
+        }
+
+        @NonNull
+        public RawShift.ShiftData toRawData() {
+            return new RawShift.ShiftData(getStart().toInstant(), getEnd().toInstant());
         }
 
     }

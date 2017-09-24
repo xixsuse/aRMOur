@@ -19,9 +19,6 @@ public final class RawAdditionalShiftEntity extends RawShift {
     @NonNull
     @Embedded
     private final RawPaymentData paymentData;
-//    @NonNull
-//    @Ignore
-//    private final BigDecimal totalPayment;
 
     public RawAdditionalShiftEntity(
             long id,
@@ -41,28 +38,10 @@ public final class RawAdditionalShiftEntity extends RawShift {
                 RawPaymentData.from(hourlyRateInCents)
         );
     }
-//
-//    public RawAdditionalShiftEntity(
-//            long id,
-//            @Nullable String comment,
-//            @NonNull RawShift.ShiftData shiftData,
-//            @NonNull RawPaymentData paymentData
-//    ) {
-//        super(id, shiftData, comment);
-//        this.paymentData = paymentData;
-//        totalPayment = this.paymentData.getPayment()
-//                .multiply(BigDecimal.valueOf(Duration.between(getRawShiftData().getStart(), getRawShiftData().getEnd()).getSeconds()))
-//                .divide(BigDecimal.valueOf(SECONDS_PER_HOUR), 2, BigDecimal.ROUND_HALF_UP);
-//    }
 
     @NonNull
     public RawPaymentData getPaymentData() {
         return paymentData;
     }
-//
-//    @NonNull
-//    @Override
-//    public BigDecimal getTotalPayment() {
-//        return totalPayment;
-//    }
+
 }
