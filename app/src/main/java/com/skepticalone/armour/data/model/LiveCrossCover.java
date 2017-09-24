@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class LiveCrossCover extends LiveItems<RawCrossCoverEntity, CrossCover> {
 
-    LiveCrossCover(@NonNull Context context, @NonNull LiveData<List<RawCrossCoverEntity>> liveRawCrossCoverShifts) {
+    public LiveCrossCover(@NonNull Context context, @NonNull LiveData<List<RawCrossCoverEntity>> liveRawCrossCoverShifts) {
         super(context, liveRawCrossCoverShifts);
     }
 

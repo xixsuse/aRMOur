@@ -86,10 +86,9 @@ public abstract class RawAdditionalShiftDao extends ItemDao<RawAdditionalShiftEn
             " = :id")
     abstract RawAdditionalShiftEntity getItemInternalSync(long id);
 
-    // FIXME: 22/09/17 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @NonNull
     @Override
     @Query("SELECT * FROM " + Contract.AdditionalShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<RawAdditionalShiftEntity>> getItems();
+    public abstract LiveData<List<RawAdditionalShiftEntity>> fetchItems();
 
 }

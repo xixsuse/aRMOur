@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class LiveExpenses extends LiveItems<RawExpenseEntity, Expense> {
 
-    LiveExpenses(@NonNull Context context, @NonNull LiveData<List<RawExpenseEntity>> liveRawExpenses) {
+    public LiveExpenses(@NonNull Context context, @NonNull LiveData<List<RawExpenseEntity>> liveRawExpenses) {
         super(context, liveRawExpenses);
     }
 

@@ -82,7 +82,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
 //        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
 //        updateComplianceChecker(defaultSharedPreferences);
 //        defaultSharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-        items = new LiveRosteredShifts(application, getDao().getItems());
+        items = new LiveRosteredShifts(application, getDao().fetchItems());
     }
 //
 //    private void updateComplianceChecker(@NonNull SharedPreferences sharedPreferences) {
@@ -110,7 +110,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
 
     @NonNull
     @Override
-    public LiveData<List<RawRosteredShiftEntity>> fetchItems() {
+    public LiveData<List<RawRosteredShiftEntity>> getItems() {
         return items;
     }
 
@@ -196,14 +196,14 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
     public void saveNewDate(@NonNull LocalDate date) {
         RawRosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        ZoneId zoneId = getZoneId();
+        ZoneId zoneId = getFreshTimezone();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewDate(date, zoneId), shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().withNewDate(date, zoneId));
     }
 
     public void saveNewTime(@NonNull LocalTime time, boolean start, boolean logged) {
         RawRosteredShiftEntity shift = getCurrentItem().getValue();
         if (shift == null || (logged && shift.getLoggedShiftData() == null)) throw new IllegalStateException();
-        ZoneId zoneId = getZoneId();
+        ZoneId zoneId = getFreshTimezone();
         saveNewShiftTimes(shift.getId(), logged ? shift.getShiftData() : shift.getShiftData().withNewTime(time, zoneId, start), logged ? shift.getLoggedShiftData().withNewTime(time, zoneId, start) : shift.getLoggedShiftData());
     }
 

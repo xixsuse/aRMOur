@@ -7,12 +7,14 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.skepticalone.armour.data.db.AppDatabase;
 
 import java.util.List;
 
 public abstract class ItemDao<Entity> {
+
     @NonNull
     private final AppDatabase database;
 
@@ -20,15 +22,18 @@ public abstract class ItemDao<Entity> {
         this.database = database;
     }
 
+    @Insert
+    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
+    public abstract long insertInternalSync(@NonNull Entity item);
+
     @NonNull
     final AppDatabase getDatabase() {
         return database;
     }
 
-    public abstract LiveData<List<Entity>> getItems();
+    @NonNull
+    public abstract LiveData<List<Entity>> fetchItems();
 
-    @Insert
-    public abstract long insertSync(@NonNull Entity item);
 //
 //    @Delete
 //    public abstract int deleteSync(@NonNull Entity item);

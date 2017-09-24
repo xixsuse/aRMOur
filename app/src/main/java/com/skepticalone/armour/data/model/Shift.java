@@ -12,7 +12,9 @@ import android.util.Pair;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.settings.TimePreference;
 
+import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -258,6 +260,11 @@ public abstract class Shift extends Item {
             return duration;
         }
 
+        @Nullable
+        LocalDate calculateCurrentWeekend() {
+            ZonedDateTime weekendStart = getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
+            return weekendStart.isBefore(getEnd()) && getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
+        }
     }
 
 }

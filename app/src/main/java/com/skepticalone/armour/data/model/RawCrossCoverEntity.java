@@ -30,6 +30,10 @@ public final class RawCrossCoverEntity extends Item {
         this.paymentData = paymentData;
     }
 
+    public static RawCrossCoverEntity from(@NonNull LocalDate date, int cents) {
+        return new RawCrossCoverEntity(NO_ID, null, date, RawPaymentData.from(cents));
+    }
+
     @NonNull
     public LocalDate getDate() {
         return date;

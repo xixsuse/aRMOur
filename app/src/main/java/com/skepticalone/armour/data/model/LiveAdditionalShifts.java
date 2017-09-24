@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class LiveAdditionalShifts extends LiveShifts<RawAdditionalShiftEntity, AdditionalShift> {
 
-    LiveAdditionalShifts(@NonNull Context context, @NonNull LiveData<List<RawAdditionalShiftEntity>> liveRawShifts) {
+    public LiveAdditionalShifts(@NonNull Context context, @NonNull LiveData<List<RawAdditionalShiftEntity>> liveRawShifts) {
         super(context, liveRawShifts);
     }
     //

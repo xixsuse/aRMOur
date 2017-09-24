@@ -113,7 +113,8 @@ public abstract class RawRosteredShiftDao extends ItemDao<RawRosteredShiftEntity
         return Contract.RosteredShifts.TABLE_NAME;
     }
 
+    @NonNull
     @Override
     @Query("SELECT * FROM " + Contract.RosteredShifts.TABLE_NAME + " ORDER BY " + Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<RawRosteredShiftEntity>> getItems();
+    public abstract LiveData<List<RawRosteredShiftEntity>> fetchItems();
 }

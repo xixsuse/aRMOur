@@ -24,6 +24,7 @@ public final class MoneyConverter {
         return BigDecimal.valueOf(cents, MONEY_SCALE);
     }
 
+    @NonNull
     public static BigDecimal hourlyRateToTotal(@NonNull BigDecimal hourlyRate, @NonNull Duration duration) {
         return hourlyRate.multiply(BigDecimal.valueOf(duration.getSeconds()))
                 .divide(BigDecimal.valueOf(SECONDS_PER_HOUR), MONEY_SCALE, BigDecimal.ROUND_HALF_UP);

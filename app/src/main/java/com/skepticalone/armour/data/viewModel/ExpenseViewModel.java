@@ -1,15 +1,14 @@
 package com.skepticalone.armour.data.viewModel;
 
 import android.app.Application;
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ExpenseDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.Expense;
+import com.skepticalone.armour.data.model.LiveExpenses;
 import com.skepticalone.armour.data.model.RawExpenseEntity;
 
 import java.math.BigDecimal;
@@ -26,12 +25,7 @@ public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity, Expe
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        expenses = Transformations.map(getDao().getItems(), new Function<List<RawExpenseEntity>, List<Expense>>() {
-            @Override
-            public List<Expense> apply(List<RawExpenseEntity> input) {
-                return null;
-            }
-        });
+        expenses = new LiveExpenses(getApplication(), getDao().fetchItems());
     }
 
     @NonNull
@@ -46,8 +40,8 @@ public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity, Expe
             @Override
             public void run() {
                 postSelectedId(getDao().insertSync(
-                        RawExpenseEntity.from(getApplication().getString(R.string.new_expense_title))
-                ));
+                        getApplication().getString(R.string.new_expense_title))
+                );
             }
         });
     }
@@ -78,18 +72,8 @@ public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity, Expe
 
     @NonNull
     @Override
-    public LiveData<List<Expense>> fetchItems() {
+    public LiveData<List<Expense>> getItems() {
         return expenses;
     }
 
-    @NonNull
-    @Override
-    public LiveData<Expense> fetchItem(long id) {
-        return Transformations.map(getDao().getExpense(id), new Function<RawExpenseEntity, Expense>() {
-            @Override
-            public Expense apply(RawExpenseEntity rawExpense) {
-                return new Expense(rawExpense, getZoneId());
-            }
-        });
-    }
 }

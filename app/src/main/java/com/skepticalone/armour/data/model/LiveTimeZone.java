@@ -2,6 +2,7 @@ package com.skepticalone.armour.data.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -48,7 +49,7 @@ public final class LiveTimeZone extends LiveConfig<ZoneId> {
 
     @NonNull
     @Override
-    ZoneId getNewValue(@NonNull SharedPreferences sharedPreferences) {
+    public ZoneId getNewValue(@NonNull SharedPreferences sharedPreferences) {
         String zoneId = sharedPreferences.getString(keyTimeZoneId, null);
         return zoneId == null ? ZoneId.systemDefault() : ZoneId.of(zoneId);
     }

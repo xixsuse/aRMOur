@@ -16,7 +16,7 @@ public final class LiveRosteredShifts extends LiveShifts<RawRosteredShiftEntity,
     @NonNull
     private final LiveData<RosteredShift.Compliance.Configuration> liveComplianceConfig;
 
-    LiveRosteredShifts(@NonNull Context context, @NonNull LiveData<List<RawRosteredShiftEntity>> liveRawRosteredShifts) {
+    public LiveRosteredShifts(@NonNull Context context, @NonNull LiveData<List<RawRosteredShiftEntity>> liveRawRosteredShifts) {
         super(context, liveRawRosteredShifts);
         liveComplianceConfig = RosteredShift.Compliance.LiveComplianceConfig.getInstance(context);
         addSource(liveComplianceConfig, new Observer<RosteredShift.Compliance.Configuration>() {
@@ -33,14 +33,10 @@ public final class LiveRosteredShifts extends LiveShifts<RawRosteredShiftEntity,
     }
 
     private void onUpdated(@Nullable List<RawRosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable RosteredShift.Compliance.Configuration complianceConfig) {
-        if (rawRosteredShifts != null && timeZone != null && shiftConfig != null) {
+        if (rawRosteredShifts != null && timeZone != null && shiftConfig != null && complianceConfig != null) {
             List<RosteredShift> rosteredShifts = new ArrayList<>(rawRosteredShifts.size());
             for (RawRosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
-                rosteredShifts.add(new RosteredShift(rawRosteredShift, timeZone, shiftConfig));
-            }
-            for (RosteredShift rosteredShift : rosteredShifts) {
-                // TODO: 24/09/17
-//                rosteredShift.setCompliance(complianceConfig, );
+                rosteredShifts.add(new RosteredShift(rawRosteredShift, timeZone, shiftConfig, rosteredShifts, complianceConfig));
             }
             setValue(rosteredShifts);
         }

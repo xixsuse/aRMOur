@@ -105,7 +105,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ItemViewModelContract<Entity> viewModel = getViewModel();
-        viewModel.fetchItems().observe(this, getAdapter());
+        viewModel.getItems().observe(this, getAdapter());
         viewModel.getDeletedItemRestorer().observe(this, new Observer<View.OnClickListener>() {
             @Override
             public void onChanged(@Nullable View.OnClickListener deletedItemRestorer) {

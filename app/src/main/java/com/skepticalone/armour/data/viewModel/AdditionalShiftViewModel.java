@@ -38,7 +38,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
 
     public AdditionalShiftViewModel(@NonNull Application application) {
         super(application);
-        items = new LiveAdditionalShifts(application, getDao().getItems());
+        items = new LiveAdditionalShifts(application, getDao().fetchItems());
         this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
     }
 
@@ -50,7 +50,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
 
     @NonNull
     @Override
-    public LiveData<List<RawAdditionalShiftEntity>> fetchItems() {
+    public LiveData<List<RawAdditionalShiftEntity>> getItems() {
         return items;
     }
 
@@ -126,14 +126,14 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
     public void saveNewDate(@NonNull LocalDate date) {
         RawAdditionalShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewDate(date, getZoneId()));
+        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewDate(date, getFreshTimezone()));
     }
 
     @MainThread
     public void saveNewTime(@NonNull LocalTime time, boolean isStart) {
         RawAdditionalShiftEntity shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
-        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewTime(time, getZoneId(), isStart));
+        saveNewShiftTimes(shift.getId(), shift.getRawShiftData().withNewTime(time, getFreshTimezone(), isStart));
     }
 
     @Override

@@ -110,7 +110,7 @@ public final class RawRosteredShiftEntity extends RawShift {
 //
 //    @Nullable
 //    @Override
-//    public LocalDate getCurrentWeekend() {
+//    public LocalDate calculateCurrentWeekend() {
 //        return currentWeekend;
 //    }
 //

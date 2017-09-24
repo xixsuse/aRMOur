@@ -1,6 +1,7 @@
 package com.skepticalone.armour.data.viewModel;
 
 import android.app.Application;
+import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -8,20 +9,27 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.db.AppDatabase;
+import com.skepticalone.armour.data.model.CrossCover;
+import com.skepticalone.armour.data.model.LiveCrossCover;
 import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 
 import org.threeten.bp.LocalDate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity> implements DateViewModelContract<RawCrossCoverEntity>, PayableViewModelContract<RawCrossCoverEntity>, SingleAddItemViewModelContract<RawCrossCoverEntity> {
+public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity, CrossCover> implements DateViewModelContract<CrossCover>, PayableViewModelContract<CrossCover>, SingleAddItemViewModelContract<CrossCover> {
+
+    @NonNull
+    private final LiveData<List<CrossCover>> crossCoverShifts;
 
     @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
     public CrossCoverViewModel(@NonNull Application application) {
         super(application);
-        this.payableViewModelHelper = new PayableViewModelHelper(getDao().getPayableDaoHelper());
+        payableViewModelHelper = new PayableViewModelHelper(getDao());
+        crossCoverShifts = new LiveCrossCover(getApplication(), getDao().fetchItems());
     }
 
     @NonNull
@@ -35,7 +43,10 @@ public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertSync(PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))));
+                postSelectedId(getDao().insertSync(
+                        PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment)),
+                        getFreshTimezone()
+                ));
             }
         });
     }
@@ -68,5 +79,12 @@ public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity
             }
         });
     }
+
+    @NonNull
+    @Override
+    public LiveData<List<CrossCover>> getItems() {
+        return crossCoverShifts;
+    }
+
 
 }

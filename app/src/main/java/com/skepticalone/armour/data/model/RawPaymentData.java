@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
+import com.skepticalone.armour.data.util.MoneyConverter;
 
 import org.threeten.bp.Instant;
 
@@ -34,8 +35,8 @@ public final class RawPaymentData {
         this.paid = claimed == null ? null : paid;
     }
 
-    static RawPaymentData from(@NonNull BigDecimal payment) {
-        return new RawPaymentData(payment, null, null);
+    static RawPaymentData from(int cents) {
+        return new RawPaymentData(MoneyConverter.centsToMoney(cents), null, null);
     }
 
     @NonNull

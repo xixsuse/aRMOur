@@ -6,14 +6,15 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
-import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.Item;
+import com.skepticalone.armour.data.model.LiveTimeZone;
 
 import org.threeten.bp.ZoneId;
 
@@ -62,10 +63,6 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
 //            }
 //        }).start();
     }
-
-//    {
-//        return getDao().getItem(id);
-//    }
 
     final long getCurrentItemId() {
         Long id = selectedId.getValue();
@@ -148,14 +145,14 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
     }
 
     @NonNull
-    final ZoneId getZoneId() {
-        return LiveShiftConfig.getInstance(getApplication()).getFreshZoneId(getApplication());
+    final ZoneId getFreshTimezone() {
+        return LiveTimeZone.getInstance(getApplication()).getNewValue(PreferenceManager.getDefaultSharedPreferences(getApplication()));
     }
 
     @NonNull
     @Override
-    public LiveData<FinalItem> fetchItem(final long id) {
-        return Transformations.map(fetchItems(), new Function<List<FinalItem>, FinalItem>() {
+    public final LiveData<FinalItem> fetchItem(final long id) {
+        return Transformations.map(getItems(), new Function<List<FinalItem>, FinalItem>() {
             @Override
             public FinalItem apply(List<FinalItem> items) {
                 for (FinalItem item: items) {

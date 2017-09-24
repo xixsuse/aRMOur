@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ItemViewModelContract<FinalItem> {
     @NonNull
-    LiveData<List<FinalItem>> fetchItems();
+    LiveData<List<FinalItem>> getItems();
     void selectItem(long id);
     @NonNull
     LiveData<FinalItem> getCurrentItem();

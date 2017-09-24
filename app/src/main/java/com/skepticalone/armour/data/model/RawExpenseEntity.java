@@ -30,7 +30,7 @@ public final class RawExpenseEntity extends Item {
     }
 
     public static RawExpenseEntity from(@NonNull String title) {
-        return new RawExpenseEntity(NO_ID, null, title, RawPaymentData.from(BigDecimal.ZERO));
+        return new RawExpenseEntity(NO_ID, null, title, RawPaymentData.from(0L));
     }
 
     @NonNull
