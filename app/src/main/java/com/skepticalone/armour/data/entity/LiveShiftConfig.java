@@ -16,10 +16,10 @@ import com.skepticalone.armour.util.ShiftType;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 
-public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public final class LiveShiftConfig extends LiveData<ShiftConfig> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Nullable
-    private static LiveShiftTypeCalculator calculatorInstance;
+    private static LiveShiftConfig calculatorInstance;
 
     @NonNull
     private final String
@@ -39,7 +39,7 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
             defaultNightShiftStart,
             defaultNightShiftEnd;
 
-    private LiveShiftTypeCalculator(@NonNull Resources resources) {
+    private LiveShiftConfig(@NonNull Resources resources) {
         keyNormalDayStart = resources.getString(R.string.key_start_normal_day);
         keyNormalDayEnd = resources.getString(R.string.key_end_normal_day);
         keyLongDayStart = resources.getString(R.string.key_start_long_day);
@@ -56,12 +56,16 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
     }
 
     @NonNull
-    public static LiveShiftTypeCalculator getInstance(@NonNull Context context) {
+    public static LiveShiftConfig getInstance(@NonNull Context context) {
         if (calculatorInstance == null) {
-            calculatorInstance = new LiveShiftTypeCalculator(context.getResources());
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            calculatorInstance.updateCalculator(sharedPreferences);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(calculatorInstance);
+            synchronized (LiveShiftConfig.class) {
+                if (calculatorInstance == null) {
+                    calculatorInstance = new LiveShiftConfig(context.getResources());
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    calculatorInstance.updateCalculator(sharedPreferences);
+                    sharedPreferences.registerOnSharedPreferenceChangeListener(calculatorInstance);
+                }
+            }
         }
         return calculatorInstance;
     }
@@ -88,19 +92,19 @@ public final class LiveShiftTypeCalculator extends LiveData<ShiftTypeCalculator>
                 sharedPreferences.getInt(keyLongDayEnd, defaultLongDayEnd),
                 sharedPreferences.getInt(keyNightShiftStart, defaultNightShiftStart),
                 sharedPreferences.getInt(keyNightShiftEnd, defaultNightShiftEnd),
-                getZoneId(sharedPreferences)
+                getFreshZoneId(sharedPreferences)
         ));
     }
 
     @NonNull
-    public ZoneId getZoneId(@NonNull SharedPreferences sharedPreferences) {
+    public ZoneId getFreshZoneId(@NonNull SharedPreferences sharedPreferences) {
         String zoneId = sharedPreferences.getString(keyTimeZoneId, null);
         return zoneId == null ? ZoneId.systemDefault() : ZoneId.of(zoneId);
     }
 
     @NonNull
-    public ZoneId getZoneId(@NonNull Context context) {
-        return getZoneId(PreferenceManager.getDefaultSharedPreferences(context));
+    public ZoneId getFreshZoneId(@NonNull Context context) {
+        return getFreshZoneId(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
     @NonNull

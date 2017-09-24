@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
@@ -167,4 +168,10 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
             secondaryIcon.setVisibility(View.GONE);
         }
     }
+
+    @NonNull
+    Context getContext() {
+        return itemView.getContext();
+    }
+
 }

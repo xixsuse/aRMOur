@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
-import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
+import com.skepticalone.armour.data.entity.LiveShiftConfig;
 
 import org.threeten.bp.ZoneId;
 
@@ -157,7 +157,7 @@ abstract class ItemViewModel<Entity> extends AndroidViewModel implements ItemVie
 
     @NonNull
     final ZoneId getZoneId() {
-        return LiveShiftTypeCalculator.getInstance(getApplication()).getZoneId(getApplication());
+        return LiveShiftConfig.getInstance(getApplication()).getFreshZoneId(getApplication());
     }
 
 }

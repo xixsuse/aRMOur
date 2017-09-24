@@ -24,7 +24,7 @@ import org.threeten.bp.ZonedDateTime;
 import java.util.List;
 
 @Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
+public final class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
@@ -47,11 +47,12 @@ public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
             compliant;
 
     public RosteredShiftEntity(
+            long id,
             @NonNull ShiftData shiftData,
             @Nullable ShiftData loggedShiftData,
             @Nullable String comment
     ) {
-        super(shiftData, comment);
+        super(id, shiftData, comment);
         this.loggedShiftData = loggedShiftData;
     }
 
@@ -134,12 +135,10 @@ public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 
     @NonNull
     RosteredShiftEntity copy() {
-        RosteredShiftEntity shift = new RosteredShiftEntity(getShiftData(), loggedShiftData, getComment());
-        shift.setId(getId());
-        return shift;
+        return new RosteredShiftEntity(getId(), getShiftData(), loggedShiftData, getComment());
     }
 
-//    public static final class ComplianceChecker implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
+//    public static final class ComplianceConfig implements Function<List<RosteredShiftEntity>, List<RosteredShiftEntity>> {
 //
 //        private final boolean
 //                checkDurationOverDay,
@@ -148,7 +147,7 @@ public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 //                checkDurationBetweenShifts,
 //                checkConsecutiveWeekends;
 //
-//        public ComplianceChecker(
+//        public ComplianceConfig(
 //                boolean checkDurationOverDay,
 //                boolean checkDurationOverWeek,
 //                boolean checkDurationOverFortnight,
@@ -215,7 +214,7 @@ public class RosteredShiftEntity extends ShiftEntity implements RosteredShift {
 //        }
 //    }
 
-    static final class ComplianceConfiguration implements ComplianceChecker {
+    static final class ComplianceConfiguration implements ComplianceConfig {
 
         private final boolean
                 checkDurationOverDay,

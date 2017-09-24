@@ -7,51 +7,47 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.threeten.bp.ZoneId;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public final class LiveRosteredShifts extends MediatorLiveData<List<RosteredShiftEntity>> {
 
-//    @NonNull
-//    private final LiveData<List<RawShift>> rawShifts;
-//    @NonNull
-//    private final LiveShiftTypeCalculator shiftTypeCalculator;
-//    @NonNull
-//    private final LiveComplianceChecker complianceChecker;
-
     public LiveRosteredShifts(@NonNull Application application, final @NonNull LiveData<List<RosteredShiftEntity>> shifts) {
         super();
-        final LiveShiftTypeCalculator shiftTypeCalculator = LiveShiftTypeCalculator.getInstance(application);
-        final LiveComplianceChecker complianceChecker = LiveComplianceChecker.getInstance(application);
+        final LiveShiftConfig liveShiftConfig = LiveShiftConfig.getInstance(application);
+        final LiveComplianceConfig liveComplianceConfig = LiveComplianceConfig.getInstance(application);
         addSource(shifts, new Observer<List<RosteredShiftEntity>>() {
             @Override
             public void onChanged(@Nullable List<RosteredShiftEntity> rawShifts) {
-                updateSelf(rawShifts, shiftTypeCalculator.getValue(), complianceChecker.getValue());
+                updateSelf(rawShifts, liveShiftConfig.getValue(), liveComplianceConfig.getValue());
             }
         });
-        addSource(shiftTypeCalculator, new Observer<ShiftTypeCalculator>() {
+        addSource(liveShiftConfig, new Observer<ShiftConfig>() {
             @Override
-            public void onChanged(@Nullable ShiftTypeCalculator shiftTypeCalculator) {
-                updateSelf(shifts.getValue(), shiftTypeCalculator, complianceChecker.getValue());
+            public void onChanged(@Nullable ShiftConfig shiftConfig) {
+                updateSelf(shifts.getValue(), shiftConfig, liveComplianceConfig.getValue());
             }
         });
-        addSource(complianceChecker, new Observer<ComplianceChecker>() {
+        addSource(liveComplianceConfig, new Observer<ComplianceConfig>() {
             @Override
-            public void onChanged(@Nullable ComplianceChecker complianceChecker) {
-                updateSelf(shifts.getValue(), shiftTypeCalculator.getValue(), complianceChecker);
+            public void onChanged(@Nullable ComplianceConfig complianceConfig) {
+                updateSelf(shifts.getValue(), liveShiftConfig.getValue(), complianceConfig);
             }
         });
     }
 
-    private void updateSelf(@Nullable List<RosteredShiftEntity> source, @Nullable ShiftTypeCalculator shiftTypeCalculator, @Nullable ComplianceChecker complianceChecker) {
-        if (source != null && shiftTypeCalculator != null && complianceChecker != null) {
+    private void updateSelf(@Nullable List<RosteredShiftEntity> source, @Nullable ShiftConfig shiftConfig, @Nullable ComplianceConfig complianceConfig) {
+        if (source != null && shiftConfig != null && complianceConfig != null) {
+            ZoneId zoneId = shiftConfig.getZoneId();
             List<RosteredShiftEntity> result = new ArrayList<>(source.size());
             for (RosteredShiftEntity sourceShift : source) {
                 RosteredShiftEntity shift = sourceShift.copy();
-                shiftTypeCalculator.process(shift);
+                shiftConfig.process(shift, zoneId);
                 result.add(shift);
             }
-            complianceChecker.process(result, shiftTypeCalculator.getZoneId());
+            complianceConfig.process(result, zoneId);
             setValue(result);
         }
     }

@@ -17,7 +17,7 @@ import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.AdditionalShiftEntity;
 import com.skepticalone.armour.data.entity.LiveAdditionalShifts;
-import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
+import com.skepticalone.armour.data.entity.LiveShiftConfig;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftType;
 
@@ -98,10 +98,10 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
             @Override
             public void run() {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                LiveShiftTypeCalculator calculator = LiveShiftTypeCalculator.getInstance(getApplication());
+                LiveShiftConfig calculator = LiveShiftConfig.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
                         calculator.getPair(shiftType, sharedPreferences),
-                        calculator.getZoneId(sharedPreferences),
+                        calculator.getFreshZoneId(sharedPreferences),
                         getPaymentInCents(shiftType)
                 ));
             }

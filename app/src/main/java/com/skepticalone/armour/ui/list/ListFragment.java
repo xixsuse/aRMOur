@@ -45,7 +45,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
 
     @Override
     @CallSuper
-    public final void onAttach(Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         setHasOptionsMenu(true);
         callbacks = (Callbacks) context;
@@ -103,7 +103,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     }
 
     @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ItemViewModelContract<Entity> viewModel = getViewModel();
         viewModel.getItems().observe(this, getAdapter());

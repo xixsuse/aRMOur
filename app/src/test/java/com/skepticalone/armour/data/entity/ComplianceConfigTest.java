@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ComplianceCheckerTest {
+public class ComplianceConfigTest {
 
     private static final int DEFAULT_YEAR = 2017;
     private final ArrayList<RosteredShiftEntity> shifts = new ArrayList<>();

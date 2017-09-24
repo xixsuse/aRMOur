@@ -17,7 +17,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.entity.LiveRosteredShifts;
-import com.skepticalone.armour.data.entity.LiveShiftTypeCalculator;
+import com.skepticalone.armour.data.entity.LiveShiftConfig;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.ShiftType;
@@ -153,10 +153,10 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
             @Override
             public void run() {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                LiveShiftTypeCalculator calculator = LiveShiftTypeCalculator.getInstance(getApplication());
+                LiveShiftConfig calculator = LiveShiftConfig.getInstance(getApplication());
                 postSelectedId(getDao().insertSync(
                         calculator.getPair(shiftType, sharedPreferences),
-                        calculator.getZoneId(sharedPreferences),
+                        calculator.getFreshZoneId(sharedPreferences),
                         skipWeekends(shiftType)
                 ));
             }

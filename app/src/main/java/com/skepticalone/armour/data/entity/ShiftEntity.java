@@ -19,8 +19,9 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
     @Ignore
     private ShiftType shiftType;
 
-    ShiftEntity(@NonNull ShiftData shiftData, @Nullable String comment) {
-        super(comment);
+    ShiftEntity(long id,
+                @NonNull ShiftData shiftData, @Nullable String comment) {
+        super(id, comment);
         this.shiftData = shiftData;
     }
 
@@ -36,7 +37,7 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
         return shiftType;
     }
 
-    static final class ShiftTypeConfiguration implements ShiftTypeCalculator {
+    static final class ShiftTypeConfiguration implements ShiftConfig {
 
         private final int
                 normalDayStart,
@@ -74,7 +75,7 @@ abstract class ShiftEntity extends ItemEntity implements Shift {
         }
 
         @Override
-        public void process(@NonNull ShiftEntity shift) {
+        public void process(@NonNull ShiftEntity shift, @NonNull ZoneId zoneId) {
             final int start = TimePreference.getTotalMinutes(shift.getShiftData().getStart().atZone(zoneId).toLocalTime()),
                     end = TimePreference.getTotalMinutes(shift.getShiftData().getEnd().atZone(zoneId).toLocalTime());
             if (start == normalDayStart && end == normalDayEnd) {

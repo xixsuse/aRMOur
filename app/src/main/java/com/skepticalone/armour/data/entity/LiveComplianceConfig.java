@@ -10,10 +10,10 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
 
-final class LiveComplianceChecker extends LiveData<ComplianceChecker> implements SharedPreferences.OnSharedPreferenceChangeListener {
+final class LiveComplianceConfig extends LiveData<ComplianceConfig> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Nullable
-    private static LiveComplianceChecker checkerInstance;
+    private static LiveComplianceConfig checkerInstance;
 
     @NonNull
     private final String
@@ -30,7 +30,7 @@ final class LiveComplianceChecker extends LiveData<ComplianceChecker> implements
             defaultCheckDurationBetweenShifts,
             defaultCheckConsecutiveWeekends;
 
-    private LiveComplianceChecker(@NonNull Resources resources) {
+    private LiveComplianceConfig(@NonNull Resources resources) {
         keyCheckDurationOverDay = resources.getString(R.string.key_check_duration_over_day);
         keyCheckDurationOverWeek = resources.getString(R.string.key_check_duration_over_week);
         keyCheckDurationOverFortnight = resources.getString(R.string.key_check_duration_over_fortnight);
@@ -44,12 +44,16 @@ final class LiveComplianceChecker extends LiveData<ComplianceChecker> implements
     }
 
     @NonNull
-    static LiveComplianceChecker getInstance(@NonNull Context context) {
+    static LiveComplianceConfig getInstance(@NonNull Context context) {
         if (checkerInstance == null) {
-            checkerInstance = new LiveComplianceChecker(context.getResources());
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            checkerInstance.updateChecker(sharedPreferences);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(checkerInstance);
+            synchronized (LiveComplianceConfig.class) {
+                if (checkerInstance == null) {
+                    checkerInstance = new LiveComplianceConfig(context.getResources());
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    checkerInstance.updateChecker(sharedPreferences);
+                    sharedPreferences.registerOnSharedPreferenceChangeListener(checkerInstance);
+                }
+            }
         }
         return checkerInstance;
     }

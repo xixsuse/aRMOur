@@ -1,17 +1,25 @@
 package com.skepticalone.armour.ui.list;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.RosteredShiftListAdapter;
+import com.skepticalone.armour.data.entity.LiveShiftConfig;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.armour.ui.totals.RosteredShiftTotalsDialogFragment;
 
 public final class RosteredShiftListFragment extends ShiftAddListFragment<RosteredShiftEntity> {
 
-    private final RosteredShiftListAdapter adapter = new RosteredShiftListAdapter(this);
+    private RosteredShiftListAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new RosteredShiftListAdapter(this, LiveShiftConfig.getInstance(context));
+    }
 
     @NonNull
     @Override

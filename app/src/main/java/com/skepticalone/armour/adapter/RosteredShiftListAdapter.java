@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.skepticalone.armour.data.entity.LiveShiftConfig;
 import com.skepticalone.armour.data.entity.RosteredShiftEntity;
 import com.skepticalone.armour.data.entity.ShiftData;
 import com.skepticalone.armour.util.Comparators;
@@ -13,9 +14,8 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShiftEntity> {
-
-    public RosteredShiftListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public RosteredShiftListAdapter(@NonNull Callbacks callbacks, @NonNull LiveShiftConfig liveShiftConfig) {
+        super(callbacks, liveShiftConfig);
     }
 
     @Override
@@ -33,10 +33,9 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
 
     @Nullable
     @Override
-    String getThirdLine(@NonNull RosteredShiftEntity shift) {
+    String getThirdLine(@NonNull RosteredShiftEntity shift, @NonNull ZoneId zoneId) {
         ShiftData loggedShiftData = shift.getLoggedShiftData();
         if (loggedShiftData == null) return null;
-        final ZoneId zoneId = ZoneId.systemDefault();
         final ZonedDateTime
                 loggedStart = loggedShiftData.getStart().atZone(zoneId),
                 loggedEnd = loggedShiftData.getEnd().atZone(zoneId);

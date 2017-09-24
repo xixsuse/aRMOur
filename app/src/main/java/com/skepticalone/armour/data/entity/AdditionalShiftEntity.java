@@ -27,11 +27,12 @@ public final class AdditionalShiftEntity extends ShiftEntity implements Addition
     private final BigDecimal totalPayment;
 
     public AdditionalShiftEntity(
+            long id,
             @NonNull ShiftData shiftData,
             @Nullable String comment,
             @NonNull PaymentData paymentData
     ) {
-        super(shiftData, comment);
+        super(id, shiftData, comment);
         this.paymentData = paymentData;
         totalPayment = this.paymentData.getPayment()
                 .multiply(BigDecimal.valueOf(Duration.between(getShiftData().getStart(), getShiftData().getEnd()).getSeconds()))

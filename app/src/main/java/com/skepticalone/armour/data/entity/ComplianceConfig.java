@@ -6,6 +6,6 @@ import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-interface ComplianceChecker {
+interface ComplianceConfig {
     void process(@NonNull List<RosteredShiftEntity> shifts, @NonNull ZoneId zoneId);
 }

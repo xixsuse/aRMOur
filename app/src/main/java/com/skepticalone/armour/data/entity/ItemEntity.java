@@ -14,19 +14,16 @@ abstract class ItemEntity implements Item {
     private final String comment;
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = BaseColumns._ID)
-    private long id = 0L;
+    private final long id;
 
-    ItemEntity(@Nullable String comment) {
+    ItemEntity(long id, @Nullable String comment) {
+        this.id = id;
         this.comment = comment;
     }
 
     @Override
     public final long getId() {
         return id;
-    }
-
-    public final void setId(long id) {
-        this.id = id;
     }
 
     @Nullable

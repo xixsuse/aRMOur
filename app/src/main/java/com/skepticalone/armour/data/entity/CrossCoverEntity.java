@@ -23,11 +23,12 @@ public final class CrossCoverEntity extends ItemEntity implements CrossCover {
     @Embedded
     private final PaymentData paymentData;
     public CrossCoverEntity(
+            long id,
             @NonNull LocalDate date,
             @NonNull PaymentData paymentData,
             @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
-        super(comment);
+        super(id, comment);
         this.date = date;
         this.paymentData = paymentData;
     }

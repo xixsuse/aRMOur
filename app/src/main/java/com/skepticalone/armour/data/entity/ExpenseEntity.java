@@ -20,9 +20,10 @@ public final class ExpenseEntity extends ItemEntity implements Expense {
     @Embedded
     private final PaymentData paymentData;
     public ExpenseEntity(
+            long id,
             @NonNull String title, @NonNull PaymentData paymentData, @SuppressWarnings("SameParameterValue") @Nullable String comment
     ) {
-        super(comment);
+        super(id, comment);
         this.paymentData = paymentData;
         this.title = title;
     }
