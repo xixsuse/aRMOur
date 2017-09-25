@@ -9,10 +9,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 
 abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetailAdapterHelper<Entity> {
 
@@ -28,28 +25,22 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
     @NonNull
     @Override
     final LocalDate getDate(@NonNull Entity shift) {
-        return shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate();
+        return shift.getShiftData().getStart().toLocalDate();
     }
 
     @Override
     @CallSuper
     void onItemUpdated(@NonNull Entity oldShift, @NonNull Entity newShift, @NonNull RecyclerView.Adapter adapter) {
         super.onItemUpdated(oldShift, newShift, adapter);
-        final ZoneId zoneId = ZoneId.systemDefault();
-        final ZonedDateTime
-                oldStart = oldShift.getRawShiftData().getStart().atZone(zoneId),
-                oldEnd = oldShift.getRawShiftData().getEnd().atZone(zoneId),
-                newStart = newShift.getRawShiftData().getStart().atZone(zoneId),
-                newEnd = newShift.getRawShiftData().getEnd().atZone(zoneId);
-        final boolean startTimeChanged = !oldStart.toLocalTime().equals(newStart.toLocalTime()),
-                endTimeChanged = !oldEnd.toLocalTime().equals(newEnd.toLocalTime());
+        final boolean startTimeChanged = !oldShift.getShiftData().getStart().toLocalTime().equals(newShift.getShiftData().getStart().toLocalTime()),
+                endTimeChanged = !oldShift.getShiftData().getEnd().toLocalTime().equals(newShift.getShiftData().getEnd().toLocalTime());
         if (startTimeChanged) {
             adapter.notifyItemChanged(getRowNumberStart());
         }
-        if (endTimeChanged || !oldStart.toLocalDate().isEqual(newStart.toLocalDate())) {
+        if (endTimeChanged || !oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
             adapter.notifyItemChanged(getRowNumberEnd());
         }
-        if (startTimeChanged || endTimeChanged || !Duration.between(oldShift.getRawShiftData().getStart(), oldShift.getRawShiftData().getEnd()).equals(Duration.between(newShift.getRawShiftData().getStart(), newShift.getRawShiftData().getEnd()))) {
+        if (startTimeChanged || endTimeChanged || !oldShift.getShiftData().getDuration().equals(newShift.getShiftData().getDuration())) {
             adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }
@@ -64,7 +55,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
                     changeTime(true);
                 }
             });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalTime()));
+            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getShiftData().getStart().toLocalTime()));
             return true;
         } else if (position == getRowNumberEnd()) {
             holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
@@ -73,11 +64,11 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
                     changeTime(false);
                 }
             });
-            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getRawShiftData().getEnd().atZone(ZoneId.systemDefault()).toLocalDateTime(), shift.getRawShiftData().getStart().atZone(ZoneId.systemDefault()).toLocalDate()));
+            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
             return true;
         } else if (position == getRowNumberShiftType()) {
             holder.setupPlain(shift.getShiftType().getIcon(), null);
-            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd())));
+            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(shift.getShiftData().getDuration()));
             return true;
         } else return super.bindViewHolder(shift, holder, position);
     }

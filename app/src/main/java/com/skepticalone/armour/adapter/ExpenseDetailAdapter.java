@@ -5,10 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
-import com.skepticalone.armour.util.Comparators;
+import com.skepticalone.armour.data.model.Expense;
 
-public final class ExpenseDetailAdapter extends PayableDetailAdapter<RawExpenseEntity> {
+public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
 
     private static final int
             ROW_NUMBER_TITLE = 0,
@@ -20,34 +19,37 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<RawExpenseE
 
     @NonNull
     private final Callbacks callbacks;
+    @NonNull
+    private final PayableDetailAdapterHelper<Expense> payableDetailAdapterHelper;
 
     public ExpenseDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
         this.callbacks = callbacks;
+        payableDetailAdapterHelper = new PayableDetailAdapterHelper<Expense>(callbacks) {
+            @Override
+            int getRowNumberPayment() {
+                return ROW_NUMBER_PAYMENT;
+            }
+
+            @Override
+            int getRowNumberClaimed() {
+                return ROW_NUMBER_CLAIMED;
+            }
+
+            @Override
+            int getRowNumberPaid() {
+                return ROW_NUMBER_PAID;
+            }
+        };
     }
 
     @Override
-    int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
-    }
-
-    @Override
-    int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
-    }
-
-    @Override
-    int getRowNumberComment(@NonNull RawExpenseEntity expense) {
+    int getRowNumberComment(@NonNull Expense expense) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull RawExpenseEntity expense) {
+    int getRowCount(@NonNull Expense expense) {
         return ROW_COUNT;
     }
 
@@ -59,15 +61,16 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<RawExpenseE
     }
 
     @Override
-    void onItemUpdated(@NonNull RawExpenseEntity oldExpense, @NonNull RawExpenseEntity newExpense) {
+    void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
         super.onItemUpdated(oldExpense, newExpense);
-        if (!Comparators.equalStrings(oldExpense.getTitle(), newExpense.getTitle())) {
+        payableDetailAdapterHelper.onItemUpdated(oldExpense, newExpense, this);
+        if (!oldExpense.getTitle().equals(newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);
         }
     }
 
     @Override
-    boolean bindViewHolder(@NonNull RawExpenseEntity expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override
@@ -77,10 +80,11 @@ public final class ExpenseDetailAdapter extends PayableDetailAdapter<RawExpenseE
             });
             holder.setText(holder.getText(R.string.title), expense.getTitle());
             return true;
-        } else return super.bindViewHolder(expense, holder, position);
+        } else return payableDetailAdapterHelper.bindViewHolder(expense, holder, position) ||
+                super.bindViewHolder(expense, holder, position);
     }
 
-    public interface Callbacks extends PayableDetailAdapter.Callbacks {
+    public interface Callbacks extends PayableDetailAdapterHelper.Callbacks {
         void changeTitle();
     }
 

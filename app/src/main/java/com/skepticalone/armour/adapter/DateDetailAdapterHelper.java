@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.LocalDate;
@@ -22,7 +21,7 @@ abstract class DateDetailAdapterHelper<Entity> {
 
     @CallSuper
     void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem, @NonNull RecyclerView.Adapter adapter) {
-        if (!Comparators.equalLocalDates(getDate(oldItem), getDate(newItem))){
+        if (!getDate(oldItem).isEqual(getDate(newItem))) {
             adapter.notifyItemChanged(getRowNumberDate());
         }
     }

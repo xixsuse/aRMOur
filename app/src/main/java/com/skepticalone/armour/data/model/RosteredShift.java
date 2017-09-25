@@ -3,6 +3,7 @@ package com.skepticalone.armour.data.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -45,6 +46,11 @@ public final class RosteredShift extends Shift {
         );
     }
 
+    @NonNull
+    private static Duration getDurationAfterCutoff(@NonNull ShiftData shiftData, @NonNull ZonedDateTime cutOff) {
+        return shiftData.getStart().isBefore(cutOff) ? Duration.between(cutOff, shiftData.getEnd()) : shiftData.getDuration();
+    }
+
     @Nullable
     public ShiftData getLoggedShiftData() {
         return loggedShiftData;
@@ -73,11 +79,6 @@ public final class RosteredShift extends Shift {
         }
     }
 
-    @NonNull
-    private static Duration getDurationAfterCutoff(@NonNull ShiftData shiftData, @NonNull ZonedDateTime cutOff) {
-        return shiftData.getStart().isBefore(cutOff) ? Duration.between(cutOff, shiftData.getEnd()) : shiftData.getDuration();
-    }
-
     @Nullable
     private Duration getDurationBetweenShifts(@NonNull List<RosteredShift> previousShifts){
         return previousShifts.isEmpty() ? null : Duration.between(previousShifts.get(previousShifts.size() - 1).getShiftData().getEnd(), getShiftData().getStart());
@@ -88,7 +89,7 @@ public final class RosteredShift extends Shift {
         return compliance;
     }
 
-    static final class Compliance {
+    public static final class Compliance {
 
         @NonNull
         private final Duration durationOverDay, durationOverWeek, durationOverFortnight;
@@ -132,46 +133,62 @@ public final class RosteredShift extends Shift {
                     !consecutiveWeekendsWorked;
         }
 
+        @DrawableRes
+        public static int getComplianceIcon(boolean compliant) {
+            return compliant ? R.drawable.compliant_black_24dp : R.drawable.non_compliant_red_24dp;
+        }
+
         @NonNull
-        Duration getDurationOverDay() {
+        public Duration getDurationOverDay() {
             return durationOverDay;
         }
-        boolean exceedsMaximumDurationOverDay() {
+
+        public boolean exceedsMaximumDurationOverDay() {
             return exceedsMaximumDurationOverDay;
         }
+
         @NonNull
-        Duration getDurationOverWeek() {
+        public Duration getDurationOverWeek() {
             return durationOverWeek;
         }
-        boolean exceedsMaximumDurationOverWeek() {
+
+        public boolean exceedsMaximumDurationOverWeek() {
             return exceedsMaximumDurationOverWeek;
         }
+
         @NonNull
-        Duration getDurationOverFortnight() {
+        public Duration getDurationOverFortnight() {
             return durationOverFortnight;
         }
-        boolean exceedsMaximumDurationOverFortnight() {
+
+        public boolean exceedsMaximumDurationOverFortnight() {
             return exceedsMaximumDurationOverFortnight;
         }
+
         @Nullable
-        Duration getDurationBetweenShifts() {
+        public Duration getDurationBetweenShifts() {
             return durationBetweenShifts;
         }
-        boolean insufficientDurationBetweenShifts() {
+
+        public boolean insufficientDurationBetweenShifts() {
             return insufficientDurationBetweenShifts;
         }
+
         @Nullable
-        LocalDate getCurrentWeekend() {
+        public LocalDate getCurrentWeekend() {
             return currentWeekend;
         }
+
         @Nullable
-        LocalDate getLastWeekendWorked() {
+        public LocalDate getLastWeekendWorked() {
             return lastWeekendWorked;
         }
-        boolean consecutiveWeekendsWorked() {
+
+        public boolean consecutiveWeekendsWorked() {
             return consecutiveWeekendsWorked;
         }
-        boolean isCompliant() {
+
+        public boolean isCompliant() {
             return compliant;
         }
 

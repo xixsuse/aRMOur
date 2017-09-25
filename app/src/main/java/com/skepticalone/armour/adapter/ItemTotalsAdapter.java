@@ -10,7 +10,7 @@ import android.widget.CompoundButton;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
+public abstract class ItemTotalsAdapter<Entity> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
 
     @Nullable
     private List<Entity> mItems;
@@ -66,21 +66,6 @@ public abstract class ItemTotalsAdapter<Entity extends Item> extends RecyclerVie
             return holder.getCountString(totalCount);
         }
     }
-
-//    final void bindTotalNumber(@DrawableRes int icon, @StringRes int title, @NonNull List<Entity> items, @NonNull ItemViewHolder holder){
-//        @NonNull final String secondLine;
-//        int totalCount = items.size();
-//        if (isFiltered() && totalCount > 0) {
-//            int filteredCount = 0;
-//            for (Entity item : items) {
-//                if (isIncluded(item)) filteredCount++;
-//            }
-//            secondLine = holder.getCountPercentage(filteredCount, totalCount);
-//        } else {
-//            secondLine = holder.getCountString(totalCount);
-//        }
-//        holder.setupTotals(icon, title, secondLine);
-//    }
 
     abstract boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position);
 

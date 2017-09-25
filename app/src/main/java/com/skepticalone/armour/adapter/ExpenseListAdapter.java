@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.Expense;
 import com.skepticalone.armour.util.Comparators;
 
-public final class ExpenseListAdapter extends ItemListAdapter<RawExpenseEntity> {
+public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
     public ExpenseListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
@@ -21,15 +21,15 @@ public final class ExpenseListAdapter extends ItemListAdapter<RawExpenseEntity> 
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull RawExpenseEntity expense1, @NonNull RawExpenseEntity expense2) {
+    boolean areContentsTheSame(@NonNull Expense expense1, @NonNull Expense expense2) {
         return super.areContentsTheSame(expense1, expense2) &&
-                Comparators.equalPaymentData(expense1.getData(), expense2.getData()) &&
+                Comparators.equalPaymentData(expense1.getPaymentData(), expense2.getPaymentData()) &&
                 expense1.getTitle().equals(expense2.getTitle());
     }
 
     @Override
-    void bindViewHolder(@NonNull RawExpenseEntity expense, ItemViewHolder holder) {
-        holder.secondaryIcon.setImageResource(expense.getData().getIcon());
+    void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder) {
+        holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
         holder.setText(expense.getTitle(), holder.getPaymentString(expense.getTotalPayment()), expense.getComment());
     }
 

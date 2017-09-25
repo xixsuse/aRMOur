@@ -32,13 +32,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     private String getTotalDuration(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
         Duration totalDuration = Duration.ZERO;
         for (Entity shift : shifts) {
-            totalDuration = totalDuration.plus(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd()));
+            totalDuration = totalDuration.plus(shift.getShiftData().getDuration());
         }
         if (callbacks.isFiltered() && !totalDuration.equals(Duration.ZERO)) {
             Duration filteredDuration = Duration.ZERO;
             for (Entity shift : shifts) {
                 if (callbacks.isIncluded(shift))
-                    filteredDuration = filteredDuration.plus(Duration.between(shift.getRawShiftData().getStart(), shift.getRawShiftData().getEnd()));
+                    filteredDuration = filteredDuration.plus(shift.getShiftData().getDuration());
             }
             return holder.getDurationPercentage(filteredDuration, totalDuration);
         } else {

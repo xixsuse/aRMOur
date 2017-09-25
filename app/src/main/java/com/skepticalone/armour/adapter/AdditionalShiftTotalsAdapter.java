@@ -3,14 +3,14 @@ package com.skepticalone.armour.adapter;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.AdditionalShift;
 
 import java.util.List;
 
-public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<RawAdditionalShiftEntity> implements ShiftTotalsAdapterHelper.Callbacks<RawAdditionalShiftEntity> {
+public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<AdditionalShift> implements ShiftTotalsAdapterHelper.Callbacks<AdditionalShift> {
 
     @NonNull
-    private final ShiftTotalsAdapterHelper<RawAdditionalShiftEntity> helper;
+    private final ShiftTotalsAdapterHelper<AdditionalShift> helper;
 
     public AdditionalShiftTotalsAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
@@ -29,12 +29,12 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Raw
 
     @NonNull
     @Override
-    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RawAdditionalShiftEntity> shifts, @NonNull ItemViewHolder holder) {
+    public String getThirdLine(@NonNull String totalDuration, @NonNull List<AdditionalShift> shifts, @NonNull ItemViewHolder holder) {
         return totalDuration + '\n' + getTotalPayment(shifts, holder);
     }
 
     @Override
-    boolean bindViewHolder(@NonNull List<RawAdditionalShiftEntity> allShifts, @NonNull ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull List<AdditionalShift> allShifts, @NonNull ItemViewHolder holder, int position) {
         return helper.bindViewHolder(allShifts, holder, position);
     }
 

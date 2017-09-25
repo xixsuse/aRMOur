@@ -1,6 +1,5 @@
 package com.skepticalone.armour.adapter;
 
-import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
@@ -20,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
+import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.Duration;
@@ -162,16 +161,16 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     void setCompliant(@StringRes int checkPreferenceKey, @BoolRes int defaultCheck, boolean compliant) {
         if (PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getBoolean(itemView.getContext().getString(checkPreferenceKey), itemView.getResources().getBoolean(defaultCheck))) {
-            secondaryIcon.setImageResource(RawRosteredShiftEntity.getComplianceIcon(compliant));
+            secondaryIcon.setImageResource(RosteredShift.Compliance.getComplianceIcon(compliant));
             secondaryIcon.setVisibility(View.VISIBLE);
         } else {
             secondaryIcon.setVisibility(View.GONE);
         }
     }
-
-    @NonNull
-    Context getContext() {
-        return itemView.getContext();
-    }
+//
+//    @NonNull
+//    Context getContext() {
+//        return itemView.getContext();
+//    }
 
 }

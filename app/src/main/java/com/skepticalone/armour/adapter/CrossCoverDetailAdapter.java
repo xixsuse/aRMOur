@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCover;
 
 import org.threeten.bp.LocalDate;
 
-public final class CrossCoverDetailAdapter extends PayableDetailAdapter<RawCrossCoverEntity> {
+public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
 
     private static final int
             ROW_NUMBER_DATE = 0,
@@ -19,11 +19,30 @@ public final class CrossCoverDetailAdapter extends PayableDetailAdapter<RawCross
             ROW_COUNT = 5;
 
     @NonNull
-    private final DateDetailAdapterHelper<RawCrossCoverEntity> dateDetailAdapterHelper;
+    private final PayableDetailAdapterHelper<CrossCover> payableDetailAdapterHelper;
+
+    @NonNull
+    private final DateDetailAdapterHelper<CrossCover> dateDetailAdapterHelper;
 
     public CrossCoverDetailAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
-        dateDetailAdapterHelper = new DateDetailAdapterHelper<RawCrossCoverEntity>(callbacks) {
+        payableDetailAdapterHelper = new PayableDetailAdapterHelper<CrossCover>(callbacks) {
+            @Override
+            int getRowNumberPayment() {
+                return ROW_NUMBER_PAYMENT;
+            }
+
+            @Override
+            int getRowNumberClaimed() {
+                return ROW_NUMBER_CLAIMED;
+            }
+
+            @Override
+            int getRowNumberPaid() {
+                return ROW_NUMBER_PAID;
+            }
+        };
+        dateDetailAdapterHelper = new DateDetailAdapterHelper<CrossCover>(callbacks) {
             @Override
             int getRowNumberDate() {
                 return ROW_NUMBER_DATE;
@@ -31,34 +50,19 @@ public final class CrossCoverDetailAdapter extends PayableDetailAdapter<RawCross
 
             @NonNull
             @Override
-            LocalDate getDate(@NonNull RawCrossCoverEntity crossCover) {
+            LocalDate getDate(@NonNull CrossCover crossCover) {
                 return crossCover.getDate();
             }
         };
     }
 
     @Override
-    int getRowNumberPayment() {
-        return ROW_NUMBER_PAYMENT;
-    }
-
-    @Override
-    int getRowNumberClaimed() {
-        return ROW_NUMBER_CLAIMED;
-    }
-
-    @Override
-    int getRowNumberPaid() {
-        return ROW_NUMBER_PAID;
-    }
-
-    @Override
-    int getRowNumberComment(@NonNull RawCrossCoverEntity crossCover) {
+    int getRowNumberComment(@NonNull CrossCover crossCover) {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getRowCount(@NonNull RawCrossCoverEntity crossCover) {
+    int getRowCount(@NonNull CrossCover crossCover) {
         return ROW_COUNT;
     }
 
@@ -70,17 +74,20 @@ public final class CrossCoverDetailAdapter extends PayableDetailAdapter<RawCross
     }
 
     @Override
-    void onItemUpdated(@NonNull RawCrossCoverEntity oldCrossCover, @NonNull RawCrossCoverEntity newCrossCover) {
+    void onItemUpdated(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
         super.onItemUpdated(oldCrossCover, newCrossCover);
+        payableDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
         dateDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
     }
 
     @Override
-    boolean bindViewHolder(@NonNull RawCrossCoverEntity crossCover, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
         return dateDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
+                payableDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
                 super.bindViewHolder(crossCover, holder, position);
     }
 
-    public interface Callbacks extends PayableDetailAdapter.Callbacks, DateDetailAdapterHelper.Callbacks {}
+    public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {
+    }
 
 }

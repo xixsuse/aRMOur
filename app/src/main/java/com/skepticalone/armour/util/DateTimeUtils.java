@@ -6,7 +6,6 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.FormatStyle;
@@ -91,10 +90,10 @@ public final class DateTimeUtils {
         return String.format(Locale.US, "Weeks ago: %d", (currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
 //        return weeksAgoFormatter.format(Period.between(lastWeekendWorked, currentWeekend).to());
     }
-
-    public static String getPeriodString(@NonNull Period period) {
-        return period.toString();
-    }
+//
+//    public static String getPeriodString(@NonNull Period period) {
+//        return period.toString();
+//    }
 
     public static String getDurationString(@NonNull Duration duration) {
         return duration.toString();

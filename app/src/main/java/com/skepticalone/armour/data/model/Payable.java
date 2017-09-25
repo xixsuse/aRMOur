@@ -27,14 +27,10 @@ public interface Payable {
         @Nullable
         private final ZonedDateTime claimed, paid;
 
-        @DrawableRes
-        private final int icon;
-
         PaymentData(@NonNull RawPaymentData rawData, @NonNull ZoneId timeZone) {
             payment = rawData.getPayment();
             claimed = rawData.getClaimed() == null ? null : rawData.getClaimed().atZone(timeZone);
             paid = rawData.getPaid() == null ? null : rawData.getPaid().atZone(timeZone);
-            icon = paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
         }
 
         @NonNull
@@ -54,7 +50,7 @@ public interface Payable {
 
         @DrawableRes
         public final int getIcon() {
-            return icon;
+            return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
         }
     }
 

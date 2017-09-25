@@ -25,7 +25,7 @@ public final class RawPaymentData {
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
     private final Instant paid;
 
-    RawPaymentData(
+    public RawPaymentData(
             @NonNull BigDecimal payment,
             @Nullable Instant claimed,
             @Nullable Instant paid

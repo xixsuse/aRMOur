@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -12,43 +13,28 @@ import com.skepticalone.armour.data.model.Payable;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
-public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemDetailAdapter<Entity> {
+abstract class PayableDetailAdapterHelper<Entity extends Payable> {
 
     @NonNull
     private final Callbacks callbacks;
 
-    PayableDetailAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    PayableDetailAdapterHelper(@NonNull Callbacks callbacks) {
         this.callbacks = callbacks;
     }
 
-    @Override
     @CallSuper
-    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem) {
-        super.onItemUpdated(oldItem, newItem);
-        if (!Comparators.equalBigDecimals(oldItem.getPaymentData().getPayment(), newItem.getPaymentData().getPayment())) {
-            notifyItemChanged(getRowNumberPayment());
+    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem, @NonNull RecyclerView.Adapter adapter) {
+        if (!oldItem.getPaymentData().getPayment().equals(newItem.getPaymentData().getPayment())) {
+            adapter.notifyItemChanged(getRowNumberPayment());
         }
-        if (!Comparators.equalInstants(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalInstants(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
-            notifyItemChanged(getRowNumberClaimed());
-            notifyItemChanged(getRowNumberPaid());
+        if (!Comparators.equalDateTimes(oldItem.getPaymentData().getClaimed(), newItem.getPaymentData().getClaimed()) || !Comparators.equalDateTimes(oldItem.getPaymentData().getPaid(), newItem.getPaymentData().getPaid())) {
+            adapter.notifyItemChanged(getRowNumberClaimed());
+            adapter.notifyItemChanged(getRowNumberPaid());
         }
     }
 
-    @StringRes
-    int getPaymentTitle() {
-        return R.string.payment;
-    }
-
-    @DrawableRes
-    int getPaymentIcon() {
-        return R.drawable.ic_dollar_black_24dp;
-    }
-
-    @Override
     @CallSuper
     boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
@@ -67,13 +53,13 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                     callbacks.setClaimed(claimed);
                 }
             } : null;
-            Instant claimed = item.getPaymentData().getClaimed();
+            ZonedDateTime claimed = item.getPaymentData().getClaimed();
             if (claimed == null) {
                 holder.setupSwitch(0, false, onClaimedCheckedChangeListener);
                 holder.setText(holder.getText(R.string.claimed));
             } else {
                 holder.setupSwitch(R.drawable.claimed_black_24dp, true, onClaimedCheckedChangeListener);
-                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed.atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed.toLocalDateTime()));
             }
             return true;
         } else if (position == getRowNumberPaid()) {
@@ -83,16 +69,27 @@ public abstract class PayableDetailAdapter<Entity extends Payable> extends ItemD
                     callbacks.setPaid(paid);
                 }
             };
-            Instant paid = item.getPaymentData().getPaid();
+            ZonedDateTime paid = item.getPaymentData().getPaid();
             if (paid == null) {
                 holder.setupSwitch(0, false, onPaidCheckedChangeListener);
                 holder.setText(holder.getText(R.string.paid));
             } else {
                 holder.setupSwitch(R.drawable.paid_black_24dp, true, onPaidCheckedChangeListener);
-                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid.atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid.toLocalDateTime()));
             }
             return true;
-        } else return super.bindViewHolder(item, holder, position);
+        } else return false;
+    }
+
+
+    @StringRes
+    int getPaymentTitle() {
+        return R.string.payment;
+    }
+
+    @DrawableRes
+    int getPaymentIcon() {
+        return R.drawable.ic_dollar_black_24dp;
     }
 
     abstract int getRowNumberPayment();
