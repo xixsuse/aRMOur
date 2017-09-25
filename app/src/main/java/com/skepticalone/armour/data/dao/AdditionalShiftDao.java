@@ -3,6 +3,7 @@ package com.skepticalone.armour.data.dao;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.RoomWarnings;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -75,13 +76,15 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             Contract.AdditionalShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_PAID +
-            " = :payment WHERE " +
+            " = :paid WHERE " +
             BaseColumns._ID +
             " = :id AND " +
             Contract.COLUMN_NAME_CLAIMED +
             " IS NOT NULL")
     public abstract void setPaidSync(long id, @Nullable Instant paid);
 
+    // FIXME: 26/09/17 
+    @SuppressWarnings(RoomWarnings.MISSING_JAVA_TMP_DIR)
     @NonNull
     @Override
     @Query("SELECT * FROM " +
@@ -89,6 +92,17 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             " ORDER BY " +
             Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<RawAdditionalShiftEntity>> fetchItems();
+
+    // FIXME: 26/09/17 
+    @SuppressWarnings(RoomWarnings.MISSING_JAVA_TMP_DIR)
+    @Nullable
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.AdditionalShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract RawAdditionalShiftEntity fetchItemInternalSync(long id);
 
     @Nullable
     @Query("SELECT " +
@@ -102,7 +116,7 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
     abstract Instant getLastShiftEndInternalSync();
 
     synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents) {
-        return insertInternalSync(
+        return insertSync(
                 RawAdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
         );
     }

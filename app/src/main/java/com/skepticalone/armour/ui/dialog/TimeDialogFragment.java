@@ -9,8 +9,7 @@ import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
-import com.skepticalone.armour.data.model.LiveShiftConfig;
-import com.skepticalone.armour.data.model.RawShift;
+import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
 
 import org.threeten.bp.LocalTime;
@@ -41,12 +40,12 @@ abstract class TimeDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @NonNull
-    abstract RawShift.RawShiftData getShiftDataForDisplay(@NonNull Entity item);
+    abstract Shift.ShiftData getShiftDataForDisplay(@NonNull Entity item);
 
     @Override
     final void onUpdateView(@NonNull Entity item) {
-        RawShift.RawShiftData rawShiftData = getShiftDataForDisplay(item);
-        LocalTime time = (start ? rawShiftData.getStart() : rawShiftData.getEnd()).atZone(LiveShiftConfig.getInstance(getActivity()).getFreshZoneId(getActivity())).toLocalTime();
+        Shift.ShiftData shiftData = getShiftDataForDisplay(item);
+        LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
         timePickerDialog.updateTime(time.getHour(), time.getMinute());
     }
 

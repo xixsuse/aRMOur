@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemListAdapter;
+import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.totals.TotalsDialogFragment;

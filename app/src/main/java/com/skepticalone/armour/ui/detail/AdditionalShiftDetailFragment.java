@@ -4,17 +4,16 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftDetailAdapter;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.AdditionalShift;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftCommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftDateDialogFragment;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftPaymentDialogFragment;
 import com.skepticalone.armour.ui.dialog.AdditionalShiftTimeDialogFragment;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
-import com.skepticalone.armour.ui.dialog.PaymentDialogFragment;
 
 public final class AdditionalShiftDetailFragment
-        extends PayableDetailFragment<RawAdditionalShiftEntity>
+        extends DetailFragment<AdditionalShift>
         implements AdditionalShiftDetailAdapter.Callbacks {
 
     private final AdditionalShiftDetailAdapter adapter = new AdditionalShiftDetailAdapter(this);
@@ -41,15 +40,24 @@ public final class AdditionalShiftDetailFragment
         showDialogFragment(AdditionalShiftTimeDialogFragment.newInstance(start));
     }
 
-    @NonNull
     @Override
-    PaymentDialogFragment<RawAdditionalShiftEntity> createPaymentDialogFragment() {
-        return new AdditionalShiftPaymentDialogFragment();
+    public final void setClaimed(boolean claimed) {
+        getViewModel().setClaimed(claimed);
+    }
+
+    @Override
+    public final void setPaid(boolean paid) {
+        getViewModel().setPaid(paid);
+    }
+
+    @Override
+    public void changePayment() {
+        showDialogFragment(new AdditionalShiftPaymentDialogFragment());
     }
 
     @NonNull
     @Override
-    CommentDialogFragment<RawAdditionalShiftEntity> createCommentDialogFragment() {
+    CommentDialogFragment<AdditionalShift> createCommentDialogFragment() {
         return new AdditionalShiftCommentDialogFragment();
     }
 

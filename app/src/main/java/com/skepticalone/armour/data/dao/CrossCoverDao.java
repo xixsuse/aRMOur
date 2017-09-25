@@ -72,7 +72,7 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
             Contract.CrossCoverShifts.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_PAID +
-            " = :payment WHERE " +
+            " = :paid WHERE " +
             BaseColumns._ID +
             " = :id AND " +
             Contract.COLUMN_NAME_CLAIMED +
@@ -88,6 +88,15 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
     public abstract LiveData<List<RawCrossCoverEntity>> fetchItems();
 
     @Nullable
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract RawCrossCoverEntity fetchItemInternalSync(long id);
+
+    @Nullable
     @Query("SELECT " +
             Contract.CrossCoverShifts.COLUMN_NAME_DATE +
             " FROM " +
@@ -99,7 +108,7 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
     abstract LocalDate getLastShiftDateInternalSync();
 
     synchronized public final long insertSync(@NonNull ZoneId timeZone, int paymentInCents){
-        return insertInternalSync(RawCrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
+        return insertSync(RawCrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
     }
 
 }

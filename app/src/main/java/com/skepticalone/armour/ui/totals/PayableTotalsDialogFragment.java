@@ -10,7 +10,7 @@ import android.widget.CompoundButton;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.PayableTotalsAdapter;
 
-abstract class PayableTotalsDialogFragment<Entity extends Item> extends TotalsDialogFragment<Entity> implements PayableTotalsAdapter.Callbacks {
+abstract class PayableTotalsDialogFragment<Entity> extends TotalsDialogFragment<Entity> implements PayableTotalsAdapter.Callbacks {
 
     private CompoundButton unclaimed, claimed, paid;
 

@@ -72,7 +72,7 @@ public final class RosteredShift extends Shift {
         if (previousShifts.isEmpty()) return null;
         RosteredShift previousShift = previousShifts.get(previousShifts.size() - 1);
         LocalDate previousShiftWeekend = previousShift.getCompliance().getCurrentWeekend();
-        if (previousShiftWeekend == null || previousShiftWeekend.isEqual(currentWeekend)) {
+        if (previousShiftWeekend == null || (currentWeekend != null && previousShiftWeekend.isEqual(currentWeekend))) {
             return previousShift.getCompliance().getLastWeekendWorked();
         } else {
             return previousShiftWeekend;

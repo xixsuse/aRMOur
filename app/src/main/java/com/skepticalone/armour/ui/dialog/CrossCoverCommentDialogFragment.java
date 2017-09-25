@@ -3,15 +3,15 @@ package com.skepticalone.armour.ui.dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCover;
 import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-public final class CrossCoverCommentDialogFragment extends CommentDialogFragment<RawCrossCoverEntity> {
+public final class CrossCoverCommentDialogFragment extends CommentDialogFragment<CrossCover> {
 
     @NonNull
     @Override
-    ItemViewModelContract<RawCrossCoverEntity> getViewModel() {
+    ItemViewModelContract<CrossCover> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
     }
 

@@ -4,16 +4,15 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.ExpenseDetailAdapter;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.Expense;
 import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.ExpenseCommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.ExpensePaymentDialogFragment;
 import com.skepticalone.armour.ui.dialog.ExpenseTitleDialogFragment;
-import com.skepticalone.armour.ui.dialog.PaymentDialogFragment;
 
 public final class ExpenseDetailFragment
-        extends PayableDetailFragment<RawExpenseEntity>
+        extends DetailFragment<Expense>
         implements ExpenseDetailAdapter.Callbacks {
 
     private final ExpenseDetailAdapter adapter = new ExpenseDetailAdapter(this);
@@ -35,15 +34,24 @@ public final class ExpenseDetailFragment
         showDialogFragment(new ExpenseTitleDialogFragment());
     }
 
-    @NonNull
     @Override
-    PaymentDialogFragment<RawExpenseEntity> createPaymentDialogFragment() {
-        return new ExpensePaymentDialogFragment();
+    public void changePayment() {
+        showDialogFragment(new ExpensePaymentDialogFragment());
+    }
+
+    @Override
+    public final void setClaimed(boolean claimed) {
+        getViewModel().setClaimed(claimed);
+    }
+
+    @Override
+    public final void setPaid(boolean paid) {
+        getViewModel().setPaid(paid);
     }
 
     @NonNull
     @Override
-    CommentDialogFragment<RawExpenseEntity> createCommentDialogFragment() {
+    CommentDialogFragment<Expense> createCommentDialogFragment() {
         return new ExpenseCommentDialogFragment();
     }
 

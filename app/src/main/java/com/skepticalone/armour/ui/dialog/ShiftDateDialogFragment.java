@@ -2,7 +2,6 @@ package com.skepticalone.armour.ui.dialog;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.model.LiveShiftConfig;
 import com.skepticalone.armour.data.model.Shift;
 
 import org.threeten.bp.LocalDate;
@@ -12,7 +11,7 @@ abstract class ShiftDateDialogFragment<Entity extends Shift> extends DateDialogF
     @NonNull
     @Override
     final LocalDate getDateForDisplay(@NonNull Entity shift) {
-        return shift.getRawShiftData().getStart().atZone(LiveShiftConfig.getInstance(getActivity()).getFreshZoneId(getActivity())).toLocalDate();
+        return shift.getShiftData().getStart().toLocalDate();
     }
 
 }

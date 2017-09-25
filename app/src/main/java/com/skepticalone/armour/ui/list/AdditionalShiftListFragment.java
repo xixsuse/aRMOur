@@ -7,19 +7,18 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.AdditionalShiftListAdapter;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
-import com.skepticalone.armour.data.model.LiveShiftConfig;
+import com.skepticalone.armour.data.model.AdditionalShift;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.ui.totals.AdditionalShiftTotalsDialogFragment;
 
-public final class AdditionalShiftListFragment extends ShiftAddListFragment<RawAdditionalShiftEntity> {
+public final class AdditionalShiftListFragment extends ShiftAddListFragment<AdditionalShift> {
 
     private AdditionalShiftListAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = new AdditionalShiftListAdapter(this, LiveShiftConfig.getInstance(context));
+        adapter = new AdditionalShiftListAdapter(this);
     }
 
     @NonNull

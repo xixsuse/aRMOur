@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +17,6 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.model.LiveTimeZone;
-import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.model.Shift;
 
 import org.threeten.bp.ZoneId;
@@ -54,17 +54,6 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
 
     static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(1000);
-//                    runnable.run();
-//                } catch (InterruptedException e) {
-//                    // do nothing
-//                }
-//            }
-//        }).start();
     }
 
     final long getCurrentItemId() {
@@ -98,36 +87,36 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
 
     @NonNull
     abstract ItemDao<Entity> getDao();
-//
-//    @Override
-//    public final void deleteItem(final long id) {
-//        runAsync(new Runnable() {
-//            @Override
-//            public void run() {
-//                final FinalItem item = getDao().deleteInTransactionSync(id);
-//                if (item != null) {
-//                    postSelectedId(null);
-//                    deletedItemRestorer.postValue(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            runAsync(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    deletedItemRestorer.postValue(null);
-//                                    try {
-//                                        long id = getDao().restoreItemSync(item);
-//                                        postSelectedId(id);
-//                                    } catch (SQLiteConstraintException e) {
-////                                        postOverlappingShifts();
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
+
+    @Override
+    public final void deleteItem(final long id) {
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                final Entity item = getDao().deleteAndReturnItemSync(id);
+                if (item != null) {
+                    postSelectedId(null);
+                    deletedItemRestorer.postValue(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            runAsync(new Runnable() {
+                                @Override
+                                public void run() {
+                                    deletedItemRestorer.postValue(null);
+                                    try {
+                                        long id = getDao().insertSync(item);
+                                        postSelectedId(id);
+                                    } catch (SQLiteConstraintException e) {
+                                        postOverlappingShifts();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     final void postOverlappingShifts() {
         errorMessage.postValue(R.string.overlapping_shifts);

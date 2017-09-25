@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ExpenseListAdapter;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.Expense;
 import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
 import com.skepticalone.armour.ui.totals.ExpenseTotalsDialogFragment;
 
-public final class ExpenseListFragment extends SingleAddListFragment<RawExpenseEntity> {
+public final class ExpenseListFragment extends SingleAddListFragment<Expense> {
 
     private final ExpenseListAdapter adapter = new ExpenseListAdapter(this);
 

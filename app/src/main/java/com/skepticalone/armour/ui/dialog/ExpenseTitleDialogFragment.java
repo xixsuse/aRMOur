@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.Expense;
 import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
 
-public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<RawExpenseEntity> {
+public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<Expense> {
 
     @Override
     int getTitle() {
@@ -22,7 +22,7 @@ public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<Ra
     }
 
     @Override
-    String getTextForDisplay(@NonNull RawExpenseEntity item) {
+    String getTextForDisplay(@NonNull Expense item) {
         return item.getTitle();
     }
 

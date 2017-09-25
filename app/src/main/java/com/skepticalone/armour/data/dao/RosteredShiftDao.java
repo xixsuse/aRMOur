@@ -59,6 +59,15 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
             Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<RawRosteredShiftEntity>> fetchItems();
 
+    @Nullable
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.RosteredShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract RawRosteredShiftEntity fetchItemInternalSync(long id);
+
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
             " SET " +
@@ -97,7 +106,7 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
     abstract Instant getLastShiftEndInternalSync();
 
     synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
-        return insertInternalSync(
+        return insertSync(
                 RawRosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );
     }

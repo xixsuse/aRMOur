@@ -44,7 +44,7 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
 //        return Contract.Expenses.TABLE_NAME;
 //    }
 //
-//    public final long insertInternalSync(@NonNull String title) {
+//    public final long insertSync(@NonNull String title) {
 //        ContentValues values = new ContentValues();
 //        values.put(Contract.COLUMN_NAME_PAYMENT, 0);
 //        values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
@@ -97,7 +97,7 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             Contract.Expenses.TABLE_NAME +
             " SET " +
             Contract.COLUMN_NAME_PAID +
-            " = :payment WHERE " +
+            " = :paid WHERE " +
             BaseColumns._ID +
             " = :id AND " +
             Contract.COLUMN_NAME_CLAIMED +
@@ -111,7 +111,7 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
 //            " WHERE " +
 //            BaseColumns._ID +
 //            " = :id")
-//    abstract RawExpenseEntity getItemInternalSync(long id);
+//    abstract RawExpenseEntity fetchItemInternalSync(long id);
 
     @NonNull
     @Override
@@ -130,8 +130,17 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             ")")
     public abstract LiveData<List<RawExpenseEntity>> fetchItems();
 
+    @Nullable
+    @Override
+    @Query("SELECT * FROM " +
+            Contract.Expenses.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " = :id")
+    abstract RawExpenseEntity fetchItemInternalSync(long id);
+
     public final long insertSync(@NonNull String title){
-        return insertInternalSync(RawExpenseEntity.from(title));
+        return insertSync(RawExpenseEntity.from(title));
     }
 
 }

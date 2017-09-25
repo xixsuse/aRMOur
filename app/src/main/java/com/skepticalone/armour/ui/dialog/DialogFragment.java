@@ -8,27 +8,10 @@ import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
 abstract class DialogFragment<Entity> extends AppCompatDialogFragment {
 
-//    private Callbacks<Entity> callbacks;
-//
-//    @Override
-//    @CallSuper
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        //noinspection unchecked
-//        callbacks = (Callbacks<Entity>) getTargetFragment();
-//    }
-
     @NonNull
     abstract ItemViewModelContract<Entity> getViewModel();
 
     abstract void onUpdateView(@NonNull Entity item);
-
-//    @NonNull
-//    Entity getCurrentItem() {
-//        Entity currentItem = getViewModel().getCurrentItem().getValue();
-//        if (currentItem == null) throw new IllegalStateException();
-//        return currentItem;
-//    }
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
@@ -40,9 +23,5 @@ abstract class DialogFragment<Entity> extends AppCompatDialogFragment {
             }
         }
     }
-//
-//    public interface Callbacks<Entity> {
-//        @NonNull ItemViewModelContract<Entity> getViewModel();
-//    }
 
 }

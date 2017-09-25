@@ -15,7 +15,7 @@ public final class Comparators {
     }
 
     public static boolean equalDateTimes(@Nullable final ZonedDateTime dateTime1, @Nullable final ZonedDateTime dateTime2) {
-        return dateTime1 == null ? dateTime2 == null : dateTime1.isEqual(dateTime2);
+        return dateTime1 == null ? dateTime2 == null : (dateTime2 != null && dateTime1.isEqual(dateTime2));
     }
 
     public static boolean equalPaymentData(@NonNull final Payable.PaymentData paymentData1, @NonNull final Payable.PaymentData paymentData2) {

@@ -5,21 +5,21 @@ import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftTotalsAdapter;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.AdditionalShift;
 import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-public final class AdditionalShiftTotalsDialogFragment extends PayableTotalsDialogFragment<RawAdditionalShiftEntity> {
+public final class AdditionalShiftTotalsDialogFragment extends PayableTotalsDialogFragment<AdditionalShift> {
 
     @NonNull
     @Override
-    ItemTotalsAdapter<RawAdditionalShiftEntity> createAdapter() {
+    ItemTotalsAdapter<AdditionalShift> createAdapter() {
         return new AdditionalShiftTotalsAdapter(this);
     }
 
     @NonNull
     @Override
-    ItemViewModelContract<RawAdditionalShiftEntity> getViewModel() {
+    ItemViewModelContract<AdditionalShift> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
     }
 

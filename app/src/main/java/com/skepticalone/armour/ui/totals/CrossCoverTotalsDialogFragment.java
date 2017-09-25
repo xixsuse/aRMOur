@@ -6,21 +6,21 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
 import com.skepticalone.armour.adapter.SinglePayableTotalsAdapter;
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCover;
 import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-public final class CrossCoverTotalsDialogFragment extends PayableTotalsDialogFragment<RawCrossCoverEntity> {
+public final class CrossCoverTotalsDialogFragment extends PayableTotalsDialogFragment<CrossCover> {
 
     @NonNull
     @Override
-    ItemTotalsAdapter<RawCrossCoverEntity> createAdapter() {
+    ItemTotalsAdapter<CrossCover> createAdapter() {
         return new SinglePayableTotalsAdapter<>(this, R.string.cross_cover_shifts);
     }
 
     @NonNull
     @Override
-    ItemViewModelContract<RawCrossCoverEntity> getViewModel() {
+    ItemViewModelContract<CrossCover> getViewModel() {
         return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
     }
 

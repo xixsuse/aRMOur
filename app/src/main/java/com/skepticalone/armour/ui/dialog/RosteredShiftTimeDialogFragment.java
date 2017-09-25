@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
-import com.skepticalone.armour.data.model.RawShift;
+import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 
 import org.threeten.bp.LocalTime;
 
-public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<RawRosteredShiftEntity> {
+public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<RosteredShift> {
 
     private static final String LOGGED = "LOGGED";
     private boolean logged;
@@ -32,15 +32,15 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ra
 
     @NonNull
     @Override
-    RawShift.RawShiftData getShiftDataForDisplay(@NonNull RawRosteredShiftEntity shift) {
-        final RawShift.RawShiftData rawShiftData;
+    Shift.ShiftData getShiftDataForDisplay(@NonNull RosteredShift shift) {
+        final Shift.ShiftData shiftData;
         if (logged) {
-            rawShiftData = shift.getLoggedShiftData();
-            if (rawShiftData == null) throw new IllegalStateException();
+            shiftData = shift.getLoggedShiftData();
+            if (shiftData == null) throw new IllegalStateException();
         } else {
-            rawShiftData = shift.getShiftData();
+            shiftData = shift.getShiftData();
         }
-        return rawShiftData;
+        return shiftData;
     }
 
     @NonNull

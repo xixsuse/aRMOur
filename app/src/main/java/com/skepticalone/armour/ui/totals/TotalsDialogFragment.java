@@ -19,17 +19,9 @@ import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
 import java.util.List;
 
-public abstract class TotalsDialogFragment<Entity extends Item> extends BottomSheetDialogFragment implements Observer<List<Entity>> {
+public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFragment implements Observer<List<Entity>> {
 
     private ItemTotalsAdapter<Entity> adapter;
-
-//    static TotalsDialogFragment getNewSummaryDialogFragment(@IdRes int itemType) {
-////        if (itemType == R.id.rostered) return new RosteredShiftListFragment();
-//        if (itemType == R.id.additional) return new AdditionalShiftListFragment.AdditionalShiftTotalsDialogFragment();
-//        if (itemType == R.id.cross_cover) return new CrossCoverListFragment.CrossCoverTotalsDialogFragment();
-//        if (itemType == R.id.expenses) return new ExpenseListFragment.ExpenseTotalsDialogFragment();
-//        throw new IllegalStateException();
-//    }
 
     @NonNull
     abstract ItemViewModelContract<Entity> getViewModel();

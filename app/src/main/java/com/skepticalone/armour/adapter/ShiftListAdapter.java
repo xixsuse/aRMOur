@@ -19,7 +19,8 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     @CallSuper
     boolean areContentsTheSame(@NonNull Entity shift1, @NonNull Entity shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                Comparators.equalShiftData(shift1.getShiftData(), shift2.getShiftData());
+                Comparators.equalShiftData(shift1.getShiftData(), shift2.getShiftData()) &&
+                shift1.getShiftType() == shift2.getShiftType();
     }
 
     @Override
