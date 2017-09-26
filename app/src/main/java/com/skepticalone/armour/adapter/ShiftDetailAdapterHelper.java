@@ -32,15 +32,13 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
     @CallSuper
     void onItemUpdated(@NonNull Entity oldShift, @NonNull Entity newShift, @NonNull RecyclerView.Adapter adapter) {
         super.onItemUpdated(oldShift, newShift, adapter);
-        final boolean startTimeChanged = !oldShift.getShiftData().getStart().toLocalTime().equals(newShift.getShiftData().getStart().toLocalTime()),
-                endTimeChanged = !oldShift.getShiftData().getEnd().toLocalTime().equals(newShift.getShiftData().getEnd().toLocalTime());
-        if (startTimeChanged) {
+        if (!oldShift.getShiftData().getStart().toLocalTime().equals(newShift.getShiftData().getStart().toLocalTime())) {
             adapter.notifyItemChanged(getRowNumberStart());
         }
-        if (endTimeChanged || !oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate())) {
+        if (!oldShift.getShiftData().getEnd().toLocalTime().equals(newShift.getShiftData().getEnd().toLocalTime()) || (oldShift.getShiftData().getStart().toLocalDate().isEqual(oldShift.getShiftData().getEnd().toLocalDate()) != newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getEnd().toLocalDate()))) {
             adapter.notifyItemChanged(getRowNumberEnd());
         }
-        if (startTimeChanged || endTimeChanged || !oldShift.getShiftData().getDuration().equals(newShift.getShiftData().getDuration())) {
+        if (oldShift.getShiftType() != newShift.getShiftType() || !oldShift.getShiftData().getDuration().equals(newShift.getShiftData().getDuration())) {
             adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }

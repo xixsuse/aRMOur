@@ -85,19 +85,19 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     void onItemUpdated(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
         super.onItemUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        if (oldShift.getCompliance().getDurationBetweenShifts() == null ? newShift.getCompliance().getDurationBetweenShifts() != null : (newShift.getCompliance().getDurationBetweenShifts() == null || !oldShift.getCompliance().getDurationBetweenShifts().equals(newShift.getCompliance().getDurationBetweenShifts()))) {
+        if ((oldShift.getCompliance().insufficientDurationBetweenShifts() != newShift.getCompliance().insufficientDurationBetweenShifts()) || !(oldShift.getCompliance().getDurationBetweenShifts() == null ? newShift.getCompliance().getDurationBetweenShifts() == null : (newShift.getCompliance().getDurationBetweenShifts() != null && oldShift.getCompliance().getDurationBetweenShifts().equals(newShift.getCompliance().getDurationBetweenShifts())))) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getCompliance().getDurationOverDay().equals(newShift.getCompliance().getDurationOverDay())) {
+        if ((oldShift.getCompliance().exceedsMaximumDurationOverDay() != newShift.getCompliance().exceedsMaximumDurationOverDay()) || !oldShift.getCompliance().getDurationOverDay().equals(newShift.getCompliance().getDurationOverDay())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getCompliance().getDurationOverWeek().equals(newShift.getCompliance().getDurationOverWeek())) {
+        if ((oldShift.getCompliance().exceedsMaximumDurationOverWeek() != newShift.getCompliance().exceedsMaximumDurationOverWeek()) || !oldShift.getCompliance().getDurationOverWeek().equals(newShift.getCompliance().getDurationOverWeek())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, oldShift));
         }
-        if (!oldShift.getCompliance().getDurationOverFortnight().equals(newShift.getCompliance().getDurationOverFortnight())) {
+        if ((oldShift.getCompliance().exceedsMaximumDurationOverFortnight() != newShift.getCompliance().exceedsMaximumDurationOverFortnight()) || !oldShift.getCompliance().getDurationOverFortnight().equals(newShift.getCompliance().getDurationOverFortnight())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, oldShift));
         }
-        if (oldShift.getCompliance().getCurrentWeekend() == null ? newShift.getCompliance().getCurrentWeekend() != null : (newShift.getCompliance().getCurrentWeekend() == null || !oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) || (oldShift.getCompliance().getLastWeekendWorked() == null ? newShift.getCompliance().getLastWeekendWorked() != null : (newShift.getCompliance().getLastWeekendWorked() == null || !oldShift.getCompliance().getLastWeekendWorked().isEqual(newShift.getCompliance().getLastWeekendWorked()))))) {
+        if ((oldShift.getCompliance().consecutiveWeekendsWorked() != newShift.getCompliance().consecutiveWeekendsWorked()) || !(oldShift.getCompliance().getCurrentWeekend() == null ? newShift.getCompliance().getCurrentWeekend() == null : (newShift.getCompliance().getCurrentWeekend() != null && oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) && (oldShift.getCompliance().getLastWeekendWorked() == null ? newShift.getCompliance().getLastWeekendWorked() == null : (newShift.getCompliance().getLastWeekendWorked() == null && oldShift.getCompliance().getLastWeekendWorked().isEqual(newShift.getCompliance().getLastWeekendWorked())))))) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
         }
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
@@ -107,15 +107,14 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null) {
-            final boolean dateChanged = !oldShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getStart().toLocalDate());
-            if (dateChanged || !oldShift.getLoggedShiftData().getStart().toLocalTime().equals(newShift.getLoggedShiftData().getStart().toLocalTime())) {
-                notifyItemChanged(ROW_NUMBER_LOGGED_START);
-            }
-            if (dateChanged || !oldShift.getLoggedShiftData().getEnd().toLocalTime().equals(newShift.getLoggedShiftData().getEnd().toLocalTime())) {
-                notifyItemChanged(ROW_NUMBER_LOGGED_END);
-            }
             if (!oldShift.getLoggedShiftData().getDuration().equals(newShift.getLoggedShiftData().getDuration())) {
                 notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
+            }
+            if (!oldShift.getLoggedShiftData().getStart().toLocalTime().equals(newShift.getLoggedShiftData().getStart().toLocalTime())) {
+                notifyItemChanged(ROW_NUMBER_LOGGED_START);
+            }
+            if (!oldShift.getLoggedShiftData().getEnd().toLocalTime().equals(newShift.getLoggedShiftData().getEnd().toLocalTime()) || (oldShift.getShiftData().getStart().toLocalDate().isEqual(oldShift.getLoggedShiftData().getEnd().toLocalDate()) != newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getLoggedShiftData().getEnd().toLocalDate()))) {
+                notifyItemChanged(ROW_NUMBER_LOGGED_END);
             }
         }
     }
@@ -148,7 +147,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.changeTime(true, true);
                 }
             });
-            holder.setText(holder.getText(R.string.logged_start), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getStart().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
+            holder.setText(holder.getText(R.string.logged_start), DateTimeUtils.getTimeString(shift.getLoggedShiftData().getStart().toLocalTime()));
             holder.secondaryIcon.setVisibility(View.GONE);
             return true;
         } else if (position == ROW_NUMBER_LOGGED_END && shift.getLoggedShiftData() != null) {
