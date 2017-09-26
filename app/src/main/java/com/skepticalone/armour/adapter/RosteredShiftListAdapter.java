@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.RosteredShift;
-import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShift> {
@@ -15,8 +14,8 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
     @Override
     boolean areContentsTheSame(@NonNull RosteredShift shift1, @NonNull RosteredShift shift2) {
         return super.areContentsTheSame(shift1, shift2) &&
-                shift1.getCompliance().isCompliant() == shift2.getCompliance().isCompliant() &&
-                (shift1.getLoggedShiftData() == null ? shift2.getLoggedShiftData() == null : (shift2.getLoggedShiftData() != null && Comparators.equalShiftData(shift1.getLoggedShiftData(), shift2.getLoggedShiftData())));
+                (shift1.getLoggedShiftData() == null ? shift2.getLoggedShiftData() == null : (shift2.getLoggedShiftData() != null && shift1.getLoggedShiftData().getStart().toLocalDateTime().isEqual(shift2.getLoggedShiftData().getStart().toLocalDateTime()) && shift1.getLoggedShiftData().getEnd().toLocalDateTime().isEqual(shift2.getLoggedShiftData().getEnd().toLocalDateTime()))) &&
+                shift1.getCompliance().isCompliant() == shift2.getCompliance().isCompliant();
     }
 
     @Override
@@ -27,7 +26,11 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
     @Nullable
     @Override
     String getThirdLine(@NonNull RosteredShift shift) {
-        return shift.getLoggedShiftData() == null ? null : DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData().getStart().toLocalDateTime(), shift.getLoggedShiftData().getEnd().toLocalDateTime());
+        String comment = super.getThirdLine(shift);
+        if (shift.getLoggedShiftData() == null) return comment;
+        String loggedShiftString = DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData().getStart().toLocalDateTime(), shift.getLoggedShiftData().getEnd().toLocalDateTime());
+        if (comment == null) return loggedShiftString;
+        return loggedShiftString + '\n' + comment;
     }
 
 }

@@ -22,15 +22,16 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
     @Override
     boolean areContentsTheSame(@NonNull Expense expense1, @NonNull Expense expense2) {
-        return super.areContentsTheSame(expense1, expense2) &&
-                Comparators.equalPaymentData(expense1.getPaymentData(), expense2.getPaymentData()) &&
-                expense1.getTitle().equals(expense2.getTitle());
+        return expense1.getTitle().equals(expense2.getTitle()) &&
+                expense1.getTotalPayment().equals(expense2.getTotalPayment()) &&
+                Comparators.equalStrings(expense1.getComment(), expense2.getComment()) &&
+                expense1.getPaymentData().getIcon() == expense2.getPaymentData().getIcon();
     }
 
     @Override
     void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder) {
-        holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
         holder.setText(expense.getTitle(), holder.getPaymentString(expense.getTotalPayment()), expense.getComment());
+        holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
     }
 
 }

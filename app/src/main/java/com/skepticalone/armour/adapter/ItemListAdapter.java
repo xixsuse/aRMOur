@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.data.model.Item;
-import com.skepticalone.armour.util.Comparators;
 
 import java.util.List;
 
@@ -115,10 +114,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         return viewHolder;
     }
 
-    @CallSuper
-    boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2) {
-        return Comparators.equalStrings(item1.getComment(), item2.getComment());
-    }
+    abstract boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2);
 
     abstract void bindViewHolder(@NonNull Entity item, ItemViewHolder holder);
 

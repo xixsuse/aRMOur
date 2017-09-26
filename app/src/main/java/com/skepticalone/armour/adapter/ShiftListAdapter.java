@@ -18,9 +18,10 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     @Override
     @CallSuper
     boolean areContentsTheSame(@NonNull Entity shift1, @NonNull Entity shift2) {
-        return super.areContentsTheSame(shift1, shift2) &&
-                Comparators.equalShiftData(shift1.getShiftData(), shift2.getShiftData()) &&
-                shift1.getShiftType() == shift2.getShiftType();
+        return shift1.getShiftType() == shift2.getShiftType() &&
+                shift1.getShiftData().getStart().toLocalDateTime().isEqual(shift2.getShiftData().getStart().toLocalDateTime()) &&
+                shift1.getShiftData().getEnd().toLocalDateTime().isEqual(shift2.getShiftData().getEnd().toLocalDateTime()) &&
+                Comparators.equalStrings(shift1.getComment(), shift2.getComment());
     }
 
     @Override
@@ -38,6 +39,9 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     abstract int getSecondaryIcon(@NonNull Entity shift);
 
     @Nullable
-    abstract String getThirdLine(@NonNull Entity shift);
+    @CallSuper
+    String getThirdLine(@NonNull Entity shift) {
+        return shift.getComment();
+    }
 
 }
