@@ -3,7 +3,6 @@ package com.skepticalone.armour.ui.common;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,7 +45,6 @@ public final class MainActivity extends CoordinatorActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PreferenceManager.setDefaultValues(this, R.xml.shift_preferences, false);
         mTwoPane = findViewById(R.id.detail_fragment_container) != null;
         mFabPrimary = findViewById(R.id.fab_primary);
         mFabLongDay = findViewById(R.id.fab_long_day);
