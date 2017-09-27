@@ -1,11 +1,9 @@
 package com.skepticalone.armour.data.db;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +20,7 @@ import com.skepticalone.armour.data.util.InstantConverter;
 import com.skepticalone.armour.data.util.LocalDateConverter;
 import com.skepticalone.armour.data.util.MoneyConverter;
 
-@Database(entities = {RawRosteredShiftEntity.class, RawAdditionalShiftEntity.class, RawCrossCoverEntity.class, RawExpenseEntity.class}, version = 3)
+@Database(entities = {RawRosteredShiftEntity.class, RawAdditionalShiftEntity.class, RawCrossCoverEntity.class, RawExpenseEntity.class}, version = 2)
 @TypeConverters({LocalDateConverter.class, InstantConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -32,17 +30,17 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase DATABASE;
 
     @NonNull
-    public static AppDatabase getInstance(Context applicationContext) {
+    public static AppDatabase getInstance(@NonNull Context context) {
         if (DATABASE == null) {
-            DATABASE = Room
-                    .databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
-                    .addCallback(new DatabaseCallback())
-                    .addMigrations(new Migration(1, 2) {
-                        @Override
-                        public void migrate(SupportSQLiteDatabase database) {
-                        }
-                    }, new Migration2to3())
-                    .build();
+            synchronized (AppDatabase.class) {
+                if (DATABASE == null) {
+                    DATABASE = Room
+                            .databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
+                            .addCallback(new DatabaseCallback())
+                            .addMigrations(new Migration1to2(context))
+                            .build();
+                }
+            }
         }
         return DATABASE;
     }

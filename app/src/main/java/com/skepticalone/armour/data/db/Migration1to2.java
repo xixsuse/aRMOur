@@ -4,30 +4,38 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.SupportSQLiteQueryBuilder;
 import android.arch.persistence.room.migration.Migration;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
+
+import com.skepticalone.armour.R;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
 
-final class Migration2to3 extends Migration {
+final class Migration1to2 extends Migration {
 
-    Migration2to3() {
-        super(2, 3);
+    @NonNull
+    private final ZoneId timezone;
+
+    Migration1to2(@NonNull Context context) {
+        super(1, 2);
+        String zoneId = PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.key_time_zone_id), null);
+        timezone = zoneId == null ? ZoneId.systemDefault() : ZoneId.of(zoneId);
     }
 
     @Override
     public void migrate(SupportSQLiteDatabase database) {
         database.beginTransaction();
         try {
-
             String[] columns;
             Cursor cursor;
             String whereClause = BaseColumns._ID + "=?";
             ContentValues values = new ContentValues();
             Long[] whereArgs;
-            ZoneId zoneId = ZoneId.systemDefault();
 
             columns = new String[]{
                     BaseColumns._ID,
@@ -46,7 +54,6 @@ final class Migration2to3 extends Migration {
                 if (!cursor.isNull(2)) {
                     values.put(Contract.COLUMN_NAME_PAID, Instant.ofEpochMilli(cursor.getLong(3)).getEpochSecond());
                 }
-
                 database.update(Contract.Expenses.TABLE_NAME, SQLiteDatabase.CONFLICT_ROLLBACK, values, whereClause, whereArgs);
             }
             cursor.close();
@@ -64,14 +71,14 @@ final class Migration2to3 extends Migration {
             while (cursor.moveToNext()) {
                 values.clear();
                 whereArgs = new Long[]{cursor.getLong(0)};
-                values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, Instant.ofEpochMilli(cursor.getLong(1)).atZone(zoneId).toLocalDate().toEpochDay());
+                values.put(Contract.CrossCoverShifts.COLUMN_NAME_DATE, Instant.ofEpochMilli(cursor.getLong(1)).atZone(timezone).toLocalDate().toEpochDay());
                 if (!cursor.isNull(2)) {
                     values.put(Contract.COLUMN_NAME_CLAIMED, Instant.ofEpochMilli(cursor.getLong(2)).getEpochSecond());
                 }
                 if (!cursor.isNull(3)) {
                     values.put(Contract.COLUMN_NAME_PAID, Instant.ofEpochMilli(cursor.getLong(3)).getEpochSecond());
                 }
-                database.update(Contract.CrossCoverShifts.TABLE_NAME, SQLiteDatabase.CONFLICT_ROLLBACK, values, whereClause, whereArgs);
+                database.update(Contract.CrossCoverShifts.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE, values, whereClause, whereArgs);
             }
             cursor.close();
 
