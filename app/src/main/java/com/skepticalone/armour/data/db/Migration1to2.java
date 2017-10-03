@@ -54,7 +54,9 @@ final class Migration1to2 extends Migration {
                 if (!cursor.isNull(2)) {
                     values.put(Contract.COLUMN_NAME_PAID, Instant.ofEpochMilli(cursor.getLong(3)).getEpochSecond());
                 }
-                database.update(Contract.Expenses.TABLE_NAME, SQLiteDatabase.CONFLICT_ROLLBACK, values, whereClause, whereArgs);
+                if (values.size() != 0) {
+                    database.update(Contract.Expenses.TABLE_NAME, SQLiteDatabase.CONFLICT_ROLLBACK, values, whereClause, whereArgs);
+                }
             }
             cursor.close();
 

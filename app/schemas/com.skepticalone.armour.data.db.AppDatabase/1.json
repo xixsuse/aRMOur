@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "31b349879f0afa645219c812a04c5e29",
+    "identityHash": "84d9562570b8f3d8ecaa463dd5786710",
     "entities": [
       {
         "tableName": "rostered_shifts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment` TEXT, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `logged_shift_start` INTEGER, `logged_shift_end` INTEGER, `shift_start` INTEGER NOT NULL, `shift_end` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment` TEXT, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shift_start` INTEGER NOT NULL, `shift_end` INTEGER NOT NULL, `logged_shift_start` INTEGER, `logged_shift_end` INTEGER)",
         "fields": [
           {
             "fieldPath": "comment",
@@ -21,18 +21,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "loggedShiftData.start",
-            "columnName": "logged_shift_start",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "loggedShiftData.end",
-            "columnName": "logged_shift_end",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "shiftData.start",
             "columnName": "shift_start",
             "affinity": "INTEGER",
@@ -43,6 +31,18 @@
             "columnName": "shift_end",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "loggedShiftData.start",
+            "columnName": "logged_shift_start",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "loggedShiftData.end",
+            "columnName": "logged_shift_end",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -73,7 +73,7 @@
       },
       {
         "tableName": "additional_shifts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment` TEXT, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `payment` INTEGER NOT NULL, `claimed` INTEGER, `paid` INTEGER, `shift_start` INTEGER NOT NULL, `shift_end` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment` TEXT, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shift_start` INTEGER NOT NULL, `shift_end` INTEGER NOT NULL, `payment` INTEGER NOT NULL, `claimed` INTEGER, `paid` INTEGER)",
         "fields": [
           {
             "fieldPath": "comment",
@@ -84,6 +84,18 @@
           {
             "fieldPath": "id",
             "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shiftData.start",
+            "columnName": "shift_start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shiftData.end",
+            "columnName": "shift_end",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -104,18 +116,6 @@
             "columnName": "paid",
             "affinity": "INTEGER",
             "notNull": false
-          },
-          {
-            "fieldPath": "shiftData.start",
-            "columnName": "shift_start",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "shiftData.end",
-            "columnName": "shift_end",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -256,7 +256,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"31b349879f0afa645219c812a04c5e29\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"84d9562570b8f3d8ecaa463dd5786710\")"
     ]
   }
 }
