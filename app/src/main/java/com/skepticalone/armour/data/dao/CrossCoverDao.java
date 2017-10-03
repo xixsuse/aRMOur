@@ -3,6 +3,7 @@ package com.skepticalone.armour.data.dao;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,7 +108,8 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     abstract LocalDate getLastShiftDateInternalSync();
 
-    synchronized public final long insertSync(@NonNull ZoneId timeZone, int paymentInCents){
+    @Transaction
+    public long insertSync(@NonNull ZoneId timeZone, int paymentInCents) {
         return insertSync(RawCrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
     }
 

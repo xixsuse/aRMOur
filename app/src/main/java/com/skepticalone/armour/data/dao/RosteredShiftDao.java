@@ -3,6 +3,7 @@ package com.skepticalone.armour.data.dao;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -105,7 +106,8 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     abstract Instant getLastShiftEndInternalSync();
 
-    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
+    @Transaction
+    public long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
         return insertSync(
                 RawRosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );

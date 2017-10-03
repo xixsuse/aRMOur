@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RoomWarnings;
+import android.arch.persistence.room.Transaction;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -115,7 +116,8 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     abstract Instant getLastShiftEndInternalSync();
 
-    synchronized public final long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents) {
+    @Transaction
+    public long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents) {
         return insertSync(
                 RawAdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
         );
