@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.RawCrossCoverEntity;
 
@@ -20,12 +19,9 @@ import org.threeten.bp.ZoneId;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> implements PayableDao {
-
-    CrossCoverDao(@NonNull AppDatabase database) {
-        super(database);
-    }
 
     @Query("UPDATE " +
             Contract.CrossCoverShifts.TABLE_NAME +

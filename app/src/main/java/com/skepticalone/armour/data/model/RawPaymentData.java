@@ -25,6 +25,7 @@ public final class RawPaymentData {
     @ColumnInfo(name = Contract.COLUMN_NAME_PAID)
     private final Instant paid;
 
+    @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
     public RawPaymentData(
             @NonNull BigDecimal payment,
             @Nullable Instant claimed,

@@ -20,6 +20,8 @@ public interface ItemViewModelContract<FinalItem> {
     void deleteItem(long id);
     @NonNull
     LiveData<View.OnClickListener> getDeletedItemRestorer();
+
+    @SuppressWarnings("unused")
     @NonNull
     LiveData<FinalItem> fetchItem(long id);
 

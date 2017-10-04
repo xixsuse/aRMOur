@@ -14,6 +14,7 @@ import android.util.Pair;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.settings.TimePreference;
+import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
@@ -73,8 +74,8 @@ public abstract class Shift extends Item {
 
         @NonNull
         public static ShiftType from(@NonNull LocalTime start, @NonNull LocalTime end, @NonNull Configuration configuration) {
-            final int startTotalMinutes = TimePreference.getTotalMinutes(start),
-                    endTotalMinutes = TimePreference.getTotalMinutes(end);
+            final int startTotalMinutes = DateTimeUtils.getTotalMinutes(start),
+                    endTotalMinutes = DateTimeUtils.getTotalMinutes(end);
             if (startTotalMinutes == configuration.normalDayStart && endTotalMinutes == configuration.normalDayEnd) {
                 return NORMAL_DAY;
             } else if (startTotalMinutes == configuration.longDayStart && endTotalMinutes == configuration.longDayEnd) {

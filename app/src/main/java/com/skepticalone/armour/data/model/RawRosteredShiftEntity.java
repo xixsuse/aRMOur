@@ -20,6 +20,7 @@ public final class RawRosteredShiftEntity extends RawShift {
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
     private final ShiftData loggedShiftData;
 
+    @SuppressWarnings("SameParameterValue")
     public RawRosteredShiftEntity(
             long id,
             @Nullable String comment,

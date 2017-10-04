@@ -7,39 +7,29 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.skepticalone.armour.data.db.AppDatabase;
-
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 public abstract class ItemDao<Entity> {
-
-    @NonNull
-    private final AppDatabase database;
-
-    ItemDao(@NonNull AppDatabase database) {
-        this.database = database;
-    }
 
     @Insert
     public abstract long insertSync(@NonNull Entity item);
 
-    @NonNull
-    final AppDatabase getDatabase() {
-        return database;
-    }
-
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @NonNull
     public abstract LiveData<List<Entity>> fetchItems();
 
+    @SuppressWarnings("EmptyMethod")
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     @Nullable
-    abstract Entity fetchItemInternalSync(long id);
+    abstract Entity fetchItemInternalSync(@SuppressWarnings("unused") long id);
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     @Delete
     abstract int deleteItemInternalSync(@NonNull Entity item);
 
-    public abstract void setCommentSync(long id, @Nullable String comment);
+    @SuppressWarnings("EmptyMethod")
+    public abstract void setCommentSync(@SuppressWarnings("unused") long id, @SuppressWarnings("unused") @Nullable String comment);
 
     @Nullable
     public final Entity deleteAndReturnItemSync(long id) {

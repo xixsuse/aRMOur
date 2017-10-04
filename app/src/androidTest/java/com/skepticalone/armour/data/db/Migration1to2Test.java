@@ -25,6 +25,7 @@ public class Migration1to2Test {
 
     private static final String TEST_DB = "migration-test";
 
+    @SuppressWarnings("CanBeFinal")
     @Rule
     public MigrationTestHelper helper = new MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
             AppDatabase.class.getCanonicalName(),

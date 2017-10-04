@@ -20,6 +20,8 @@ public final class RawCrossCoverEntity extends Item {
     @NonNull
     @Embedded
     private final RawPaymentData paymentData;
+
+    @SuppressWarnings("SameParameterValue")
     public RawCrossCoverEntity(
             long id,
             @Nullable String comment,

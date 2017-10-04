@@ -17,7 +17,6 @@ import org.threeten.bp.LocalTime;
 
 public final class TimePreference extends IntegerPreference {
 
-    private final static int MINUTES_PER_HOUR = 60;
     private TimePicker mTimePicker;
 
     public TimePreference(Context context, AttributeSet attrs) {
@@ -27,25 +26,9 @@ public final class TimePreference extends IntegerPreference {
         setNegativeButtonText(R.string.cancel);
     }
 
-    private static int calculateHours(int totalMinutes) {
-        return totalMinutes / MINUTES_PER_HOUR;
-    }
-
-    private static int calculateMinutes(int totalMinutes) {
-        return totalMinutes % MINUTES_PER_HOUR;
-    }
-
-    private static int getTotalMinutes(int hour, int minute) {
-        return hour * MINUTES_PER_HOUR + minute;
-    }
-
-    public static int getTotalMinutes(@NonNull LocalTime time) {
-        return getTotalMinutes(time.getHour(), time.getMinute());
-    }
-
     @NonNull
     public static LocalTime getTime(int totalMinutes) {
-        return LocalTime.of(calculateHours(totalMinutes), calculateMinutes(totalMinutes));
+        return LocalTime.of(DateTimeUtils.calculateHours(totalMinutes), DateTimeUtils.calculateMinutes(totalMinutes));
     }
 
     @NonNull
@@ -58,8 +41,8 @@ public final class TimePreference extends IntegerPreference {
         super.onBindDialogView(view);
         mTimePicker = (TimePicker) view;
         mTimePicker.setIs24HourView(DateFormat.is24HourFormat(mTimePicker.getContext()));
-        int hours = calculateHours(getValue());
-        int minutes = calculateMinutes(getValue());
+        int hours = DateTimeUtils.calculateHours(getValue());
+        int minutes = DateTimeUtils.calculateMinutes(getValue());
         if (Build.VERSION.SDK_INT >= 23) {
             mTimePicker.setHour(hours);
             mTimePicker.setMinute(minutes);
@@ -85,7 +68,7 @@ public final class TimePreference extends IntegerPreference {
                 minutes = mTimePicker.getCurrentMinute();
             }
             minutes = AppConstants.getSteppedMinutes(minutes);
-            setValue(getTotalMinutes(hours, minutes));
+            setValue(DateTimeUtils.getTotalMinutes(hours, minutes));
         }
     }
 

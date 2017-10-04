@@ -7,7 +7,6 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.RawExpenseEntity;
 
@@ -16,12 +15,9 @@ import org.threeten.bp.Instant;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements PayableDao {
-
-    ExpenseDao(@NonNull AppDatabase database) {
-        super(database);
-    }
 
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +

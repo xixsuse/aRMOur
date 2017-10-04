@@ -7,6 +7,7 @@ import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 
+@SuppressWarnings("NullableProblems")
 public interface PayableDao {
 //
 //    @NonNull
@@ -16,7 +17,8 @@ public interface PayableDao {
 //        this.dao = dao;
 //    }
 
-    void setPaymentSync(long id, @NonNull BigDecimal payment);
+    @SuppressWarnings("EmptyMethod")
+    void setPaymentSync(@SuppressWarnings("unused") long id, @SuppressWarnings("unused") @NonNull BigDecimal payment);
 //    {
 //        ContentValues values = new ContentValues();
 //        values.put(Contract.COLUMN_NAME_PAYMENT, MoneyConverter.moneyToCents(payment));
@@ -29,12 +31,14 @@ public interface PayableDao {
 //        dao.updateInTransaction(id, values);
 //    }
 
-    void setClaimedSync(long id, @Nullable Instant claimed);
+    @SuppressWarnings("EmptyMethod")
+    void setClaimedSync(@SuppressWarnings("unused") long id, @SuppressWarnings("unused") @Nullable Instant claimed);
 //    {
 //        setClaimedOrPaidSync(id, Contract.COLUMN_NAME_CLAIMED, claimed);
 //    }
 
-    void setPaidSync(long id, @Nullable Instant paid);
+    @SuppressWarnings("EmptyMethod")
+    void setPaidSync(@SuppressWarnings("unused") long id, @SuppressWarnings("unused") @Nullable Instant paid);
 //    {
 //        setClaimedOrPaidSync(id, Contract.COLUMN_NAME_PAID, paid);
 //    }

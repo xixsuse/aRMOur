@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
-import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
 
@@ -22,12 +21,9 @@ import org.threeten.bp.ZoneId;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntity> implements PayableDao {
-
-    AdditionalShiftDao(@NonNull AppDatabase database) {
-        super(database);
-    }
 
     @Query("UPDATE " +
             Contract.AdditionalShifts.TABLE_NAME +
@@ -84,8 +80,7 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             " IS NOT NULL")
     public abstract void setPaidSync(long id, @Nullable Instant paid);
 
-    // FIXME: 26/09/17 
-    @SuppressWarnings(RoomWarnings.MISSING_JAVA_TMP_DIR)
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @NonNull
     @Override
     @Query("SELECT * FROM " +
@@ -94,8 +89,7 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<RawAdditionalShiftEntity>> fetchItems();
 
-    // FIXME: 26/09/17 
-    @SuppressWarnings(RoomWarnings.MISSING_JAVA_TMP_DIR)
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Nullable
     @Override
     @Query("SELECT * FROM " +

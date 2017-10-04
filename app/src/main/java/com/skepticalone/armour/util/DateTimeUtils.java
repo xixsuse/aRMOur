@@ -21,6 +21,7 @@ public final class DateTimeUtils {
     private static final DateTimeFormatter fullDateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private static final DateTimeFormatter dayFormatter = new DateTimeFormatterBuilder().appendText(ChronoField.DAY_OF_WEEK, TextStyle.SHORT).toFormatter();
+    private final static int MINUTES_PER_HOUR = 60;
 //    private static final PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
 //            .appendYears()
 //            .appendSuffix(" year", " years")
@@ -99,4 +100,19 @@ public final class DateTimeUtils {
         return duration.toString();
     }
 
+    public static int calculateHours(int totalMinutes) {
+        return totalMinutes / MINUTES_PER_HOUR;
+    }
+
+    public static int calculateMinutes(int totalMinutes) {
+        return totalMinutes % MINUTES_PER_HOUR;
+    }
+
+    public static int getTotalMinutes(int hour, int minute) {
+        return hour * MINUTES_PER_HOUR + minute;
+    }
+
+    public static int getTotalMinutes(@NonNull LocalTime time) {
+        return getTotalMinutes(time.getHour(), time.getMinute());
+    }
 }

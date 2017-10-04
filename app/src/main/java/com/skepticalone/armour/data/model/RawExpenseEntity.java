@@ -16,6 +16,8 @@ public final class RawExpenseEntity extends Item {
     @NonNull
     @Embedded
     private final RawPaymentData paymentData;
+
+    @SuppressWarnings("SameParameterValue")
     public RawExpenseEntity(
             long id,
             @Nullable String comment,

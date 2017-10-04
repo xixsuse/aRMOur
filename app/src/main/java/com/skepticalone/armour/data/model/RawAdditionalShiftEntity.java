@@ -20,6 +20,7 @@ public final class RawAdditionalShiftEntity extends RawShift {
     @Embedded
     private final RawPaymentData paymentData;
 
+    @SuppressWarnings("SameParameterValue")
     public RawAdditionalShiftEntity(
             long id,
             @Nullable String comment,

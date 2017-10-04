@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
-import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.db.Contract;
 import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
 
@@ -20,12 +19,9 @@ import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Dao
 public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
-
-    RosteredShiftDao(@NonNull AppDatabase database) {
-        super(database);
-    }
 
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
