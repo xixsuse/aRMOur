@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.model.Payable;
@@ -12,8 +13,8 @@ public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemT
     @NonNull
     private final Callbacks callbacks;
 
-    PayableTotalsAdapter(@NonNull Callbacks callbacks) {
-        super();
+    PayableTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context);
         this.callbacks = callbacks;
     }
 

@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -14,7 +15,8 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     @NonNull
     private final ShiftTotalsAdapterHelper<RosteredShift> helper;
 
-    public RosteredShiftTotalsAdapter(@NonNull Callbacks callbacks) {
+    public RosteredShiftTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context);
         this.callbacks = callbacks;
         helper = new ShiftTotalsAdapterHelper<>(this);
     }
@@ -46,8 +48,8 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     }
 
     @Override
-    boolean bindViewHolder(@NonNull List<RosteredShift> allShifts, @NonNull ItemViewHolder holder, int position) {
-        return helper.bindViewHolder(allShifts, holder, position);
+    boolean bindViewHolder(@NonNull Context context, @NonNull List<RosteredShift> allShifts, @NonNull ItemViewHolder holder, int position) {
+        return helper.bindViewHolder(context, allShifts, holder, position);
     }
 
     public interface Callbacks {

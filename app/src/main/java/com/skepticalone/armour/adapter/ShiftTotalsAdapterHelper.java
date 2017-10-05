@@ -1,11 +1,13 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.Duration;
 
@@ -29,7 +31,7 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     }
 
     @NonNull
-    private String getTotalDuration(@NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
+    private String getTotalDuration(@NonNull Context context, @NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
         Duration totalDuration = Duration.ZERO;
         for (Entity shift : shifts) {
             totalDuration = totalDuration.plus(shift.getShiftData().getDuration());
@@ -40,13 +42,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
                 if (callbacks.isIncluded(shift))
                     filteredDuration = filteredDuration.plus(shift.getShiftData().getDuration());
             }
-            return holder.getDurationPercentage(filteredDuration, totalDuration);
+            return holder.getDurationPercentage(context, filteredDuration, totalDuration);
         } else {
-            return holder.getDurationString(totalDuration);
+            return DateTimeUtils.getDurationString(context, totalDuration);
         }
     }
 
-    boolean bindViewHolder(@NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
         @DrawableRes final int icon;
         @StringRes final int firstLine;
         @NonNull final List<Entity> shifts;
@@ -68,7 +70,7 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
                 if (shift.getShiftType() == shiftType) shifts.add(shift);
             }
         }
-        holder.setupTotals(icon, firstLine, callbacks.getTotalNumber(shifts, holder), callbacks.getThirdLine(getTotalDuration(shifts, holder), shifts, holder));
+        holder.setupTotals(icon, firstLine, callbacks.getTotalNumber(shifts, holder), callbacks.getThirdLine(getTotalDuration(context, shifts, holder), shifts, holder));
         return true;
     }
 

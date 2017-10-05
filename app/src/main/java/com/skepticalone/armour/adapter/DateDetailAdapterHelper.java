@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,7 @@ abstract class DateDetailAdapterHelper<Entity> {
     }
 
     @CallSuper
-    boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberDate()) {
             holder.setupPlain(R.drawable.ic_calendar_black_24dp, new View.OnClickListener() {
                 @Override

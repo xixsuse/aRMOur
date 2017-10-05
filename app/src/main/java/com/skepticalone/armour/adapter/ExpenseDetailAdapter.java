@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,8 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     @NonNull
     private final PayableDetailAdapterHelper<Expense> payableDetailAdapterHelper;
 
-    public ExpenseDetailAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public ExpenseDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
         this.callbacks = callbacks;
         payableDetailAdapterHelper = new PayableDetailAdapterHelper<Expense>(callbacks) {
             @Override
@@ -70,7 +71,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(Context context, @NonNull Expense expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override
@@ -81,7 +82,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
             holder.setText(holder.getText(R.string.title), expense.getTitle());
             return true;
         } else return payableDetailAdapterHelper.bindViewHolder(expense, holder, position) ||
-                super.bindViewHolder(expense, holder, position);
+                super.bindViewHolder(context, expense, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks {

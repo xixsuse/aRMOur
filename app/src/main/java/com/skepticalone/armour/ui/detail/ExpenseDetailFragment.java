@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.ExpenseDetailAdapter;
@@ -15,7 +16,13 @@ public final class ExpenseDetailFragment
         extends DetailFragment<Expense>
         implements ExpenseDetailAdapter.Callbacks {
 
-    private final ExpenseDetailAdapter adapter = new ExpenseDetailAdapter(this);
+    private ExpenseDetailAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new ExpenseDetailAdapter(context, this);
+    }
 
     @NonNull
     @Override

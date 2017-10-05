@@ -34,12 +34,12 @@ public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFrag
     abstract int getLayout();
 
     @NonNull
-    abstract ItemTotalsAdapter<Entity> createAdapter();
+    abstract ItemTotalsAdapter<Entity> createAdapter(@NonNull Context context);
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = createAdapter();
+        adapter = createAdapter(context);
     }
 
     @Override

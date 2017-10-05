@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.totals;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftTotalsAdapter;
@@ -13,8 +14,8 @@ public final class AdditionalShiftTotalsDialogFragment extends PayableTotalsDial
 
     @NonNull
     @Override
-    ItemTotalsAdapter<AdditionalShift> createAdapter() {
-        return new AdditionalShiftTotalsAdapter(this);
+    ItemTotalsAdapter<AdditionalShift> createAdapter(@NonNull Context context) {
+        return new AdditionalShiftTotalsAdapter(context, this);
     }
 
     @NonNull

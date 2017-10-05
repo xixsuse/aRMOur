@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.totals;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -14,8 +15,8 @@ public final class CrossCoverTotalsDialogFragment extends PayableTotalsDialogFra
 
     @NonNull
     @Override
-    ItemTotalsAdapter<CrossCover> createAdapter() {
-        return new SinglePayableTotalsAdapter<>(this, R.string.cross_cover_shifts);
+    ItemTotalsAdapter<CrossCover> createAdapter(@NonNull Context context) {
+        return new SinglePayableTotalsAdapter<>(context, this, R.string.cross_cover_shifts);
     }
 
     @NonNull

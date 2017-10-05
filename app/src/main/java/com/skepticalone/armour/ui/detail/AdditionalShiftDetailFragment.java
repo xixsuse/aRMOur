@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.AdditionalShiftDetailAdapter;
@@ -16,7 +17,13 @@ public final class AdditionalShiftDetailFragment
         extends DetailFragment<AdditionalShift>
         implements AdditionalShiftDetailAdapter.Callbacks {
 
-    private final AdditionalShiftDetailAdapter adapter = new AdditionalShiftDetailAdapter(this);
+    private AdditionalShiftDetailAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new AdditionalShiftDetailAdapter(context, this);
+    }
 
     @NonNull
     @Override

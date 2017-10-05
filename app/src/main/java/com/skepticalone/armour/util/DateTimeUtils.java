@@ -1,6 +1,9 @@
 package com.skepticalone.armour.util;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import com.skepticalone.armour.R;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -96,8 +99,18 @@ public final class DateTimeUtils {
 //        return period.toString();
 //    }
 
-    public static String getDurationString(@NonNull Duration duration) {
-        return duration.toString();
+    public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {
+        long hours = duration.getSeconds() / 3600, minutes = duration.getSeconds() % 3600 / 60;
+        if (hours > 0 && minutes > 0) {
+            return context.getString(R.string.duration_in_hours_and_minutes,
+                    context.getResources().getQuantityString(R.plurals.hours, (int) hours, hours),
+                    context.getResources().getQuantityString(R.plurals.minutes, (int) minutes, minutes)
+            );
+        } else if (hours > 0) {
+            return context.getResources().getQuantityString(R.plurals.hours, (int) hours, hours);
+        } else {
+            return context.getResources().getQuantityString(R.plurals.minutes, (int) minutes, minutes);
+        }
     }
 
     public static int calculateHours(int totalMinutes) {

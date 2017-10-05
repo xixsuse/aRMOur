@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,8 +13,15 @@ import java.util.List;
 
 public abstract class ItemTotalsAdapter<Entity> extends RecyclerView.Adapter<ItemViewHolder> implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
 
+    @NonNull
+    private final Context mContext;
     @Nullable
     private List<Entity> mItems;
+
+    ItemTotalsAdapter(@NonNull Context context) {
+        super();
+        mContext = context;
+    }
 
     public final void setItems(final @Nullable List<Entity> items) {
         if (mItems == null && items == null) {
@@ -47,7 +55,7 @@ public abstract class ItemTotalsAdapter<Entity> extends RecyclerView.Adapter<Ite
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
-        if (!bindViewHolder(mItems, holder, position)){
+        if (!bindViewHolder(mContext, mItems, holder, position)) {
             throw new IllegalStateException();
         }
     }
@@ -67,7 +75,7 @@ public abstract class ItemTotalsAdapter<Entity> extends RecyclerView.Adapter<Ite
         }
     }
 
-    abstract boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position);
+    abstract boolean bindViewHolder(@NonNull Context context, @NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position);
 
     abstract int getRowCount();
 

@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
@@ -18,8 +19,8 @@ public final class SinglePayableTotalsAdapter<Entity extends Payable> extends Pa
     @StringRes
     private final int totalItemsTitle;
 
-    public SinglePayableTotalsAdapter(@NonNull Callbacks callbacks, @StringRes int totalItemsTitle) {
-        super(callbacks);
+    public SinglePayableTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @StringRes int totalItemsTitle) {
+        super(context, callbacks);
         this.totalItemsTitle = totalItemsTitle;
     }
 
@@ -29,7 +30,7 @@ public final class SinglePayableTotalsAdapter<Entity extends Payable> extends Pa
     }
 
     @Override
-    final boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
+    final boolean bindViewHolder(@NonNull Context context, @NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
             holder.setupTotals(R.drawable.ic_sigma_black_24dp, totalItemsTitle, getTotalNumber(allItems, holder), null);
             return true;

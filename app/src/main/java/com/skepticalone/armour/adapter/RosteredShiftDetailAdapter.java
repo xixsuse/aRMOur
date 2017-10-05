@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -34,8 +35,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     @NonNull
     private final Callbacks callbacks;
 
-    public RosteredShiftDetailAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public RosteredShiftDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
         this.callbacks = callbacks;
         shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<RosteredShift>(callbacks) {
             
@@ -120,7 +121,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    boolean bindViewHolder(@NonNull RosteredShift shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull RosteredShift shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOGGLE_LOGGED) {
             final boolean switchChecked;
             final String secondLine;
@@ -129,7 +130,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 secondLine = null;
             } else {
                 switchChecked = true;
-                secondLine = DateTimeUtils.getDurationString(shift.getLoggedShiftData().getDuration());
+                secondLine = DateTimeUtils.getDurationString(context, shift.getLoggedShiftData().getDuration());
             }
             holder.setupSwitch(R.drawable.ic_clipboard_black_24dp, switchChecked, new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -176,7 +177,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             } else {
                 holder.setText(
                         holder.getText(R.string.time_between_shifts),
-                        DateTimeUtils.getDurationString(shift.getCompliance().getDurationBetweenShifts())
+                        DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationBetweenShifts())
                 );
                 holder.setCompliant(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts, !shift.getCompliance().insufficientDurationBetweenShifts());
             }
@@ -190,7 +191,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_day),
-                    DateTimeUtils.getDurationString(shift.getCompliance().getDurationOverDay())
+                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverDay())
             );
             holder.setCompliant(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day, !shift.getCompliance().exceedsMaximumDurationOverDay());
             return true;
@@ -203,7 +204,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_week),
-                    DateTimeUtils.getDurationString(shift.getCompliance().getDurationOverWeek())
+                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverWeek())
             );
             holder.setCompliant(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week, !shift.getCompliance().exceedsMaximumDurationOverWeek());
             return true;
@@ -216,7 +217,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
             holder.setText(
                     holder.getText(R.string.duration_worked_over_fortnight),
-                    DateTimeUtils.getDurationString(shift.getCompliance().getDurationOverFortnight())
+                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverFortnight())
             );
             holder.setCompliant(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight, !shift.getCompliance().exceedsMaximumDurationOverFortnight());
             return true;
@@ -240,8 +241,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             return true;
         } else {
             holder.secondaryIcon.setVisibility(View.GONE);
-            return shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                    super.bindViewHolder(shift, holder, position);
+            return shiftDetailAdapterHelper.bindViewHolder(context, shift, holder, position) ||
+                    super.bindViewHolder(context, shift, holder, position);
         }
     }
 

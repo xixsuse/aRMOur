@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.adapter.RosteredShiftDetailAdapter;
@@ -16,7 +17,13 @@ public final class RosteredShiftDetailFragment
         extends DetailFragment<RosteredShift>
         implements RosteredShiftDetailAdapter.Callbacks {
 
-    private final RosteredShiftDetailAdapter adapter = new RosteredShiftDetailAdapter(this);
+    private RosteredShiftDetailAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new RosteredShiftDetailAdapter(context, this);
+    }
 
     @NonNull
     @Override

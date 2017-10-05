@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -45,7 +46,7 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
 
     @Override
     @CallSuper
-    boolean bindViewHolder(@NonNull Entity shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull Entity shift, ItemViewHolder holder, int position) {
         if (position == getRowNumberStart()) {
             holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
                 @Override
@@ -66,9 +67,9 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
             return true;
         } else if (position == getRowNumberShiftType()) {
             holder.setupPlain(shift.getShiftType().getIcon(), null);
-            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(shift.getShiftData().getDuration()));
+            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(context, shift.getShiftData().getDuration()));
             return true;
-        } else return super.bindViewHolder(shift, holder, position);
+        } else return super.bindViewHolder(context, shift, holder, position);
     }
 
 }

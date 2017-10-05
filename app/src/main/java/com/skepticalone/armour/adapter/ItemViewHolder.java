@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
@@ -122,15 +123,15 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
         return getPercentage(getPaymentString(payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
     }
+//
+//    @NonNull
+//    String getDurationString(@NonNull Duration duration) {
+//        return DateTimeUtils.getDurationString(duration);
+//    }
 
     @NonNull
-    String getDurationString(@NonNull Duration duration) {
-        return DateTimeUtils.getDurationString(duration);
-    }
-
-    @NonNull
-    String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
-        return getPercentage(DateTimeUtils.getDurationString(duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
+    String getDurationPercentage(@NonNull Context context, @NonNull Duration duration, @NonNull Duration totalDuration) {
+        return getPercentage(DateTimeUtils.getDurationString(context, duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
 
     void setText(@NonNull String firstLine) {

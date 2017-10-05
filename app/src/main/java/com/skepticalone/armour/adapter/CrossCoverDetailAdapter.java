@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,8 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     @NonNull
     private final DateDetailAdapterHelper<CrossCover> dateDetailAdapterHelper;
 
-    public CrossCoverDetailAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public CrossCoverDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
         payableDetailAdapterHelper = new PayableDetailAdapterHelper<CrossCover>(callbacks) {
             @Override
             int getRowNumberPayment() {
@@ -81,10 +82,10 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    boolean bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
-        return dateDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
+    boolean bindViewHolder(@NonNull Context context, @NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
+        return dateDetailAdapterHelper.bindViewHolder(context, crossCover, holder, position) ||
                 payableDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
-                super.bindViewHolder(crossCover, holder, position);
+                super.bindViewHolder(context, crossCover, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {

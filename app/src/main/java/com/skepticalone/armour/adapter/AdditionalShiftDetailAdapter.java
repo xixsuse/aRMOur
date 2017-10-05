@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,8 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     @NonNull
     private final PayableDetailAdapterHelper<AdditionalShift> payableDetailAdapterHelper;
 
-    public AdditionalShiftDetailAdapter(@NonNull final Callbacks callbacks) {
-        super(callbacks);
+    public AdditionalShiftDetailAdapter(@NonNull Context context, @NonNull final Callbacks callbacks) {
+        super(context, callbacks);
         shiftDetailAdapterHelper = new ShiftDetailAdapterHelper<AdditionalShift>(callbacks) {
             @Override
             int getRowNumberDate() {
@@ -111,14 +112,14 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    boolean bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setupPlain(R.drawable.ic_dollar_black_24dp, null);
             holder.setText(holder.getText(R.string.payment), holder.getPaymentString(shift.getTotalPayment()));
             return true;
         } else return payableDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                shiftDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                super.bindViewHolder(shift, holder, position);
+                shiftDetailAdapterHelper.bindViewHolder(context, shift, holder, position) ||
+                super.bindViewHolder(context, shift, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {
