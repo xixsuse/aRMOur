@@ -71,7 +71,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    boolean bindViewHolder(Context context, @NonNull Expense expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Context context, @NonNull Expense expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
                 @Override

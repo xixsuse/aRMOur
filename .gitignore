@@ -3,6 +3,10 @@
 /local.properties
 /.idea/misc.xml
 /.idea/workspace.xml
+/.idea/dictionaries
 /.idea/libraries
+.DS_Store
 /build
+/captures
+.externalNativeBuild
 keystore.properties

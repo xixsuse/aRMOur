@@ -21,19 +21,4 @@
         android:icon="@drawable/ic_dollar_black_24dp"
         android:title="@string/expenses" />
 
-    <!--<item-->
-    <!--android:id="@+id/navigation_home"-->
-    <!--android:icon="@drawable/ic_home_black_24dp"-->
-    <!--andrtitleitle="@string/title_home" />-->
-
-    <!--<item-->
-    <!--android:id="@+id/navigation_dashboard"-->
-    <!--android:icon="@drawable/ic_dashboard_black_24dp"-->
-    <!--andrtitleitle="@string/title_dashboard" />-->
-
-    <!--<item-->
-    <!--android:id="@+id/navigation_notifications"-->
-    <!--android:icon="@drawable/ic_notifications_black_24dp"-->
-    <!--andrtitleitle="@string/title_notifications" />-->
-
 </menu>
