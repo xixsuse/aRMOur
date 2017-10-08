@@ -326,6 +326,10 @@ public abstract class Shift extends Item {
             return new ShiftData(getStart().toInstant(), getEnd().toInstant());
         }
 
+        @Override
+        public String toString() {
+            return DateTimeUtils.getDateTimeString(getStart().toLocalDateTime()) + " - " + DateTimeUtils.getDateTimeString(getEnd().toLocalDateTime());
+        }
     }
 
 }

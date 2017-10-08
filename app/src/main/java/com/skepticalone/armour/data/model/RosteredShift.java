@@ -195,7 +195,7 @@ public final class RosteredShift extends Shift {
 
         static final class Configuration {
 
-            private final boolean
+            final boolean
                     checkDurationOverDay,
                     checkDurationOverWeek,
                     checkDurationOverFortnight,
