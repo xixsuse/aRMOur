@@ -40,11 +40,11 @@ abstract class TimeDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @NonNull
-    abstract Shift.ShiftData getShiftDataForDisplay(@NonNull Entity item);
+    abstract Shift.Data getShiftDataForDisplay(@NonNull Entity item);
 
     @Override
     final void onUpdateView(@NonNull Entity item) {
-        Shift.ShiftData shiftData = getShiftDataForDisplay(item);
+        Shift.Data shiftData = getShiftDataForDisplay(item);
         LocalTime time = (start ? shiftData.getStart() : shiftData.getEnd()).toLocalTime();
         timePickerDialog.updateTime(time.getHour(), time.getMinute());
     }

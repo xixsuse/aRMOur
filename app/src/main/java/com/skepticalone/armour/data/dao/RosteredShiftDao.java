@@ -11,7 +11,7 @@ import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
+import com.skepticalone.armour.data.model.RosteredShiftEntity;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @SuppressWarnings("NullableProblems")
 @Dao
-public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
+public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
 
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
@@ -54,7 +54,7 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
             Contract.RosteredShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<RawRosteredShiftEntity>> fetchItems();
+    public abstract LiveData<List<RosteredShiftEntity>> fetchItems();
 
     @Nullable
     @Override
@@ -63,7 +63,7 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract RawRosteredShiftEntity fetchItemInternalSync(long id);
+    abstract RosteredShiftEntity fetchItemInternalSync(long id);
 
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
@@ -105,7 +105,7 @@ public abstract class RosteredShiftDao extends ItemDao<RawRosteredShiftEntity> {
     @Transaction
     public long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
         return insertSync(
-                RawRosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
+                RosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );
     }
 

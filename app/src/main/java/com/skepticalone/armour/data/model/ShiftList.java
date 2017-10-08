@@ -10,12 +10,12 @@ import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-abstract class LiveShifts<Entity, FinalItem> extends LiveItems<Entity, FinalItem> {
+abstract class ShiftList<Entity, FinalItem> extends ItemList<Entity, FinalItem> {
 
     @NonNull
     final LiveData<Shift.ShiftType.Configuration> liveShiftConfig;
 
-    LiveShifts(@NonNull Context context, @NonNull LiveData<List<Entity>> liveRawShifts) {
+    ShiftList(@NonNull Context context, @NonNull LiveData<List<Entity>> liveRawShifts) {
         super(context, liveRawShifts);
         liveShiftConfig = Shift.ShiftType.LiveShiftConfig.getInstance(context);
         addSource(liveShiftConfig, new Observer<Shift.ShiftType.Configuration>() {

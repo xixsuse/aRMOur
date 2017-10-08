@@ -12,15 +12,15 @@ import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.dao.ExpenseDao;
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
-import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
-import com.skepticalone.armour.data.util.InstantConverter;
-import com.skepticalone.armour.data.util.LocalDateConverter;
-import com.skepticalone.armour.data.util.MoneyConverter;
+import com.skepticalone.armour.data.model.AdditionalShiftEntity;
+import com.skepticalone.armour.data.model.CrossCoverEntity;
+import com.skepticalone.armour.data.model.ExpenseEntity;
+import com.skepticalone.armour.data.model.RosteredShiftEntity;
+import com.skepticalone.armour.util.InstantConverter;
+import com.skepticalone.armour.util.LocalDateConverter;
+import com.skepticalone.armour.util.MoneyConverter;
 
-@Database(entities = {RawRosteredShiftEntity.class, RawAdditionalShiftEntity.class, RawCrossCoverEntity.class, RawExpenseEntity.class}, version = 2)
+@Database(entities = {RosteredShiftEntity.class, AdditionalShiftEntity.class, CrossCoverEntity.class, ExpenseEntity.class}, version = 2)
 @TypeConverters({LocalDateConverter.class, InstantConverter.class, MoneyConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

@@ -8,13 +8,13 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ExpenseDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.Expense;
-import com.skepticalone.armour.data.model.LiveExpenses;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.ExpenseEntity;
+import com.skepticalone.armour.data.model.ExpenseList;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity, Expense> implements PayableViewModelContract<Expense>, SingleAddItemViewModelContract<Expense> {
+public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense> implements PayableViewModelContract<Expense>, SingleAddItemViewModelContract<Expense> {
 
     @NonNull
     private final LiveData<List<Expense>> expenses;
@@ -25,7 +25,7 @@ public final class ExpenseViewModel extends ItemViewModel<RawExpenseEntity, Expe
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        expenses = new LiveExpenses(getApplication(), getDao().fetchItems());
+        expenses = new ExpenseList(getApplication(), getDao().fetchItems());
     }
 
     @NonNull

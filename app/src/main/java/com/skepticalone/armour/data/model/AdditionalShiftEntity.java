@@ -14,34 +14,43 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 
 @Entity(tableName = Contract.AdditionalShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class RawAdditionalShiftEntity extends RawShift {
+public final class AdditionalShiftEntity extends Item {
 
     @NonNull
     @Embedded
-    private final RawPaymentData paymentData;
+    private final PaymentData paymentData;
 
-    @SuppressWarnings("SameParameterValue")
-    public RawAdditionalShiftEntity(
+    @NonNull
+    @Embedded
+    private final ShiftData shiftData;
+
+    public AdditionalShiftEntity(
             long id,
             @Nullable String comment,
             @NonNull ShiftData shiftData,
-            @NonNull RawPaymentData paymentData
+            @NonNull PaymentData paymentData
     ) {
-        super(id, comment, shiftData);
+        super(id, comment);
+        this.shiftData = shiftData;
         this.paymentData = paymentData;
     }
 
-    public static RawAdditionalShiftEntity from(@Nullable Instant lastShiftEnd, @NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents){
-        return new RawAdditionalShiftEntity(
+    public static AdditionalShiftEntity from(@Nullable Instant lastShiftEnd, @NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents) {
+        return new AdditionalShiftEntity(
                 NO_ID,
                 null,
                 ShiftData.withEarliestStart(times.first, times.second, lastShiftEnd, zoneId, false),
-                RawPaymentData.from(hourlyRateInCents)
+                PaymentData.from(hourlyRateInCents)
         );
     }
 
     @NonNull
-    public RawPaymentData getPaymentData() {
+    public ShiftData getShiftData() {
+        return shiftData;
+    }
+
+    @NonNull
+    public PaymentData getPaymentData() {
         return paymentData;
     }
 

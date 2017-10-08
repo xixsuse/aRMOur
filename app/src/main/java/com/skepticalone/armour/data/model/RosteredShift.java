@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.AppConstants;
+import com.skepticalone.armour.util.LiveConfig;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -20,20 +21,20 @@ import java.util.List;
 public final class RosteredShift extends Shift {
 
     @Nullable
-    private final ShiftData loggedShiftData;
+    private final Data loggedShiftData;
 
     @NonNull
     private final Compliance compliance;
 
     RosteredShift(
-            @NonNull RawRosteredShiftEntity rawShift,
+            @NonNull RosteredShiftEntity rawShift,
             @NonNull ZoneId zoneId,
             @NonNull ShiftType.Configuration shiftConfig,
             @NonNull List<RosteredShift> previousShifts,
             @NonNull Compliance.Configuration complianceConfig
     ) {
-        super(rawShift, zoneId, shiftConfig);
-        loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new ShiftData(rawShift.getLoggedShiftData(), zoneId);
+        super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, shiftConfig);
+        loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new Data(rawShift.getLoggedShiftData(), zoneId);
         LocalDate currentWeekend = getShiftData().calculateCurrentWeekend();
         compliance = new Compliance(
                 getDurationSince(getShiftData().getEnd().minusDays(1), previousShifts),
@@ -47,12 +48,12 @@ public final class RosteredShift extends Shift {
     }
 
     @NonNull
-    private static Duration getDurationAfterCutoff(@NonNull ShiftData shiftData, @NonNull ZonedDateTime cutOff) {
+    private static Duration getDurationAfterCutoff(@NonNull Data shiftData, @NonNull ZonedDateTime cutOff) {
         return shiftData.getStart().isBefore(cutOff) ? Duration.between(cutOff, shiftData.getEnd()) : shiftData.getDuration();
     }
 
     @Nullable
-    public ShiftData getLoggedShiftData() {
+    public Data getLoggedShiftData() {
         return loggedShiftData;
     }
 
@@ -60,7 +61,7 @@ public final class RosteredShift extends Shift {
     private Duration getDurationSince(@NonNull ZonedDateTime cutOff, @NonNull List<RosteredShift> previousShifts) {
         Duration totalDuration = getDurationAfterCutoff(getShiftData(), cutOff);
         for (int i = previousShifts.size() - 1; i >= 0; i--) {
-            ShiftData pastShiftData = previousShifts.get(i).getShiftData();
+            Data pastShiftData = previousShifts.get(i).getShiftData();
             if (!pastShiftData.getEnd().isAfter(cutOff)) break;
             totalDuration = totalDuration.plus(getDurationAfterCutoff(pastShiftData, cutOff));
         }
@@ -274,7 +275,7 @@ public final class RosteredShift extends Shift {
 
             @Override
             @NonNull
-            String[] getWatchKeys() {
+            public String[] getWatchKeys() {
                 return watchKeys;
             }
 

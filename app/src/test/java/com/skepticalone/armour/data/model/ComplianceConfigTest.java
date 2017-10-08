@@ -38,22 +38,13 @@ public class ComplianceConfigTest {
             end = end.plusDays(1);
         }
         return new RosteredShift(
-                new RawRosteredShiftEntity(NO_ID, null, new RawShift.ShiftData(start.toInstant(), end.toInstant()), null),
+                new RosteredShiftEntity(NO_ID, null, new ShiftData(start.toInstant(), end.toInstant()), null),
                 zoneId,
                 shiftConfig,
                 previousShifts,
                 complianceConfig
         );
     }
-//
-//    private void adjustByMinutesAndCheck(int shiftIndex, int startMinutes, int endMinutes) {
-//        RosteredShift shift = shifts.get(shiftIndex);
-//        shifts.set(shiftIndex, new RosteredShift(new RawShift.RawShiftData(
-//                shift.getShiftData().getStart().plusSeconds(startMinutes * 60),
-//                shift.getShiftData().getEnd().plusSeconds(endMinutes * 60)
-//        ), null, null));
-//        checker.process(shifts, ZoneId.systemDefault());
-//    }
 
     @Before
     public void setUp() {
@@ -146,7 +137,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(11, -1, -1);
 //        assertFalse(shifts.get(11).isCompliant());
 //        assertTrue(shifts.get(11).insufficientDurationBetweenShifts());
-//        new RawRosteredShiftEntity.ComplianceConfiguration(
+//        new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                true,
 //                true,
@@ -165,7 +156,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(31, 0, 1);
 //        assertFalse(shifts.get(31).isCompliant());
 //        assertTrue(shifts.get(31).exceedsMaximumDurationOverDay());
-//        new RawRosteredShiftEntity.ComplianceConfiguration(
+//        new RosteredShiftEntity.ComplianceConfiguration(
 //                false,
 //                true,
 //                true,
@@ -184,7 +175,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(7, 0, 1);
 //        assertFalse(shifts.get(7).isCompliant());
 //        assertTrue(shifts.get(7).exceedsMaximumDurationOverWeek());
-//        new RawRosteredShiftEntity.ComplianceConfiguration(
+//        new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                false,
 //                true,
@@ -197,7 +188,7 @@ public class ComplianceConfigTest {
 //
 //    @Test
 //    public void exceedsMaximumDurationOverFortnight() {
-//        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
+//        checker = new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                false,
 //                true,
@@ -219,7 +210,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(11, 0, 1);
 //        assertFalse(shifts.get(11).isCompliant());
 //        assertTrue(shifts.get(11).exceedsMaximumDurationOverFortnight());
-//        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
+//        checker = new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                false,
 //                false,
@@ -240,7 +231,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(11, 1, 1);
 //        assertFalse(shifts.get(17).isCompliant());
 //        assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-//        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
+//        checker = new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                true,
 //                true,
@@ -250,7 +241,7 @@ public class ComplianceConfigTest {
 //        checker.process(shifts, ZoneId.systemDefault());
 //        assertTrue(shifts.get(17).isCompliant());
 //        assertFalse(shifts.get(17).consecutiveWeekendsWorked());
-//        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
+//        checker = new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                true,
 //                true,
@@ -266,7 +257,7 @@ public class ComplianceConfigTest {
 //        adjustByMinutesAndCheck(12, -1, -1);
 //        assertFalse(shifts.get(17).isCompliant());
 //        assertTrue(shifts.get(17).consecutiveWeekendsWorked());
-//        checker = new RawRosteredShiftEntity.ComplianceConfiguration(
+//        checker = new RosteredShiftEntity.ComplianceConfiguration(
 //                true,
 //                true,
 //                true,

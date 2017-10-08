@@ -32,8 +32,8 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
 
     @NonNull
     @Override
-    Shift.ShiftData getShiftDataForDisplay(@NonNull RosteredShift shift) {
-        final Shift.ShiftData shiftData;
+    Shift.Data getShiftDataForDisplay(@NonNull RosteredShift shift) {
+        final Shift.Data shiftData;
         if (logged) {
             shiftData = shift.getLoggedShiftData();
             if (shiftData == null) throw new IllegalStateException();

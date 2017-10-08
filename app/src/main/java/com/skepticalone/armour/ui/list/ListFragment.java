@@ -87,12 +87,6 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
                     showFab(callbacks);
                 }
             }
-
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                if (dy > 0) {
-//                }
-//            }
         });
         return recyclerView;
     }

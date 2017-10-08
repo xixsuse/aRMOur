@@ -11,12 +11,12 @@ import org.threeten.bp.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class LiveRosteredShifts extends LiveShifts<RawRosteredShiftEntity, RosteredShift> {
+public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, RosteredShift> {
 
     @NonNull
     private final LiveData<RosteredShift.Compliance.Configuration> liveComplianceConfig;
 
-    public LiveRosteredShifts(@NonNull Context context, @NonNull LiveData<List<RawRosteredShiftEntity>> liveRawRosteredShifts) {
+    public RosteredShiftList(@NonNull Context context, @NonNull LiveData<List<RosteredShiftEntity>> liveRawRosteredShifts) {
         super(context, liveRawRosteredShifts);
         liveComplianceConfig = RosteredShift.Compliance.LiveComplianceConfig.getInstance(context);
         addSource(liveComplianceConfig, new Observer<RosteredShift.Compliance.Configuration>() {
@@ -28,14 +28,14 @@ public final class LiveRosteredShifts extends LiveShifts<RawRosteredShiftEntity,
     }
 
     @Override
-    void onUpdated(@Nullable List<RawRosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig) {
+    void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig) {
         onUpdated(rawRosteredShifts, timeZone, shiftConfig, liveComplianceConfig.getValue());
     }
 
-    private void onUpdated(@Nullable List<RawRosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable RosteredShift.Compliance.Configuration complianceConfig) {
+    private void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable RosteredShift.Compliance.Configuration complianceConfig) {
         if (rawRosteredShifts != null && timeZone != null && shiftConfig != null && complianceConfig != null) {
             List<RosteredShift> rosteredShifts = new ArrayList<>(rawRosteredShifts.size());
-            for (RawRosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
+            for (RosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
                 rosteredShifts.add(new RosteredShift(rawRosteredShift, timeZone, shiftConfig, rosteredShifts, complianceConfig));
             }
             setValue(rosteredShifts);

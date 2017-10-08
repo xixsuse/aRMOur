@@ -14,31 +14,40 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 
 @Entity(tableName = Contract.RosteredShifts.TABLE_NAME, indices = {@Index(value = {Contract.COLUMN_NAME_SHIFT_START}), @Index(value = {Contract.COLUMN_NAME_SHIFT_END})})
-public final class RawRosteredShiftEntity extends RawShift {
+public final class RosteredShiftEntity extends Item {
 
     @Nullable
     @Embedded(prefix = Contract.RosteredShifts.LOGGED_PREFIX)
     private final ShiftData loggedShiftData;
 
-    @SuppressWarnings("SameParameterValue")
-    public RawRosteredShiftEntity(
+    @NonNull
+    @Embedded
+    private final ShiftData shiftData;
+
+    public RosteredShiftEntity(
             long id,
             @Nullable String comment,
             @NonNull ShiftData shiftData,
             @Nullable ShiftData loggedShiftData
     ) {
-        super(id, comment, shiftData);
+        super(id, comment);
+        this.shiftData = shiftData;
         this.loggedShiftData = loggedShiftData;
     }
 
     @NonNull
-    public static RawRosteredShiftEntity from(@Nullable Instant lastShiftEnd, @NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
-        return new RawRosteredShiftEntity(
+    public static RosteredShiftEntity from(@Nullable Instant lastShiftEnd, @NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, boolean skipWeekends) {
+        return new RosteredShiftEntity(
                 NO_ID,
                 null,
                 ShiftData.withEarliestStartAfterMinimumDurationBetweenShifts(times.first, times.second, lastShiftEnd, zoneId, skipWeekends),
                 null
         );
+    }
+
+    @NonNull
+    public ShiftData getShiftData() {
+        return shiftData;
     }
 
     @Nullable

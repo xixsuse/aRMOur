@@ -13,33 +13,33 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
-public final class RawCrossCoverEntity extends Item {
+public final class CrossCoverEntity extends Item {
     @NonNull
     @ColumnInfo(name = Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     private final LocalDate date;
     @NonNull
     @Embedded
-    private final RawPaymentData paymentData;
+    private final PaymentData paymentData;
 
     @SuppressWarnings("SameParameterValue")
-    public RawCrossCoverEntity(
+    public CrossCoverEntity(
             long id,
             @Nullable String comment,
             @NonNull LocalDate date,
-            @NonNull RawPaymentData paymentData
+            @NonNull PaymentData paymentData
     ) {
         super(id, comment);
         this.date = date;
         this.paymentData = paymentData;
     }
 
-    public static RawCrossCoverEntity from(@Nullable final LocalDate lastShiftDate, @NonNull ZoneId timeZone, int paymentInCents) {
+    public static CrossCoverEntity from(@Nullable final LocalDate lastShiftDate, @NonNull ZoneId timeZone, int paymentInCents) {
         LocalDate newDate = LocalDate.now(timeZone);
         if (lastShiftDate != null) {
             LocalDate earliestShiftDate = lastShiftDate.plusDays(1);
             if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
         }
-        return new RawCrossCoverEntity(NO_ID, null, newDate, RawPaymentData.from(paymentInCents));
+        return new CrossCoverEntity(NO_ID, null, newDate, PaymentData.from(paymentInCents));
     }
 
     @NonNull
@@ -48,35 +48,8 @@ public final class RawCrossCoverEntity extends Item {
     }
 
     @NonNull
-    public RawPaymentData getPaymentData() {
+    public PaymentData getPaymentData() {
         return paymentData;
     }
-    //
-//    @NonNull
-//    public static LocalDate getNewDate(@Nullable final LocalDate lastDate) {
-//        LocalDate newDate = LocalDate.now();
-//        if (lastDate != null) {
-//            LocalDate earliestShiftDate = lastDate.plusDays(1);
-//            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
-//        }
-//        return newDate;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public LocalDate getDate() {
-//        return date;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public RawPaymentData getPaymentData() {
-//        return paymentData;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public BigDecimal getTotalPayment() {
-//        return paymentData.getPayment();
-//    }
+
 }

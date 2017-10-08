@@ -3,12 +3,12 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.model.Payable;
+import com.skepticalone.armour.data.model.Payment;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public abstract class PayableTotalsAdapter<Entity extends Payable> extends ItemTotalsAdapter<Entity> {
+public abstract class PayableTotalsAdapter<Entity extends Payment> extends ItemTotalsAdapter<Entity> {
 
     @NonNull
     private final Callbacks callbacks;

@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCoverEntity;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @SuppressWarnings("NullableProblems")
 @Dao
-public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> implements PayableDao {
+public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> implements PaymentDao {
 
     @Query("UPDATE " +
             Contract.CrossCoverShifts.TABLE_NAME +
@@ -82,7 +82,7 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
             Contract.CrossCoverShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.CrossCoverShifts.COLUMN_NAME_DATE)
-    public abstract LiveData<List<RawCrossCoverEntity>> fetchItems();
+    public abstract LiveData<List<CrossCoverEntity>> fetchItems();
 
     @Nullable
     @Override
@@ -91,7 +91,7 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract RawCrossCoverEntity fetchItemInternalSync(long id);
+    abstract CrossCoverEntity fetchItemInternalSync(long id);
 
     @Nullable
     @Query("SELECT " +
@@ -106,7 +106,7 @@ public abstract class CrossCoverDao extends ItemDao<RawCrossCoverEntity> impleme
 
     @Transaction
     public long insertSync(@NonNull ZoneId timeZone, int paymentInCents) {
-        return insertSync(RawCrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
+        return insertSync(CrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
     }
 
 }

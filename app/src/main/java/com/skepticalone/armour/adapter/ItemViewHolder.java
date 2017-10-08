@@ -123,11 +123,6 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
         return getPercentage(getPaymentString(payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
     }
-//
-//    @NonNull
-//    String getDurationString(@NonNull Duration duration) {
-//        return DateTimeUtils.getDurationString(duration);
-//    }
 
     @NonNull
     String getDurationPercentage(@NonNull Context context, @NonNull Duration duration, @NonNull Duration totalDuration) {
@@ -168,10 +163,5 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
             secondaryIcon.setVisibility(View.GONE);
         }
     }
-//
-//    @NonNull
-//    Context getContext() {
-//        return itemView.getContext();
-//    }
 
 }

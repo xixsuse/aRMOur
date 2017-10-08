@@ -15,6 +15,7 @@ import android.util.Pair;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.settings.TimePreference;
 import com.skepticalone.armour.util.DateTimeUtils;
+import com.skepticalone.armour.util.LiveConfig;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
@@ -26,25 +27,18 @@ import org.threeten.bp.ZonedDateTime;
 public abstract class Shift extends Item {
 
     @NonNull
-    private final ShiftData shiftData;
+    private final Data shiftData;
     @NonNull
     private final ShiftType shiftType;
 
-//    Shift(long id, @Nullable String comment, @NonNull ShiftData shiftData, @NonNull ShiftType.Configuration configuration) {
-//        super(id, comment);
-//        this.shiftData = shiftData;
-//        shiftType = ShiftType.from(getShiftData().getStart().toLocalTime(), getShiftData().getEnd().toLocalTime(), configuration);
-//    }
-
-    Shift(@NonNull RawShift rawShift, @NonNull ZoneId zoneId, @NonNull ShiftType.Configuration configuration) {
-//        this(rawShift.getId(), rawShift.getComment(), new ShiftData(rawShift.getShiftData(), zoneId), configuration);
-        super(rawShift.getId(), rawShift.getComment());
-        shiftData = new ShiftData(rawShift.getShiftData(), zoneId);
+    Shift(long id, @Nullable String comment, @NonNull ShiftData rawShiftData, @NonNull ZoneId zoneId, @NonNull ShiftType.Configuration configuration) {
+        super(id, comment);
+        shiftData = new Data(rawShiftData, zoneId);
         shiftType = ShiftType.from(shiftData.getStart().toLocalTime(), shiftData.getEnd().toLocalTime(), configuration);
     }
 
     @NonNull
-    public final ShiftData getShiftData() {
+    public final Data getShiftData() {
         return shiftData;
     }
 
@@ -228,7 +222,6 @@ public abstract class Shift extends Item {
                 keyLongDayEnd = resources.getString(R.string.key_end_long_day);
                 keyNightShiftStart = resources.getString(R.string.key_start_night_shift);
                 keyNightShiftEnd = resources.getString(R.string.key_end_night_shift);
-//                keyTimeZoneId = resources.getString(R.string.key_time_zone_id);
                 defaultNormalDayStart = resources.getInteger(R.integer.default_start_normal_day);
                 defaultNormalDayEnd = resources.getInteger(R.integer.default_end_normal_day);
                 defaultLongDayStart = resources.getInteger(R.integer.default_start_long_day);
@@ -260,7 +253,7 @@ public abstract class Shift extends Item {
 
             @Override
             @NonNull
-            String[] getWatchKeys() {
+            public String[] getWatchKeys() {
                 return watchKeys;
             }
 
@@ -280,16 +273,16 @@ public abstract class Shift extends Item {
         }
     }
 
-    public static final class ShiftData {
+    public static final class Data {
 
         @NonNull
         private final ZonedDateTime start, end;
         @NonNull
         private final Duration duration;
 
-        ShiftData(@NonNull RawShift.ShiftData rawShiftData, @NonNull ZoneId zoneId) {
-            start = rawShiftData.getStart().atZone(zoneId);
-            end = rawShiftData.getEnd().atZone(zoneId);
+        Data(@NonNull ShiftData shiftData, @NonNull ZoneId zoneId) {
+            start = shiftData.getStart().atZone(zoneId);
+            end = shiftData.getEnd().atZone(zoneId);
             duration = Duration.between(start, end);
         }
 
@@ -315,22 +308,22 @@ public abstract class Shift extends Item {
         }
 
         @NonNull
-        public RawShift.ShiftData withNewDate(@NonNull LocalDate newDate) {
-            return RawShift.ShiftData.from(getStart().with(newDate), getEnd().toLocalTime());
+        public ShiftData withNewDate(@NonNull LocalDate newDate) {
+            return ShiftData.from(getStart().with(newDate), getEnd().toLocalTime());
         }
 
         @NonNull
-        public RawShift.ShiftData withNewTime(@NonNull LocalTime time, boolean isStart) {
+        public ShiftData withNewTime(@NonNull LocalTime time, boolean isStart) {
             if (isStart) {
-                return RawShift.ShiftData.from(getStart().with(time), getEnd().toLocalTime());
+                return ShiftData.from(getStart().with(time), getEnd().toLocalTime());
             } else {
-                return RawShift.ShiftData.from(getStart(), time);
+                return ShiftData.from(getStart(), time);
             }
         }
 
         @NonNull
-        public RawShift.ShiftData toRawData() {
-            return new RawShift.ShiftData(getStart().toInstant(), getEnd().toInstant());
+        public ShiftData toRawData() {
+            return new ShiftData(getStart().toInstant(), getEnd().toInstant());
         }
 
     }

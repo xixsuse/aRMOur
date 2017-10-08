@@ -16,8 +16,8 @@ import android.view.View;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.ItemDao;
 import com.skepticalone.armour.data.model.Item;
-import com.skepticalone.armour.data.model.LiveTimeZone;
 import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.util.LiveTimeZone;
 
 import org.threeten.bp.ZoneId;
 

@@ -25,30 +25,6 @@ public final class DateTimeUtils {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private static final DateTimeFormatter dayFormatter = new DateTimeFormatterBuilder().appendText(ChronoField.DAY_OF_WEEK, TextStyle.SHORT).toFormatter();
     private final static int MINUTES_PER_HOUR = 60;
-//    private static final PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-//            .appendYears()
-//            .appendSuffix(" year", " years")
-//            .appendSeparator(", ")
-//            .appendMonths()
-//            .appendSuffix(" month", " months")
-//            .appendSeparator(", ")
-//            .appendWeeks()
-//            .appendSuffix(" week", " weeks")
-//            .appendSeparator(", ")
-//            .appendDays()
-//            .appendSuffix(" day", " days")
-//            .appendSeparator(", ")
-//            .appendHours()
-//            .appendSuffix(" hour", " hours")
-//            .appendSeparator(", ")
-//            .appendMinutes()
-//            .appendSuffix(" minute", " minutes")
-//            .toFormatter();
-//    private static final PeriodFormatter weeksAgoFormatter = new PeriodFormatterBuilder()
-//            .appendWeeks()
-//            .appendSuffix(" week ago", " weeks ago")
-//            .toFormatter();
-
 
     private static String getQualifiedString(@NonNull String main, @NonNull String qualifier) {
         return main + " (" + qualifier + ")";
@@ -92,12 +68,7 @@ public final class DateTimeUtils {
 
     public static String getWeeksAgo(@NonNull LocalDate lastWeekendWorked, @NonNull LocalDate currentWeekend) {
         return String.format(Locale.US, "Weeks ago: %d", (currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
-//        return weeksAgoFormatter.format(Period.between(lastWeekendWorked, currentWeekend).to());
     }
-//
-//    public static String getPeriodString(@NonNull Period period) {
-//        return period.toString();
-//    }
 
     public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {
         long hours = duration.getSeconds() / 3600, minutes = duration.getSeconds() % 3600 / 60;

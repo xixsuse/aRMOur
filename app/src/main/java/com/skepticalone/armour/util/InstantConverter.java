@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.util;
+package com.skepticalone.armour.util;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.Nullable;

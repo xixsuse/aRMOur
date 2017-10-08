@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Payable;
+import com.skepticalone.armour.data.model.Payment;
 import com.skepticalone.armour.data.viewModel.PayableViewModelContract;
 
 import java.math.BigDecimal;
 
-public abstract class PaymentDialogFragment<Entity extends Payable> extends TextDialogFragment<Entity> {
+public abstract class PaymentDialogFragment<Entity extends Payment> extends TextDialogFragment<Entity> {
 
     @Override
     final int getLayout() {

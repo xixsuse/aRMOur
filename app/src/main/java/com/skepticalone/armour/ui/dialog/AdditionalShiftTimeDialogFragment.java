@@ -19,7 +19,7 @@ public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<
 
     @NonNull
     @Override
-    Shift.ShiftData getShiftDataForDisplay(@NonNull AdditionalShift shift) {
+    Shift.Data getShiftDataForDisplay(@NonNull AdditionalShift shift) {
         return shift.getShiftData();
     }
 

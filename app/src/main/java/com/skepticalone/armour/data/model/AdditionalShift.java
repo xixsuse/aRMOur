@@ -2,28 +2,28 @@ package com.skepticalone.armour.data.model;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.util.MoneyConverter;
+import com.skepticalone.armour.util.MoneyConverter;
 
 import org.threeten.bp.ZoneId;
 
 import java.math.BigDecimal;
 
-public final class AdditionalShift extends Shift implements Payable {
+public final class AdditionalShift extends Shift implements Payment {
 
     @NonNull
-    private final PaymentData paymentData;
+    private final Payment.Data paymentData;
     @NonNull
     private final BigDecimal totalPayment;
 
-    public AdditionalShift(@NonNull RawAdditionalShiftEntity rawShift, @NonNull ZoneId zoneId, @NonNull ShiftType.Configuration configuration) {
-        super(rawShift, zoneId, configuration);
-        paymentData = new PaymentData(rawShift.getPaymentData(), zoneId);
+    public AdditionalShift(@NonNull AdditionalShiftEntity rawShift, @NonNull ZoneId zoneId, @NonNull ShiftType.Configuration configuration) {
+        super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, configuration);
+        paymentData = new Payment.Data(rawShift.getPaymentData(), zoneId);
         totalPayment = MoneyConverter.hourlyRateToTotal(getPaymentData().getPayment(), getShiftData().getDuration());
     }
 
     @NonNull
     @Override
-    public PaymentData getPaymentData() {
+    public Payment.Data getPaymentData() {
         return paymentData;
     }
 

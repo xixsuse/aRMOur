@@ -9,25 +9,25 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
-import com.skepticalone.armour.data.model.LiveRosteredShifts;
-import com.skepticalone.armour.data.model.RawRosteredShiftEntity;
-import com.skepticalone.armour.data.model.RawShift;
 import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.RosteredShiftEntity;
+import com.skepticalone.armour.data.model.RosteredShiftList;
 import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.data.model.ShiftData;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 
 import java.util.List;
 
-public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShiftEntity, RosteredShift> implements ShiftViewModelContract<RosteredShift> {
+public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity, RosteredShift> implements ShiftViewModelContract<RosteredShift> {
 
     @NonNull
     private final LiveData<List<RosteredShift>> rosteredShifts;
 
     public RosteredShiftViewModel(@NonNull Application application) {
         super(application);
-        rosteredShifts = new LiveRosteredShifts(application, getDao().fetchItems());
+        rosteredShifts = new RosteredShiftList(application, getDao().fetchItems());
     }
 
     @NonNull
@@ -67,7 +67,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RawRosteredShift
     }
 
     @MainThread
-    private void saveNewShiftTimes(final long id, @NonNull final RawShift.ShiftData shiftData, @Nullable final RawShift.ShiftData loggedShiftData) {
+    private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData, @Nullable final ShiftData loggedShiftData) {
         runAsync(new Runnable() {
             @Override
             public void run() {

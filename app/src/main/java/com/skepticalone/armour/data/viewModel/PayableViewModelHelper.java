@@ -2,7 +2,7 @@ package com.skepticalone.armour.data.viewModel;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.dao.PayableDao;
+import com.skepticalone.armour.data.dao.PaymentDao;
 
 import org.threeten.bp.Instant;
 
@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 final class PayableViewModelHelper {
 
     @NonNull
-    private final PayableDao dao;
+    private final PaymentDao dao;
 
-    PayableViewModelHelper(@NonNull PayableDao dao) {
+    PayableViewModelHelper(@NonNull PaymentDao dao) {
         this.dao = dao;
     }
 

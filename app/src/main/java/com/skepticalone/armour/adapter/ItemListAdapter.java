@@ -21,36 +21,11 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     @Nullable
     private List<Entity> mItems;
 
-//    private long mSelectedId = -1;
-
     ItemListAdapter(@NonNull Callbacks callbacks) {
         super();
         setHasStableIds(true);
         mCallbacks = callbacks;
     }
-//
-//    public final void setSelectedId(long newSelectedId) {
-//        if (mSelectedId == newSelectedId) return;
-//        if (mItems != null) {
-//            if (mSelectedId != -1) {
-//                for (int i = 0, count = mItems.size(); i < count; i++) {
-//                    if (mItems.get(i).getId() == mSelectedId) {
-//                        notifyItemChanged(i);
-//                        break;
-//                    }
-//                }
-//            }
-//            if (newSelectedId != -1) {
-//                for (int i = 0, count = mItems.size(); i < count; i++) {
-//                    if (mItems.get(i).getId() == newSelectedId) {
-//                        notifyItemChanged(i);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        mSelectedId = newSelectedId;
-//    }
 
     @Override
     public final long getItemId(int position) {
@@ -122,7 +97,6 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-//        holder.itemView.setSelected(item.getId() == mSelectedId);
         bindViewHolder(item, holder);
     }
 

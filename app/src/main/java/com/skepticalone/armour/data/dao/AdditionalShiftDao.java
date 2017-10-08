@@ -3,7 +3,6 @@ package com.skepticalone.armour.data.dao;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.RoomWarnings;
 import android.arch.persistence.room.Transaction;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
@@ -12,7 +11,7 @@ import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
+import com.skepticalone.armour.data.model.AdditionalShiftEntity;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
@@ -23,7 +22,7 @@ import java.util.List;
 
 @SuppressWarnings("NullableProblems")
 @Dao
-public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntity> implements PayableDao {
+public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> implements PaymentDao {
 
     @Query("UPDATE " +
             Contract.AdditionalShifts.TABLE_NAME +
@@ -80,16 +79,14 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             " IS NOT NULL")
     public abstract void setPaidSync(long id, @Nullable Instant paid);
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
             " ORDER BY " +
             Contract.COLUMN_NAME_SHIFT_START)
-    public abstract LiveData<List<RawAdditionalShiftEntity>> fetchItems();
+    public abstract LiveData<List<AdditionalShiftEntity>> fetchItems();
 
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Nullable
     @Override
     @Query("SELECT * FROM " +
@@ -97,7 +94,7 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract RawAdditionalShiftEntity fetchItemInternalSync(long id);
+    abstract AdditionalShiftEntity fetchItemInternalSync(long id);
 
     @Nullable
     @Query("SELECT " +
@@ -113,7 +110,7 @@ public abstract class AdditionalShiftDao extends ItemDao<RawAdditionalShiftEntit
     @Transaction
     public long insertSync(@NonNull Pair<LocalTime, LocalTime> times, @NonNull ZoneId zoneId, int hourlyRateInCents) {
         return insertSync(
-                RawAdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
+                AdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
         );
     }
 

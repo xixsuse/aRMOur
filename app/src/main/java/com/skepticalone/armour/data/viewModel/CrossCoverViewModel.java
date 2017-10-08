@@ -9,15 +9,15 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.CrossCoverDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.CrossCover;
-import com.skepticalone.armour.data.model.LiveCrossCover;
-import com.skepticalone.armour.data.model.RawCrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCoverEntity;
+import com.skepticalone.armour.data.model.CrossCoverList;
 
 import org.threeten.bp.LocalDate;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity, CrossCover> implements DateViewModelContract<CrossCover>, PayableViewModelContract<CrossCover>, SingleAddItemViewModelContract<CrossCover> {
+public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, CrossCover> implements DateViewModelContract<CrossCover>, PayableViewModelContract<CrossCover>, SingleAddItemViewModelContract<CrossCover> {
 
     @NonNull
     private final LiveData<List<CrossCover>> crossCoverShifts;
@@ -28,7 +28,7 @@ public final class CrossCoverViewModel extends ItemViewModel<RawCrossCoverEntity
     public CrossCoverViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        crossCoverShifts = new LiveCrossCover(getApplication(), getDao().fetchItems());
+        crossCoverShifts = new CrossCoverList(getApplication(), getDao().fetchItems());
     }
 
     @NonNull

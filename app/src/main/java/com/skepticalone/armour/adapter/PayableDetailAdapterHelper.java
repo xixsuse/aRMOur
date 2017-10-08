@@ -9,13 +9,13 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Payable;
+import com.skepticalone.armour.data.model.Payment;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.ZonedDateTime;
 
-abstract class PayableDetailAdapterHelper<Entity extends Payable> {
+abstract class PayableDetailAdapterHelper<Entity extends Payment> {
 
     @NonNull
     private final Callbacks callbacks;

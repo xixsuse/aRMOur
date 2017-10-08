@@ -10,17 +10,17 @@ import org.threeten.bp.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class LiveCrossCover extends LiveItems<RawCrossCoverEntity, CrossCover> {
+public final class CrossCoverList extends ItemList<CrossCoverEntity, CrossCover> {
 
-    public LiveCrossCover(@NonNull Context context, @NonNull LiveData<List<RawCrossCoverEntity>> liveRawCrossCoverShifts) {
+    public CrossCoverList(@NonNull Context context, @NonNull LiveData<List<CrossCoverEntity>> liveRawCrossCoverShifts) {
         super(context, liveRawCrossCoverShifts);
     }
 
     @Override
-    void onUpdated(@Nullable List<RawCrossCoverEntity> rawCrossCoverShifts, @Nullable ZoneId timeZone) {
+    void onUpdated(@Nullable List<CrossCoverEntity> rawCrossCoverShifts, @Nullable ZoneId timeZone) {
         if (rawCrossCoverShifts != null && timeZone != null) {
             List<CrossCover> crossCoverShifts = new ArrayList<>(rawCrossCoverShifts.size());
-            for (RawCrossCoverEntity rawCrossCover : rawCrossCoverShifts) {
+            for (CrossCoverEntity rawCrossCover : rawCrossCoverShifts) {
                 crossCoverShifts.add(new CrossCover(rawCrossCover, timeZone));
             }
             setValue(crossCoverShifts);

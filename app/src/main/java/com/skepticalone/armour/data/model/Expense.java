@@ -6,18 +6,18 @@ import org.threeten.bp.ZoneId;
 
 import java.math.BigDecimal;
 
-public final class Expense extends Item implements Payable {
+public final class Expense extends Item implements Payment {
 
     @NonNull
     private final String title;
 
     @NonNull
-    private final PaymentData paymentData;
+    private final Data paymentData;
 
-    public Expense(@NonNull RawExpenseEntity rawExpense, @NonNull ZoneId timeZone) {
+    public Expense(@NonNull ExpenseEntity rawExpense, @NonNull ZoneId timeZone) {
         super(rawExpense.getId(), rawExpense.getComment());
         title = rawExpense.getTitle();
-        paymentData = new PaymentData(rawExpense.getPaymentData(), timeZone);
+        paymentData = new Data(rawExpense.getPaymentData(), timeZone);
     }
 
     @NonNull
@@ -27,7 +27,7 @@ public final class Expense extends Item implements Payable {
 
     @NonNull
     @Override
-    public final PaymentData getPaymentData() {
+    public final Data getPaymentData() {
         return paymentData;
     }
 

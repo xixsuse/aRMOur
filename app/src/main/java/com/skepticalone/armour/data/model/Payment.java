@@ -11,15 +11,15 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.math.BigDecimal;
 
-public interface Payable {
+public interface Payment {
 
     @NonNull
-    PaymentData getPaymentData();
+    Data getPaymentData();
 
     @NonNull
     BigDecimal getTotalPayment();
 
-    final class PaymentData {
+    final class Data {
 
         @NonNull
         private final BigDecimal payment;
@@ -27,7 +27,7 @@ public interface Payable {
         @Nullable
         private final ZonedDateTime claimed, paid;
 
-        PaymentData(@NonNull RawPaymentData rawData, @NonNull ZoneId timeZone) {
+        Data(@NonNull com.skepticalone.armour.data.model.PaymentData rawData, @NonNull ZoneId timeZone) {
             payment = rawData.getPayment();
             claimed = rawData.getClaimed() == null ? null : rawData.getClaimed().atZone(timeZone);
             paid = rawData.getPaid() == null ? null : rawData.getPaid().atZone(timeZone);

@@ -7,18 +7,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.util.LiveTimeZone;
+
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-abstract class LiveItems<Entity, FinalItem> extends MediatorLiveData<List<FinalItem>> {
+abstract class ItemList<Entity, FinalItem> extends MediatorLiveData<List<FinalItem>> {
 
     @NonNull
     final LiveData<List<Entity>> liveRawItems;
     @NonNull
     final LiveData<ZoneId> liveTimeZone;
 
-    LiveItems(@NonNull Context context, @NonNull LiveData<List<Entity>> liveRawItems) {
+    ItemList(@NonNull Context context, @NonNull LiveData<List<Entity>> liveRawItems) {
         super();
         this.liveRawItems = liveRawItems;
         liveTimeZone = LiveTimeZone.getInstance(context);
@@ -31,13 +33,11 @@ abstract class LiveItems<Entity, FinalItem> extends MediatorLiveData<List<FinalI
         addSource(liveTimeZone, new Observer<ZoneId>() {
             @Override
             public void onChanged(@Nullable ZoneId timeZone) {
-                onUpdated(LiveItems.this.liveRawItems.getValue(), timeZone);
+                onUpdated(ItemList.this.liveRawItems.getValue(), timeZone);
             }
         });
     }
 
     abstract void onUpdated(@Nullable List<Entity> rawItems, @Nullable ZoneId timeZone);
-//
-//    @NonNull
-//    abstract List<FinalItem> generateItems(@NonNull List<Entity> rawItems, @NonNull ZoneId timeZone);
+
 }

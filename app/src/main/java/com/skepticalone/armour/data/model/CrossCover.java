@@ -7,17 +7,17 @@ import org.threeten.bp.ZoneId;
 
 import java.math.BigDecimal;
 
-public final class CrossCover extends Item implements Payable {
+public final class CrossCover extends Item implements Payment {
 
     @NonNull
     private final LocalDate date;
     @NonNull
-    private final PaymentData paymentData;
+    private final Data paymentData;
 
-    public CrossCover(@NonNull RawCrossCoverEntity rawCrossCover, @NonNull ZoneId zoneId) {
+    public CrossCover(@NonNull CrossCoverEntity rawCrossCover, @NonNull ZoneId zoneId) {
         super(rawCrossCover.getId(), rawCrossCover.getComment());
         date = rawCrossCover.getDate();
-        paymentData = new PaymentData(rawCrossCover.getPaymentData(), zoneId);
+        paymentData = new Data(rawCrossCover.getPaymentData(), zoneId);
     }
 
     @NonNull
@@ -27,7 +27,7 @@ public final class CrossCover extends Item implements Payable {
 
     @NonNull
     @Override
-    public PaymentData getPaymentData() {
+    public Data getPaymentData() {
         return paymentData;
     }
 

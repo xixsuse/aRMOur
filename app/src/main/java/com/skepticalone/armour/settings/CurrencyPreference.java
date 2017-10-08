@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.util.MoneyConverter;
+import com.skepticalone.armour.util.MoneyConverter;
 
 import java.math.BigDecimal;
 

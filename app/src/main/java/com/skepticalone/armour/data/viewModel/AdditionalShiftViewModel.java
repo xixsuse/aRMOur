@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.AdditionalShift;
-import com.skepticalone.armour.data.model.RawAdditionalShiftEntity;
-import com.skepticalone.armour.data.model.LiveAdditionalShifts;
-import com.skepticalone.armour.data.model.RawShift;
+import com.skepticalone.armour.data.model.AdditionalShiftEntity;
+import com.skepticalone.armour.data.model.AdditionalShiftList;
 import com.skepticalone.armour.data.model.Shift;
+import com.skepticalone.armour.data.model.ShiftData;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
@@ -19,7 +19,7 @@ import org.threeten.bp.LocalTime;
 import java.math.BigDecimal;
 import java.util.List;
 
-public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalShiftEntity, AdditionalShift> implements ShiftViewModelContract<AdditionalShift>, PayableViewModelContract<AdditionalShift> {
+public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity, AdditionalShift> implements ShiftViewModelContract<AdditionalShift>, PayableViewModelContract<AdditionalShift> {
 
     @NonNull
     private final LiveData<List<AdditionalShift>> additionalShifts;
@@ -30,7 +30,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
     public AdditionalShiftViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        additionalShifts = new LiveAdditionalShifts(application, getDao().fetchItems());
+        additionalShifts = new AdditionalShiftList(application, getDao().fetchItems());
     }
 
     @NonNull
@@ -68,7 +68,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<RawAdditionalS
         payableViewModelHelper.saveNewPayment(getCurrentItemId(), payment);
     }
 
-    private void saveNewShiftTimes(final long id, @NonNull final RawShift.ShiftData shiftData) {
+    private void saveNewShiftTimes(final long id, @NonNull final ShiftData shiftData) {
         runAsync(new Runnable() {
             @Override
             public void run() {

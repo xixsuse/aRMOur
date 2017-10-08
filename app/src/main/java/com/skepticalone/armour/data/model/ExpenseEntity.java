@@ -9,28 +9,28 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.data.db.Contract;
 
 @Entity(tableName = Contract.Expenses.TABLE_NAME)
-public final class RawExpenseEntity extends Item {
+public final class ExpenseEntity extends Item {
     @NonNull
     @ColumnInfo(name = Contract.Expenses.COLUMN_NAME_TITLE)
     private final String title;
     @NonNull
     @Embedded
-    private final RawPaymentData paymentData;
+    private final PaymentData paymentData;
 
     @SuppressWarnings("SameParameterValue")
-    public RawExpenseEntity(
+    public ExpenseEntity(
             long id,
             @Nullable String comment,
             @NonNull String title,
-            @NonNull RawPaymentData paymentData
+            @NonNull PaymentData paymentData
     ) {
         super(id, comment);
         this.title = title;
         this.paymentData = paymentData;
     }
 
-    public static RawExpenseEntity from(@NonNull String title) {
-        return new RawExpenseEntity(NO_ID, null, title, RawPaymentData.from(0));
+    public static ExpenseEntity from(@NonNull String title) {
+        return new ExpenseEntity(NO_ID, null, title, PaymentData.from(0));
     }
 
     @NonNull
@@ -39,20 +39,8 @@ public final class RawExpenseEntity extends Item {
     }
 
     @NonNull
-    public RawPaymentData getPaymentData() {
+    public PaymentData getPaymentData() {
         return paymentData;
     }
-//
-//    //
-////    @NonNull
-////    @Override
-////    public RawPaymentData getPaymentData() {
-////        return paymentData;
-////    }
-//
-//    @NonNull
-//    @Override
-//    public BigDecimal getTotalPayment() {
-//        return paymentData.getPayment();
-//    }
+
 }

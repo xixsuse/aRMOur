@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.model;
+package com.skepticalone.armour.util;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 
-abstract class LiveConfig<T> extends LiveData<T> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class LiveConfig<T> extends LiveData<T> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
-    final void init(@NonNull Context context) {
+    public final void init(@NonNull Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         setValue(getNewValue(sharedPreferences));
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -27,7 +27,7 @@ abstract class LiveConfig<T> extends LiveData<T> implements SharedPreferences.On
         }
     }
 
-    abstract String[] getWatchKeys();
+    public abstract String[] getWatchKeys();
     @NonNull
     public abstract T getNewValue(@NonNull SharedPreferences sharedPreferences);
 }

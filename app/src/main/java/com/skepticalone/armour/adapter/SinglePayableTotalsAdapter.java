@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Payable;
+import com.skepticalone.armour.data.model.Payment;
 
 import java.util.List;
 
-public final class SinglePayableTotalsAdapter<Entity extends Payable> extends PayableTotalsAdapter<Entity> {
+public final class SinglePayableTotalsAdapter<Entity extends Payment> extends PayableTotalsAdapter<Entity> {
 
     private static final int
             ROW_NUMBER_TOTAL_NUMBER = 0,

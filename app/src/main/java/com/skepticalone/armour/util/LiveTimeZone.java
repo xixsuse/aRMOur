@@ -1,4 +1,4 @@
-package com.skepticalone.armour.data.model;
+package com.skepticalone.armour.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,7 +42,7 @@ public final class LiveTimeZone extends LiveConfig<ZoneId> {
 
     @Override
     @NonNull
-    String[] getWatchKeys() {
+    public String[] getWatchKeys() {
         return watchKeys;
     }
 

@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
-import com.skepticalone.armour.data.model.RawExpenseEntity;
+import com.skepticalone.armour.data.model.ExpenseEntity;
 
 import org.threeten.bp.Instant;
 
@@ -17,7 +17,7 @@ import java.util.List;
 
 @SuppressWarnings("NullableProblems")
 @Dao
-public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements PayableDao {
+public abstract class ExpenseDao extends ItemDao<ExpenseEntity> implements PaymentDao {
 
     @Query("UPDATE " +
             Contract.Expenses.TABLE_NAME +
@@ -27,34 +27,6 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             BaseColumns._ID +
             " = :id")
     public abstract void setTitleSync(long id, @NonNull String title);
-
-//    {
-//        ContentValues values = new ContentValues();
-//        values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
-//        updateInTransaction(id, values);
-//    }
-//
-//    @NonNull
-//    @Override
-//    final String getTableName() {
-//        return Contract.Expenses.TABLE_NAME;
-//    }
-//
-//    public final long insertSync(@NonNull String title) {
-//        ContentValues values = new ContentValues();
-//        values.put(Contract.COLUMN_NAME_PAYMENT, 0);
-//        values.put(Contract.Expenses.COLUMN_NAME_TITLE, title);
-//        return insertInTransaction(values);
-//    }
-//
-//    @Override
-//    @Query("SELECT * FROM " +
-//            Contract.Expenses.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    public abstract LiveData<RawExpenseEntity> getItem(long id);
-
 
     @Override
     @Query("UPDATE " +
@@ -100,15 +72,6 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             " IS NOT NULL")
     public abstract void setPaidSync(long id, @Nullable Instant paid);
 
-    //
-//    @Override
-//    @Query("SELECT * FROM " +
-//            Contract.Expenses.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " = :id")
-//    abstract RawExpenseEntity fetchItemInternalSync(long id);
-
     @NonNull
     @Override
     @Query("SELECT * FROM " +
@@ -124,7 +87,7 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             ", " +
             BaseColumns._ID +
             ")")
-    public abstract LiveData<List<RawExpenseEntity>> fetchItems();
+    public abstract LiveData<List<ExpenseEntity>> fetchItems();
 
     @Nullable
     @Override
@@ -133,10 +96,10 @@ public abstract class ExpenseDao extends ItemDao<RawExpenseEntity> implements Pa
             " WHERE " +
             BaseColumns._ID +
             " = :id")
-    abstract RawExpenseEntity fetchItemInternalSync(long id);
+    abstract ExpenseEntity fetchItemInternalSync(long id);
 
     public final long insertSync(@NonNull String title){
-        return insertSync(RawExpenseEntity.from(title));
+        return insertSync(ExpenseEntity.from(title));
     }
 
 }
