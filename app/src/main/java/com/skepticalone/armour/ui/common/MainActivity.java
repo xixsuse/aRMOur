@@ -10,6 +10,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,8 @@ public final class MainActivity extends CoordinatorActivity
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
+    @Nullable
+    private volatile ActionMode mActionMode;
 
     @Override
     protected int getContentView() {
@@ -118,5 +121,16 @@ public final class MainActivity extends CoordinatorActivity
     @Override
     public FloatingActionButton getFabNightShift() {
         return mFabNightShift;
+    }
+
+    @Nullable
+    @Override
+    public ActionMode getContextualActionMode() {
+        return mActionMode;
+    }
+
+    @Override
+    public void setContextualActionMode(@Nullable ActionMode actionMode) {
+        mActionMode = actionMode;
     }
 }

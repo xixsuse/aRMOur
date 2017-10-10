@@ -17,7 +17,16 @@ public interface ItemViewModelContract<FinalItem> {
     @NonNull
     LiveData<Integer> getErrorMessage();
 
-    void deleteItem(long id);
+    void onItemToggled(long id);
+
+    void deleteSelectedItems();
+
+    void clearSelectedItems();
+
+    boolean hasSelectedItems();
+
+    boolean isSelected(long id);
+
     @NonNull
     LiveData<View.OnClickListener> getDeletedItemRestorer();
 

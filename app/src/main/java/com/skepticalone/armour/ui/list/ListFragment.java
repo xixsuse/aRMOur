@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +27,45 @@ import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.totals.TotalsDialogFragment;
 
 public abstract class ListFragment<Entity extends Item> extends BaseFragment<Entity> implements ItemListAdapter.Callbacks {
-
+    private static final String TAG = "ListFragment";
     private Callbacks callbacks;
+    @NonNull
+    private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        private static final String TAG = "ActionMode.Callback";
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            Log.d(TAG, "onCreateActionMode() called with: mode = [" + mode + "], menu = [" + menu + "]");
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.contextual_action_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.delete:
+                    getViewModel().deleteSelectedItems();
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            Log.d(TAG, "onDestroyActionMode() called with: mode = [" + mode + "]");
+            callbacks.setContextualActionMode(null);
+        }
+
+
+    };
     private RecyclerView.LayoutManager mLayoutManager;
 
     public static ListFragment getNewListFragment(@IdRes int itemType) {
@@ -112,6 +151,19 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
         setupFab(callbacks);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getViewModel().hasSelectedItems()) {
+            if (callbacks.getContextualActionMode() == null) {
+                callbacks.setContextualActionMode(getActivity().startActionMode(mActionModeCallback));
+            }
+        } else {
+            @Nullable ActionMode actionMode = callbacks.getContextualActionMode();
+            if (actionMode != null) actionMode.finish();
+        }
+    }
+
     @NonNull
     @Override
     protected abstract ItemListAdapter<Entity> getAdapter();
@@ -120,19 +172,45 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     abstract int getItemType();
 
     @Override
-    public final void onClick(long itemId) {
-        getViewModel().selectItem(itemId);
-        callbacks.onClick(getItemType(), itemId);
+    public final boolean onClick(long itemId) {
+        Log.d(TAG, "onClick() called with: itemId = [" + itemId + "]");
+        if (callbacks.getContextualActionMode() == null) {
+            getViewModel().selectItem(itemId);
+            callbacks.onClick(getItemType(), itemId);
+            return false;
+        } else {
+            getViewModel().onItemToggled(itemId);
+            if (!getViewModel().hasSelectedItems()) {
+                callbacks.getContextualActionMode().finish();
+            }
+            return true;
+        }
     }
 
     @Override
-    public final void onLongClick(long itemId) {
-        getViewModel().deleteItem(itemId);
+    public final boolean onLongClick(long itemId) {
+        Log.d(TAG, "onLongClick() called with: itemId = [" + itemId + "]");
+        if (callbacks.getContextualActionMode() == null) {
+            getViewModel().onItemToggled(itemId);
+            callbacks.setContextualActionMode(getActivity().startActionMode(mActionModeCallback));
+            return true;
+        } else return false;
+//        getViewModel().deleteItem(itemId);
+    }
+
+    @Override
+    public boolean isSelected(long itemId) {
+        return getViewModel().isSelected(itemId);
     }
 
     public interface Callbacks extends FabCallbacks {
         void onClick(@IdRes int itemType, long itemId);
         void onItemRemoved(@IdRes int itemType, @NonNull View.OnClickListener listener);
+
+        @Nullable
+        ActionMode getContextualActionMode();
+
+        void setContextualActionMode(@Nullable ActionMode actionMode);
     }
 
 }

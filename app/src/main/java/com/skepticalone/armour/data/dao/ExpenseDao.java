@@ -14,6 +14,7 @@ import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("NullableProblems")
 @Dao
@@ -101,5 +102,13 @@ public abstract class ExpenseDao extends ItemDao<ExpenseEntity> implements Payme
     public final long insertSync(@NonNull String title){
         return insertSync(ExpenseEntity.from(title));
     }
+
+    @Query("DELETE FROM " +
+            Contract.Expenses.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " IN(:ids)")
+    @Override
+    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
 
 }

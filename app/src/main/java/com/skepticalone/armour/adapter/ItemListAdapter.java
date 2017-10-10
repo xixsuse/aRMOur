@@ -76,14 +76,19 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallbacks.onClick(viewHolder.getItemId());
+                if (mCallbacks.onClick(viewHolder.getItemId())) {
+                    notifyItemChanged(viewHolder.getAdapterPosition());
+                }
             }
         });
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mCallbacks.onLongClick(viewHolder.getItemId());
-                return true;
+                if (mCallbacks.onLongClick(viewHolder.getItemId())) {
+                    notifyItemChanged(viewHolder.getAdapterPosition());
+                    return true;
+                }
+                return false;
             }
         });
         return viewHolder;
@@ -97,6 +102,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
+        holder.itemView.setSelected(mCallbacks.isSelected(item.getId()));
         bindViewHolder(item, holder);
     }
 
@@ -127,8 +133,13 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     }
 
     public interface Callbacks {
-        void onClick(long itemId);
-        void onLongClick(long itemId);
+        boolean onClick(long itemId);
+
+        boolean onLongClick(long itemId);
+
+        boolean isSelected(long itemId);
+
+        //        void requestDelete(Set<Long> itemIds);
         void scrollToPosition(int position);
     }
 

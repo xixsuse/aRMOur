@@ -18,6 +18,7 @@ import org.threeten.bp.ZoneId;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("NullableProblems")
 @Dao
@@ -108,5 +109,13 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> implements
     public long insertSync(@NonNull ZoneId timeZone, int paymentInCents) {
         return insertSync(CrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
     }
+
+    @Query("DELETE FROM " +
+            Contract.CrossCoverShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " IN(:ids)")
+    @Override
+    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
 
 }

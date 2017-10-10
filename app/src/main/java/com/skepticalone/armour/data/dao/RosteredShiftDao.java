@@ -18,6 +18,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("NullableProblems")
 @Dao
@@ -108,5 +109,13 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
                 RosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );
     }
+
+    @Query("DELETE FROM " +
+            Contract.RosteredShifts.TABLE_NAME +
+            " WHERE " +
+            BaseColumns._ID +
+            " IN(:ids)")
+    @Override
+    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
 
 }

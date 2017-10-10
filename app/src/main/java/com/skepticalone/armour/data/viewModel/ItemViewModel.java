@@ -7,10 +7,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -21,16 +21,21 @@ import com.skepticalone.armour.util.LiveTimeZone;
 
 import org.threeten.bp.ZoneId;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidViewModel implements ItemViewModelContract<FinalItem> {
-
+    private static final String TAG = "ItemViewModel";
     private static final MutableLiveData NO_DATA = new MutableLiveData<>();
 
     static {
         //noinspection unchecked
         NO_DATA.setValue(null);
     }
+
+    @NonNull
+    private final Set<Long> mSelectedIds = new HashSet<>();
 
     private final LiveData<FinalItem> currentItem;
     @NonNull
@@ -54,6 +59,56 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
 
     static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
+    }
+
+    @Override
+    public void onItemToggled(long id) {
+        Log.d(TAG, "onItemToggled() called with: id = [" + id + "]");
+        if (!mSelectedIds.add(id)) mSelectedIds.remove(id);
+        printSelectedItems();
+    }
+
+    @Override
+    public void deleteSelectedItems() {
+        Log.d(TAG, "deleteSelectedItems() called");
+        printSelectedItems();
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                getDao().deleteItemsSync(mSelectedIds);
+                clearSelectedItems();
+            }
+        });
+    }
+
+    @Override
+    public void clearSelectedItems() {
+        Log.d(TAG, "clearSelectedItems() called");
+        mSelectedIds.clear();
+        printSelectedItems();
+    }
+
+    @Override
+    public boolean hasSelectedItems() {
+        Log.d(TAG, "hasSelectedItems() called");
+        printSelectedItems();
+        return !mSelectedIds.isEmpty();
+    }
+
+    private void printSelectedItems() {
+        StringBuilder sb = new StringBuilder("Selected items (total = ").append(mSelectedIds.size()).append("): [\n");
+        for (long id : mSelectedIds
+                ) {
+            sb.append(id).append('\n');
+        }
+        sb.append(']');
+        Log.d(TAG, sb.toString());
+    }
+
+    @Override
+    public final boolean isSelected(long id) {
+        printSelectedItems();
+        return mSelectedIds.contains(id);
     }
 
     final long getCurrentItemId() {
@@ -87,36 +142,36 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
 
     @NonNull
     abstract ItemDao<Entity> getDao();
-
-    @Override
-    public final void deleteItem(final long id) {
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                final Entity item = getDao().deleteAndReturnItemSync(id);
-                if (item != null) {
-                    postSelectedId(null);
-                    deletedItemRestorer.postValue(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            runAsync(new Runnable() {
-                                @Override
-                                public void run() {
-                                    deletedItemRestorer.postValue(null);
-                                    try {
-                                        long id = getDao().insertSync(item);
-                                        postSelectedId(id);
-                                    } catch (SQLiteConstraintException e) {
-                                        postOverlappingShifts();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-    }
+//
+//    @Override
+//    public final void deleteItem(final long id) {
+//        runAsync(new Runnable() {
+//            @Override
+//            public void run() {
+//                final Entity item = getDao().deleteAndReturnItemSync(id);
+//                if (item != null) {
+//                    postSelectedId(null);
+//                    deletedItemRestorer.postValue(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            runAsync(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    deletedItemRestorer.postValue(null);
+//                                    try {
+//                                        long id = getDao().insertSync(item);
+//                                        postSelectedId(id);
+//                                    } catch (SQLiteConstraintException e) {
+//                                        postOverlappingShifts();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
 
     final void postOverlappingShifts() {
         errorMessage.postValue(R.string.overlapping_shifts);
