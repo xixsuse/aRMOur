@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.skepticalone.armour.data.model.Item;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback, Observer<List<Entity>> {
 
@@ -31,6 +32,16 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final long getItemId(int position) {
         //noinspection ConstantConditions
         return mItems.get(position).getId();
+    }
+
+    public final void notifyIdsChanged(@NonNull Set<Long> selectedIds) {
+        if (mItems != null && !selectedIds.isEmpty()) {
+            for (int position = 0; position < mItems.size(); position++) {
+                if (selectedIds.contains(getItemId(position))) {
+                    notifyItemChanged(position);
+                }
+            }
+        }
     }
 
     @Override

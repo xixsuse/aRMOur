@@ -62,8 +62,8 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
     }
 
     @Override
-    public void onItemToggled(long id) {
-        Log.d(TAG, "onItemToggled() called with: id = [" + id + "]");
+    public void toggleSelected(long id) {
+        Log.d(TAG, "toggleSelected() called with: id = [" + id + "]");
         if (!mSelectedIds.add(id)) mSelectedIds.remove(id);
         printSelectedItems();
     }
@@ -76,16 +76,9 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
             @Override
             public void run() {
                 getDao().deleteItemsSync(mSelectedIds);
-                clearSelectedItems();
+                mSelectedIds.clear();
             }
         });
-    }
-
-    @Override
-    public void clearSelectedItems() {
-        Log.d(TAG, "clearSelectedItems() called");
-        mSelectedIds.clear();
-        printSelectedItems();
     }
 
     @Override
@@ -105,10 +98,11 @@ abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidView
         Log.d(TAG, sb.toString());
     }
 
+    @NonNull
     @Override
-    public final boolean isSelected(long id) {
+    public Set<Long> getSelectedIds() {
         printSelectedItems();
-        return mSelectedIds.contains(id);
+        return mSelectedIds;
     }
 
     final long getCurrentItemId() {

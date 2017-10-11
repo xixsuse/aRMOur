@@ -61,9 +61,10 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             Log.d(TAG, "onDestroyActionMode() called with: mode = [" + mode + "]");
+            getAdapter().notifyIdsChanged(getViewModel().getSelectedIds());
+            getViewModel().getSelectedIds().clear();
             callbacks.setContextualActionMode(null);
         }
-
 
     };
     private RecyclerView.LayoutManager mLayoutManager;
@@ -154,13 +155,11 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     @Override
     public void onResume() {
         super.onResume();
-        if (getViewModel().hasSelectedItems()) {
-            if (callbacks.getContextualActionMode() == null) {
-                callbacks.setContextualActionMode(getActivity().startActionMode(mActionModeCallback));
-            }
-        } else {
-            @Nullable ActionMode actionMode = callbacks.getContextualActionMode();
-            if (actionMode != null) actionMode.finish();
+        if (getViewModel().getSelectedIds().isEmpty()) {
+            if (callbacks.getContextualActionMode() != null)
+                callbacks.getContextualActionMode().finish();
+        } else if (callbacks.getContextualActionMode() == null) {
+            callbacks.setContextualActionMode(getActivity().startActionMode(mActionModeCallback));
         }
     }
 
@@ -179,8 +178,8 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
             callbacks.onClick(getItemType(), itemId);
             return false;
         } else {
-            getViewModel().onItemToggled(itemId);
-            if (!getViewModel().hasSelectedItems()) {
+            getViewModel().toggleSelected(itemId);
+            if (getViewModel().getSelectedIds().isEmpty()) {
                 callbacks.getContextualActionMode().finish();
             }
             return true;
@@ -191,7 +190,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
     public final boolean onLongClick(long itemId) {
         Log.d(TAG, "onLongClick() called with: itemId = [" + itemId + "]");
         if (callbacks.getContextualActionMode() == null) {
-            getViewModel().onItemToggled(itemId);
+            getViewModel().toggleSelected(itemId);
             callbacks.setContextualActionMode(getActivity().startActionMode(mActionModeCallback));
             return true;
         } else return false;
@@ -200,7 +199,7 @@ public abstract class ListFragment<Entity extends Item> extends BaseFragment<Ent
 
     @Override
     public boolean isSelected(long itemId) {
-        return getViewModel().isSelected(itemId);
+        return getViewModel().getSelectedIds().contains(itemId);
     }
 
     public interface Callbacks extends FabCallbacks {

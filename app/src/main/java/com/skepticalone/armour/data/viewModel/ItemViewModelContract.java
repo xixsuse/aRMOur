@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ItemViewModelContract<FinalItem> {
     @NonNull
@@ -17,15 +18,14 @@ public interface ItemViewModelContract<FinalItem> {
     @NonNull
     LiveData<Integer> getErrorMessage();
 
-    void onItemToggled(long id);
+    void toggleSelected(long id);
 
     void deleteSelectedItems();
 
-    void clearSelectedItems();
-
     boolean hasSelectedItems();
 
-    boolean isSelected(long id);
+    @NonNull
+    Set<Long> getSelectedIds();
 
     @NonNull
     LiveData<View.OnClickListener> getDeletedItemRestorer();
