@@ -20,7 +20,7 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
-    <string name="item_removed">%s removed</string>
+    <string name="items_removed">%s removed</string>
     <string name="undo">Undo</string>
     <string name="rostered_shifts">Rostered shifts</string>
     <string name="rostered_shift">Rostered shift</string>
@@ -43,6 +43,22 @@
     <plurals name="minutes">
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="expenses">
+        <item quantity="one">%d expense</item>
+        <item quantity="other">%d expenses</item>
+    </plurals>
+    <plurals name="cross_cover_shifts">
+        <item quantity="one">%d cross cover shift</item>
+        <item quantity="other">%d cross cover shifts</item>
+    </plurals>
+    <plurals name="additional_shifts">
+        <item quantity="one">%d additional shift</item>
+        <item quantity="other">%d additional shifts</item>
+    </plurals>
+    <plurals name="rostered_shifts">
+        <item quantity="one">%d rostered shift</item>
+        <item quantity="other">%d rostered shifts</item>
     </plurals>
     <string name="duration_in_hours_and_minutes">%1$s, %2$s</string>
     <string name="title">Title</string>

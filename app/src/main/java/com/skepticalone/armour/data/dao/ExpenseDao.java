@@ -90,25 +90,25 @@ public abstract class ExpenseDao extends ItemDao<ExpenseEntity> implements Payme
             ")")
     public abstract LiveData<List<ExpenseEntity>> fetchItems();
 
-    @Nullable
+    @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.Expenses.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
-            " = :id")
-    abstract ExpenseEntity fetchItemInternalSync(long id);
+            " IN(:ids)")
+    abstract List<ExpenseEntity> fetchItemsInternalSync(@NonNull Set<Long> ids);
 
     public final long insertSync(@NonNull String title){
         return insertSync(ExpenseEntity.from(title));
     }
-
-    @Query("DELETE FROM " +
-            Contract.Expenses.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " IN(:ids)")
-    @Override
-    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
+//
+//    @Query("DELETE FROM " +
+//            Contract.Expenses.TABLE_NAME +
+//            " WHERE " +
+//            BaseColumns._ID +
+//            " IN(:ids)")
+//    @Override
+//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

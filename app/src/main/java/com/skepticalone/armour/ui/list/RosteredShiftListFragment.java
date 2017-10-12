@@ -37,6 +37,10 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
         return R.id.rostered;
     }
 
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.rostered_shifts;
+    }
 
     @NonNull
     @Override

@@ -88,14 +88,14 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
             Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<AdditionalShiftEntity>> fetchItems();
 
-    @Nullable
+    @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.AdditionalShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
-            " = :id")
-    abstract AdditionalShiftEntity fetchItemInternalSync(long id);
+            " IN(:ids)")
+    abstract List<AdditionalShiftEntity> fetchItemsInternalSync(@NonNull Set<Long> ids);
 
     @Nullable
     @Query("SELECT " +
@@ -114,13 +114,13 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
                 AdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
         );
     }
-
-    @Query("DELETE FROM " +
-            Contract.AdditionalShifts.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " IN(:ids)")
-    @Override
-    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
+//
+//    @Query("DELETE FROM " +
+//            Contract.AdditionalShifts.TABLE_NAME +
+//            " WHERE " +
+//            BaseColumns._ID +
+//            " IN(:ids)")
+//    @Override
+//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

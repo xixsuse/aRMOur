@@ -5,7 +5,7 @@ import android.widget.EditText;
 
 import com.skepticalone.armour.R;
 
-abstract class PlainTextDialogFragment<Entity> extends TextDialogFragment<Entity> {
+abstract class PlainTextDialogFragment<FinalItem> extends TextDialogFragment<FinalItem> {
 
     @Override
     final int getLayout() {

@@ -17,7 +17,7 @@ import android.widget.EditText;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.Snackbar;
 
-abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> implements AlertDialog.OnClickListener {
+abstract class TextDialogFragment<FinalItem> extends DialogFragment<FinalItem> implements AlertDialog.OnClickListener {
 
     private View layout;
     private EditText editText;
@@ -45,7 +45,7 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @Override
-    final void onUpdateView(@NonNull Entity item) {
+    final void onUpdateView(@NonNull FinalItem item) {
         String textForDisplay = getTextForDisplay(item);
         if (textForDisplay != null) {
             editText.setText(textForDisplay);
@@ -53,7 +53,7 @@ abstract class TextDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @Nullable
-    abstract String getTextForDisplay(@NonNull Entity item);
+    abstract String getTextForDisplay(@NonNull FinalItem item);
 
     @NonNull
     @Override

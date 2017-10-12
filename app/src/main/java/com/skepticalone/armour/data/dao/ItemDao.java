@@ -16,28 +16,30 @@ public abstract class ItemDao<Entity> {
     @Insert
     public abstract long insertSync(@NonNull Entity item);
 
+    @Insert
+    public abstract void insertItemsSync(@NonNull List<Entity> items);
+
     @SuppressWarnings({"EmptyMethod", "unused"})
     @NonNull
     public abstract LiveData<List<Entity>> fetchItems();
 
-    @SuppressWarnings("EmptyMethod")
+    @SuppressWarnings({"EmptyMethod", "unused"})
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
-    @Nullable
-    abstract Entity fetchItemInternalSync(@SuppressWarnings("unused") long id);
+    @NonNull
+    abstract List<Entity> fetchItemsInternalSync(@NonNull Set<Long> ids);
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     @Delete
-    abstract int deleteItemInternalSync(@NonNull Entity item);
-
-    public abstract void deleteItemsSync(@NonNull Set<Long> items);
+    abstract void deleteItemsInternalSync(@NonNull List<Entity> items);
 
     @SuppressWarnings("EmptyMethod")
     public abstract void setCommentSync(@SuppressWarnings("unused") long id, @SuppressWarnings("unused") @Nullable String comment);
 
-    @Nullable
-    public final Entity deleteAndReturnItemSync(long id) {
-        Entity item = fetchItemInternalSync(id);
-        return (item != null && deleteItemInternalSync(item) == 1) ? item : null;
+    @NonNull
+    public final List<Entity> deleteAndReturnDeletedItemsSync(@NonNull Set<Long> ids) {
+        List<Entity> items = fetchItemsInternalSync(ids);
+        deleteItemsInternalSync(items);
+        return items;
     }
 
 }

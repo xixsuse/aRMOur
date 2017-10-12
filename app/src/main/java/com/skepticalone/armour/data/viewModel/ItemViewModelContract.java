@@ -3,7 +3,9 @@ package com.skepticalone.armour.data.viewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
+import android.support.annotation.PluralsRes;
+
+import com.skepticalone.armour.ui.list.DeletedItemsInfo;
 
 import java.util.List;
 import java.util.Set;
@@ -20,15 +22,13 @@ public interface ItemViewModelContract<FinalItem> {
 
     void toggleSelected(long id);
 
-    void deleteSelectedItems();
-
-    boolean hasSelectedItems();
+    void deleteSelectedItems(@PluralsRes int quantityStringResource);
 
     @NonNull
     Set<Long> getSelectedIds();
 
     @NonNull
-    LiveData<View.OnClickListener> getDeletedItemRestorer();
+    LiveData<DeletedItemsInfo> getDeletedItemsInfo();
 
     @SuppressWarnings("unused")
     @NonNull

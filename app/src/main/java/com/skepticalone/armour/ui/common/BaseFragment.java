@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-public abstract class BaseFragment<Entity> extends Fragment {
+public abstract class BaseFragment<FinalItem> extends Fragment {
 
     private static final String DIALOG_FRAGMENT = "DIALOG_FRAGMENT";
 
@@ -24,7 +24,7 @@ public abstract class BaseFragment<Entity> extends Fragment {
     protected abstract RecyclerView.Adapter getAdapter();
 
     @NonNull
-    protected abstract ItemViewModelContract<Entity> getViewModel();
+    protected abstract ItemViewModelContract<FinalItem> getViewModel();
 
     @NonNull
     @Override

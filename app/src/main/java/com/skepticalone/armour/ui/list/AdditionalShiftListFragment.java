@@ -32,6 +32,11 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
         return R.id.additional;
     }
 
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.additional_shifts;
+    }
+
     @NonNull
     @Override
     protected AdditionalShiftViewModel getViewModel() {

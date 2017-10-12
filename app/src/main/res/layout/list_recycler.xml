@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingBottom="88dp"
+    android:paddingBottom="@dimen/list_item_height"
     app:layoutManager="LinearLayoutManager"
     app:reverseLayout="true"
     app:stackFromEnd="true"

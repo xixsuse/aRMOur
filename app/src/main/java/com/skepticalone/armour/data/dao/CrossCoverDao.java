@@ -85,14 +85,14 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> implements
             Contract.CrossCoverShifts.COLUMN_NAME_DATE)
     public abstract LiveData<List<CrossCoverEntity>> fetchItems();
 
-    @Nullable
+    @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.CrossCoverShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
-            " = :id")
-    abstract CrossCoverEntity fetchItemInternalSync(long id);
+            " IN(:ids)")
+    abstract List<CrossCoverEntity> fetchItemsInternalSync(@NonNull Set<Long> ids);
 
     @Nullable
     @Query("SELECT " +
@@ -109,13 +109,13 @@ public abstract class CrossCoverDao extends ItemDao<CrossCoverEntity> implements
     public long insertSync(@NonNull ZoneId timeZone, int paymentInCents) {
         return insertSync(CrossCoverEntity.from(getLastShiftDateInternalSync(), timeZone, paymentInCents));
     }
-
-    @Query("DELETE FROM " +
-            Contract.CrossCoverShifts.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " IN(:ids)")
-    @Override
-    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
+//
+//    @Query("DELETE FROM " +
+//            Contract.CrossCoverShifts.TABLE_NAME +
+//            " WHERE " +
+//            BaseColumns._ID +
+//            " IN(:ids)")
+//    @Override
+//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

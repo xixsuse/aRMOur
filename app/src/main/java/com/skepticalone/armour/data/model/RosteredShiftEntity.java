@@ -24,6 +24,7 @@ public final class RosteredShiftEntity extends Item {
     @Embedded
     private final ShiftData shiftData;
 
+    @SuppressWarnings("SameParameterValue")
     public RosteredShiftEntity(
             long id,
             @Nullable String comment,

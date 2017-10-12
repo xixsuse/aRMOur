@@ -57,14 +57,14 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
             Contract.COLUMN_NAME_SHIFT_START)
     public abstract LiveData<List<RosteredShiftEntity>> fetchItems();
 
-    @Nullable
+    @NonNull
     @Override
     @Query("SELECT * FROM " +
             Contract.RosteredShifts.TABLE_NAME +
             " WHERE " +
             BaseColumns._ID +
-            " = :id")
-    abstract RosteredShiftEntity fetchItemInternalSync(long id);
+            " IN(:ids)")
+    abstract List<RosteredShiftEntity> fetchItemsInternalSync(@NonNull Set<Long> ids);
 
     @Query("UPDATE " +
             Contract.RosteredShifts.TABLE_NAME +
@@ -109,13 +109,13 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
                 RosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );
     }
-
-    @Query("DELETE FROM " +
-            Contract.RosteredShifts.TABLE_NAME +
-            " WHERE " +
-            BaseColumns._ID +
-            " IN(:ids)")
-    @Override
-    public abstract void deleteItemsSync(@NonNull Set<Long> ids);
+//
+//    @Query("DELETE FROM " +
+//            Contract.RosteredShifts.TABLE_NAME +
+//            " WHERE " +
+//            BaseColumns._ID +
+//            " IN(:ids)")
+//    @Override
+//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

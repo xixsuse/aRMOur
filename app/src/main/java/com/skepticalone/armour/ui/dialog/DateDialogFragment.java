@@ -11,13 +11,13 @@ import com.skepticalone.armour.data.viewModel.DateViewModelContract;
 
 import org.threeten.bp.LocalDate;
 
-abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> implements DatePickerDialog.OnDateSetListener {
+abstract class DateDialogFragment<FinalItem> extends DialogFragment<FinalItem> implements DatePickerDialog.OnDateSetListener {
 
     private DatePickerDialog datePickerDialog;
 
     @NonNull
     @Override
-    abstract DateViewModelContract<Entity> getViewModel();
+    abstract DateViewModelContract<FinalItem> getViewModel();
 
     @Override
     @NonNull
@@ -33,10 +33,10 @@ abstract class DateDialogFragment<Entity> extends DialogFragment<Entity> impleme
     }
 
     @NonNull
-    abstract LocalDate getDateForDisplay(@NonNull Entity item);
+    abstract LocalDate getDateForDisplay(@NonNull FinalItem item);
 
     @Override
-    final void onUpdateView(@NonNull Entity item) {
+    final void onUpdateView(@NonNull FinalItem item) {
         LocalDate date = getDateForDisplay(item);
         datePickerDialog.updateDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
     }

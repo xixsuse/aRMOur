@@ -10,15 +10,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.settings.SettingsActivity;
 import com.skepticalone.armour.ui.detail.DetailActivity;
 import com.skepticalone.armour.ui.detail.DetailFragment;
+import com.skepticalone.armour.ui.list.DeletedItemsInfo;
 import com.skepticalone.armour.ui.list.ListFragment;
 
 public final class MainActivity extends CoordinatorActivity
@@ -27,8 +26,8 @@ public final class MainActivity extends CoordinatorActivity
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
-    @Nullable
-    private volatile ActionMode mActionMode;
+//    @Nullable
+//    private volatile ActionMode mActionMode;
 
     @Override
     protected int getContentView() {
@@ -104,8 +103,8 @@ public final class MainActivity extends CoordinatorActivity
     }
 
     @Override
-    public final void onItemRemoved(@IdRes int itemType, @NonNull View.OnClickListener listener) {
-        Snackbar.make(mCoordinatorLayout, getString(R.string.item_removed, getString(getName(itemType))), Snackbar.LENGTH_LONG).setAction(R.string.undo, listener).show();
+    public final void onItemRemoved(@NonNull DeletedItemsInfo deletedItemsInfo) {
+        Snackbar.make(mCoordinatorLayout, deletedItemsInfo.getMessage(), Snackbar.LENGTH_LONG).setAction(R.string.undo, deletedItemsInfo).show();
     }
 
     @Override
@@ -123,14 +122,18 @@ public final class MainActivity extends CoordinatorActivity
         return mFabNightShift;
     }
 
-    @Nullable
     @Override
-    public ActionMode getContextualActionMode() {
-        return mActionMode;
+    public void setNavigationBarVisibility(int visibility) {
+        navigation.setVisibility(visibility);
     }
-
-    @Override
-    public void setContextualActionMode(@Nullable ActionMode actionMode) {
-        mActionMode = actionMode;
-    }
+//    @Nullable
+//    @Override
+//    public ActionMode getContextualActionMode() {
+//        return mActionMode;
+//    }
+//
+//    @Override
+//    public void setContextualActionMode(@Nullable ActionMode actionMode) {
+//        mActionMode = actionMode;
+//    }
 }

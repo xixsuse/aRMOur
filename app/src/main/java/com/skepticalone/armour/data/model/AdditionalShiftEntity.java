@@ -24,6 +24,7 @@ public final class AdditionalShiftEntity extends Item {
     @Embedded
     private final ShiftData shiftData;
 
+    @SuppressWarnings("SameParameterValue")
     public AdditionalShiftEntity(
             long id,
             @Nullable String comment,

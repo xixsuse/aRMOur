@@ -16,7 +16,7 @@ public abstract class Item {
     @ColumnInfo(name = BaseColumns._ID)
     private final long id;
 
-    public Item(long id, @Nullable String comment) {
+    Item(long id, @Nullable String comment) {
         this.id = id;
         this.comment = comment;
     }

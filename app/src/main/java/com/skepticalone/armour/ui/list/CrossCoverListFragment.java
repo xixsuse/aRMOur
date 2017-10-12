@@ -19,6 +19,11 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
         return R.id.cross_cover;
     }
 
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.cross_cover_shifts;
+    }
+
     @NonNull
     @Override
     protected CrossCoverListAdapter getAdapter() {
