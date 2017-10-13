@@ -41,7 +41,7 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertSync(
+                postCurrentItemId(getDao().insertSync(
                         shiftType.getTimes(getFreshShiftConfiguration()),
                         getFreshTimezone(),
                         shiftType.skipWeekends(getApplication())

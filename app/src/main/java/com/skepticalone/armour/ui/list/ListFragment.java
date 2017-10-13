@@ -26,12 +26,14 @@ import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.totals.TotalsDialogFragment;
 
+import java.util.Set;
+
 public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<FinalItem> implements ItemListAdapter.Callbacks, ActionMode.Callback {
     private Callbacks callbacks;
 
     private RecyclerView recyclerView;
     @Nullable
-    private volatile ActionMode mActionMode;
+    private ActionMode mActionMode;
 
     public static ListFragment getNewListFragment(@IdRes int itemType) {
         if (itemType == R.id.rostered) return new RosteredShiftListFragment();
@@ -106,6 +108,21 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         super.onActivityCreated(savedInstanceState);
         ItemViewModelContract<FinalItem> viewModel = getViewModel();
         viewModel.getItems().observe(this, getAdapter());
+        viewModel.getSelectedIds().observe(this, new Observer<Set<Long>>() {
+            @Override
+            public void onChanged(@Nullable Set<Long> selectedIds) {
+                if (selectedIds != null) {
+                    if (mActionMode == null) {
+                        mActionMode = getActivity().startActionMode(ListFragment.this);
+                    } else {
+                        mActionMode.invalidate();
+                    }
+                } else if (mActionMode != null) {
+                    mActionMode.finish();
+                }
+                getAdapter().notifyIdsChanged(selectedIds);
+            }
+        });
         viewModel.getDeletedItemsInfo().observe(this, new Observer<DeletedItemsInfo>() {
             @Override
             public void onChanged(@Nullable DeletedItemsInfo deletedItemsInfo) {
@@ -125,31 +142,21 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     abstract int getItemType();
 
     @Override
-    public final boolean onClick(long itemId) {
+    public final void onClick(long itemId) {
         if (mActionMode == null) {
-            getViewModel().selectItem(itemId);
+            getViewModel().setCurrentItemId(itemId);
             callbacks.onClick(getItemType(), itemId);
-            return false;
         } else {
             getViewModel().toggleSelected(itemId);
-            //noinspection ConstantConditions
-            setActionModeTitle(mActionMode);
-            return true;
         }
     }
 
     @Override
     public final boolean onLongClick(long itemId) {
         if (mActionMode == null) {
-            getViewModel().getSelectedIds().add(itemId);
-            mActionMode = getActivity().startActionMode(this);
+            getViewModel().toggleSelected(itemId);
             return true;
         } else return false;
-    }
-
-    @Override
-    public final boolean isSelected(long itemId) {
-        return getViewModel().getSelectedIds().contains(itemId);
     }
 
     @Override
@@ -159,13 +166,7 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         recyclerView.setPadding(0, 0, 0, 0);
         MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.contextual_action_menu, menu);
-        setActionModeTitle(mode);
         return true;
-    }
-
-    private void setActionModeTitle(@NonNull ActionMode actionMode) {
-        int size = getViewModel().getSelectedIds().size();
-        actionMode.setTitle(getResources().getQuantityString(getQuantityStringResource(), size, size));
     }
 
     @PluralsRes
@@ -173,7 +174,10 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
+        Set<Long> selectedIds = getViewModel().getSelectedIds().getValue();
+        int size = selectedIds == null ? 0 : selectedIds.size();
+        mode.setTitle(getResources().getQuantityString(getQuantityStringResource(), size, size));
+        return true;
     }
 
     @Override
@@ -181,7 +185,7 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         switch (item.getItemId()) {
             case R.id.delete:
                 getViewModel().deleteSelectedItems(getQuantityStringResource());
-                mode.finish();
+//                mode.finish();
                 return true;
             default:
                 return false;
@@ -190,12 +194,9 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final void onDestroyActionMode(ActionMode mode) {
+        getViewModel().ensureNoneSelected();
         showFab(callbacks);
         callbacks.setNavigationBarVisibility(View.VISIBLE);
-        if (!getViewModel().getSelectedIds().isEmpty()) {
-            getAdapter().notifyIdsChanged(getViewModel().getSelectedIds());
-            getViewModel().getSelectedIds().clear();
-        }
         recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.list_item_height));
         mActionMode = null;
     }

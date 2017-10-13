@@ -36,16 +36,16 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     }
 
     @NonNull
-    private final Set<Long> mSelectedIds = new HashSet<>();
+    private final MutableLiveData<Set<Long>> mSelectedIds = new MutableLiveData<>();
 
     private final LiveData<FinalItem> currentItem;
     @NonNull
-    private final MutableLiveData<Long> selectedId = new MutableLiveData<>();
+    private final MutableLiveData<Long> currentId = new MutableLiveData<>();
     private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<DeletedItemsInfo> deletedItemRestorer = new MutableLiveData<>();
     ItemViewModel(@NonNull Application application) {
         super(application);
-        currentItem = Transformations.switchMap(selectedId, new Function<Long, LiveData<FinalItem>>() {
+        currentItem = Transformations.switchMap(currentId, new Function<Long, LiveData<FinalItem>>() {
             @Override
             public LiveData<FinalItem> apply(Long id) {
                 if (id == null){
@@ -64,24 +64,38 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     @Override
     public void toggleSelected(long id) {
-        if (!mSelectedIds.add(id)) mSelectedIds.remove(id);
+        Set<Long> selectedIds = mSelectedIds.getValue();
+        if (selectedIds == null) {
+            selectedIds = new HashSet<>();
+            selectedIds.add(id);
+        } else {
+            selectedIds = new HashSet<>(selectedIds);
+            if (!selectedIds.add(id)) selectedIds.remove(id);
+            if (selectedIds.isEmpty()) selectedIds = null;
+        }
+        mSelectedIds.setValue(selectedIds);
+    }
+
+    @Override
+    public void ensureNoneSelected() {
+        mSelectedIds.setValue(null);
     }
 
     @NonNull
     @Override
-    public Set<Long> getSelectedIds() {
+    public LiveData<Set<Long>> getSelectedIds() {
         return mSelectedIds;
     }
 
     final long getCurrentItemId() {
-        Long id = selectedId.getValue();
+        Long id = currentId.getValue();
         if (id == null) throw new IllegalStateException();
         return id;
     }
 
     @Override
-    public final void selectItem(long id) {
-        selectedId.setValue(id);
+    public final void setCurrentItemId(long id) {
+        currentId.setValue(id);
     }
 
     @NonNull
@@ -107,12 +121,15 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     @Override
     public void deleteSelectedItems(final int quantityStringResource) {
-        if (mSelectedIds.isEmpty()) return;
-        final Set<Long> selectedIds = new HashSet<>(mSelectedIds);
         runAsync(new Runnable() {
             @Override
             public void run() {
-                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(selectedIds), quantityStringResource));
+                Set<Long> selectedIds = mSelectedIds.getValue();
+                if (selectedIds != null) {
+                    List<Entity> deletedItems = getDao().deleteAndReturnDeletedItemsSync(selectedIds);
+                    mSelectedIds.postValue(null);
+                    deletedItemRestorer.postValue(new DeletedItemsRestorer(deletedItems, quantityStringResource));
+                }
             }
         });
     }
@@ -121,8 +138,8 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         errorMessage.postValue(R.string.overlapping_shifts);
     }
 
-    final void postSelectedId(@Nullable Long id) {
-        selectedId.postValue(id);
+    final void postCurrentItemId(@Nullable Long id) {
+        currentId.postValue(id);
     }
 
     @Override

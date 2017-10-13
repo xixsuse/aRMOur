@@ -42,7 +42,7 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertSync(
+                postCurrentItemId(getDao().insertSync(
                         getFreshTimezone(), getDefaultSharedPreferences().getInt(getApplication().getString(R.string.key_default_cross_cover_payment), getApplication().getResources().getInteger(R.integer.default_cross_cover_payment))
                 ));
             }

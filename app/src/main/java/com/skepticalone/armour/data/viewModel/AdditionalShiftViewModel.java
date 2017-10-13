@@ -44,7 +44,7 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         runAsync(new Runnable() {
             @Override
             public void run() {
-                postSelectedId(getDao().insertSync(
+                postCurrentItemId(getDao().insertSync(
                         shiftType.getTimes(getFreshShiftConfiguration()),
                         getFreshTimezone(),
                         shiftType.getHourlyRateInCents(getApplication())

@@ -24,7 +24,7 @@ public final class DetailActivity extends CoordinatorActivity {
         super.onCreate(savedInstanceState);
         final int itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE);
         setTitle(getName(itemType));
-        getViewModel(itemType).selectItem(getIntent().getLongExtra(ITEM_ID, NO_ID));
+        getViewModel(itemType).setCurrentItemId(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()

@@ -26,8 +26,6 @@ public final class MainActivity extends CoordinatorActivity
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
-//    @Nullable
-//    private volatile ActionMode mActionMode;
 
     @Override
     protected int getContentView() {
