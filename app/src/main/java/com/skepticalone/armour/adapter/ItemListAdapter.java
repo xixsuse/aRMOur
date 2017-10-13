@@ -19,21 +19,10 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     @NonNull
     private final Callbacks mCallbacks;
+    @NonNull
+    private final Set<Long> mSelectedIds = new HashSet<>();
     @Nullable
     private List<Entity> mItems;
-
-    @Nullable
-    private Set<Long> mSelectedIds;
-//
-//    @NonNull
-//    private final Observer<Set<Long>> mSelectedIdsObserver = new Observer<Set<Long>>() {
-//        @Override
-//        public void onChanged(@Nullable Set<Long> selectedIds) {
-//            if (mItems == null && items == null) {
-//                return;
-//            }
-//        }
-//    };
 
     ItemListAdapter(@NonNull Callbacks callbacks) {
         super();
@@ -45,25 +34,6 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final long getItemId(int position) {
         //noinspection ConstantConditions
         return mItems.get(position).getId();
-    }
-
-    public final void notifyIdsChanged(@Nullable final Set<Long> selectedIds) {
-        if (mItems != null && (mSelectedIds != null || selectedIds != null)) {
-            Set<Long> idsToNotify = new HashSet<>();
-            if (mSelectedIds != null) idsToNotify.addAll(mSelectedIds);
-            if (selectedIds != null) idsToNotify.addAll(selectedIds);
-            if (mSelectedIds != null && selectedIds != null) {
-                Set<Long> intersection = new HashSet<>(mSelectedIds);
-                intersection.retainAll(selectedIds);
-                idsToNotify.removeAll(intersection);
-            }
-            for (int position = 0; position < mItems.size(); position++) {
-                if (idsToNotify.contains(getItemId(position))) {
-                    notifyItemChanged(position);
-                }
-            }
-        }
-        mSelectedIds = selectedIds;
     }
 
     @Override
@@ -101,6 +71,22 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         mItems = items;
     }
 
+    @NonNull
+    public final Set<Long> getSelectedIds() {
+        return mSelectedIds;
+    }
+
+    public final void clearSelectedIds() {
+        if (!mSelectedIds.isEmpty()) {
+            if (mItems != null) {
+                for (int position = 0; position < mItems.size(); position++) {
+                    if (mSelectedIds.contains(getItemId(position))) notifyItemChanged(position);
+                }
+            }
+            mSelectedIds.clear();
+        }
+    }
+
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         final ItemViewHolder viewHolder = new ItemViewHolder(parent);
@@ -108,13 +94,26 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallbacks.onClick(viewHolder.getItemId());
+                if (!mSelectedIds.isEmpty()) {
+                    final long itemId = viewHolder.getItemId();
+                    if (!mSelectedIds.add(itemId)) mSelectedIds.remove(itemId);
+                    notifyItemChanged(viewHolder.getAdapterPosition());
+                    mCallbacks.updateContextualActionMode();
+                } else {
+                    mCallbacks.onClick(viewHolder.getItemId());
+                }
             }
         });
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                return mCallbacks.onLongClick(viewHolder.getItemId());
+                if (mSelectedIds.isEmpty()) {
+                    mSelectedIds.add(viewHolder.getItemId());
+                    notifyItemChanged(viewHolder.getAdapterPosition());
+                    mCallbacks.updateContextualActionMode();
+                    return true;
+                }
+                return false;
             }
         });
         return viewHolder;
@@ -128,7 +127,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-        bindViewHolder(item, holder, mSelectedIds != null && mSelectedIds.contains(item.getId()));
+        bindViewHolder(item, holder, mSelectedIds.contains(item.getId()));
     }
 
     @Override
@@ -159,7 +158,8 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     public interface Callbacks {
         void onClick(long itemId);
-        boolean onLongClick(long itemId);
+
+        void updateContextualActionMode();
         void scrollToPosition(int position);
     }
 

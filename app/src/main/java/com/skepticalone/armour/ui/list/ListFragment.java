@@ -108,21 +108,6 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         super.onActivityCreated(savedInstanceState);
         ItemViewModelContract<FinalItem> viewModel = getViewModel();
         viewModel.getItems().observe(this, getAdapter());
-        viewModel.getSelectedIds().observe(this, new Observer<Set<Long>>() {
-            @Override
-            public void onChanged(@Nullable Set<Long> selectedIds) {
-                if (selectedIds != null) {
-                    if (mActionMode == null) {
-                        mActionMode = getActivity().startActionMode(ListFragment.this);
-                    } else {
-                        mActionMode.invalidate();
-                    }
-                } else if (mActionMode != null) {
-                    mActionMode.finish();
-                }
-                getAdapter().notifyIdsChanged(selectedIds);
-            }
-        });
         viewModel.getDeletedItemsInfo().observe(this, new Observer<DeletedItemsInfo>() {
             @Override
             public void onChanged(@Nullable DeletedItemsInfo deletedItemsInfo) {
@@ -143,20 +128,22 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final void onClick(long itemId) {
-        if (mActionMode == null) {
-            getViewModel().setCurrentItemId(itemId);
-            callbacks.onClick(getItemType(), itemId);
-        } else {
-            getViewModel().toggleSelected(itemId);
-        }
+        getViewModel().setCurrentItemId(itemId);
+        callbacks.onClick(getItemType(), itemId);
     }
 
     @Override
-    public final boolean onLongClick(long itemId) {
+    public void updateContextualActionMode() {
+        Set<Long> selectedIds = getAdapter().getSelectedIds();
+        if (selectedIds.isEmpty() && mActionMode != null) {
+            mActionMode.finish();
+            return;
+        }
         if (mActionMode == null) {
-            getViewModel().toggleSelected(itemId);
-            return true;
-        } else return false;
+            mActionMode = getActivity().startActionMode(this);
+        }
+        //noinspection ConstantConditions
+        mActionMode.setTitle(getResources().getQuantityString(getQuantityStringResource(), selectedIds.size(), selectedIds.size()));
     }
 
     @Override
@@ -173,19 +160,16 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     abstract int getQuantityStringResource();
 
     @Override
-    public final boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        Set<Long> selectedIds = getViewModel().getSelectedIds().getValue();
-        int size = selectedIds == null ? 0 : selectedIds.size();
-        mode.setTitle(getResources().getQuantityString(getQuantityStringResource(), size, size));
-        return true;
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
     }
 
     @Override
     public final boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                getViewModel().deleteSelectedItems(getQuantityStringResource());
-//                mode.finish();
+                getViewModel().deleteItems(getAdapter().getSelectedIds(), getQuantityStringResource());
+                mode.finish();
                 return true;
             default:
                 return false;
@@ -194,7 +178,7 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final void onDestroyActionMode(ActionMode mode) {
-        getViewModel().ensureNoneSelected();
+        getAdapter().clearSelectedIds();
         showFab(callbacks);
         callbacks.setNavigationBarVisibility(View.VISIBLE);
         recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.list_item_height));

@@ -35,9 +35,6 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         NO_DATA.setValue(null);
     }
 
-    @NonNull
-    private final MutableLiveData<Set<Long>> mSelectedIds = new MutableLiveData<>();
-
     private final LiveData<FinalItem> currentItem;
     @NonNull
     private final MutableLiveData<Long> currentId = new MutableLiveData<>();
@@ -60,31 +57,6 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
-    }
-
-    @Override
-    public void toggleSelected(long id) {
-        Set<Long> selectedIds = mSelectedIds.getValue();
-        if (selectedIds == null) {
-            selectedIds = new HashSet<>();
-            selectedIds.add(id);
-        } else {
-            selectedIds = new HashSet<>(selectedIds);
-            if (!selectedIds.add(id)) selectedIds.remove(id);
-            if (selectedIds.isEmpty()) selectedIds = null;
-        }
-        mSelectedIds.setValue(selectedIds);
-    }
-
-    @Override
-    public void ensureNoneSelected() {
-        mSelectedIds.setValue(null);
-    }
-
-    @NonNull
-    @Override
-    public LiveData<Set<Long>> getSelectedIds() {
-        return mSelectedIds;
     }
 
     final long getCurrentItemId() {
@@ -120,16 +92,13 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     abstract ItemDao<Entity> getDao();
 
     @Override
-    public void deleteSelectedItems(final int quantityStringResource) {
+    public void deleteItems(@NonNull Set<Long> itemIds, final int quantityStringResource) {
+        if (itemIds.isEmpty()) return;
+        final Set<Long> itemIdsCopy = new HashSet<>(itemIds);
         runAsync(new Runnable() {
             @Override
             public void run() {
-                Set<Long> selectedIds = mSelectedIds.getValue();
-                if (selectedIds != null) {
-                    List<Entity> deletedItems = getDao().deleteAndReturnDeletedItemsSync(selectedIds);
-                    mSelectedIds.postValue(null);
-                    deletedItemRestorer.postValue(new DeletedItemsRestorer(deletedItems, quantityStringResource));
-                }
+                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(itemIdsCopy), quantityStringResource));
             }
         });
     }

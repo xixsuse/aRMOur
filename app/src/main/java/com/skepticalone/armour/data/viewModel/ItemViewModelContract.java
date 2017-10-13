@@ -11,23 +11,21 @@ import java.util.List;
 import java.util.Set;
 
 public interface ItemViewModelContract<FinalItem> {
+
     @NonNull
     LiveData<List<FinalItem>> getItems();
 
     void setCurrentItemId(long id);
+
     @NonNull
     LiveData<FinalItem> getCurrentItem();
+
     void saveNewComment(@Nullable String comment);
+
     @NonNull
     LiveData<Integer> getErrorMessage();
 
-    void ensureNoneSelected();
-    void toggleSelected(long id);
-
-    void deleteSelectedItems(@PluralsRes int quantityStringResource);
-
-    @NonNull
-    LiveData<Set<Long>> getSelectedIds();
+    void deleteItems(@NonNull Set<Long> itemIds, @PluralsRes int quantityStringResource);
 
     @NonNull
     LiveData<DeletedItemsInfo> getDeletedItemsInfo();
