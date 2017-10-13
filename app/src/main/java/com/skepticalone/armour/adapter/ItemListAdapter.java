@@ -11,16 +11,15 @@ import android.view.ViewGroup;
 
 import com.skepticalone.armour.data.model.Item;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback, Observer<List<Entity>> {
 
     @NonNull
     private final Callbacks mCallbacks;
     @NonNull
-    private final Set<Long> mSelectedIds = new HashSet<>();
+    private final MultiSelector mMultiSelector;
+
     @Nullable
     private List<Entity> mItems;
 
@@ -28,6 +27,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         super();
         setHasStableIds(true);
         mCallbacks = callbacks;
+        mMultiSelector = new MultiSelector(this, callbacks);
     }
 
     @Override
@@ -71,22 +71,6 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         mItems = items;
     }
 
-    @NonNull
-    public final Set<Long> getSelectedIds() {
-        return mSelectedIds;
-    }
-
-    public final void clearSelectedIds() {
-        if (!mSelectedIds.isEmpty()) {
-            if (mItems != null) {
-                for (int position = 0; position < mItems.size(); position++) {
-                    if (mSelectedIds.contains(getItemId(position))) notifyItemChanged(position);
-                }
-            }
-            mSelectedIds.clear();
-        }
-    }
-
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         final ItemViewHolder viewHolder = new ItemViewHolder(parent);
@@ -94,12 +78,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mSelectedIds.isEmpty()) {
-                    final long itemId = viewHolder.getItemId();
-                    if (!mSelectedIds.add(itemId)) mSelectedIds.remove(itemId);
-                    notifyItemChanged(viewHolder.getAdapterPosition());
-                    mCallbacks.updateContextualActionMode();
-                } else {
+                if (!mMultiSelector.onClick(viewHolder.getAdapterPosition())) {
                     mCallbacks.onClick(viewHolder.getItemId());
                 }
             }
@@ -107,13 +86,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (mSelectedIds.isEmpty()) {
-                    mSelectedIds.add(viewHolder.getItemId());
-                    notifyItemChanged(viewHolder.getAdapterPosition());
-                    mCallbacks.updateContextualActionMode();
-                    return true;
-                }
-                return false;
+                return mMultiSelector.onLongClick(viewHolder.getAdapterPosition());
             }
         });
         return viewHolder;
@@ -127,7 +100,12 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-        bindViewHolder(item, holder, mSelectedIds.contains(item.getId()));
+        bindViewHolder(item, holder, mMultiSelector.inSelectMode() && mMultiSelector.isSelected(position));
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public final boolean isSelectable() {
+        return mMultiSelector.inSelectMode();
     }
 
     @Override
@@ -156,12 +134,9 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         notifyItemRangeChanged(position, count, payload);
     }
 
-    public interface Callbacks {
+    public interface Callbacks extends MultiSelector.Callbacks {
         void onClick(long itemId);
-
-        void updateContextualActionMode();
         void scrollToPosition(int position);
     }
-
 
 }

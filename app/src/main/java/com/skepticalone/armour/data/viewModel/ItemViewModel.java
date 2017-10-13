@@ -23,7 +23,6 @@ import com.skepticalone.armour.util.LiveTimeZone;
 
 import org.threeten.bp.ZoneId;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -92,13 +91,12 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     abstract ItemDao<Entity> getDao();
 
     @Override
-    public void deleteItems(@NonNull Set<Long> itemIds, final int quantityStringResource) {
+    public void deleteItems(@NonNull final Set<Long> itemIds, final int quantityStringResource) {
         if (itemIds.isEmpty()) return;
-        final Set<Long> itemIdsCopy = new HashSet<>(itemIds);
         runAsync(new Runnable() {
             @Override
             public void run() {
-                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(itemIdsCopy), quantityStringResource));
+                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(itemIds), quantityStringResource));
             }
         });
     }
