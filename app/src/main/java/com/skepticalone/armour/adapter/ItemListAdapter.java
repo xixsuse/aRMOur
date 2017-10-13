@@ -1,7 +1,6 @@
 package com.skepticalone.armour.adapter;
 
 import android.arch.lifecycle.Observer;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
@@ -79,9 +78,8 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
         mItems = items;
     }
 
-    @CallSuper
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         final ItemViewHolder viewHolder = new ItemViewHolder(parent);
         viewHolder.switchControl.setVisibility(View.GONE);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -107,14 +105,13 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     abstract boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2);
 
-    abstract void bindViewHolder(@NonNull Entity item, ItemViewHolder holder);
+    abstract void bindViewHolder(@NonNull Entity item, ItemViewHolder holder, boolean selected);
 
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-        holder.itemView.setSelected(mCallbacks.isSelected(item.getId()));
-        bindViewHolder(item, holder);
+        bindViewHolder(item, holder, mCallbacks.isSelected(item.getId()));
     }
 
     @Override
@@ -150,7 +147,6 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
         boolean isSelected(long itemId);
 
-        //        void requestDelete(Set<Long> itemIds);
         void scrollToPosition(int position);
     }
 

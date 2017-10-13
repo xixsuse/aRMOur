@@ -1,9 +1,8 @@
 package com.skepticalone.armour.adapter;
 
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.view.ViewGroup;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Expense;
 import com.skepticalone.armour.util.Comparators;
 
@@ -11,13 +10,6 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
     public ExpenseListAdapter(@NonNull Callbacks callbacks) {
         super(callbacks);
-    }
-
-    @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-        viewHolder.primaryIcon.setVisibility(View.GONE);
-        return viewHolder;
     }
 
     @Override
@@ -29,7 +21,8 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
     }
 
     @Override
-    void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder) {
+    void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, boolean selected) {
+        holder.primaryIcon.setImageResource(selected ? R.drawable.ic_check_circle_24dp : R.drawable.ic_dollar_black_24dp);
         holder.setText(expense.getTitle(), holder.getPaymentString(expense.getTotalPayment()), expense.getComment());
         holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
     }
