@@ -7,6 +7,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.RosteredShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.RosteredShift;
@@ -99,4 +100,10 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
     public LiveData<List<RosteredShift>> getItems() {
         return rosteredShifts;
     }
+
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.rostered_shifts;
+    }
+
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.dao.AdditionalShiftDao;
 import com.skepticalone.armour.data.db.AppDatabase;
 import com.skepticalone.armour.data.model.AdditionalShift;
@@ -99,4 +100,10 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
     public LiveData<List<AdditionalShift>> getItems() {
         return additionalShifts;
     }
+
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.additional_shifts;
+    }
+
 }

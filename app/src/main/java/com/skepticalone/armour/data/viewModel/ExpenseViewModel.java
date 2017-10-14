@@ -76,4 +76,9 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
         return expenses;
     }
 
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.expenses;
+    }
+
 }

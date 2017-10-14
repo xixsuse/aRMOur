@@ -8,7 +8,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.PluralsRes;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -25,8 +24,6 @@ import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.totals.TotalsDialogFragment;
-
-import java.util.Set;
 
 public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<FinalItem> implements ItemListAdapter.Callbacks {
     private Callbacks callbacks;
@@ -130,9 +127,6 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         callbacks.onClick(getItemType(), itemId);
     }
 
-    @PluralsRes
-    abstract int getQuantityStringResource();
-
     @Override
     public void startActionMode(@NonNull ActionMode.Callback callback) {
         getViewModel().setCurrentItemId(null);
@@ -147,17 +141,6 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.list_item_height));
         callbacks.setNavigationBarVisibility(View.VISIBLE);
         showFab(callbacks);
-    }
-
-    @Override
-    public void deleteItems(@NonNull Set<Long> itemIds) {
-        getViewModel().deleteItems(itemIds, getQuantityStringResource());
-    }
-
-    @NonNull
-    @Override
-    public String getTitle(int count) {
-        return getResources().getQuantityString(getQuantityStringResource(), count, count);
     }
 
     public interface Callbacks extends FabCallbacks {

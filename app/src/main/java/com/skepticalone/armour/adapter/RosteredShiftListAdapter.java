@@ -9,8 +9,8 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShift> {
 
-    public RosteredShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context, callbacks);
+    public RosteredShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
+        super(context, callbacks, modelCallbacks);
     }
 
     @Override

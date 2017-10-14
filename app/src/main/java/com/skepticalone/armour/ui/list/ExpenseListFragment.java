@@ -26,11 +26,6 @@ public final class ExpenseListFragment extends SingleAddListFragment<Expense> {
         return R.id.expenses;
     }
 
-    @Override
-    int getQuantityStringResource() {
-        return R.plurals.expenses;
-    }
-
     @NonNull
     @Override
     protected ExpenseListAdapter getAdapter() {

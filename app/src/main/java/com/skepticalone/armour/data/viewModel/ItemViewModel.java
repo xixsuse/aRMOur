@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.PluralsRes;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -23,6 +25,7 @@ import com.skepticalone.armour.util.LiveTimeZone;
 
 import org.threeten.bp.ZoneId;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +37,9 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         NO_DATA.setValue(null);
     }
 
+
+    @NonNull
+    private final SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
     private final LiveData<FinalItem> currentItem;
     @NonNull
     private final MutableLiveData<Long> currentId = new MutableLiveData<>();
@@ -90,17 +96,6 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     @NonNull
     abstract ItemDao<Entity> getDao();
 
-    @Override
-    public void deleteItems(@NonNull final Set<Long> itemIds, final int quantityStringResource) {
-        if (itemIds.isEmpty()) return;
-        runAsync(new Runnable() {
-            @Override
-            public void run() {
-                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(itemIds), quantityStringResource));
-            }
-        });
-    }
-
     final void postOverlappingShifts() {
         errorMessage.postValue(R.string.overlapping_shifts);
     }
@@ -148,6 +143,39 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         });
     }
 
+    @PluralsRes
+    abstract int getQuantityStringResource();
+
+    @NonNull
+    @Override
+    public final String getTitle(int count) {
+        return getApplication().getResources().getQuantityString(getQuantityStringResource(), count, count);
+    }
+
+    @NonNull
+    @Override
+    public final SparseBooleanArray getSelectedPositions() {
+        return mSelectedPositions;
+    }
+
+    @Override
+    public void deleteItems(@NonNull RecyclerView.Adapter adapter) {
+        final Set<Long> itemIds = new HashSet<>();
+        for (int i = 0; i < mSelectedPositions.size(); i++) {
+            if (mSelectedPositions.valueAt(i)) {
+                itemIds.add(adapter.getItemId(mSelectedPositions.keyAt(i)));
+            }
+        }
+        mSelectedPositions.clear();
+        if (itemIds.isEmpty()) return;
+        runAsync(new Runnable() {
+            @Override
+            public void run() {
+                deletedItemRestorer.postValue(new DeletedItemsRestorer(getDao().deleteAndReturnDeletedItemsSync(itemIds), getQuantityStringResource()));
+            }
+        });
+    }
+
     private class DeletedItemsRestorer implements DeletedItemsInfo {
 
         @NonNull
@@ -181,5 +209,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         public String getMessage() {
             return message;
         }
+
     }
+
 }

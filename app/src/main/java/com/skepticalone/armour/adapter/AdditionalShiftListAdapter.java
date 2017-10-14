@@ -7,8 +7,8 @@ import com.skepticalone.armour.data.model.AdditionalShift;
 
 public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShift> {
 
-    public AdditionalShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context, callbacks);
+    public AdditionalShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
+        super(context, callbacks, modelCallbacks);
     }
 
     @Override

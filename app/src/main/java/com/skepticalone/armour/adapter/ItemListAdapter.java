@@ -25,11 +25,11 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
     @Nullable
     private List<Entity> mItems;
 
-    ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+    ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
         super(context);
         setHasStableIds(true);
         mCallbacks = callbacks;
-        mMultiSelector = new MultiSelector(this, callbacks);
+        mMultiSelector = new MultiSelector(this, callbacks, modelCallbacks);
     }
 
     @Override
@@ -148,7 +148,7 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
         notifyItemRangeChanged(position, count, payload);
     }
 
-    public interface Callbacks extends MultiSelector.Callbacks {
+    public interface Callbacks extends MultiSelector.UiCallbacks {
         void onClick(long itemId);
         void scrollToPosition(int position);
     }

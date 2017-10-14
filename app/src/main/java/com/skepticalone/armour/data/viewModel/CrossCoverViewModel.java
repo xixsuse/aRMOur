@@ -84,5 +84,9 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
         return crossCoverShifts;
     }
 
+    @Override
+    int getQuantityStringResource() {
+        return R.plurals.cross_cover_shifts;
+    }
 
 }
