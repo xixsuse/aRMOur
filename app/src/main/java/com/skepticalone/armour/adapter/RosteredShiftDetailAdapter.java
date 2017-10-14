@@ -234,7 +234,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 thirdLine = null;
             } else {
                 secondLine = DateTimeUtils.getWeekendDateSpanString(shift.getCompliance().getLastWeekendWorked());
-                thirdLine = DateTimeUtils.getWeeksAgo(shift.getCompliance().getLastWeekendWorked(), shift.getCompliance().getCurrentWeekend());
+                thirdLine = DateTimeUtils.getWeeksAgo(context, shift.getCompliance().getCurrentWeekend(), shift.getCompliance().getLastWeekendWorked());
             }
             holder.setText(holder.getText(R.string.last_weekend_worked), secondLine, thirdLine);
             holder.setCompliant(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends, !shift.getCompliance().consecutiveWeekendsWorked());

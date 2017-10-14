@@ -60,6 +60,10 @@
         <item quantity="one">%d rostered shift</item>
         <item quantity="other">%d rostered shifts</item>
     </plurals>
+    <plurals name="weeks_ago">
+        <item quantity="one">%d week ago</item>
+        <item quantity="other">%d weeks ago</item>
+    </plurals>
     <string name="duration_in_hours_and_minutes">%1$s, %2$s</string>
     <string name="title">Title</string>
     <string name="payment">Payment</string>

@@ -15,8 +15,6 @@ import org.threeten.bp.format.FormatStyle;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 
-import java.util.Locale;
-
 public final class DateTimeUtils {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
@@ -66,8 +64,9 @@ public final class DateTimeUtils {
         return getSpanString(timeFormatter.format(start), timeFormatter.format(end));
     }
 
-    public static String getWeeksAgo(@NonNull LocalDate lastWeekendWorked, @NonNull LocalDate currentWeekend) {
-        return String.format(Locale.US, "Weeks ago: %d", (currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
+    public static String getWeeksAgo(@NonNull Context context, @NonNull LocalDate currentWeekend, @NonNull LocalDate lastWeekendWorked) {
+        int weeksAgo = (int) ((currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
+        return context.getResources().getQuantityString(R.plurals.weeks_ago, weeksAgo, weeksAgo);
     }
 
     public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {
