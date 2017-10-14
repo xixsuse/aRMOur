@@ -28,9 +28,7 @@ import com.skepticalone.armour.ui.totals.TotalsDialogFragment;
 
 import java.util.Set;
 
-public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<FinalItem> implements ItemListAdapter.Callbacks
-//        , ActionMode.Callback
-{
+public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<FinalItem> implements ItemListAdapter.Callbacks {
     private Callbacks callbacks;
 
     private RecyclerView recyclerView;
@@ -132,73 +130,12 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         callbacks.onClick(getItemType(), itemId);
     }
 
-//    @Override
-//    public void updateContextualActionMode() {
-//        Set<Long> selectedIds = getAdapter().getSelectedIds();
-//        if (selectedIds.isEmpty() && mActionMode != null) {
-//            mActionMode.finish();
-//            return;
-//        }
-//        if (mActionMode == null) {
-//            mActionMode = getActivity().startActionMode(this);
-//        }
-//        //noinspection ConstantConditions
-//        mActionMode.setTitle(getResources().getQuantityString(getQuantityStringResource(), selectedIds.size(), selectedIds.size()));
-//    }
-//
-//    @Override
-//    public final boolean onCreateActionMode(ActionMode mode, Menu menu) {
-//        hideFab(callbacks);
-//        callbacks.setNavigationBarVisibility(View.GONE);
-//        recyclerView.setPadding(0, 0, 0, 0);
-//        MenuInflater inflater = mode.getMenuInflater();
-//        inflater.inflate(R.menu.contextual_action_menu, menu);
-//        return true;
-//    }
-
     @PluralsRes
     abstract int getQuantityStringResource();
-//
-//    @Override
-//    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-//        return false;
-//    }
-//
-//    @Override
-//    public final boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.delete:
-//                getViewModel().deleteItems(getAdapter().getSelectedIds(), getQuantityStringResource());
-//                mode.finish();
-//                return true;
-//            default:
-//                return false;
-//        }
-//    }
-//
-//    @Override
-//    public final void onDestroyActionMode(ActionMode mode) {
-//        getAdapter().clearSelectedIds();
-//        showFab(callbacks);
-//        callbacks.setNavigationBarVisibility(View.VISIBLE);
-//        recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.list_item_height));
-//        mActionMode = null;
-//    }
-//
-//    @Override
-//    public void startActionMode(@NonNull ActionMode.Callback callback) {
-//        if (mActionMode == null) {
-//            mActionMode = getActivity().startActionMode(callback);
-//        }
-//    }
-//
-//    @Override
-//    public void clearActionMode() {
-//        mActionMode = null;
-//    }
 
     @Override
     public void startActionMode(@NonNull ActionMode.Callback callback) {
+        getViewModel().setCurrentItemId(null);
         hideFab(callbacks);
         callbacks.setNavigationBarVisibility(View.GONE);
         recyclerView.setPadding(0, 0, 0, 0);

@@ -124,14 +124,5 @@ public final class MainActivity extends CoordinatorActivity
     public void setNavigationBarVisibility(int visibility) {
         navigation.setVisibility(visibility);
     }
-//    @Nullable
-//    @Override
-//    public ActionMode getContextualActionMode() {
-//        return mActionMode;
-//    }
-//
-//    @Override
-//    public void setContextualActionMode(@Nullable ActionMode actionMode) {
-//        mActionMode = actionMode;
-//    }
+
 }

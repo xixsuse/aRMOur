@@ -15,7 +15,7 @@ public interface ItemViewModelContract<FinalItem> {
     @NonNull
     LiveData<List<FinalItem>> getItems();
 
-    void setCurrentItemId(long id);
+    void setCurrentItemId(@Nullable Long id);
 
     @NonNull
     LiveData<FinalItem> getCurrentItem();

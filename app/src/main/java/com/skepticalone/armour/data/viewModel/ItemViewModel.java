@@ -65,7 +65,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     }
 
     @Override
-    public final void setCurrentItemId(long id) {
+    public void setCurrentItemId(@Nullable Long id) {
         currentId.setValue(id);
     }
 
