@@ -30,12 +30,14 @@ public final class SinglePayableTotalsAdapter<Entity extends Payment> extends Pa
     }
 
     @Override
-    final boolean bindViewHolder(@NonNull Context context, @NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
+    final boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
-            holder.setupTotals(R.drawable.ic_sigma_black_24dp, totalItemsTitle, getTotalNumber(allItems, holder), null);
+            holder.setPrimaryIcon(R.drawable.ic_sigma_black_24dp);
+            holder.setText(getContext().getString(totalItemsTitle), getTotalNumber(allItems));
             return true;
         } else if (position == ROW_NUMBER_TOTAL_PAYMENT) {
-            holder.setupTotals(R.drawable.ic_dollar_black_24dp, R.string.total_payment, getTotalPayment(allItems, holder), null);
+            holder.setPrimaryIcon(R.drawable.ic_dollar_black_24dp);
+            holder.setText(getContext().getString(R.string.total_payment), getTotalPayment(allItems));
             return true;
         } else return false;
     }

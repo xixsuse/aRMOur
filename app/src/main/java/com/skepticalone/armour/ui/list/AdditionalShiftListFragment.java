@@ -18,7 +18,7 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = new AdditionalShiftListAdapter(this);
+        adapter = new AdditionalShiftListAdapter(context, this);
     }
 
     @NonNull

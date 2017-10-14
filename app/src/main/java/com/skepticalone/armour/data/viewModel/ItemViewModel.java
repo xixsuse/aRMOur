@@ -158,7 +158,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
         DeletedItemsRestorer(@NonNull List<Entity> deletedItems, @PluralsRes int quantityStringResource) {
             this.deletedItems = deletedItems;
-            message = getApplication().getString(R.string.items_removed, getApplication().getResources().getQuantityString(quantityStringResource, deletedItems.size(), deletedItems.size()));
+            message = getApplication().getString(R.string.items_deleted, getApplication().getResources().getQuantityString(quantityStringResource, deletedItems.size(), deletedItems.size()));
         }
 
         @Override

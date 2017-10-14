@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -9,8 +10,8 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class CrossCoverListAdapter extends ItemListAdapter<CrossCover> {
 
-    public CrossCoverListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public CrossCoverListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override
@@ -22,10 +23,25 @@ public final class CrossCoverListAdapter extends ItemListAdapter<CrossCover> {
     }
 
     @Override
-    void bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder, boolean selected) {
-        holder.primaryIcon.setImageResource(selected ? R.drawable.ic_check_circle_24dp : R.drawable.ic_cross_cover_black_24dp);
-        holder.setText(DateTimeUtils.getFullDateString(crossCover.getDate()), holder.getPaymentString(crossCover.getTotalPayment()), crossCover.getComment());
-        holder.secondaryIcon.setImageResource(crossCover.getPaymentData().getIcon());
+    int getPrimaryIcon(@NonNull CrossCover crossCover) {
+        return R.drawable.ic_cross_cover_black_24dp;
+    }
+
+    @Override
+    int getSecondaryIcon(@NonNull CrossCover crossCover) {
+        return crossCover.getPaymentData().getIcon();
+    }
+
+    @NonNull
+    @Override
+    String getFirstLine(@NonNull CrossCover crossCover) {
+        return DateTimeUtils.getFullDateString(crossCover.getDate());
+    }
+
+    @NonNull
+    @Override
+    String getSecondLine(@NonNull CrossCover crossCover) {
+        return getPaymentString(crossCover.getTotalPayment());
     }
 
 }

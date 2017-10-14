@@ -1,19 +1,21 @@
 package com.skepticalone.armour.adapter;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements ListUpdateCallback, Observer<List<Entity>> {
+public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapter implements ListUpdateCallback, Observer<List<Entity>> {
 
     @NonNull
     private final Callbacks mCallbacks;
@@ -23,8 +25,8 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
     @Nullable
     private List<Entity> mItems;
 
-    ItemListAdapter(@NonNull Callbacks callbacks) {
-        super();
+    ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context);
         setHasStableIds(true);
         mCallbacks = callbacks;
         mMultiSelector = new MultiSelector(this, callbacks);
@@ -73,8 +75,8 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        final ItemViewHolder viewHolder = new ItemViewHolder(parent);
-        viewHolder.switchControl.setVisibility(View.GONE);
+        final ItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        viewHolder.setupPlain();
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,13 +96,25 @@ public abstract class ItemListAdapter<Entity extends Item> extends RecyclerView.
 
     abstract boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2);
 
-    abstract void bindViewHolder(@NonNull Entity item, ItemViewHolder holder, boolean selected);
+    @DrawableRes
+    abstract int getPrimaryIcon(@NonNull Entity item);
+
+    @DrawableRes
+    abstract int getSecondaryIcon(@NonNull Entity item);
+
+    @NonNull
+    abstract String getFirstLine(@NonNull Entity item);
+
+    @NonNull
+    abstract String getSecondLine(@NonNull Entity item);
 
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-        bindViewHolder(item, holder, mMultiSelector.inSelectMode() && mMultiSelector.isSelected(position));
+        holder.setPrimaryIcon(mMultiSelector.inSelectMode() && mMultiSelector.isSelected(position) ? R.drawable.ic_check_circle_24dp : getPrimaryIcon(item));
+        holder.setSecondaryIcon(getSecondaryIcon(item));
+        holder.setText(getFirstLine(item), getSecondLine(item), item.getComment());
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

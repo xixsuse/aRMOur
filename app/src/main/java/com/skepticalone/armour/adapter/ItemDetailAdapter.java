@@ -5,33 +5,22 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.util.Comparators;
 
-public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerView.Adapter<ItemViewHolder> implements Observer<Entity> {
+public abstract class ItemDetailAdapter<Entity extends Item> extends ContextAdapter implements Observer<Entity> {
 
-    @NonNull
-    private final Context mContext;
     @NonNull
     private final Callbacks callbacks;
     @Nullable
     private Entity mItem;
 
     ItemDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super();
-        mContext = context;
+        super(context);
         this.callbacks = callbacks;
-    }
-
-    @CallSuper
-    @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemViewHolder(parent);
     }
 
     @Override
@@ -48,15 +37,17 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @CallSuper
-    boolean bindViewHolder(@NonNull Context context, @NonNull Entity item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberComment(item)) {
-            holder.setupPlain(R.drawable.ic_comment_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_comment_black_24dp);
+            holder.setText(getContext().getString(R.string.comment), item.getComment());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changeComment();
                 }
             });
-            holder.setText(holder.getText(R.string.comment), item.getComment());
             return true;
         } else return false;
     }
@@ -78,7 +69,7 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends RecyclerVie
     @Override
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
-        if (!bindViewHolder(mContext, mItem, holder, position)) {
+        if (!bindViewHolder(mItem, holder, position)) {
             throw new IllegalStateException();
         }
     }

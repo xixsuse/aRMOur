@@ -36,46 +36,50 @@ abstract class PayableDetailAdapterHelper<Entity extends Payment> {
     }
 
     @CallSuper
-    boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull ContextAdapter adapter, @NonNull Entity item, ItemViewHolder holder, int position) {
         if (position == getRowNumberPayment()) {
-            holder.setupPlain(getPaymentIcon(), new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(getPaymentIcon());
+            holder.setText(adapter.getContext().getString(getPaymentTitle()), adapter.getPaymentString(item.getPaymentData().getPayment()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changePayment();
                 }
             });
-            holder.setText(holder.getText(getPaymentTitle()), holder.getPaymentString(item.getPaymentData().getPayment()));
             return true;
         } else if (position == getRowNumberClaimed()) {
-            CompoundButton.OnCheckedChangeListener onClaimedCheckedChangeListener = item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
+            holder.setupSwitch();
+            ZonedDateTime claimed = item.getPaymentData().getClaimed();
+            holder.bindSwitch(claimed != null, item.getPaymentData().getPaid() == null ? new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean claimed) {
                     callbacks.setClaimed(claimed);
                 }
-            } : null;
-            ZonedDateTime claimed = item.getPaymentData().getClaimed();
+            } : null);
             if (claimed == null) {
-                holder.setupSwitch(0, false, onClaimedCheckedChangeListener);
-                holder.setText(holder.getText(R.string.claimed));
+                holder.setPrimaryIcon(0);
+                holder.setText(adapter.getContext().getString(R.string.claimed));
             } else {
-                holder.setupSwitch(R.drawable.claimed_black_24dp, true, onClaimedCheckedChangeListener);
-                holder.setText(holder.getText(R.string.claimed), DateTimeUtils.getDateTimeString(claimed.toLocalDateTime()));
+                holder.setPrimaryIcon(R.drawable.claimed_black_24dp);
+                holder.setText(adapter.getContext().getString(R.string.claimed), DateTimeUtils.getDateTimeString(claimed.toLocalDateTime()));
             }
             return true;
         } else if (position == getRowNumberPaid()) {
-            CompoundButton.OnCheckedChangeListener onPaidCheckedChangeListener = item.getPaymentData().getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
+            holder.setupSwitch();
+            ZonedDateTime paid = item.getPaymentData().getPaid();
+            holder.bindSwitch(paid != null, item.getPaymentData().getClaimed() == null ? null : new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean paid) {
                     callbacks.setPaid(paid);
                 }
-            };
-            ZonedDateTime paid = item.getPaymentData().getPaid();
+            });
             if (paid == null) {
-                holder.setupSwitch(0, false, onPaidCheckedChangeListener);
-                holder.setText(holder.getText(R.string.paid));
+                holder.setPrimaryIcon(0);
+                holder.setText(adapter.getContext().getString(R.string.paid));
             } else {
-                holder.setupSwitch(R.drawable.paid_black_24dp, true, onPaidCheckedChangeListener);
-                holder.setText(holder.getText(R.string.paid), DateTimeUtils.getDateTimeString(paid.toLocalDateTime()));
+                holder.setPrimaryIcon(R.drawable.paid_black_24dp);
+                holder.setText(adapter.getContext().getString(R.string.paid), DateTimeUtils.getDateTimeString(paid.toLocalDateTime()));
             }
             return true;
         } else return false;

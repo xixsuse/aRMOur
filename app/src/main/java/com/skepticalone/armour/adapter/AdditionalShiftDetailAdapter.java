@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
@@ -97,7 +96,7 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
-        holder.secondaryIcon.setVisibility(View.GONE);
+        holder.hideSecondaryIcon();
         return holder;
     }
 
@@ -112,14 +111,16 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Context context, @NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_PAYMENT) {
-            holder.setupPlain(R.drawable.ic_dollar_black_24dp, null);
-            holder.setText(holder.getText(R.string.payment), holder.getPaymentString(shift.getTotalPayment()));
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_dollar_black_24dp);
+            holder.setText(getContext().getString(R.string.payment), getPaymentString(shift.getTotalPayment()));
+            holder.itemView.setOnClickListener(null);
             return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(shift, holder, position) ||
-                shiftDetailAdapterHelper.bindViewHolder(context, shift, holder, position) ||
-                super.bindViewHolder(context, shift, holder, position);
+        } else return payableDetailAdapterHelper.bindViewHolder(this, shift, holder, position) ||
+                shiftDetailAdapterHelper.bindViewHolder(this, shift, holder, position) ||
+                super.bindViewHolder(shift, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {

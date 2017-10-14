@@ -1,13 +1,14 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.model.AdditionalShift;
 
 public final class AdditionalShiftListAdapter extends ShiftListAdapter<AdditionalShift> {
 
-    public AdditionalShiftListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public AdditionalShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override

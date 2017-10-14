@@ -1,6 +1,5 @@
 package com.skepticalone.armour.adapter;
 
-import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -31,7 +30,7 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     }
 
     @NonNull
-    private String getTotalDuration(@NonNull Context context, @NonNull List<Entity> shifts, @NonNull ItemViewHolder holder) {
+    private String getTotalDuration(@NonNull ItemTotalsAdapter adapter, @NonNull List<Entity> shifts) {
         Duration totalDuration = Duration.ZERO;
         for (Entity shift : shifts) {
             totalDuration = totalDuration.plus(shift.getShiftData().getDuration());
@@ -42,13 +41,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
                 if (callbacks.isIncluded(shift))
                     filteredDuration = filteredDuration.plus(shift.getShiftData().getDuration());
             }
-            return holder.getDurationPercentage(context, filteredDuration, totalDuration);
+            return adapter.getDurationPercentage(filteredDuration, totalDuration);
         } else {
-            return DateTimeUtils.getDurationString(context, totalDuration);
+            return DateTimeUtils.getDurationString(adapter.getContext(), totalDuration);
         }
     }
 
-    boolean bindViewHolder(@NonNull Context context, @NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull ItemTotalsAdapter adapter, @NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
         @DrawableRes final int icon;
         @StringRes final int firstLine;
         @NonNull final List<Entity> shifts;
@@ -70,13 +69,16 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
                 if (shift.getShiftType() == shiftType) shifts.add(shift);
             }
         }
-        holder.setupTotals(icon, firstLine, callbacks.getTotalNumber(shifts, holder), callbacks.getThirdLine(getTotalDuration(context, shifts, holder), shifts, holder));
+        holder.setPrimaryIcon(icon);
+        holder.setText(adapter.getContext().getString(firstLine), callbacks.getTotalNumber(shifts), callbacks.getThirdLine(getTotalDuration(adapter, shifts), shifts));
         return true;
     }
 
     interface Callbacks<Entity extends Shift> extends TotalsAdapterCallbacks<Entity> {
         @StringRes int getAllShiftsTitle();
-        @NonNull String getThirdLine(@NonNull String totalDuration, @NonNull List<Entity> shifts, @NonNull ItemViewHolder holder);
+
+        @NonNull
+        String getThirdLine(@NonNull String totalDuration, @NonNull List<Entity> shifts);
     }
 
 }

@@ -1,14 +1,16 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShift> {
-    public RosteredShiftListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+
+    public RosteredShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override
@@ -23,14 +25,14 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
         return RosteredShift.Compliance.getComplianceIcon(shift.getCompliance().isCompliant());
     }
 
-    @Nullable
+    @NonNull
     @Override
-    String getThirdLine(@NonNull RosteredShift shift) {
-        String comment = super.getThirdLine(shift);
-        if (shift.getLoggedShiftData() == null) return comment;
-        String loggedShiftString = DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData().getStart().toLocalDateTime(), shift.getLoggedShiftData().getEnd().toLocalDateTime());
-        if (comment == null) return loggedShiftString;
-        return loggedShiftString + '\n' + comment;
+    String getSecondLine(@NonNull RosteredShift shift) {
+        String rosteredShiftSpan = super.getSecondLine(shift);
+        if (shift.getLoggedShiftData() == null) {
+            return rosteredShiftSpan;
+        }
+        return getContext().getString(R.string.logged_format, rosteredShiftSpan, DateTimeUtils.getTimeSpanString(shift.getLoggedShiftData().getStart().toLocalDateTime(), shift.getLoggedShiftData().getEnd().toLocalDateTime()));
     }
 
 }

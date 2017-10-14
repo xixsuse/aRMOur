@@ -43,13 +43,13 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
 
     @NonNull
     @Override
-    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShift> shifts, @NonNull ItemViewHolder holder) {
+    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShift> shifts) {
         return totalDuration;
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Context context, @NonNull List<RosteredShift> allShifts, @NonNull ItemViewHolder holder, int position) {
-        return helper.bindViewHolder(context, allShifts, holder, position);
+    boolean bindViewHolder(@NonNull List<RosteredShift> allShifts, @NonNull ItemViewHolder holder, int position) {
+        return helper.bindViewHolder(this, allShifts, holder, position);
     }
 
     public interface Callbacks {

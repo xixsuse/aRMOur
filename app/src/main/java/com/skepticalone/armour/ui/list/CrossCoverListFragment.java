@@ -2,6 +2,7 @@ package com.skepticalone.armour.ui.list;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -12,7 +13,13 @@ import com.skepticalone.armour.ui.totals.CrossCoverTotalsDialogFragment;
 
 public final class CrossCoverListFragment extends SingleAddListFragment<CrossCover> {
 
-    private final CrossCoverListAdapter adapter = new CrossCoverListAdapter(this);
+    private CrossCoverListAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new CrossCoverListAdapter(context, this);
+    }
 
     @Override
     int getItemType() {

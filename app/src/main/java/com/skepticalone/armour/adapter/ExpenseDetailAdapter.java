@@ -55,9 +55,9 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
-        holder.secondaryIcon.setVisibility(View.GONE);
+        holder.hideSecondaryIcon();
         return holder;
     }
 
@@ -71,18 +71,20 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Context context, @NonNull Expense expense, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TITLE) {
-            holder.setupPlain(R.drawable.ic_title_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_title_black_24dp);
+            holder.setText(getContext().getString(R.string.title), expense.getTitle());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changeTitle();
                 }
             });
-            holder.setText(holder.getText(R.string.title), expense.getTitle());
             return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(expense, holder, position) ||
-                super.bindViewHolder(context, expense, holder, position);
+        } else return payableDetailAdapterHelper.bindViewHolder(this, expense, holder, position) ||
+                super.bindViewHolder(expense, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks {

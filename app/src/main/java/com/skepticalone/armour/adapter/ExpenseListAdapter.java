@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -8,8 +9,8 @@ import com.skepticalone.armour.util.Comparators;
 
 public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
-    public ExpenseListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    public ExpenseListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override
@@ -21,10 +22,25 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
     }
 
     @Override
-    void bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, boolean selected) {
-        holder.primaryIcon.setImageResource(selected ? R.drawable.ic_check_circle_24dp : R.drawable.ic_dollar_black_24dp);
-        holder.setText(expense.getTitle(), holder.getPaymentString(expense.getTotalPayment()), expense.getComment());
-        holder.secondaryIcon.setImageResource(expense.getPaymentData().getIcon());
+    int getPrimaryIcon(@NonNull Expense expense) {
+        return R.drawable.ic_dollar_black_24dp;
+    }
+
+    @Override
+    int getSecondaryIcon(@NonNull Expense expense) {
+        return expense.getPaymentData().getIcon();
+    }
+
+    @NonNull
+    @Override
+    String getFirstLine(@NonNull Expense expense) {
+        return expense.getTitle();
+    }
+
+    @NonNull
+    @Override
+    String getSecondLine(@NonNull Expense expense) {
+        return getPaymentString(expense.getTotalPayment());
     }
 
 }

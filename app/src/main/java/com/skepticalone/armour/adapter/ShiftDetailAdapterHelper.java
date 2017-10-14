@@ -1,6 +1,5 @@
 package com.skepticalone.armour.adapter;
 
-import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -46,30 +45,36 @@ abstract class ShiftDetailAdapterHelper<Entity extends Shift> extends DateDetail
 
     @Override
     @CallSuper
-    boolean bindViewHolder(@NonNull Context context, @NonNull Entity shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull ContextAdapter adapter, @NonNull Entity shift, ItemViewHolder holder, int position) {
         if (position == getRowNumberStart()) {
-            holder.setupPlain(R.drawable.ic_play_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_play_black_24dp);
+            holder.setText(adapter.getContext().getString(R.string.start), DateTimeUtils.getTimeString(shift.getShiftData().getStart().toLocalTime()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     changeTime(true);
                 }
             });
-            holder.setText(holder.getText(R.string.start), DateTimeUtils.getTimeString(shift.getShiftData().getStart().toLocalTime()));
             return true;
         } else if (position == getRowNumberEnd()) {
-            holder.setupPlain(R.drawable.ic_stop_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_stop_black_24dp);
+            holder.setText(adapter.getContext().getString(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     changeTime(false);
                 }
             });
-            holder.setText(holder.getText(R.string.end), DateTimeUtils.getEndTimeString(shift.getShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
             return true;
         } else if (position == getRowNumberShiftType()) {
-            holder.setupPlain(shift.getShiftType().getIcon(), null);
-            holder.setText(holder.getText(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(context, shift.getShiftData().getDuration()));
+            holder.setupPlain();
+            holder.setPrimaryIcon(shift.getShiftType().getIcon());
+            holder.setText(adapter.getContext().getString(shift.getShiftType().getSingularTitle()), DateTimeUtils.getDurationString(adapter.getContext(), shift.getShiftData().getDuration()));
+            holder.itemView.setOnClickListener(null);
             return true;
-        } else return super.bindViewHolder(context, shift, holder, position);
+        } else return super.bindViewHolder(adapter, shift, holder, position);
     }
 
 }

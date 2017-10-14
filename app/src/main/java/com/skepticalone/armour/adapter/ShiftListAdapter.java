@@ -1,19 +1,17 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<Entity> {
 
-    ShiftListAdapter(@NonNull Callbacks callbacks) {
-        super(callbacks);
+    ShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override
@@ -26,23 +24,21 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     }
 
     @Override
-    final void bindViewHolder(@NonNull Entity shift, ItemViewHolder holder, boolean selected) {
-        holder.primaryIcon.setImageResource(selected ? R.drawable.ic_check_circle_24dp : shift.getShiftType().getIcon());
-        holder.secondaryIcon.setImageResource(getSecondaryIcon(shift));
-        holder.setText(
-                DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate()),
-                DateTimeUtils.getTimeSpanString(shift.getShiftData().getStart().toLocalDateTime(), shift.getShiftData().getEnd().toLocalDateTime()),
-                getThirdLine(shift)
-        );
+    final int getPrimaryIcon(@NonNull Entity shift) {
+        return shift.getShiftType().getIcon();
     }
 
-    @DrawableRes
-    abstract int getSecondaryIcon(@NonNull Entity shift);
+    @NonNull
+    @Override
+    final String getFirstLine(@NonNull Entity shift) {
+        return DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate());
+    }
 
-    @Nullable
+    @NonNull
+    @Override
     @CallSuper
-    String getThirdLine(@NonNull Entity shift) {
-        return shift.getComment();
+    String getSecondLine(@NonNull Entity shift) {
+        return DateTimeUtils.getTimeSpanString(shift.getShiftData().getStart().toLocalDateTime(), shift.getShiftData().getEnd().toLocalDateTime());
     }
 
 }

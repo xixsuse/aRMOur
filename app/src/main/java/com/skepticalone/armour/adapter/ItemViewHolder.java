@@ -21,17 +21,11 @@ import android.widget.TextView;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
-import com.skepticalone.armour.util.DateTimeUtils;
-
-import org.threeten.bp.Duration;
-
-import java.math.BigDecimal;
-import java.util.Locale;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
-    final ImageView primaryIcon, secondaryIcon;
-    final SwitchCompat switchControl;
+    private final ImageView primaryIcon, secondaryIcon;
+    private final SwitchCompat switchControl;
     private final TextView text;
     private final TextAppearanceSpan firstLineStyle, secondLineStyle, thirdLineStyle;
 
@@ -46,87 +40,33 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         thirdLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Small);
     }
 
-    @NonNull
-    private static String getPercentage(@NonNull String value, int percentage) {
-        return String.format(Locale.US, "%s (%d%%)", value, percentage);
+    void setupPlain() {
+        switchControl.setVisibility(View.GONE);
     }
 
-    private void setup(
-            @DrawableRes int icon,
-            @Nullable View.OnClickListener onClickListener,
-            boolean switchVisible,
-            boolean switchChecked,
-            @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener
-    ) {
+    void setupSwitch() {
+        switchControl.setVisibility(View.VISIBLE);
+    }
+
+    void setPrimaryIcon(@DrawableRes int icon) {
         primaryIcon.setImageResource(icon);
-        if (switchVisible) {
-            if (switchControl.isChecked() != switchChecked) {
-                switchControl.setOnCheckedChangeListener(null);
-                switchControl.setChecked(switchChecked);
-            }
-            switchControl.setEnabled(onCheckedChangeListener != null);
-            onClickListener = onCheckedChangeListener == null ? null : new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    switchControl.toggle();
-                }
-            };
-            switchControl.setVisibility(View.VISIBLE);
+    }
+
+    void setSecondaryIcon(@DrawableRes int icon) {
+        secondaryIcon.setImageResource(icon);
+    }
+
+    void hideSecondaryIcon() {
+        secondaryIcon.setVisibility(View.GONE);
+    }
+
+    void setCompliant(@NonNull Context context, @StringRes int checkPreferenceKey, @BoolRes int defaultCheck, boolean compliant) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(checkPreferenceKey), context.getResources().getBoolean(defaultCheck))) {
+            secondaryIcon.setImageResource(RosteredShift.Compliance.getComplianceIcon(compliant));
+            secondaryIcon.setVisibility(View.VISIBLE);
         } else {
-            switchControl.setVisibility(View.GONE);
+            secondaryIcon.setVisibility(View.GONE);
         }
-        switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
-        itemView.setOnClickListener(onClickListener);
-    }
-
-    void setupPlain(
-            @DrawableRes int icon,
-            @Nullable View.OnClickListener onClickListener
-    ) {
-        setup(icon, onClickListener, false, false, null);
-    }
-
-    void setupSwitch(
-            @DrawableRes int icon,
-            boolean switchChecked,
-            @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener
-    ) {
-        setup(icon, null, true, switchChecked, onCheckedChangeListener);
-    }
-
-    void setupTotals(@DrawableRes final int icon, @StringRes final int firstLine, @NonNull final String secondLine, @Nullable final String thirdLine){
-        setupPlain(icon, null);
-        setText(getText(firstLine), secondLine, thirdLine);
-    }
-
-    @NonNull
-    String getText(@StringRes int resId) {
-        return text.getContext().getString(resId);
-    }
-
-    @NonNull
-    String getCountString(int count) {
-        return Integer.toString(count);
-    }
-
-    @NonNull
-    String getCountPercentage(int count, int totalCount) {
-        return getPercentage(getCountString(count), Math.round(count * 100f / totalCount));
-    }
-
-    @NonNull
-    String getPaymentString(@NonNull BigDecimal payment) {
-        return text.getContext().getString(R.string.payment_format, payment);
-    }
-
-    @NonNull
-    String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
-        return getPercentage(getPaymentString(payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
-    }
-
-    @NonNull
-    String getDurationPercentage(@NonNull Context context, @NonNull Duration duration, @NonNull Duration totalDuration) {
-        return getPercentage(DateTimeUtils.getDurationString(context, duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
 
     void setText(@NonNull String firstLine) {
@@ -155,13 +95,20 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         text.setText(ssb);
     }
 
-    void setCompliant(@StringRes int checkPreferenceKey, @BoolRes int defaultCheck, boolean compliant) {
-        if (PreferenceManager.getDefaultSharedPreferences(itemView.getContext()).getBoolean(itemView.getContext().getString(checkPreferenceKey), itemView.getResources().getBoolean(defaultCheck))) {
-            secondaryIcon.setImageResource(RosteredShift.Compliance.getComplianceIcon(compliant));
-            secondaryIcon.setVisibility(View.VISIBLE);
-        } else {
-            secondaryIcon.setVisibility(View.GONE);
+    void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
+        boolean enabled = onCheckedChangeListener != null;
+        itemView.setOnClickListener(enabled ? new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchControl.toggle();
+            }
+        } : null);
+        switchControl.setEnabled(enabled);
+        if (switchControl.isChecked() != checked) {
+            switchControl.setOnCheckedChangeListener(null);
+            switchControl.setChecked(checked);
         }
+        switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
 }

@@ -121,128 +121,122 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Context context, @NonNull RosteredShift shift, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull RosteredShift shift, ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOGGLE_LOGGED) {
-            final boolean switchChecked;
-            final String secondLine;
-            if (shift.getLoggedShiftData() == null) {
-                switchChecked = false;
-                secondLine = null;
-            } else {
-                switchChecked = true;
-                secondLine = DateTimeUtils.getDurationString(context, shift.getLoggedShiftData().getDuration());
-            }
-            holder.setupSwitch(R.drawable.ic_clipboard_black_24dp, switchChecked, new CompoundButton.OnCheckedChangeListener() {
+            holder.setupSwitch();
+            holder.bindSwitch(shift.getLoggedShiftData() != null, new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean logged) {
                     callbacks.setLogged(logged);
                 }
             });
-            holder.setText(holder.getText(R.string.logged), secondLine);
-            holder.secondaryIcon.setVisibility(View.GONE);
+            holder.setPrimaryIcon(R.drawable.ic_clipboard_black_24dp);
+            holder.hideSecondaryIcon();
+            holder.setText(getContext().getString(R.string.logged), shift.getLoggedShiftData() == null ? null : DateTimeUtils.getDurationString(getContext(), shift.getLoggedShiftData().getDuration()));
             return true;
         } else if (position == ROW_NUMBER_LOGGED_START && shift.getLoggedShiftData() != null) {
-            holder.setupPlain(R.drawable.ic_clipboard_play_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_clipboard_play_black_24dp);
+            holder.hideSecondaryIcon();
+            holder.setText(getContext().getString(R.string.logged_start), DateTimeUtils.getTimeString(shift.getLoggedShiftData().getStart().toLocalTime()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changeTime(true, true);
                 }
             });
-            holder.setText(holder.getText(R.string.logged_start), DateTimeUtils.getTimeString(shift.getLoggedShiftData().getStart().toLocalTime()));
-            holder.secondaryIcon.setVisibility(View.GONE);
             return true;
         } else if (position == ROW_NUMBER_LOGGED_END && shift.getLoggedShiftData() != null) {
-            holder.setupPlain(R.drawable.ic_clipboard_stop_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_clipboard_stop_black_24dp);
+            holder.hideSecondaryIcon();
+            holder.setText(getContext().getString(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callbacks.changeTime(false, true);
                 }
             });
-            holder.setText(holder.getText(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
-            holder.secondaryIcon.setVisibility(View.GONE);
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_PERIOD_BETWEEN_SHIFTS_IF_LOGGED, shift)) {
-            holder.setupPlain(R.drawable.ic_sleep_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            final String secondLine;
+            if (shift.getCompliance().getDurationBetweenShifts() == null) {
+                holder.hideSecondaryIcon();
+                secondLine = getContext().getString(R.string.not_applicable);
+            } else {
+                holder.setCompliant(getContext(), R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts, !shift.getCompliance().insufficientDurationBetweenShifts());
+                secondLine = DateTimeUtils.getDurationString(getContext(), shift.getCompliance().getDurationBetweenShifts());
+            }
+            holder.setPrimaryIcon(R.drawable.ic_sleep_black_24dp);
+            holder.setText(getContext().getString(R.string.time_between_shifts), secondLine);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.showMessage(view.getContext().getString(R.string.meca_minimum_hours_between_shifts, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS));
+                    callbacks.showMessage(getContext().getString(R.string.meca_minimum_hours_between_shifts, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS));
                 }
             });
-            if (shift.getCompliance().getDurationBetweenShifts() == null) {
-                holder.setText(
-                        holder.getText(R.string.time_between_shifts),
-                        holder.getText(R.string.not_applicable)
-                );
-                holder.secondaryIcon.setVisibility(View.GONE);
-            } else {
-                holder.setText(
-                        holder.getText(R.string.time_between_shifts),
-                        DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationBetweenShifts())
-                );
-                holder.setCompliant(R.string.key_check_duration_between_shifts, R.bool.default_check_duration_between_shifts, !shift.getCompliance().insufficientDurationBetweenShifts());
-            }
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, shift)) {
-            holder.setupPlain(R.drawable.ic_duration_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setCompliant(getContext(), R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day, !shift.getCompliance().exceedsMaximumDurationOverDay());
+            holder.setPrimaryIcon(R.drawable.ic_duration_black_24dp);
+            holder.setText(getContext().getString(R.string.duration_worked_over_day), DateTimeUtils.getDurationString(getContext(), shift.getCompliance().getDurationOverDay()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.showMessage(view.getContext().getString(R.string.meca_maximum_hours_over_day, AppConstants.MAXIMUM_HOURS_OVER_DAY));
+                    callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_day, AppConstants.MAXIMUM_HOURS_OVER_DAY));
                 }
             });
-            holder.setText(
-                    holder.getText(R.string.duration_worked_over_day),
-                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverDay())
-            );
-            holder.setCompliant(R.string.key_check_duration_over_day, R.bool.default_check_duration_over_day, !shift.getCompliance().exceedsMaximumDurationOverDay());
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, shift)) {
-            holder.setupPlain(R.drawable.ic_week_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setCompliant(getContext(), R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week, !shift.getCompliance().exceedsMaximumDurationOverWeek());
+            holder.setPrimaryIcon(R.drawable.ic_week_black_24dp);
+            holder.setText(getContext().getString(R.string.duration_worked_over_week), DateTimeUtils.getDurationString(getContext(), shift.getCompliance().getDurationOverWeek()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.showMessage(view.getContext().getString(R.string.meca_maximum_hours_over_week, AppConstants.MAXIMUM_HOURS_OVER_WEEK));
+                    callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_week, AppConstants.MAXIMUM_HOURS_OVER_WEEK));
                 }
             });
-            holder.setText(
-                    holder.getText(R.string.duration_worked_over_week),
-                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverWeek())
-            );
-            holder.setCompliant(R.string.key_check_duration_over_week, R.bool.default_check_duration_over_week, !shift.getCompliance().exceedsMaximumDurationOverWeek());
             return true;
         } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, shift)) {
-            holder.setupPlain(R.drawable.ic_fortnight_black_24dp, new View.OnClickListener() {
+            holder.setupPlain();
+            holder.setCompliant(getContext(), R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight, !shift.getCompliance().exceedsMaximumDurationOverFortnight());
+            holder.setPrimaryIcon(R.drawable.ic_fortnight_black_24dp);
+            holder.setText(getContext().getString(R.string.duration_worked_over_fortnight), DateTimeUtils.getDurationString(getContext(), shift.getCompliance().getDurationOverFortnight()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    callbacks.showMessage(view.getContext().getString(R.string.meca_maximum_hours_over_fortnight, AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT));
+                    callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_fortnight, AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT));
                 }
             });
-            holder.setText(
-                    holder.getText(R.string.duration_worked_over_fortnight),
-                    DateTimeUtils.getDurationString(context, shift.getCompliance().getDurationOverFortnight())
-            );
-            holder.setCompliant(R.string.key_check_duration_over_fortnight, R.bool.default_check_duration_over_fortnight, !shift.getCompliance().exceedsMaximumDurationOverFortnight());
             return true;
         } else if (shift.getCompliance().getCurrentWeekend() != null && position == adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, shift)) {
-            holder.setupPlain(R.drawable.ic_weekend_black_24dp, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.showMessage(view.getContext().getString(R.string.meca_consecutive_weekends));
-                }
-            });
+            holder.setupPlain();
+            holder.setCompliant(getContext(), R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends, !shift.getCompliance().consecutiveWeekendsWorked());
+            holder.setPrimaryIcon(R.drawable.ic_weekend_black_24dp);
             final String secondLine, thirdLine;
             if (shift.getCompliance().getLastWeekendWorked() == null) {
-                secondLine = holder.getText(R.string.not_applicable);
+                secondLine = getContext().getString(R.string.not_applicable);
                 thirdLine = null;
             } else {
                 secondLine = DateTimeUtils.getWeekendDateSpanString(shift.getCompliance().getLastWeekendWorked());
-                thirdLine = DateTimeUtils.getWeeksAgo(context, shift.getCompliance().getCurrentWeekend(), shift.getCompliance().getLastWeekendWorked());
+                thirdLine = DateTimeUtils.getWeeksAgo(getContext(), shift.getCompliance().getCurrentWeekend(), shift.getCompliance().getLastWeekendWorked());
             }
-            holder.setText(holder.getText(R.string.last_weekend_worked), secondLine, thirdLine);
-            holder.setCompliant(R.string.key_check_consecutive_weekends, R.bool.default_check_consecutive_weekends, !shift.getCompliance().consecutiveWeekendsWorked());
+            holder.setText(getContext().getString(R.string.last_weekend_worked), secondLine, thirdLine);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callbacks.showMessage(getContext().getString(R.string.meca_consecutive_weekends));
+                }
+            });
             return true;
         } else {
-            holder.secondaryIcon.setVisibility(View.GONE);
-            return shiftDetailAdapterHelper.bindViewHolder(context, shift, holder, position) ||
-                    super.bindViewHolder(context, shift, holder, position);
+            holder.hideSecondaryIcon();
+            return shiftDetailAdapterHelper.bindViewHolder(this, shift, holder, position) ||
+                    super.bindViewHolder(shift, holder, position);
         }
     }
 

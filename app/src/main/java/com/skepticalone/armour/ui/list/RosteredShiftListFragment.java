@@ -17,7 +17,7 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        adapter = new RosteredShiftListAdapter(this);
+        adapter = new RosteredShiftListAdapter(context, this);
     }
 
     @NonNull

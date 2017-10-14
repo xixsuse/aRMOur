@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.data.model.CrossCover;
@@ -68,9 +67,9 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
-        holder.secondaryIcon.setVisibility(View.GONE);
+        holder.hideSecondaryIcon();
         return holder;
     }
 
@@ -82,10 +81,10 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Context context, @NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
-        return dateDetailAdapterHelper.bindViewHolder(context, crossCover, holder, position) ||
-                payableDetailAdapterHelper.bindViewHolder(crossCover, holder, position) ||
-                super.bindViewHolder(context, crossCover, holder, position);
+    boolean bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
+        return dateDetailAdapterHelper.bindViewHolder(this, crossCover, holder, position) ||
+                payableDetailAdapterHelper.bindViewHolder(this, crossCover, holder, position) ||
+                super.bindViewHolder(crossCover, holder, position);
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {

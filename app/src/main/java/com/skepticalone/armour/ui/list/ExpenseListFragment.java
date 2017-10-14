@@ -2,6 +2,7 @@ package com.skepticalone.armour.ui.list;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
@@ -12,7 +13,13 @@ import com.skepticalone.armour.ui.totals.ExpenseTotalsDialogFragment;
 
 public final class ExpenseListFragment extends SingleAddListFragment<Expense> {
 
-    private final ExpenseListAdapter adapter = new ExpenseListAdapter(this);
+    private ExpenseListAdapter adapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        adapter = new ExpenseListAdapter(context, this);
+    }
 
     @Override
     int getItemType() {
