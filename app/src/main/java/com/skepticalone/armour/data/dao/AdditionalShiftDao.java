@@ -114,13 +114,5 @@ public abstract class AdditionalShiftDao extends ItemDao<AdditionalShiftEntity> 
                 AdditionalShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, hourlyRateInCents)
         );
     }
-//
-//    @Query("DELETE FROM " +
-//            Contract.AdditionalShifts.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " IN(:ids)")
-//    @Override
-//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

@@ -109,13 +109,5 @@ public abstract class RosteredShiftDao extends ItemDao<RosteredShiftEntity> {
                 RosteredShiftEntity.from(getLastShiftEndInternalSync(), times, zoneId, skipWeekends)
         );
     }
-//
-//    @Query("DELETE FROM " +
-//            Contract.RosteredShifts.TABLE_NAME +
-//            " WHERE " +
-//            BaseColumns._ID +
-//            " IN(:ids)")
-//    @Override
-//    public abstract void deleteItemsSync(@NonNull Long[] ids);
 
 }

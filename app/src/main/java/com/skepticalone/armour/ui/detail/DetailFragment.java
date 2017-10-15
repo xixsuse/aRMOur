@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemDetailAdapter;
 import com.skepticalone.armour.data.model.Item;
-import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
 import com.skepticalone.armour.util.Snackbar;
@@ -29,7 +28,7 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         snackbar = (Snackbar) context;
     }
@@ -46,9 +45,8 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ItemViewModelContract<Entity> viewModel = getViewModel();
-        viewModel.getCurrentItem().observe(this, getAdapter());
-        viewModel.getErrorMessage().observe(this, new Observer<Integer>() {
+        getViewModel().getCurrentItem().observe(this, getAdapter());
+        getViewModel().getErrorMessage().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer text) {
                 if (text != null && getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {

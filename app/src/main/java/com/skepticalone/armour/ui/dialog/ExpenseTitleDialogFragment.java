@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.dialog;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -10,15 +10,22 @@ import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
 
 public final class ExpenseTitleDialogFragment extends PlainTextDialogFragment<Expense> {
 
+    private ExpenseViewModel viewModel;
+
     @Override
-    int getTitle() {
-        return R.string.title;
+    void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(ExpenseViewModel.class);
     }
 
     @NonNull
     @Override
     ExpenseViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+        return viewModel;
+    }
+
+    @Override
+    int getTitle() {
+        return R.string.title;
     }
 
     @Override

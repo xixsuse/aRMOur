@@ -3,13 +3,14 @@ package com.skepticalone.armour.data.viewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 
-import com.skepticalone.armour.adapter.MultiSelector;
 import com.skepticalone.armour.ui.list.DeletedItemsInfo;
 
 import java.util.List;
 
-public interface ItemViewModelContract<FinalItem> extends MultiSelector.ModelCallbacks {
+public interface ItemViewModelContract<FinalItem> {
 
     @NonNull
     LiveData<List<FinalItem>> getItems();
@@ -24,13 +25,19 @@ public interface ItemViewModelContract<FinalItem> extends MultiSelector.ModelCal
     @NonNull
     LiveData<Integer> getErrorMessage();
 
-//    void deleteItems(@NonNull Set<Long> itemIds, @PluralsRes int quantityStringResource);
-
     @NonNull
     LiveData<DeletedItemsInfo> getDeletedItemsInfo();
 
     @SuppressWarnings("unused")
     @NonNull
     LiveData<FinalItem> fetchItem(long id);
+
+    @NonNull
+    String getTitle(int count);
+
+    @NonNull
+    SparseBooleanArray getSelectedPositions();
+
+    void deleteItems(@NonNull RecyclerView.Adapter adapter);
 
 }

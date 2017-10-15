@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.dialog;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.data.model.AdditionalShift;
@@ -11,22 +11,29 @@ import org.threeten.bp.LocalTime;
 
 public final class AdditionalShiftTimeDialogFragment extends TimeDialogFragment<AdditionalShift> {
 
+    private AdditionalShiftViewModel viewModel;
+
     public static AdditionalShiftTimeDialogFragment newInstance(boolean start) {
         AdditionalShiftTimeDialogFragment fragment = new AdditionalShiftTimeDialogFragment();
         fragment.setArguments(getArgs(start));
         return fragment;
     }
 
-    @NonNull
     @Override
-    Shift.Data getShiftDataForDisplay(@NonNull AdditionalShift shift) {
-        return shift.getShiftData();
+    void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(AdditionalShiftViewModel.class);
     }
 
     @NonNull
     @Override
     AdditionalShiftViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
+        return viewModel;
+    }
+
+    @NonNull
+    @Override
+    Shift.Data getShiftDataForDisplay(@NonNull AdditionalShift shift) {
+        return shift.getShiftData();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.list;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -13,17 +13,16 @@ import com.skepticalone.armour.ui.totals.RosteredShiftTotalsDialogFragment;
 public final class RosteredShiftListFragment extends ShiftAddListFragment<RosteredShift> {
 
     private RosteredShiftListAdapter adapter;
+    private RosteredShiftViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        adapter = new RosteredShiftListAdapter(context, this);
+    int getItemType() {
+        return R.id.rostered;
     }
 
-    @NonNull
     @Override
-    protected RosteredShiftViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(RosteredShiftViewModel.class);
+    protected void onCreateAdapter(@NonNull Context context) {
+        adapter = new RosteredShiftListAdapter(context, this);
     }
 
     @NonNull
@@ -33,8 +32,14 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
     }
 
     @Override
-    int getItemType() {
-        return R.id.rostered;
+    protected void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(RosteredShiftViewModel.class);
+    }
+
+    @NonNull
+    @Override
+    protected RosteredShiftViewModel getViewModel() {
+        return viewModel;
     }
 
     @NonNull

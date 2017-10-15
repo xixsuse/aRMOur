@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.dialog;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
 
     private static final String LOGGED = "LOGGED";
     private boolean logged;
+    private RosteredShiftViewModel viewModel;
 
     public static RosteredShiftTimeDialogFragment newInstance(boolean start, boolean logged) {
         Bundle arguments = getArgs(start);
@@ -22,6 +23,17 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
         RosteredShiftTimeDialogFragment fragment = new RosteredShiftTimeDialogFragment();
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Override
+    void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(RosteredShiftViewModel.class);
+    }
+
+    @NonNull
+    @Override
+    RosteredShiftViewModel getViewModel() {
+        return viewModel;
     }
 
     @Override
@@ -41,12 +53,6 @@ public final class RosteredShiftTimeDialogFragment extends TimeDialogFragment<Ro
             shiftData = shift.getShiftData();
         }
         return shiftData;
-    }
-
-    @NonNull
-    @Override
-    RosteredShiftViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(RosteredShiftViewModel.class);
     }
 
     @Override

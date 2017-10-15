@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,17 +20,14 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
 
     @NonNull
     private final Callbacks mCallbacks;
-    @NonNull
-    private final MultiSelector mMultiSelector;
 
     @Nullable
     private List<Entity> mItems;
 
-    ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
+    ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
         super(context);
         setHasStableIds(true);
         mCallbacks = callbacks;
-        mMultiSelector = new MultiSelector(this, callbacks, modelCallbacks);
     }
 
     @Override
@@ -80,15 +78,13 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mMultiSelector.onClick(viewHolder.getAdapterPosition())) {
-                    mCallbacks.onClick(viewHolder.getItemId());
-                }
+                mCallbacks.onClick(viewHolder);
             }
         });
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                return mMultiSelector.onLongClick(viewHolder.getAdapterPosition());
+                return mCallbacks.onLongClick(viewHolder);
             }
         });
         return viewHolder;
@@ -112,14 +108,9 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         Entity item = mItems.get(position);
-        holder.setPrimaryIcon(mMultiSelector.inSelectMode() && mMultiSelector.isSelected(position) ? R.drawable.ic_check_circle_24dp : getPrimaryIcon(item));
+        holder.setPrimaryIcon(mCallbacks.showSelectedIcon(position) ? R.drawable.ic_check_circle_24dp : getPrimaryIcon(item));
         holder.setSecondaryIcon(getSecondaryIcon(item));
         holder.setText(getFirstLine(item), getSecondLine(item), item.getComment());
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public final boolean isSelectable() {
-        return mMultiSelector.inSelectMode();
     }
 
     @Override
@@ -148,9 +139,13 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
         notifyItemRangeChanged(position, count, payload);
     }
 
-    public interface Callbacks extends MultiSelector.UiCallbacks {
-        void onClick(long itemId);
+    public interface Callbacks {
+        void onClick(@NonNull RecyclerView.ViewHolder viewHolder);
+
+        boolean onLongClick(@NonNull RecyclerView.ViewHolder viewHolder);
         void scrollToPosition(int position);
+
+        boolean showSelectedIcon(int position);
     }
 
 }

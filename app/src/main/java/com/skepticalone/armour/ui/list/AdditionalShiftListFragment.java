@@ -1,7 +1,6 @@
 package com.skepticalone.armour.ui.list;
 
-
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -14,10 +13,15 @@ import com.skepticalone.armour.ui.totals.AdditionalShiftTotalsDialogFragment;
 public final class AdditionalShiftListFragment extends ShiftAddListFragment<AdditionalShift> {
 
     private AdditionalShiftListAdapter adapter;
+    private AdditionalShiftViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    int getItemType() {
+        return R.id.additional;
+    }
+
+    @Override
+    protected void onCreateAdapter(@NonNull Context context) {
         adapter = new AdditionalShiftListAdapter(context, this);
     }
 
@@ -28,14 +32,14 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
     }
 
     @Override
-    int getItemType() {
-        return R.id.additional;
+    protected void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(AdditionalShiftViewModel.class);
     }
 
     @NonNull
     @Override
     protected AdditionalShiftViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(AdditionalShiftViewModel.class);
+        return viewModel;
     }
 
     @NonNull

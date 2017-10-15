@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.detail;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -17,10 +17,10 @@ public final class CrossCoverDetailFragment
         implements CrossCoverDetailAdapter.Callbacks {
 
     private CrossCoverDetailAdapter adapter;
+    private CrossCoverViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    protected void onCreateAdapter(@NonNull Context context) {
         adapter = new CrossCoverDetailAdapter(context, this);
     }
 
@@ -30,10 +30,15 @@ public final class CrossCoverDetailFragment
         return adapter;
     }
 
+    @Override
+    protected void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(CrossCoverViewModel.class);
+    }
+
     @NonNull
     @Override
     protected CrossCoverViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(CrossCoverViewModel.class);
+        return viewModel;
     }
 
     @Override

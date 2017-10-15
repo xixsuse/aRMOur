@@ -37,7 +37,6 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         NO_DATA.setValue(null);
     }
 
-
     @NonNull
     private final SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
     private final LiveData<FinalItem> currentItem;
@@ -71,13 +70,13 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     }
 
     @Override
-    public void setCurrentItemId(@Nullable Long id) {
+    public final void setCurrentItemId(@Nullable Long id) {
         currentId.setValue(id);
     }
 
     @NonNull
     @Override
-    public LiveData<DeletedItemsInfo> getDeletedItemsInfo() {
+    public final LiveData<DeletedItemsInfo> getDeletedItemsInfo() {
         return deletedItemRestorer;
     }
 
@@ -89,7 +88,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     @NonNull
     @Override
-    public LiveData<FinalItem> getCurrentItem() {
+    public final LiveData<FinalItem> getCurrentItem() {
         return currentItem;
     }
 
@@ -159,7 +158,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
     }
 
     @Override
-    public void deleteItems(@NonNull RecyclerView.Adapter adapter) {
+    public final void deleteItems(@NonNull RecyclerView.Adapter adapter) {
         final Set<Long> itemIds = new HashSet<>();
         for (int i = 0; i < mSelectedPositions.size(); i++) {
             if (mSelectedPositions.valueAt(i)) {
@@ -176,7 +175,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         });
     }
 
-    private class DeletedItemsRestorer implements DeletedItemsInfo {
+    private final class DeletedItemsRestorer implements DeletedItemsInfo {
 
         @NonNull
         private final String message;

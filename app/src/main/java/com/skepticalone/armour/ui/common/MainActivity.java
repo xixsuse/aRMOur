@@ -21,8 +21,8 @@ import com.skepticalone.armour.ui.list.DeletedItemsInfo;
 import com.skepticalone.armour.ui.list.ListFragment;
 
 public final class MainActivity extends CoordinatorActivity
-        implements BottomNavigationView.OnNavigationItemSelectedListener, ListFragment.Callbacks {
-    private static final String ITEM_TYPE = "ITEM_TYPE";
+        implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
+
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
@@ -51,14 +51,10 @@ public final class MainActivity extends CoordinatorActivity
         mFabNightShift = findViewById(R.id.fab_night_shift);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-        int itemType = savedInstanceState == null ? navigation.getSelectedItemId() : savedInstanceState.getInt(ITEM_TYPE);
-        navigation.setSelectedItemId(itemType);
-        navigation.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
-                // do nothing
-            }
-        });
+        navigation.setOnNavigationItemReselectedListener(this);
+        if (savedInstanceState == null) {
+            launchListFragment(navigation.getSelectedItemId());
+        }
     }
 
     @Override
@@ -81,15 +77,7 @@ public final class MainActivity extends CoordinatorActivity
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(ITEM_TYPE, navigation.getSelectedItemId());
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int itemType = item.getItemId();
+    private void launchListFragment(int itemType) {
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.list_fragment_container, ListFragment.getNewListFragment(itemType));
@@ -97,7 +85,17 @@ public final class MainActivity extends CoordinatorActivity
             transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType));
         }
         transaction.commit();
+    }
+
+    @Override
+    public final boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        launchListFragment(item.getItemId());
         return true;
+    }
+
+    @Override
+    public final void onNavigationItemReselected(@NonNull MenuItem item) {
+        // do nothing
     }
 
     @Override

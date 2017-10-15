@@ -1,6 +1,6 @@
 package com.skepticalone.armour.ui.detail;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -17,10 +17,10 @@ public final class ExpenseDetailFragment
         implements ExpenseDetailAdapter.Callbacks {
 
     private ExpenseDetailAdapter adapter;
+    private ExpenseViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    protected void onCreateAdapter(@NonNull Context context) {
         adapter = new ExpenseDetailAdapter(context, this);
     }
 
@@ -30,10 +30,15 @@ public final class ExpenseDetailFragment
         return adapter;
     }
 
+    @Override
+    protected void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider) {
+        viewModel = viewModelProvider.get(ExpenseViewModel.class);
+    }
+
     @NonNull
     @Override
     protected ExpenseViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(ExpenseViewModel.class);
+        return viewModel;
     }
 
     @Override

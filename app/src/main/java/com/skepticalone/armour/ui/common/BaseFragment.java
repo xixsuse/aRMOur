@@ -1,5 +1,8 @@
 package com.skepticalone.armour.ui.common;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
@@ -20,11 +23,21 @@ public abstract class BaseFragment<FinalItem> extends Fragment {
     @LayoutRes
     protected abstract int getLayout();
 
+    protected abstract void onCreateAdapter(@NonNull Context context);
+
     @NonNull
     protected abstract RecyclerView.Adapter getAdapter();
 
+    protected abstract void onCreateViewModel(@NonNull ViewModelProvider viewModelProvider);
+
     @NonNull
     protected abstract ItemViewModelContract<FinalItem> getViewModel();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onCreateAdapter(context);
+    }
 
     @NonNull
     @Override
@@ -35,7 +48,14 @@ public abstract class BaseFragment<FinalItem> extends Fragment {
         return recyclerView;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        onCreateViewModel(ViewModelProviders.of(getActivity()));
+    }
+
     protected final void showDialogFragment(AppCompatDialogFragment dialogFragment) {
         dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT);
     }
+
 }

@@ -10,8 +10,8 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<Entity> {
 
-    ShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
-        super(context, callbacks, modelCallbacks);
+    ShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override

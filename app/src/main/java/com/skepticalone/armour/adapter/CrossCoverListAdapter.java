@@ -10,8 +10,8 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class CrossCoverListAdapter extends ItemListAdapter<CrossCover> {
 
-    public CrossCoverListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
-        super(context, callbacks, modelCallbacks);
+    public CrossCoverListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override

@@ -1,9 +1,15 @@
 package com.skepticalone.armour.ui.detail;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.viewModel.AdditionalShiftViewModel;
+import com.skepticalone.armour.data.viewModel.CrossCoverViewModel;
+import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
+import com.skepticalone.armour.data.viewModel.ItemViewModel;
+import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.armour.ui.common.CoordinatorActivity;
 
 public final class DetailActivity extends CoordinatorActivity {
@@ -22,9 +28,30 @@ public final class DetailActivity extends CoordinatorActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final int itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE);
-        setTitle(getName(itemType));
-        getViewModel(itemType).setCurrentItemId(getIntent().getLongExtra(ITEM_ID, NO_ID));
+        final int name, itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE);
+        final Class<? extends ItemViewModel> viewModelClass;
+        switch (itemType) {
+            case R.id.rostered:
+                name = R.string.rostered_shift;
+                viewModelClass = RosteredShiftViewModel.class;
+                break;
+            case R.id.additional:
+                name = R.string.additional_shift;
+                viewModelClass = AdditionalShiftViewModel.class;
+                break;
+            case R.id.cross_cover:
+                name = R.string.cross_cover;
+                viewModelClass = CrossCoverViewModel.class;
+                break;
+            case R.id.expenses:
+                name = R.string.expense;
+                viewModelClass = ExpenseViewModel.class;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        setTitle(name);
+        ViewModelProviders.of(this).get(viewModelClass).setCurrentItemId(getIntent().getLongExtra(ITEM_ID, NO_ID));
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()

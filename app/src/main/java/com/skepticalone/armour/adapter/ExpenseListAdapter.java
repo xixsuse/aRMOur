@@ -9,8 +9,8 @@ import com.skepticalone.armour.util.Comparators;
 
 public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
 
-    public ExpenseListAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @NonNull MultiSelector.ModelCallbacks modelCallbacks) {
-        super(context, callbacks, modelCallbacks);
+    public ExpenseListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+        super(context, callbacks);
     }
 
     @Override
