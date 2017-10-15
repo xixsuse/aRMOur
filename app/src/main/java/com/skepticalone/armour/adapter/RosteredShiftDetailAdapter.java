@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.AppConstants;
+import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShift> {
@@ -98,8 +99,18 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         if ((oldShift.getCompliance().exceedsMaximumDurationOverFortnight() != newShift.getCompliance().exceedsMaximumDurationOverFortnight()) || !oldShift.getCompliance().getDurationOverFortnight().equals(newShift.getCompliance().getDurationOverFortnight())) {
             notifyItemChanged(adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, oldShift));
         }
-        if ((oldShift.getCompliance().consecutiveWeekendsWorked() != newShift.getCompliance().consecutiveWeekendsWorked()) || !(oldShift.getCompliance().getCurrentWeekend() == null ? newShift.getCompliance().getCurrentWeekend() == null : (newShift.getCompliance().getCurrentWeekend() != null && oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) && (oldShift.getCompliance().getLastWeekendWorked() == null ? newShift.getCompliance().getLastWeekendWorked() == null : (newShift.getCompliance().getLastWeekendWorked() == null && oldShift.getCompliance().getLastWeekendWorked().isEqual(newShift.getCompliance().getLastWeekendWorked())))))) {
-            notifyItemChanged(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
+        if ((oldShift.getCompliance().getCurrentWeekend() != null) && (newShift.getCompliance().getCurrentWeekend() != null)) {
+            if (
+                    (oldShift.getCompliance().consecutiveWeekendsWorked() != newShift.getCompliance().consecutiveWeekendsWorked()) ||
+                            !oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) ||
+                            !Comparators.equalDates(oldShift.getCompliance().getLastWeekendWorked(), newShift.getCompliance().getLastWeekendWorked())
+                    ) {
+                notifyItemChanged(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
+            }
+        } else if (oldShift.getCompliance().getCurrentWeekend() == null) {
+            notifyItemInserted(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
+        } else if (newShift.getCompliance().getCurrentWeekend() == null) {
+            notifyItemRemoved(adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, oldShift));
         }
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
