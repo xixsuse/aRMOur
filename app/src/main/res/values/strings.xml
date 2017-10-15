@@ -81,6 +81,7 @@
     <string name="comment">Comment</string>
     <string name="save">Save</string>
     <string name="not_applicable">Not applicable</string>
+    <string name="miscellaneous">Miscellaneous</string>
     <string name="time_zone">Time zone</string>
     <string name="time_between_shifts">Time between shifts</string>
     <string name="duration_worked_over_day">Duration worked over day</string>

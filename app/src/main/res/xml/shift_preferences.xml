@@ -89,13 +89,6 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/cross_cover">
-        <com.skepticalone.armour.settings.CurrencyPreference
-            android:defaultValue="@integer/default_cross_cover_payment"
-            android:icon="@drawable/ic_cross_cover_black_24dp"
-            android:key="@string/key_default_cross_cover_payment"
-            android:title="@string/default_cross_cover_payment" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="@string/compliance_checks">
         <SwitchPreference
             android:defaultValue="@bool/default_check_duration_between_shifts"
@@ -123,9 +116,15 @@
             android:key="@string/key_check_consecutive_weekends"
             android:title="@string/check_consecutive_weekends_title" />
     </PreferenceCategory>
-    <com.skepticalone.armour.settings.TimeZoneListPreference
-        android:icon="@drawable/ic_globe_black_24dp"
-        android:key="@string/key_time_zone_id"
-        android:title="@string/time_zone" />
-
+    <PreferenceCategory android:title="@string/miscellaneous">
+        <com.skepticalone.armour.settings.CurrencyPreference
+            android:defaultValue="@integer/default_cross_cover_payment"
+            android:icon="@drawable/ic_cross_cover_black_24dp"
+            android:key="@string/key_default_cross_cover_payment"
+            android:title="@string/default_cross_cover_payment" />
+        <com.skepticalone.armour.settings.TimeZoneListPreference
+            android:icon="@drawable/ic_globe_black_24dp"
+            android:key="@string/key_time_zone_id"
+            android:title="@string/time_zone" />
+    </PreferenceCategory>
 </PreferenceScreen>
