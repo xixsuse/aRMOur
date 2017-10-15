@@ -17,21 +17,23 @@ import java.util.List;
 public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense> implements PayableViewModelContract<Expense>, SingleAddItemViewModelContract<Expense> {
 
     @NonNull
-    private final LiveData<List<Expense>> expenses;
-
-    @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
     public ExpenseViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        expenses = new ExpenseList(getApplication(), getDao().fetchItems());
     }
 
     @NonNull
     @Override
     ExpenseDao getDao() {
         return AppDatabase.getInstance(getApplication()).expenseDao();
+    }
+
+    @NonNull
+    @Override
+    LiveData<List<Expense>> createAllItems() {
+        return new ExpenseList(getApplication(), getDao().fetchItems());
     }
 
     @Override
@@ -68,12 +70,6 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
                 getDao().setTitleSync(getCurrentItemId(), newTitle);
             }
         });
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<Expense>> getItems() {
-        return expenses;
     }
 
     @Override

@@ -40,7 +40,7 @@ public final class DetailActivity extends CoordinatorActivity {
                 viewModelClass = AdditionalShiftViewModel.class;
                 break;
             case R.id.cross_cover:
-                name = R.string.cross_cover;
+                name = R.string.cross_cover_shift;
                 viewModelClass = CrossCoverViewModel.class;
                 break;
             case R.id.expenses:

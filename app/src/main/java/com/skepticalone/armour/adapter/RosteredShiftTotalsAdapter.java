@@ -3,7 +3,6 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
 
 import java.util.List;
@@ -15,8 +14,8 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     @NonNull
     private final ShiftTotalsAdapterHelper<RosteredShift> helper;
 
-    public RosteredShiftTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context);
+    public RosteredShiftTotalsAdapter(@NonNull Context context, int totalItemsTitle, @NonNull Callbacks callbacks) {
+        super(context, totalItemsTitle);
         this.callbacks = callbacks;
         helper = new ShiftTotalsAdapterHelper<>(this);
     }
@@ -34,11 +33,6 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     @Override
     int getRowCount() {
         return ShiftTotalsAdapterHelper.ROW_COUNT;
-    }
-
-    @Override
-    public int getAllShiftsTitle() {
-        return R.string.all_rostered_shifts;
     }
 
     @NonNull

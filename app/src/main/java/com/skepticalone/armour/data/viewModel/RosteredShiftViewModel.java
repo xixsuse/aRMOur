@@ -23,18 +23,20 @@ import java.util.List;
 
 public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEntity, RosteredShift> implements ShiftViewModelContract<RosteredShift> {
 
-    @NonNull
-    private final LiveData<List<RosteredShift>> rosteredShifts;
-
     public RosteredShiftViewModel(@NonNull Application application) {
         super(application);
-        rosteredShifts = new RosteredShiftList(application, getDao().fetchItems());
     }
 
     @NonNull
     @Override
     RosteredShiftDao getDao() {
         return AppDatabase.getInstance(getApplication()).rosteredShiftDao();
+    }
+
+    @NonNull
+    @Override
+    LiveData<List<RosteredShift>> createAllItems() {
+        return new RosteredShiftList(getApplication(), getDao().fetchItems());
     }
 
     @Override
@@ -93,12 +95,6 @@ public final class RosteredShiftViewModel extends ItemViewModel<RosteredShiftEnt
         if (shift == null || isLogged && shift.getLoggedShiftData() == null)
             throw new IllegalStateException();
         saveNewShiftTimes(shift.getId(), isLogged ? shift.getShiftData().toRawData() : shift.getShiftData().withNewTime(time, isStart), isLogged ? shift.getLoggedShiftData().withNewTime(time, isStart) : shift.getLoggedShiftData() == null ? null : shift.getLoggedShiftData().toRawData());
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<RosteredShift>> getItems() {
-        return rosteredShifts;
     }
 
     @Override

@@ -21,10 +21,18 @@ public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragmen
 
     private CompoundButton compliant, nonCompliant;
 
+    public static RosteredShiftTotalsDialogFragment newInstance(boolean selected) {
+        Bundle args = new Bundle();
+        args.putBoolean(SELECTED, selected);
+        RosteredShiftTotalsDialogFragment fragment = new RosteredShiftTotalsDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @NonNull
     @Override
     ItemTotalsAdapter<RosteredShift> createAdapter(@NonNull Context context) {
-        return new RosteredShiftTotalsAdapter(context, this);
+        return new RosteredShiftTotalsAdapter(context, isSelected() ? R.string.selected_rostered_shifts : R.string.all_rostered_shifts, this);
     }
 
     @NonNull
@@ -46,7 +54,7 @@ public final class RosteredShiftTotalsDialogFragment extends TotalsDialogFragmen
 
     @Override
     int getLayout() {
-        return R.layout.compliance_summary;
+        return R.layout.compliance_totals;
     }
 
     @Override

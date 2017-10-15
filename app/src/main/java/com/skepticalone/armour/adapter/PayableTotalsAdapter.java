@@ -13,8 +13,8 @@ public abstract class PayableTotalsAdapter<Entity extends Payment> extends ItemT
     @NonNull
     private final Callbacks callbacks;
 
-    PayableTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context);
+    PayableTotalsAdapter(@NonNull Context context, int totalItemsTitle, @NonNull Callbacks callbacks) {
+        super(context, totalItemsTitle);
         this.callbacks = callbacks;
     }
 

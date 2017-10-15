@@ -3,6 +3,7 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
@@ -15,11 +16,20 @@ import java.util.List;
 
 public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
 
+    @StringRes
+    private final int totalItemsTitle;
+
     @Nullable
     private List<Entity> mItems;
 
-    ItemTotalsAdapter(@NonNull Context context) {
+    ItemTotalsAdapter(@NonNull Context context, @StringRes int totalItemsTitle) {
         super(context);
+        this.totalItemsTitle = totalItemsTitle;
+    }
+
+    @Override
+    public final int getTotalItemsTitle() {
+        return totalItemsTitle;
     }
 
     @NonNull

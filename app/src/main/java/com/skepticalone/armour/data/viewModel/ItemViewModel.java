@@ -1,18 +1,15 @@
 package com.skepticalone.armour.data.viewModel;
 
 import android.app.Application;
-import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.PluralsRes;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.View;
 
@@ -30,37 +27,55 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class ItemViewModel<Entity, FinalItem extends Item> extends AndroidViewModel implements ItemViewModelContract<FinalItem> {
-    private static final MutableLiveData NO_DATA = new MutableLiveData<>();
-
-    static {
-        //noinspection unchecked
-        NO_DATA.setValue(null);
-    }
 
     @NonNull
-    private final SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
+    private final LiveData<List<FinalItem>> allItems, selectedItems;
+
+    @NonNull
     private final LiveData<FinalItem> currentItem;
+
+    @NonNull
+    private final MutableLiveData<SparseBooleanArray> selectedPositions = new MutableLiveData<>();
+
     @NonNull
     private final MutableLiveData<Long> currentId = new MutableLiveData<>();
+
+    @NonNull
     private final MutableLiveData<Integer> errorMessage = new MutableLiveData<>();
+
+    @NonNull
     private final MutableLiveData<DeletedItemsInfo> deletedItemRestorer = new MutableLiveData<>();
+
     ItemViewModel(@NonNull Application application) {
         super(application);
-        currentItem = Transformations.switchMap(currentId, new Function<Long, LiveData<FinalItem>>() {
-            @Override
-            public LiveData<FinalItem> apply(Long id) {
-                if (id == null){
-                    //noinspection unchecked
-                    return NO_DATA;
-                } else {
-                    return fetchItem(id);
-                }
-            }
-        });
+        allItems = createAllItems();
+        selectedPositions.setValue(new SparseBooleanArray());
+        selectedItems = new SelectedItems<>(allItems, selectedPositions);
+        currentItem = new CurrentItem<>(allItems, currentId);
     }
 
     static void runAsync(final Runnable runnable) {
         new Thread(runnable).start();
+    }
+
+    @NonNull
+    abstract LiveData<List<FinalItem>> createAllItems();
+
+    @NonNull
+    @Override
+    public final LiveData<List<FinalItem>> getAllItems() {
+        return allItems;
+    }
+
+    @NonNull
+    @Override
+    public final LiveData<SparseBooleanArray> getSelectedPositions() {
+        return selectedPositions;
+    }
+
+    @Override
+    public void setSelectedPositions(@NonNull SparseBooleanArray positions) {
+        selectedPositions.setValue(positions);
     }
 
     final long getCurrentItemId() {
@@ -128,20 +143,6 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
         return Shift.ShiftType.LiveShiftConfig.getInstance(getApplication()).getNewValue(getDefaultSharedPreferences());
     }
 
-    @NonNull
-    @Override
-    public final LiveData<FinalItem> fetchItem(final long id) {
-        return Transformations.map(getItems(), new Function<List<FinalItem>, FinalItem>() {
-            @Override
-            public FinalItem apply(List<FinalItem> items) {
-                for (FinalItem item: items) {
-                    if (item.getId() == id) return item;
-                }
-                return null;
-            }
-        });
-    }
-
     @PluralsRes
     abstract int getQuantityStringResource();
 
@@ -153,20 +154,24 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     @NonNull
     @Override
-    public final SparseBooleanArray getSelectedPositions() {
-        return mSelectedPositions;
+    public final LiveData<List<FinalItem>> getSelectedItems() {
+        return selectedItems;
     }
 
     @Override
-    public final void deleteItems(@NonNull RecyclerView.Adapter adapter) {
+    public final void deleteItems() {
+        List<FinalItem> items = getAllItems().getValue();
+        SparseBooleanArray positions = selectedPositions.getValue();
+        if (items == null || positions == null) return;
         final Set<Long> itemIds = new HashSet<>();
-        for (int i = 0; i < mSelectedPositions.size(); i++) {
-            if (mSelectedPositions.valueAt(i)) {
-                itemIds.add(adapter.getItemId(mSelectedPositions.keyAt(i)));
+        for (int i = 0; i < positions.size(); i++) {
+            if (positions.valueAt(i)) {
+                itemIds.add(items.get(positions.keyAt(i)).getId());
             }
         }
-        mSelectedPositions.clear();
         if (itemIds.isEmpty()) return;
+        positions.clear();
+        selectedPositions.setValue(positions);
         runAsync(new Runnable() {
             @Override
             public void run() {

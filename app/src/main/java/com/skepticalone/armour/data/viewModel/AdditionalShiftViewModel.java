@@ -23,21 +23,23 @@ import java.util.List;
 public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShiftEntity, AdditionalShift> implements ShiftViewModelContract<AdditionalShift>, PayableViewModelContract<AdditionalShift> {
 
     @NonNull
-    private final LiveData<List<AdditionalShift>> additionalShifts;
-
-    @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
     public AdditionalShiftViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        additionalShifts = new AdditionalShiftList(application, getDao().fetchItems());
     }
 
     @NonNull
     @Override
     AdditionalShiftDao getDao() {
         return AppDatabase.getInstance(getApplication()).additionalShiftDao();
+    }
+
+    @NonNull
+    @Override
+    LiveData<List<AdditionalShift>> createAllItems() {
+        return new AdditionalShiftList(getApplication(), getDao().fetchItems());
     }
 
     @Override
@@ -93,12 +95,6 @@ public final class AdditionalShiftViewModel extends ItemViewModel<AdditionalShif
         AdditionalShift shift = getCurrentItem().getValue();
         if (shift == null) throw new IllegalStateException();
         saveNewShiftTimes(shift.getId(), shift.getShiftData().withNewTime(time, isStart));
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<AdditionalShift>> getItems() {
-        return additionalShifts;
     }
 
     @Override

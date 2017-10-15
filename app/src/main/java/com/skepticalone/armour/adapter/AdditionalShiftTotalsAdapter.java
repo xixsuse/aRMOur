@@ -3,7 +3,6 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.AdditionalShift;
 
 import java.util.List;
@@ -13,19 +12,14 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
     @NonNull
     private final ShiftTotalsAdapterHelper<AdditionalShift> helper;
 
-    public AdditionalShiftTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context, callbacks);
+    public AdditionalShiftTotalsAdapter(@NonNull Context context, int totalItemsTitle, @NonNull Callbacks callbacks) {
+        super(context, totalItemsTitle, callbacks);
         helper = new ShiftTotalsAdapterHelper<>(this);
     }
 
     @Override
     int getRowCount() {
         return ShiftTotalsAdapterHelper.ROW_COUNT;
-    }
-
-    @Override
-    public int getAllShiftsTitle() {
-        return R.string.all_additional_shifts;
     }
 
     @NonNull

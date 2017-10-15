@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Payment;
@@ -16,12 +15,8 @@ public final class SinglePayableTotalsAdapter<Entity extends Payment> extends Pa
             ROW_NUMBER_TOTAL_PAYMENT = 1,
             ROW_COUNT = 2;
 
-    @StringRes
-    private final int totalItemsTitle;
-
-    public SinglePayableTotalsAdapter(@NonNull Context context, @NonNull Callbacks callbacks, @StringRes int totalItemsTitle) {
-        super(context, callbacks);
-        this.totalItemsTitle = totalItemsTitle;
+    public SinglePayableTotalsAdapter(@NonNull Context context, int totalItemsTitle, @NonNull Callbacks callbacks) {
+        super(context, totalItemsTitle, callbacks);
     }
 
     @Override
@@ -33,7 +28,7 @@ public final class SinglePayableTotalsAdapter<Entity extends Payment> extends Pa
     final boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
             holder.setPrimaryIcon(R.drawable.ic_sigma_black_24dp);
-            holder.setText(getContext().getString(totalItemsTitle), getTotalNumber(allItems));
+            holder.setText(getContext().getString(getTotalItemsTitle()), getTotalNumber(allItems));
             return true;
         } else if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setPrimaryIcon(R.drawable.ic_dollar_black_24dp);

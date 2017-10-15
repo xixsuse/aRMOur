@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/subtotals"
+        android:icon="@drawable/ic_sigma_white_24dp"
+        android:title="@string/subtotals"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_delete_white_24dp"
         android:title="@string/delete"

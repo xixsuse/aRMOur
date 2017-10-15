@@ -53,7 +53,7 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
         @NonNull final List<Entity> shifts;
         if (position == ROW_NUMBER_ALL_SHIFTS) {
             icon = R.drawable.ic_sigma_black_24dp;
-            firstLine = callbacks.getAllShiftsTitle();
+            firstLine = callbacks.getTotalItemsTitle();
             shifts = allShifts;
         } else {
             Shift.ShiftType shiftType;
@@ -75,10 +75,10 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
     }
 
     interface Callbacks<Entity extends Shift> extends TotalsAdapterCallbacks<Entity> {
-        @StringRes int getAllShiftsTitle();
 
         @NonNull
         String getThirdLine(@NonNull String totalDuration, @NonNull List<Entity> shifts);
+
     }
 
 }

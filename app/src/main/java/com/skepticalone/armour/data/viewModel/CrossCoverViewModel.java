@@ -20,21 +20,23 @@ import java.util.List;
 public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, CrossCover> implements DateViewModelContract<CrossCover>, PayableViewModelContract<CrossCover>, SingleAddItemViewModelContract<CrossCover> {
 
     @NonNull
-    private final LiveData<List<CrossCover>> crossCoverShifts;
-
-    @NonNull
     private final PayableViewModelHelper payableViewModelHelper;
 
     public CrossCoverViewModel(@NonNull Application application) {
         super(application);
         payableViewModelHelper = new PayableViewModelHelper(getDao());
-        crossCoverShifts = new CrossCoverList(getApplication(), getDao().fetchItems());
     }
 
     @NonNull
     @Override
     CrossCoverDao getDao() {
         return AppDatabase.getInstance(getApplication()).crossCoverDao();
+    }
+
+    @NonNull
+    @Override
+    LiveData<List<CrossCover>> createAllItems() {
+        return new CrossCoverList(getApplication(), getDao().fetchItems());
     }
 
     @Override
@@ -76,12 +78,6 @@ public final class CrossCoverViewModel extends ItemViewModel<CrossCoverEntity, C
                 }
             }
         });
-    }
-
-    @NonNull
-    @Override
-    public LiveData<List<CrossCover>> getItems() {
-        return crossCoverShifts;
     }
 
     @Override

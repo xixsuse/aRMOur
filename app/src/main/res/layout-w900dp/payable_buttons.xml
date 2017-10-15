@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ToggleButton
+        android:id="@+id/unclaimed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:drawableEnd="@drawable/unclaimed_black_24dp"
+        android:drawableRight="@drawable/unclaimed_black_24dp"
+        android:textOff="@string/unclaimed"
+        android:textOn="@string/unclaimed" />
+
+    <ToggleButton
+        android:id="@+id/claimed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:drawableEnd="@drawable/claimed_black_24dp"
+        android:drawableRight="@drawable/claimed_black_24dp"
+        android:textOff="@string/claimed"
+        android:textOn="@string/claimed" />
+
+    <ToggleButton
+        android:id="@+id/paid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:drawableEnd="@drawable/paid_black_24dp"
+        android:drawableRight="@drawable/paid_black_24dp"
+        android:textOff="@string/paid"
+        android:textOn="@string/paid" />
+</merge>

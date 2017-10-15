@@ -14,7 +14,7 @@
     <item
         android:id="@+id/cross_cover"
         android:icon="@drawable/ic_cross_cover_black_24dp"
-        android:title="@string/cross_cover" />
+        android:title="@string/cross_cover_shifts" />
 
     <item
         android:id="@+id/expenses"

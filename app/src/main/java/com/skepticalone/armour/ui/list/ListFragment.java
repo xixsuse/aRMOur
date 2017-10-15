@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,16 +56,16 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.list_fragment_menu, menu);
+        inflater.inflate(R.menu.list_menu, menu);
     }
 
     @NonNull
-    abstract TotalsDialogFragment<FinalItem> createSummaryDialogFragment();
+    abstract TotalsDialogFragment<FinalItem> createSummaryDialogFragment(boolean subtotals);
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.totals) {
-            showDialogFragment(createSummaryDialogFragment());
+            showDialogFragment(createSummaryDialogFragment(false));
             return true;
         } else return super.onOptionsItemSelected(item);
     }
@@ -103,7 +104,7 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupFab(callbacks);
-        getViewModel().getItems().observe(this, getAdapter());
+        getViewModel().getAllItems().observe(this, getAdapter());
         getViewModel().getDeletedItemsInfo().observe(this, new Observer<DeletedItemsInfo>() {
             @Override
             public void onChanged(@Nullable DeletedItemsInfo deletedItemsInfo) {
@@ -112,9 +113,23 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
                 }
             }
         });
-        if (getViewModel().getSelectedPositions().size() > 0) {
-            startActionMode();
-        }
+        getViewModel().getSelectedPositions().observe(this, new Observer<SparseBooleanArray>() {
+            @Override
+            public void onChanged(@Nullable SparseBooleanArray selectedPositions) {
+                if (selectedPositions != null) {
+                    int count = selectedPositions.size();
+                    if (count > 0) {
+                        if (mSelectMode == null) {
+                            mSelectMode = getActivity().startActionMode(ListFragment.this);
+                        }
+                        //noinspection ConstantConditions
+                        mSelectMode.setTitle(getViewModel().getTitle(count));
+                    } else if (mSelectMode != null) {
+                        mSelectMode.finish();
+                    }
+                }
+            }
+        });
     }
 
     @NonNull
@@ -126,31 +141,28 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mSelectMode = mode;
+        getViewModel().setCurrentItemId(null);
+        hideFab(callbacks);
+        callbacks.setNavigationBarVisibility(View.GONE);
+        recyclerView.setPadding(0, 0, 0, 0);
         MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.contextual_action_menu, menu);
+        inflater.inflate(R.menu.selection_menu, menu);
         return true;
     }
 
     @Override
     public final boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        int size = getViewModel().getSelectedPositions().size();
-        if (size == 0) {
-            mode.finish();
-            return false;
-        } else {
-            mode.setTitle(getViewModel().getTitle(size));
-            return true;
-        }
+        return false;
     }
 
     @Override
     public final boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                getViewModel().deleteItems(getAdapter());
-                mSelectMode = null;
-                mode.finish();
+                getViewModel().deleteItems();
+                return true;
+            case R.id.subtotals:
+                showDialogFragment(createSummaryDialogFragment(true));
                 return true;
             default:
                 return false;
@@ -159,29 +171,39 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
 
     @Override
     public final void onDestroyActionMode(ActionMode mode) {
-        if (mSelectMode != null) {
-            for (int i = 0; i < getViewModel().getSelectedPositions().size(); i++) {
-                if (getViewModel().getSelectedPositions().valueAt(i)) {
-                    getAdapter().notifyItemChanged(getViewModel().getSelectedPositions().keyAt(i));
+        mSelectMode = null;
+        SparseBooleanArray selectedPositions = getSelectedPositions();
+        if (selectedPositions.size() > 0) {
+            for (int i = 0; i < selectedPositions.size(); i++) {
+                if (selectedPositions.valueAt(i)) {
+                    getAdapter().notifyItemChanged(selectedPositions.keyAt(i));
                 }
             }
-            mSelectMode = null;
+            selectedPositions.clear();
+            getViewModel().setSelectedPositions(selectedPositions);
         }
-        getViewModel().getSelectedPositions().clear();
         recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.list_item_height));
         callbacks.setNavigationBarVisibility(View.VISIBLE);
         showFab(callbacks);
     }
 
+    @NonNull
+    private SparseBooleanArray getSelectedPositions() {
+        //noinspection ConstantConditions
+        return getViewModel().getSelectedPositions().getValue();
+    }
+
     private void setSelected(int position, boolean selected) {
-        if (selected) getViewModel().getSelectedPositions().put(position, true);
-        else getViewModel().getSelectedPositions().delete(position);
+        SparseBooleanArray selectedPositions = getSelectedPositions();
+        if (selected) selectedPositions.put(position, true);
+        else selectedPositions.delete(position);
+        getViewModel().setSelectedPositions(selectedPositions);
         getAdapter().notifyItemChanged(position);
     }
 
     @Override
     public boolean showSelectedIcon(int position) {
-        return mSelectMode != null && getViewModel().getSelectedPositions().get(position, false);
+        return mSelectMode != null && getSelectedPositions().get(position, false);
     }
 
     @Override
@@ -192,28 +214,17 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
             callbacks.onClick(getItemType(), itemId);
         } else {
             int position = viewHolder.getAdapterPosition();
-            setSelected(position, !getViewModel().getSelectedPositions().get(position, false));
-            mSelectMode.invalidate();
+            setSelected(position, !getSelectedPositions().get(position, false));
         }
     }
 
     @Override
     public boolean onLongClick(@NonNull RecyclerView.ViewHolder viewHolder) {
         if (mSelectMode == null) {
-            getViewModel().getSelectedPositions().clear();
             setSelected(viewHolder.getAdapterPosition(), true);
-            startActionMode();
             return true;
         }
         return false;
-    }
-
-    private void startActionMode() {
-        getViewModel().setCurrentItemId(null);
-        hideFab(callbacks);
-        callbacks.setNavigationBarVisibility(View.GONE);
-        recyclerView.setPadding(0, 0, 0, 0);
-        getActivity().startActionMode(this);
     }
 
     public interface Callbacks extends FabCallbacks {

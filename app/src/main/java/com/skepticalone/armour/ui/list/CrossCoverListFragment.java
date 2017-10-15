@@ -44,8 +44,8 @@ public final class CrossCoverListFragment extends SingleAddListFragment<CrossCov
 
     @NonNull
     @Override
-    CrossCoverTotalsDialogFragment createSummaryDialogFragment() {
-        return new CrossCoverTotalsDialogFragment();
+    CrossCoverTotalsDialogFragment createSummaryDialogFragment(boolean subtotals) {
+        return CrossCoverTotalsDialogFragment.newInstance(subtotals);
     }
 
 }

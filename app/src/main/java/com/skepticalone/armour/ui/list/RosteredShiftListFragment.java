@@ -44,8 +44,8 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
 
     @NonNull
     @Override
-    RosteredShiftTotalsDialogFragment createSummaryDialogFragment() {
-        return new RosteredShiftTotalsDialogFragment();
+    RosteredShiftTotalsDialogFragment createSummaryDialogFragment(boolean subtotals) {
+        return RosteredShiftTotalsDialogFragment.newInstance(subtotals);
     }
 
 }

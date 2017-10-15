@@ -44,8 +44,8 @@ public final class ExpenseListFragment extends SingleAddListFragment<Expense> {
 
     @NonNull
     @Override
-    ExpenseTotalsDialogFragment createSummaryDialogFragment() {
-        return new ExpenseTotalsDialogFragment();
+    ExpenseTotalsDialogFragment createSummaryDialogFragment(boolean subtotals) {
+        return ExpenseTotalsDialogFragment.newInstance(subtotals);
     }
 
 }

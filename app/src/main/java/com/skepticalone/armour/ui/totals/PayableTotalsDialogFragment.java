@@ -16,7 +16,7 @@ abstract class PayableTotalsDialogFragment<Entity> extends TotalsDialogFragment<
 
     @Override
     final int getLayout() {
-        return R.layout.payable_summary;
+        return R.layout.payable_totals;
     }
 
     @Override

@@ -44,8 +44,8 @@ public final class AdditionalShiftListFragment extends ShiftAddListFragment<Addi
 
     @NonNull
     @Override
-    AdditionalShiftTotalsDialogFragment createSummaryDialogFragment() {
-        return new AdditionalShiftTotalsDialogFragment();
+    AdditionalShiftTotalsDialogFragment createSummaryDialogFragment(boolean subtotals) {
+        return AdditionalShiftTotalsDialogFragment.newInstance(subtotals);
     }
 
 }
