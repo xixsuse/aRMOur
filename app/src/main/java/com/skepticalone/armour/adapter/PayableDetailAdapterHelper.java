@@ -15,7 +15,7 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.ZonedDateTime;
 
-abstract class PayableDetailAdapterHelper<Entity extends Payment> {
+abstract class PayableDetailAdapterHelper<FinalItem extends Payment> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -25,7 +25,7 @@ abstract class PayableDetailAdapterHelper<Entity extends Payment> {
     }
 
     @CallSuper
-    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem, @NonNull RecyclerView.Adapter adapter) {
+    void onChanged(@NonNull FinalItem oldItem, @NonNull FinalItem newItem, @NonNull RecyclerView.Adapter adapter) {
         if (!oldItem.getPaymentData().getPayment().equals(newItem.getPaymentData().getPayment())) {
             adapter.notifyItemChanged(getRowNumberPayment());
         }
@@ -35,8 +35,9 @@ abstract class PayableDetailAdapterHelper<Entity extends Payment> {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @CallSuper
-    boolean bindViewHolder(@NonNull ContextAdapter adapter, @NonNull Entity item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull FinalItem item, int position, ItemViewHolder holder, @NonNull ObservableAdapter adapter) {
         if (position == getRowNumberPayment()) {
             holder.setupPlain();
             holder.setPrimaryIcon(getPaymentIcon());

@@ -19,20 +19,20 @@ public final class AppConstants {
         return minutes - minutes % MINUTES_PER_STEP;
     }
 
-    public static boolean insufficientDurationBetweenShifts(@NonNull Duration duration) {
-        return duration.compareTo(Duration.ofHours(MINIMUM_HOURS_BETWEEN_SHIFTS)) == -1;
+    public static boolean sufficientDurationBetweenShifts(@NonNull Duration duration) {
+        return duration.compareTo(Duration.ofHours(MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1;
     }
 
-    public static boolean exceedsMaximumDurationOverDay(@NonNull Duration duration) {
-        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_DAY)) == 1;
+    public static boolean compliesWithMaximumDurationOverDay(@NonNull Duration duration) {
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_DAY)) != 1;
     }
 
-    public static boolean exceedsMaximumDurationOverWeek(@NonNull Duration duration) {
-        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_WEEK)) == 1;
+    public static boolean compliesWithMaximumDurationOverWeek(@NonNull Duration duration) {
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_WEEK)) != 1;
     }
 
-    public static boolean exceedsMaximumDurationOverFortnight(@NonNull Duration duration) {
-        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_FORTNIGHT)) == 1;
+    public static boolean compliesWithMaximumDurationOverFortnight(@NonNull Duration duration) {
+        return duration.compareTo(Duration.ofHours(MAXIMUM_HOURS_OVER_FORTNIGHT)) != 1;
     }
 
 }

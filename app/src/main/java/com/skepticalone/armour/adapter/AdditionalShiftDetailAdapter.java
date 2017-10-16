@@ -89,7 +89,7 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    int getRowCount(@NonNull AdditionalShift shift) {
+    int getItemCount(@NonNull AdditionalShift shift) {
         return ROW_COUNT;
     }
 
@@ -101,26 +101,25 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    void onItemUpdated(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
-        super.onItemUpdated(oldShift, newShift);
+    void onChanged(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
+        super.onChanged(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
-        payableDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
+        payableDetailAdapterHelper.onChanged(oldShift, newShift, this);
         if (!oldShift.getTotalPayment().equals(newShift.getTotalPayment())) {
             notifyItemChanged(ROW_NUMBER_TOTAL_PAYMENT);
         }
     }
 
     @Override
-    boolean bindViewHolder(@NonNull AdditionalShift shift, ItemViewHolder holder, int position) {
+    void onBindViewHolder(@NonNull AdditionalShift shift, int position, @NonNull ItemViewHolder holder) {
         if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_dollar_black_24dp);
             holder.setText(getContext().getString(R.string.payment), getPaymentString(shift.getTotalPayment()));
             holder.itemView.setOnClickListener(null);
-            return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(this, shift, holder, position) ||
-                shiftDetailAdapterHelper.bindViewHolder(this, shift, holder, position) ||
-                super.bindViewHolder(shift, holder, position);
+        } else if (!payableDetailAdapterHelper.bindViewHolder(shift, position, holder, this) && !shiftDetailAdapterHelper.bindViewHolder(shift, position, holder, this)) {
+            super.onBindViewHolder(shift, position, holder);
+        }
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {

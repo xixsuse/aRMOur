@@ -1,22 +1,18 @@
 package com.skepticalone.armour.adapter;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.util.Comparators;
 
-public abstract class ItemDetailAdapter<Entity extends Item> extends ContextAdapter implements Observer<Entity> {
+public abstract class ItemDetailAdapter<FinalItem extends Item> extends ObservableAdapter<FinalItem> {
 
     @NonNull
     private final Callbacks callbacks;
-    @Nullable
-    private Entity mItem;
 
     ItemDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
         super(context);
@@ -24,20 +20,16 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends ContextAdap
     }
 
     @Override
-    public final int getItemCount() {
-        return mItem == null ? 0 : getRowCount(mItem);
-    }
-
     @CallSuper
-    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem) {
+    void onChanged(@NonNull FinalItem oldItem, @NonNull FinalItem newItem) {
         if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
             notifyItemChanged(getRowNumberComment(oldItem));
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    @Override
     @CallSuper
-    boolean bindViewHolder(@NonNull Entity item, ItemViewHolder holder, int position) {
+    void onBindViewHolder(@NonNull FinalItem item, int position, @NonNull ItemViewHolder holder) {
         if (position == getRowNumberComment(item)) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_comment_black_24dp);
@@ -48,35 +40,13 @@ public abstract class ItemDetailAdapter<Entity extends Item> extends ContextAdap
                     callbacks.changeComment();
                 }
             });
-            return true;
-        } else return false;
+        } else throw new IllegalStateException();
     }
 
-    @Override
-    public final void onChanged(@Nullable Entity item) {
-        if (mItem == null && item == null) {
-            return;
-        } else if (mItem == null) {
-            notifyItemRangeInserted(0, getRowCount(item));
-        } else if (item == null) {
-            notifyItemRangeRemoved(0, getRowCount(mItem));
-        } else {
-            onItemUpdated(mItem, item);
-        }
-        mItem = item;
-    }
-
-    @Override
-    public final void onBindViewHolder(ItemViewHolder holder, int position) {
-        //noinspection ConstantConditions
-        if (!bindViewHolder(mItem, holder, position)) {
-            throw new IllegalStateException();
-        }
-    }
-    abstract int getRowCount(@NonNull Entity item);
-    abstract int getRowNumberComment(@NonNull Entity item);
+    abstract int getRowNumberComment(@NonNull FinalItem item);
 
     public interface Callbacks {
         void changeComment();
     }
+
 }

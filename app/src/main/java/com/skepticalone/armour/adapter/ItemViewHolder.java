@@ -1,12 +1,8 @@
 package com.skepticalone.armour.adapter;
 
-import android.content.Context;
-import android.preference.PreferenceManager;
-import android.support.annotation.BoolRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.SpannableStringBuilder;
@@ -60,12 +56,12 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         secondaryIcon.setVisibility(View.GONE);
     }
 
-    void setCompliant(@NonNull Context context, @StringRes int checkPreferenceKey, @BoolRes int defaultCheck, boolean compliant) {
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(checkPreferenceKey), context.getResources().getBoolean(defaultCheck))) {
+    void setCompliant(@Nullable Boolean compliant) {
+        if (compliant == null) {
+            secondaryIcon.setVisibility(View.GONE);
+        } else {
             secondaryIcon.setImageResource(RosteredShift.Compliance.getComplianceIcon(compliant));
             secondaryIcon.setVisibility(View.VISIBLE);
-        } else {
-            secondaryIcon.setVisibility(View.GONE);
         }
     }
 

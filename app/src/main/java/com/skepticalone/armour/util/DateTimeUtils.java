@@ -52,8 +52,12 @@ public final class DateTimeUtils {
         return start + " - " + end;
     }
 
+    public static String getDateSpanString(@NonNull LocalDate start, @NonNull LocalDate end) {
+        return getSpanString(dateFormatter.format(start), dateFormatter.format(end));
+    }
+
     public static String getWeekendDateSpanString(@NonNull LocalDate saturday) {
-        return getSpanString(dateFormatter.format(saturday), dateFormatter.format(saturday.plusDays(1)));
+        return getDateSpanString(saturday, saturday.plusDays(1));
     }
 
     public static String getTimeSpanString(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {

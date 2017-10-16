@@ -62,7 +62,7 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    int getRowCount(@NonNull CrossCover crossCover) {
+    int getItemCount(@NonNull CrossCover crossCover) {
         return ROW_COUNT;
     }
 
@@ -74,17 +74,17 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    void onItemUpdated(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
-        super.onItemUpdated(oldCrossCover, newCrossCover);
-        payableDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
+    void onChanged(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
+        super.onChanged(oldCrossCover, newCrossCover);
+        payableDetailAdapterHelper.onChanged(oldCrossCover, newCrossCover, this);
         dateDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
     }
 
     @Override
-    boolean bindViewHolder(@NonNull CrossCover crossCover, ItemViewHolder holder, int position) {
-        return dateDetailAdapterHelper.bindViewHolder(this, crossCover, holder, position) ||
-                payableDetailAdapterHelper.bindViewHolder(this, crossCover, holder, position) ||
-                super.bindViewHolder(crossCover, holder, position);
+    void onBindViewHolder(@NonNull CrossCover crossCover, int position, @NonNull ItemViewHolder holder) {
+        if (!dateDetailAdapterHelper.bindViewHolder(crossCover, position, holder, this) && !payableDetailAdapterHelper.bindViewHolder(crossCover, position, holder, this)) {
+            super.onBindViewHolder(crossCover, position, holder);
+        }
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {

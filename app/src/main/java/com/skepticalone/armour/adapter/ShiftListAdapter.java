@@ -8,7 +8,7 @@ import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
-abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<Entity> {
+abstract class ShiftListAdapter<FinalItem extends Shift> extends ItemListAdapter<FinalItem> {
 
     ShiftListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
         super(context, callbacks);
@@ -16,7 +16,7 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
 
     @Override
     @CallSuper
-    boolean areContentsTheSame(@NonNull Entity shift1, @NonNull Entity shift2) {
+    boolean areContentsTheSame(@NonNull FinalItem shift1, @NonNull FinalItem shift2) {
         return shift1.getShiftType() == shift2.getShiftType() &&
                 shift1.getShiftData().getStart().toLocalDateTime().isEqual(shift2.getShiftData().getStart().toLocalDateTime()) &&
                 shift1.getShiftData().getEnd().toLocalDateTime().isEqual(shift2.getShiftData().getEnd().toLocalDateTime()) &&
@@ -24,20 +24,20 @@ abstract class ShiftListAdapter<Entity extends Shift> extends ItemListAdapter<En
     }
 
     @Override
-    final int getPrimaryIcon(@NonNull Entity shift) {
+    final int getPrimaryIcon(@NonNull FinalItem shift) {
         return shift.getShiftType().getIcon();
     }
 
     @NonNull
     @Override
-    final String getFirstLine(@NonNull Entity shift) {
+    final String getFirstLine(@NonNull FinalItem shift) {
         return DateTimeUtils.getFullDateString(shift.getShiftData().getStart().toLocalDate());
     }
 
     @NonNull
     @Override
     @CallSuper
-    String getSecondLine(@NonNull Entity shift) {
+    String getSecondLine(@NonNull FinalItem shift) {
         return DateTimeUtils.getTimeSpanString(shift.getShiftData().getStart().toLocalDateTime(), shift.getShiftData().getEnd().toLocalDateTime());
     }
 

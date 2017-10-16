@@ -50,7 +50,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    int getRowCount(@NonNull Expense expense) {
+    int getItemCount(@NonNull Expense expense) {
         return ROW_COUNT;
     }
 
@@ -62,16 +62,16 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    void onItemUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
-        super.onItemUpdated(oldExpense, newExpense);
-        payableDetailAdapterHelper.onItemUpdated(oldExpense, newExpense, this);
+    void onChanged(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
+        super.onChanged(oldExpense, newExpense);
+        payableDetailAdapterHelper.onChanged(oldExpense, newExpense, this);
         if (!oldExpense.getTitle().equals(newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);
         }
     }
 
     @Override
-    boolean bindViewHolder(@NonNull Expense expense, ItemViewHolder holder, int position) {
+    void onBindViewHolder(@NonNull Expense expense, int position, @NonNull ItemViewHolder holder) {
         if (position == ROW_NUMBER_TITLE) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_title_black_24dp);
@@ -82,9 +82,9 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
                     callbacks.changeTitle();
                 }
             });
-            return true;
-        } else return payableDetailAdapterHelper.bindViewHolder(this, expense, holder, position) ||
-                super.bindViewHolder(expense, holder, position);
+        } else if (!payableDetailAdapterHelper.bindViewHolder(expense, position, holder, this)) {
+            super.onBindViewHolder(expense, position, holder);
+        }
     }
 
     public interface Callbacks extends PayableDetailAdapterHelper.Callbacks {

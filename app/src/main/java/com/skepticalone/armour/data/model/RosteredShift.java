@@ -85,6 +85,10 @@ public final class RosteredShift extends Shift {
         return previousShifts.isEmpty() ? null : Duration.between(previousShifts.get(previousShifts.size() - 1).getShiftData().getEnd(), getShiftData().getStart());
     }
 
+    //    public final boolean isWeekend() {
+//        return getCompliance().getCurrentWeekend() != null;
+//    }
+//
     @NonNull
     public Compliance getCompliance() {
         return compliance;
@@ -98,13 +102,14 @@ public final class RosteredShift extends Shift {
         private final Duration durationBetweenShifts;
         @Nullable
         private final LocalDate currentWeekend, lastWeekendWorked;
-        private final boolean
-                exceedsMaximumDurationOverDay,
-                exceedsMaximumDurationOverWeek,
-                exceedsMaximumDurationOverFortnight,
-                insufficientDurationBetweenShifts,
-                consecutiveWeekendsWorked,
-                compliant;
+        @Nullable
+        private final Boolean
+                compliesWithMaximumDurationOverDay,
+                compliesWithMaximumDurationOverWeek,
+                compliesWithMaximumDurationOverFortnight,
+                sufficientDurationBetweenShifts,
+                previousWeekendFree;
+        private final boolean compliant;
 
         private Compliance(
                 @NonNull Duration durationOverDay,
@@ -116,22 +121,21 @@ public final class RosteredShift extends Shift {
                 @NonNull Configuration configuration
         ) {
             this.durationOverDay = durationOverDay;
-            exceedsMaximumDurationOverDay = configuration.checkDurationOverDay && AppConstants.exceedsMaximumDurationOverDay(this.durationOverDay);
+            compliesWithMaximumDurationOverDay = configuration.checkDurationOverDay ? AppConstants.compliesWithMaximumDurationOverDay(this.durationOverDay) : null;
             this.durationOverWeek = durationOverWeek;
-            exceedsMaximumDurationOverWeek = configuration.checkDurationOverWeek && AppConstants.exceedsMaximumDurationOverWeek(this.durationOverWeek);
+            compliesWithMaximumDurationOverWeek = configuration.checkDurationOverWeek ? AppConstants.compliesWithMaximumDurationOverWeek(this.durationOverWeek) : null;
             this.durationOverFortnight = durationOverFortnight;
-            exceedsMaximumDurationOverFortnight = configuration.checkDurationOverFortnight && AppConstants.exceedsMaximumDurationOverFortnight(this.durationOverFortnight);
+            compliesWithMaximumDurationOverFortnight = configuration.checkDurationOverFortnight ? AppConstants.compliesWithMaximumDurationOverFortnight(this.durationOverFortnight) : null;
             this.durationBetweenShifts = durationBetweenShifts;
-            insufficientDurationBetweenShifts = configuration.checkDurationBetweenShifts && this.durationBetweenShifts != null && AppConstants.insufficientDurationBetweenShifts(this.durationBetweenShifts);
+            sufficientDurationBetweenShifts = (configuration.checkDurationBetweenShifts && this.durationBetweenShifts != null) ? AppConstants.sufficientDurationBetweenShifts(this.durationBetweenShifts) : null;
             this.currentWeekend = currentWeekend;
             this.lastWeekendWorked = lastWeekendWorked;
-            consecutiveWeekendsWorked = configuration.checkConsecutiveWeekends && this.currentWeekend != null && this.lastWeekendWorked != null && this.currentWeekend.minusWeeks(1).isEqual(this.lastWeekendWorked);
-            compliant =
-                    !exceedsMaximumDurationOverDay &&
-                    !exceedsMaximumDurationOverWeek &&
-                    !exceedsMaximumDurationOverFortnight &&
-                    !insufficientDurationBetweenShifts &&
-                    !consecutiveWeekendsWorked;
+            previousWeekendFree = (configuration.checkPreviousWeekendFree && this.currentWeekend != null && this.lastWeekendWorked != null) ? !this.currentWeekend.minusWeeks(1).isEqual(this.lastWeekendWorked) : null;
+            compliant = (compliesWithMaximumDurationOverDay == null || compliesWithMaximumDurationOverDay) &&
+                    (compliesWithMaximumDurationOverWeek == null || compliesWithMaximumDurationOverWeek) &&
+                    (compliesWithMaximumDurationOverFortnight == null || compliesWithMaximumDurationOverFortnight) &&
+                    (sufficientDurationBetweenShifts == null || sufficientDurationBetweenShifts) &&
+                    (previousWeekendFree == null || previousWeekendFree);
         }
 
         @DrawableRes
@@ -144,8 +148,9 @@ public final class RosteredShift extends Shift {
             return durationOverDay;
         }
 
-        public boolean exceedsMaximumDurationOverDay() {
-            return exceedsMaximumDurationOverDay;
+        @Nullable
+        public Boolean compliesWithMaximumDurationOverDay() {
+            return compliesWithMaximumDurationOverDay;
         }
 
         @NonNull
@@ -153,8 +158,9 @@ public final class RosteredShift extends Shift {
             return durationOverWeek;
         }
 
-        public boolean exceedsMaximumDurationOverWeek() {
-            return exceedsMaximumDurationOverWeek;
+        @Nullable
+        public Boolean compliesWithMaximumDurationOverWeek() {
+            return compliesWithMaximumDurationOverWeek;
         }
 
         @NonNull
@@ -162,8 +168,9 @@ public final class RosteredShift extends Shift {
             return durationOverFortnight;
         }
 
-        public boolean exceedsMaximumDurationOverFortnight() {
-            return exceedsMaximumDurationOverFortnight;
+        @Nullable
+        public Boolean compliesWithMaximumDurationOverFortnight() {
+            return compliesWithMaximumDurationOverFortnight;
         }
 
         @Nullable
@@ -171,8 +178,9 @@ public final class RosteredShift extends Shift {
             return durationBetweenShifts;
         }
 
-        public boolean insufficientDurationBetweenShifts() {
-            return insufficientDurationBetweenShifts;
+        @Nullable
+        public Boolean sufficientDurationBetweenShifts() {
+            return sufficientDurationBetweenShifts;
         }
 
         @Nullable
@@ -185,8 +193,9 @@ public final class RosteredShift extends Shift {
             return lastWeekendWorked;
         }
 
-        public boolean consecutiveWeekendsWorked() {
-            return consecutiveWeekendsWorked;
+        @Nullable
+        public Boolean previousWeekendFree() {
+            return previousWeekendFree;
         }
 
         public boolean isCompliant() {
@@ -200,20 +209,20 @@ public final class RosteredShift extends Shift {
                     checkDurationOverWeek,
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
-                    checkConsecutiveWeekends;
+                    checkPreviousWeekendFree;
 
             Configuration(
                     boolean checkDurationOverDay,
                     boolean checkDurationOverWeek,
                     boolean checkDurationOverFortnight,
                     boolean checkDurationBetweenShifts,
-                    boolean checkConsecutiveWeekends
+                    boolean checkPreviousWeekendFree
             ) {
                 this.checkDurationOverDay = checkDurationOverDay;
                 this.checkDurationOverWeek = checkDurationOverWeek;
                 this.checkDurationOverFortnight = checkDurationOverFortnight;
                 this.checkDurationBetweenShifts = checkDurationBetweenShifts;
-                this.checkConsecutiveWeekends = checkConsecutiveWeekends;
+                this.checkPreviousWeekendFree = checkPreviousWeekendFree;
             }
         }
 

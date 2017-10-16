@@ -1,10 +1,8 @@
 package com.skepticalone.armour.adapter;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
@@ -16,13 +14,10 @@ import com.skepticalone.armour.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapter implements ListUpdateCallback, Observer<List<Entity>> {
+public abstract class ItemListAdapter<FinalItem extends Item> extends ObservableAdapter<List<FinalItem>> implements ListUpdateCallback {
 
     @NonNull
     private final Callbacks mCallbacks;
-
-    @Nullable
-    private List<Entity> mItems;
 
     ItemListAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
         super(context);
@@ -31,44 +26,34 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
     }
 
     @Override
-    public final long getItemId(int position) {
-        //noinspection ConstantConditions
-        return mItems.get(position).getId();
+    final long getItemId(int position, @NonNull List<FinalItem> items) {
+        return items.get(position).getId();
     }
 
     @Override
-    public final void onChanged(@Nullable final List<Entity> items) {
-        if (mItems == null && items == null) {
-            return;
-        } else if (mItems == null) {
-            notifyItemRangeInserted(0, items.size());
-        } else if (items == null) {
-            notifyItemRangeRemoved(0, mItems.size());
-        } else {
-            DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return mItems.size();
-                }
+    final void onChanged(@NonNull final List<FinalItem> oldList, @NonNull final List<FinalItem> newList) {
+        DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return oldList.size();
+            }
 
-                @Override
-                public int getNewListSize() {
-                    return items.size();
-                }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
 
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return mItems.get(oldItemPosition).getId() == items.get(newItemPosition).getId();
-                }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return oldList.get(oldItemPosition).getId() == newList.get(newItemPosition).getId();
+            }
 
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return ItemListAdapter.this.areContentsTheSame(mItems.get(oldItemPosition), items.get(newItemPosition));
-                }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return ItemListAdapter.this.areContentsTheSame(oldList.get(oldItemPosition), newList.get(newItemPosition));
+            }
 
-            }).dispatchUpdatesTo((ListUpdateCallback) this);
-        }
-        mItems = items;
+        }).dispatchUpdatesTo((ListUpdateCallback) ItemListAdapter.this);
     }
 
     @Override
@@ -90,32 +75,31 @@ public abstract class ItemListAdapter<Entity extends Item> extends ContextAdapte
         return viewHolder;
     }
 
-    abstract boolean areContentsTheSame(@NonNull Entity item1, @NonNull Entity item2);
+    abstract boolean areContentsTheSame(@NonNull FinalItem item1, @NonNull FinalItem item2);
 
     @DrawableRes
-    abstract int getPrimaryIcon(@NonNull Entity item);
+    abstract int getPrimaryIcon(@NonNull FinalItem item);
 
     @DrawableRes
-    abstract int getSecondaryIcon(@NonNull Entity item);
+    abstract int getSecondaryIcon(@NonNull FinalItem item);
 
     @NonNull
-    abstract String getFirstLine(@NonNull Entity item);
+    abstract String getFirstLine(@NonNull FinalItem item);
 
     @NonNull
-    abstract String getSecondLine(@NonNull Entity item);
+    abstract String getSecondLine(@NonNull FinalItem item);
 
     @Override
-    public final void onBindViewHolder(ItemViewHolder holder, int position) {
-        //noinspection ConstantConditions
-        Entity item = mItems.get(position);
+    final void onBindViewHolder(@NonNull List<FinalItem> items, int position, @NonNull ItemViewHolder holder) {
+        FinalItem item = items.get(position);
         holder.setPrimaryIcon(mCallbacks.showSelectedIcon(position) ? R.drawable.ic_check_circle_24dp : getPrimaryIcon(item));
         holder.setSecondaryIcon(getSecondaryIcon(item));
         holder.setText(getFirstLine(item), getSecondLine(item), item.getComment());
     }
 
     @Override
-    public final int getItemCount() {
-        return mItems == null ? 0 : mItems.size();
+    final int getItemCount(@NonNull List<FinalItem> items) {
+        return items.size();
     }
 
     @Override

@@ -1,11 +1,15 @@
 package com.skepticalone.armour.ui.totals;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -16,40 +20,35 @@ import android.widget.TextView;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
-import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFragment {
+import java.util.List;
 
-    static final String SELECTED = "SELECTED";
+public abstract class ItemTotalsDialogFragment<FinalItem> extends BottomSheetDialogFragment {
 
-    private boolean selected;
-
-    private ItemTotalsAdapter<Entity> adapter;
+    abstract void onCreateAdapter(@NonNull Context context);
 
     @NonNull
-    abstract ItemViewModelContract<Entity> getViewModel();
+    abstract ItemTotalsAdapter<FinalItem> getAdapter();
 
-    final ItemTotalsAdapter<Entity> getAdapter() {
-        return adapter;
-    }
+    @NonNull
+    abstract LiveData<List<FinalItem>> getObservedItems(@NonNull ViewModelProvider viewModelProvider);
 
     @LayoutRes
     abstract int getLayout();
 
-    @NonNull
-    abstract ItemTotalsAdapter<Entity> createAdapter(@NonNull Context context);
+    @StringRes
+    abstract int getTitle();
 
     @Override
-    public final void onAttach(Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
-        selected = getArguments().getBoolean(SELECTED);
-        adapter = createAdapter(context);
+        onCreateAdapter(context);
     }
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        (selected ? getViewModel().getSelectedItems() : getViewModel().getAllItems()).observe(this, adapter);
+        getObservedItems(ViewModelProviders.of(getActivity())).observe(this, getAdapter());
     }
 
     @Override
@@ -58,13 +57,9 @@ public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFrag
         View layout = inflater.inflate(getLayout(), container, false);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(adapter);
-        ((TextView) layout.findViewById(R.id.totals_title)).setText(selected ? R.string.subtotals : R.string.totals);
+        recyclerView.setAdapter(getAdapter());
+        ((TextView) layout.findViewById(R.id.totals_title)).setText(getTitle());
         return layout;
-    }
-
-    final boolean isSelected() {
-        return selected;
     }
 
 }

@@ -1,12 +1,9 @@
 package com.skepticalone.armour.adapter;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.util.DateTimeUtils;
@@ -15,13 +12,10 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implements Observer<List<Entity>>, CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
+public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<List<FinalItem>> {
 
     @StringRes
     private final int totalItemsTitle;
-
-    @Nullable
-    private List<Entity> mItems;
 
     ItemTotalsAdapter(@NonNull Context context, @StringRes int totalItemsTitle) {
         super(context);
@@ -29,12 +23,23 @@ public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implement
     }
 
     @Override
-    public final int getTotalItemsTitle() {
+    final int getItemCount(@NonNull List<FinalItem> entities) {
+        return getFixedItemCount();
+    }
+
+    abstract int getFixedItemCount();
+
+    @Override
+    final void onChanged(@NonNull List<FinalItem> oldData, @NonNull List<FinalItem> newData) {
+        notifyItemRangeChanged(0, getFixedItemCount());
+    }
+
+    final int getTotalItemsTitle() {
         return totalItemsTitle;
     }
 
     @NonNull
-    private String getCountString(int count) {
+    final String getCountString(int count) {
         return Integer.toString(count);
     }
 
@@ -44,36 +49,21 @@ public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implement
     }
 
     @NonNull
-    private String getCountPercentage(int count, int totalCount) {
+    final String getCountPercentage(int count, int totalCount) {
         return getPercentage(getCountString(count), Math.round(count * 100f / totalCount));
     }
-
 
     @NonNull
     final String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
         return getPercentage(DateTimeUtils.getDurationString(getContext(), duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
-
-    @Override
-    public final void onChanged(@Nullable List<Entity> items) {
-        if (mItems == null && items == null) {
-            return;
-        } else if (mItems == null) {
-            notifyItemRangeInserted(0, getRowCount());
-        } else if (items == null) {
-            notifyItemRangeRemoved(0, getRowCount());
-        } else {
-            notifyItemRangeChanged(0, getRowCount());
-        }
-        mItems = items;
-    }
-
-    @Override
-    public final void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if (mItems != null) {
-            notifyItemRangeChanged(0, getRowCount());
-        }
-    }
+//
+//    @Override
+//    public final void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+//        if (mItems != null) {
+//            notifyItemRangeChanged(0, getRowCount());
+//        }
+//    }
 
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
@@ -81,38 +71,6 @@ public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implement
         viewHolder.setupPlain();
         viewHolder.hideSecondaryIcon();
         return viewHolder;
-    }
-
-    @Override
-    public final void onBindViewHolder(ItemViewHolder holder, int position) {
-        //noinspection ConstantConditions
-        if (!bindViewHolder(mItems, holder, position)) {
-            throw new IllegalStateException();
-        }
-    }
-
-    @NonNull
-    @Override
-    public final String getTotalNumber(@NonNull List<Entity> items) {
-        int totalCount = items.size();
-        if (isFiltered() && totalCount > 0) {
-            int filteredCount = 0;
-            for (Entity item : items) {
-                if (isIncluded(item)) filteredCount++;
-            }
-            return getCountPercentage(filteredCount, totalCount);
-        } else {
-            return getCountString(totalCount);
-        }
-    }
-
-    abstract boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position);
-
-    abstract int getRowCount();
-
-    @Override
-    public final int getItemCount() {
-        return mItems == null ? 0 : getRowCount();
     }
 
 }

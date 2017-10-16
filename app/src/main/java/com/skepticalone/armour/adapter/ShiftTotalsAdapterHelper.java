@@ -13,7 +13,7 @@ import org.threeten.bp.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-final class ShiftTotalsAdapterHelper<Entity extends Shift> {
+abstract class ShiftTotalsAdapterHelper<FinalItem extends Shift> {
 
     static final int ROW_COUNT = 5;
     private static final int
@@ -22,23 +22,17 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             ROW_NUMBER_LONG_DAY = 2,
             ROW_NUMBER_NIGHT_SHIFT = 3,
             ROW_NUMBER_CUSTOM_SHIFT = 4;
-    @NonNull
-    private final Callbacks<Entity> callbacks;
-
-    ShiftTotalsAdapterHelper(@NonNull Callbacks<Entity> callbacks) {
-        this.callbacks = callbacks;
-    }
 
     @NonNull
-    private String getTotalDuration(@NonNull ItemTotalsAdapter adapter, @NonNull List<Entity> shifts) {
+    private String getTotalDuration(@NonNull FilteredItemTotalsAdapter<FinalItem> adapter, @NonNull List<FinalItem> shifts) {
         Duration totalDuration = Duration.ZERO;
-        for (Entity shift : shifts) {
+        for (FinalItem shift : shifts) {
             totalDuration = totalDuration.plus(shift.getShiftData().getDuration());
         }
-        if (callbacks.isFiltered() && !totalDuration.equals(Duration.ZERO)) {
+        if (adapter.isFiltered() && !totalDuration.equals(Duration.ZERO)) {
             Duration filteredDuration = Duration.ZERO;
-            for (Entity shift : shifts) {
-                if (callbacks.isIncluded(shift))
+            for (FinalItem shift : shifts) {
+                if (adapter.isIncluded(shift))
                     filteredDuration = filteredDuration.plus(shift.getShiftData().getDuration());
             }
             return adapter.getDurationPercentage(filteredDuration, totalDuration);
@@ -47,13 +41,13 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
         }
     }
 
-    boolean bindViewHolder(@NonNull ItemTotalsAdapter adapter, @NonNull List<Entity> allShifts, @NonNull ItemViewHolder holder, int position) {
+    void onBindViewHolder(@NonNull List<FinalItem> allShifts, int position, @NonNull ItemViewHolder holder, @NonNull FilteredItemTotalsAdapter<FinalItem> adapter) {
         @DrawableRes final int icon;
         @StringRes final int firstLine;
-        @NonNull final List<Entity> shifts;
+        @NonNull final List<FinalItem> shifts;
         if (position == ROW_NUMBER_ALL_SHIFTS) {
             icon = R.drawable.ic_sigma_black_24dp;
-            firstLine = callbacks.getTotalItemsTitle();
+            firstLine = adapter.getTotalItemsTitle();
             shifts = allShifts;
         } else {
             Shift.ShiftType shiftType;
@@ -61,24 +55,19 @@ final class ShiftTotalsAdapterHelper<Entity extends Shift> {
             else if (position == ROW_NUMBER_LONG_DAY) shiftType = Shift.ShiftType.LONG_DAY;
             else if (position == ROW_NUMBER_NIGHT_SHIFT) shiftType = Shift.ShiftType.NIGHT_SHIFT;
             else if (position == ROW_NUMBER_CUSTOM_SHIFT) shiftType = Shift.ShiftType.CUSTOM;
-            else return false;
+            else return;
             icon = shiftType.getIcon();
             firstLine = shiftType.getPluralTitle();
             shifts = new ArrayList<>();
-            for (Entity shift : allShifts) {
+            for (FinalItem shift : allShifts) {
                 if (shift.getShiftType() == shiftType) shifts.add(shift);
             }
         }
         holder.setPrimaryIcon(icon);
-        holder.setText(adapter.getContext().getString(firstLine), callbacks.getTotalNumber(shifts), callbacks.getThirdLine(getTotalDuration(adapter, shifts), shifts));
-        return true;
+        holder.setText(adapter.getContext().getString(firstLine), adapter.getTotalNumber(shifts), getThirdLine(getTotalDuration(adapter, shifts), shifts));
     }
 
-    interface Callbacks<Entity extends Shift> extends TotalsAdapterCallbacks<Entity> {
-
-        @NonNull
-        String getThirdLine(@NonNull String totalDuration, @NonNull List<Entity> shifts);
-
-    }
+    @NonNull
+    abstract String getThirdLine(@NonNull String totalDuration, @NonNull List<FinalItem> shifts);
 
 }

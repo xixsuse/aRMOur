@@ -21,4 +21,9 @@ public final class Comparators {
         return date1 == null ? date2 == null : (date2 != null && date1.isEqual(date2));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean equalCompliance(@Nullable final Boolean compliance1, @Nullable final Boolean compliance2) {
+        return compliance1 == null ? compliance2 == null : (compliance2 != null && compliance1.booleanValue() == compliance2.booleanValue());
+    }
+
 }

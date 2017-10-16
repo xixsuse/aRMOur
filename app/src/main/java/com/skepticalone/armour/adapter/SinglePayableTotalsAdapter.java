@@ -8,7 +8,7 @@ import com.skepticalone.armour.data.model.Payment;
 
 import java.util.List;
 
-public final class SinglePayableTotalsAdapter<Entity extends Payment> extends PayableTotalsAdapter<Entity> {
+public final class SinglePayableTotalsAdapter<FinalItem extends Payment> extends PayableTotalsAdapter<FinalItem> {
 
     private static final int
             ROW_NUMBER_TOTAL_NUMBER = 0,
@@ -20,21 +20,19 @@ public final class SinglePayableTotalsAdapter<Entity extends Payment> extends Pa
     }
 
     @Override
-    final int getRowCount() {
+    int getFixedItemCount() {
         return ROW_COUNT;
     }
 
     @Override
-    final boolean bindViewHolder(@NonNull List<Entity> allItems, @NonNull ItemViewHolder holder, int position) {
+    void onBindViewHolder(@NonNull List<FinalItem> allItems, int position, @NonNull ItemViewHolder holder) {
         if (position == ROW_NUMBER_TOTAL_NUMBER) {
             holder.setPrimaryIcon(R.drawable.ic_sigma_black_24dp);
             holder.setText(getContext().getString(getTotalItemsTitle()), getTotalNumber(allItems));
-            return true;
         } else if (position == ROW_NUMBER_TOTAL_PAYMENT) {
             holder.setPrimaryIcon(R.drawable.ic_dollar_black_24dp);
             holder.setText(getContext().getString(R.string.total_payment), getTotalPayment(allItems));
-            return true;
-        } else return false;
+        }
     }
 
 }

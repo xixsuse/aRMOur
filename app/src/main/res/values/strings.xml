@@ -4,6 +4,7 @@
     <string name="feedback">Feedback</string>
     <string name="totals">Totals</string>
     <string name="subtotals">Subtotals</string>
+    <string name="logged_shift_totals">Logged shift totals</string>
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>

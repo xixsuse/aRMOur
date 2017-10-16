@@ -7,7 +7,7 @@ import com.skepticalone.armour.data.model.RosteredShift;
 
 import java.util.List;
 
-public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<RosteredShift> implements ShiftTotalsAdapterHelper.Callbacks<RosteredShift> {
+public final class RosteredShiftTotalsAdapter extends FilteredItemTotalsAdapter<RosteredShift> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -17,7 +17,13 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     public RosteredShiftTotalsAdapter(@NonNull Context context, int totalItemsTitle, @NonNull Callbacks callbacks) {
         super(context, totalItemsTitle);
         this.callbacks = callbacks;
-        helper = new ShiftTotalsAdapterHelper<>(this);
+        helper = new ShiftTotalsAdapterHelper<RosteredShift>() {
+            @NonNull
+            @Override
+            String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShift> shifts) {
+                return totalDuration;
+            }
+        };
     }
 
     @Override
@@ -31,19 +37,13 @@ public final class RosteredShiftTotalsAdapter extends ItemTotalsAdapter<Rostered
     }
 
     @Override
-    int getRowCount() {
+    int getFixedItemCount() {
         return ShiftTotalsAdapterHelper.ROW_COUNT;
     }
 
-    @NonNull
     @Override
-    public String getThirdLine(@NonNull String totalDuration, @NonNull List<RosteredShift> shifts) {
-        return totalDuration;
-    }
-
-    @Override
-    boolean bindViewHolder(@NonNull List<RosteredShift> allShifts, @NonNull ItemViewHolder holder, int position) {
-        return helper.bindViewHolder(this, allShifts, holder, position);
+    void onBindViewHolder(@NonNull List<RosteredShift> allShifts, int position, @NonNull ItemViewHolder holder) {
+        helper.onBindViewHolder(allShifts, position, holder, this);
     }
 
     public interface Callbacks {

@@ -10,7 +10,7 @@ import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.LocalDate;
 
-abstract class DateDetailAdapterHelper<Entity> {
+abstract class DateDetailAdapterHelper<FinalItem> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -20,14 +20,15 @@ abstract class DateDetailAdapterHelper<Entity> {
     }
 
     @CallSuper
-    void onItemUpdated(@NonNull Entity oldItem, @NonNull Entity newItem, @NonNull RecyclerView.Adapter adapter) {
+    void onItemUpdated(@NonNull FinalItem oldItem, @NonNull FinalItem newItem, @NonNull RecyclerView.Adapter adapter) {
         if (!getDate(oldItem).isEqual(getDate(newItem))) {
             adapter.notifyItemChanged(getRowNumberDate());
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @CallSuper
-    boolean bindViewHolder(@NonNull ContextAdapter adapter, @NonNull Entity item, ItemViewHolder holder, int position) {
+    boolean bindViewHolder(@NonNull FinalItem item, int position, ItemViewHolder holder, @NonNull ObservableAdapter adapter) {
         if (position == getRowNumberDate()) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_calendar_black_24dp);
@@ -44,7 +45,7 @@ abstract class DateDetailAdapterHelper<Entity> {
 
     abstract int getRowNumberDate();
     @NonNull
-    abstract LocalDate getDate(@NonNull Entity item);
+    abstract LocalDate getDate(@NonNull FinalItem item);
 
     interface Callbacks {
         void changeDate();

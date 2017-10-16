@@ -8,7 +8,7 @@ import com.skepticalone.armour.data.model.Payment;
 import java.math.BigDecimal;
 import java.util.List;
 
-public abstract class PayableTotalsAdapter<Entity extends Payment> extends ItemTotalsAdapter<Entity> {
+public abstract class PayableTotalsAdapter<FinalItem extends Payment> extends FilteredItemTotalsAdapter<FinalItem> {
 
     @NonNull
     private final Callbacks callbacks;
@@ -24,14 +24,14 @@ public abstract class PayableTotalsAdapter<Entity extends Payment> extends ItemT
     }
 
     @NonNull
-    final String getTotalPayment(@NonNull List<Entity> items) {
+    final String getTotalPayment(@NonNull List<FinalItem> items) {
         BigDecimal totalPayment = BigDecimal.ZERO;
-        for (Entity item : items) {
+        for (FinalItem item : items) {
             totalPayment = totalPayment.add(item.getTotalPayment());
         }
         if (isFiltered() && totalPayment.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal filteredPayment = BigDecimal.ZERO;
-            for (Entity item : items) {
+            for (FinalItem item : items) {
                 if (isIncluded(item)) filteredPayment = filteredPayment.add(item.getTotalPayment());
             }
             return getPaymentPercentage(filteredPayment, totalPayment);
@@ -41,12 +41,12 @@ public abstract class PayableTotalsAdapter<Entity extends Payment> extends ItemT
     }
 
     @Override
-    public final boolean isFiltered() {
+    final boolean isFiltered() {
         return !callbacks.includeUnclaimed() || !callbacks.includeClaimed() || !callbacks.includePaid();
     }
 
     @Override
-    public final boolean isIncluded(@NonNull Entity item) {
+    final boolean isIncluded(@NonNull FinalItem item) {
         return item.getPaymentData().getClaimed() == null ? callbacks.includeUnclaimed() : item.getPaymentData().getPaid() == null ? callbacks.includeClaimed() : callbacks.includePaid();
     }
 

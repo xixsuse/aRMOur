@@ -4,6 +4,7 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +23,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemListAdapter;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.ui.common.BaseFragment;
-import com.skepticalone.armour.ui.totals.TotalsDialogFragment;
+import com.skepticalone.armour.ui.totals.ItemTotalsDialogFragment;
 
 public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<FinalItem> implements ItemListAdapter.Callbacks, ActionMode.Callback {
 
@@ -60,7 +61,7 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     }
 
     @NonNull
-    abstract TotalsDialogFragment<FinalItem> createSummaryDialogFragment(boolean subtotals);
+    abstract ItemTotalsDialogFragment<FinalItem> createSummaryDialogFragment(boolean subtotals);
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
@@ -139,14 +140,18 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     @IdRes
     abstract int getItemType();
 
+    @CallSuper
+    void inflateSelectionMenu(MenuInflater inflater, Menu menu) {
+        inflater.inflate(R.menu.selection_menu, menu);
+    }
+
     @Override
     public final boolean onCreateActionMode(ActionMode mode, Menu menu) {
         getViewModel().setCurrentItemId(null);
         hideFab(callbacks);
         callbacks.setNavigationBarVisibility(View.GONE);
         recyclerView.setPadding(0, 0, 0, 0);
-        MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.selection_menu, menu);
+        inflateSelectionMenu(mode.getMenuInflater(), menu);
         return true;
     }
 
@@ -156,7 +161,8 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     }
 
     @Override
-    public final boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    @CallSuper
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
                 getViewModel().deleteItems();
