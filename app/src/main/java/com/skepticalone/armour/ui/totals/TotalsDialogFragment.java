@@ -1,6 +1,5 @@
 package com.skepticalone.armour.ui.totals;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -19,9 +18,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemTotalsAdapter;
 import com.skepticalone.armour.data.viewModel.ItemViewModelContract;
 
-import java.util.List;
-
-public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFragment implements Observer<List<Entity>> {
+public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFragment {
 
     static final String SELECTED = "SELECTED";
 
@@ -52,12 +49,7 @@ public abstract class TotalsDialogFragment<Entity> extends BottomSheetDialogFrag
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        (selected ? getViewModel().getSelectedItems() : getViewModel().getAllItems()).observe(this, this);
-    }
-
-    @Override
-    public final void onChanged(@Nullable List<Entity> entities) {
-        adapter.setItems(entities);
+        (selected ? getViewModel().getSelectedItems() : getViewModel().getAllItems()).observe(this, adapter);
     }
 
     @Override

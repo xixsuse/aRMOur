@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +15,7 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implements CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
+public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implements Observer<List<Entity>>, CompoundButton.OnCheckedChangeListener, TotalsAdapterCallbacks<Entity> {
 
     @StringRes
     private final int totalItemsTitle;
@@ -53,7 +54,8 @@ public abstract class ItemTotalsAdapter<Entity> extends ContextAdapter implement
         return getPercentage(DateTimeUtils.getDurationString(getContext(), duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
 
-    public final void setItems(final @Nullable List<Entity> items) {
+    @Override
+    public final void onChanged(@Nullable List<Entity> items) {
         if (mItems == null && items == null) {
             return;
         } else if (mItems == null) {
