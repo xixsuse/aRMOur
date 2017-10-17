@@ -2,6 +2,7 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -12,7 +13,7 @@ import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShift> {
-
+    private static final String TAG = "RosteredShiftDetail";
     private static final int
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
@@ -107,43 +108,59 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     @Override
     void onChanged(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
         if (oldShift.getCompliance().getCurrentWeekend() == null && newShift.getCompliance().getCurrentWeekend() != null) {
+            Log.i(TAG, "notifyItemInserted(getRowNumberLastWeekendWorked(oldShift))");
+            Log.i(TAG, "position: " + getRowNumberLastWeekendWorked(oldShift));
             notifyItemInserted(getRowNumberLastWeekendWorked(oldShift));
         } else if (oldShift.getCompliance().getCurrentWeekend() != null && newShift.getCompliance().getCurrentWeekend() == null) {
+            Log.i(TAG, "notifyItemRemoved(getRowNumberLastWeekendWorked(oldShift))");
+            Log.i(TAG, "position: " + getRowNumberLastWeekendWorked(oldShift));
             notifyItemRemoved(getRowNumberLastWeekendWorked(oldShift));
         } else if (oldShift.getCompliance().getCurrentWeekend() != null && newShift.getCompliance().getCurrentWeekend() != null && (
                 !oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) ||
                         !Comparators.equalDates(oldShift.getCompliance().getLastWeekendWorked(), newShift.getCompliance().getLastWeekendWorked()) ||
                         !Comparators.equalCompliance(oldShift.getCompliance().previousWeekendFree(), newShift.getCompliance().previousWeekendFree())
         )) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberLastWeekendWorked(oldShift))");
             notifyItemChanged(getRowNumberLastWeekendWorked(oldShift));
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverFortnight(), newShift.getCompliance().compliesWithMaximumDurationOverFortnight()) || !oldShift.getCompliance().getDurationOverFortnight().equals(newShift.getCompliance().getDurationOverFortnight())) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverFortnight(oldShift))");
             notifyItemChanged(getRowNumberDurationWorkedOverFortnight(oldShift));
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverWeek(), newShift.getCompliance().compliesWithMaximumDurationOverWeek()) || !oldShift.getCompliance().getDurationOverWeek().equals(newShift.getCompliance().getDurationOverWeek())) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverWeek(oldShift))");
             notifyItemChanged(getRowNumberDurationWorkedOverWeek(oldShift));
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverDay(), newShift.getCompliance().compliesWithMaximumDurationOverDay()) || !oldShift.getCompliance().getDurationOverDay().equals(newShift.getCompliance().getDurationOverDay())) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverDay(oldShift))");
             notifyItemChanged(getRowNumberDurationWorkedOverDay(oldShift));
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().sufficientDurationBetweenShifts(), newShift.getCompliance().sufficientDurationBetweenShifts()) || !(oldShift.getCompliance().getDurationBetweenShifts() == null ? newShift.getCompliance().getDurationBetweenShifts() == null : (newShift.getCompliance().getDurationBetweenShifts() != null && oldShift.getCompliance().getDurationBetweenShifts().equals(newShift.getCompliance().getDurationBetweenShifts())))) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberDurationBetweenShifts(oldShift))");
             notifyItemChanged(getRowNumberDurationBetweenShifts(oldShift));
         }
         super.onChanged(oldShift, newShift);
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
+            Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
+            Log.i(TAG, "notifyItemRangeInserted" + "(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED)");
             notifyItemRangeInserted(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() == null) {
+            Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
             notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
+            Log.i(TAG, "notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED)");
             notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null) {
             if (!oldShift.getLoggedShiftData().getDuration().equals(newShift.getLoggedShiftData().getDuration())) {
+                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
                 notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
             }
             if (!oldShift.getLoggedShiftData().getStart().toLocalTime().equals(newShift.getLoggedShiftData().getStart().toLocalTime())) {
+                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_LOGGED_START)");
                 notifyItemChanged(ROW_NUMBER_LOGGED_START);
             }
             if (!oldShift.getLoggedShiftData().getEnd().toLocalTime().equals(newShift.getLoggedShiftData().getEnd().toLocalTime()) || (oldShift.getShiftData().getStart().toLocalDate().isEqual(oldShift.getLoggedShiftData().getEnd().toLocalDate()) ? !newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getLoggedShiftData().getEnd().toLocalDate()) : (newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getLoggedShiftData().getEnd().toLocalDate()) || !oldShift.getLoggedShiftData().getEnd().getDayOfWeek().equals(newShift.getLoggedShiftData().getEnd().getDayOfWeek())))) {
+                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_LOGGED_END)");
                 notifyItemChanged(ROW_NUMBER_LOGGED_END);
             }
         }

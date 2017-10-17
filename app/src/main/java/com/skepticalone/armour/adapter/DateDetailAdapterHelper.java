@@ -3,6 +3,7 @@ package com.skepticalone.armour.adapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -11,7 +12,7 @@ import com.skepticalone.armour.util.DateTimeUtils;
 import org.threeten.bp.LocalDate;
 
 abstract class DateDetailAdapterHelper<FinalItem> {
-
+    private static final String TAG = "DateDetailAdapterHelper";
     @NonNull
     private final Callbacks callbacks;
 
@@ -22,6 +23,7 @@ abstract class DateDetailAdapterHelper<FinalItem> {
     @CallSuper
     void onItemUpdated(@NonNull FinalItem oldItem, @NonNull FinalItem newItem, @NonNull RecyclerView.Adapter adapter) {
         if (!getDate(oldItem).isEqual(getDate(newItem))) {
+            Log.i(TAG, "adapter.notifyItemChanged(getRowNumberDate())");
             adapter.notifyItemChanged(getRowNumberDate());
         }
     }

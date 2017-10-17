@@ -3,6 +3,7 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -10,7 +11,7 @@ import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.util.Comparators;
 
 public abstract class ItemDetailAdapter<FinalItem extends Item> extends ObservableAdapter<FinalItem> {
-
+    private static final String TAG = "ItemDetailAdapter";
     @NonNull
     private final Callbacks callbacks;
 
@@ -23,6 +24,7 @@ public abstract class ItemDetailAdapter<FinalItem extends Item> extends Observab
     @CallSuper
     void onChanged(@NonNull FinalItem oldItem, @NonNull FinalItem newItem) {
         if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
+            Log.i(TAG, "notifyItemChanged(getRowNumberComment(oldItem))");
             notifyItemChanged(getRowNumberComment(oldItem));
         }
     }
