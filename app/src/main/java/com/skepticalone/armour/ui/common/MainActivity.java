@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.skepticalone.armour.ui.list.ListFragment;
 public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
 
+    private static final String ITEM_TYPE = "ITEM_TYPE";
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
@@ -53,8 +55,16 @@ public final class MainActivity extends CoordinatorActivity
         navigation.setOnNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemReselectedListener(this);
         if (savedInstanceState == null) {
-            launchListFragment(navigation.getSelectedItemId());
+            setupFragments(navigation.getSelectedItemId(), true);
+        } else {
+            navigation.setSelectedItemId(savedInstanceState.getInt(ITEM_TYPE));
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ITEM_TYPE, navigation.getSelectedItemId());
     }
 
     @Override
@@ -77,19 +87,24 @@ public final class MainActivity extends CoordinatorActivity
         }
     }
 
-    private void launchListFragment(int itemType) {
+    private void setupFragments(int itemType, boolean fresh) {
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.list_fragment_container, ListFragment.getNewListFragment(itemType));
         if (mTwoPane) {
             transaction.replace(R.id.detail_fragment_container, DetailFragment.getNewDetailFragment(itemType));
+        } else if (!fresh) {
+            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.detail_fragment_container);
+            if (detailFragment != null) {
+                transaction.remove(detailFragment);
+            }
         }
         transaction.commit();
     }
 
     @Override
     public final boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        launchListFragment(item.getItemId());
+        setupFragments(item.getItemId(), false);
         return true;
     }
 

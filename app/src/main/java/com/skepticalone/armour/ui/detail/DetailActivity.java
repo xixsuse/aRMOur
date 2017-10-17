@@ -28,6 +28,10 @@ public final class DetailActivity extends CoordinatorActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getResources().getBoolean(R.bool.has_two_panes)) {
+            finish();
+            return;
+        }
         final int name, itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE);
         final Class<? extends ItemViewModel> viewModelClass;
         switch (itemType) {
