@@ -84,12 +84,12 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    int getRowNumberComment(@NonNull AdditionalShift shift) {
+    int getRowNumberComment() {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getItemCount(@NonNull AdditionalShift shift) {
+    int getRowCount(@NonNull AdditionalShift data) {
         return ROW_COUNT;
     }
 
@@ -101,8 +101,8 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    void onChanged(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
-        super.onChanged(oldShift, newShift);
+    void notifyUpdated(@NonNull AdditionalShift oldShift, @NonNull AdditionalShift newShift) {
+        super.notifyUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         payableDetailAdapterHelper.onChanged(oldShift, newShift, this);
         if (!oldShift.getTotalPayment().equals(newShift.getTotalPayment())) {

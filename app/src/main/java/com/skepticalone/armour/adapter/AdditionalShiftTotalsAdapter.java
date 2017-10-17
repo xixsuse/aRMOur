@@ -24,7 +24,7 @@ public final class AdditionalShiftTotalsAdapter extends PayableTotalsAdapter<Add
     }
 
     @Override
-    int getFixedItemCount() {
+    int getFixedRowCount() {
         return ShiftTotalsAdapterHelper.ROW_COUNT;
     }
 

@@ -57,12 +57,12 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    int getRowNumberComment(@NonNull CrossCover crossCover) {
+    int getRowNumberComment() {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getItemCount(@NonNull CrossCover crossCover) {
+    int getRowCount(@NonNull CrossCover data) {
         return ROW_COUNT;
     }
 
@@ -74,8 +74,8 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    void onChanged(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
-        super.onChanged(oldCrossCover, newCrossCover);
+    void notifyUpdated(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
+        super.notifyUpdated(oldCrossCover, newCrossCover);
         payableDetailAdapterHelper.onChanged(oldCrossCover, newCrossCover, this);
         dateDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
     }

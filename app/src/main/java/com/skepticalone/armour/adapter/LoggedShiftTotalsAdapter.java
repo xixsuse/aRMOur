@@ -33,7 +33,7 @@ public final class LoggedShiftTotalsAdapter extends ItemTotalsAdapter<RosteredSh
     }
 
     @Override
-    int getFixedItemCount() {
+    int getFixedRowCount() {
         return ROW_COUNT;
     }
 

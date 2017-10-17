@@ -23,16 +23,16 @@ public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<Lis
     }
 
     @Override
-    final int getItemCount(@NonNull List<FinalItem> entities) {
-        return getFixedItemCount();
+    final void notifyUpdated(@NonNull List<FinalItem> oldData, @NonNull List<FinalItem> newData) {
+        notifyItemRangeChanged(0, getFixedRowCount());
     }
-
-    abstract int getFixedItemCount();
 
     @Override
-    final void onChanged(@NonNull List<FinalItem> oldData, @NonNull List<FinalItem> newData) {
-        notifyItemRangeChanged(0, getFixedItemCount());
+    final int getRowCount(@NonNull List<FinalItem> finalItems) {
+        return getFixedRowCount();
     }
+
+    abstract int getFixedRowCount();
 
     final int getTotalItemsTitle() {
         return totalItemsTitle;
@@ -57,13 +57,6 @@ public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<Lis
     final String getDurationPercentage(@NonNull Duration duration, @NonNull Duration totalDuration) {
         return getPercentage(DateTimeUtils.getDurationString(getContext(), duration), Math.round(duration.getSeconds() * 100f / totalDuration.getSeconds()));
     }
-//
-//    @Override
-//    public final void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-//        if (mItems != null) {
-//            notifyItemRangeChanged(0, getRowCount());
-//        }
-//    }
 
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {

@@ -2,7 +2,7 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -13,29 +13,28 @@ import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShift> {
-    private static final String TAG = "RosteredShiftDetail";
     private static final int
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
             ROW_NUMBER_END = 2,
             ROW_NUMBER_SHIFT_TYPE = 3,
             ROW_NUMBER_TOGGLE_LOGGED = 4,
-            ROW_NUMBER_LOGGED_START = 5,
-            ROW_NUMBER_LOGGED_END = 6,
-            ROW_NUMBER_COMMENT_IF_LOGGED = 7,
-            ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED = 8,
-            ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED = 9,
-            ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED = 10,
-            ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED = 11,
-            ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED = 12,
-            ROW_COUNT_IF_LOGGED = 13,
             NUMBER_OF_ROWS_FOR_LOGGED = 2;
-
     @NonNull
     private final ShiftDetailAdapterHelper<RosteredShift> shiftDetailAdapterHelper;
-
     @NonNull
     private final Callbacks callbacks;
+    //            ROW_COUNT_MAXIMUM = 13;
+    private int
+            rowNumberLoggedStart,
+            rowNumberLoggedEnd,
+            rowNumberComment,
+            rowNumberDurationBetweenShifts,
+            rowNumberDurationWorkedOverDay,
+            rowNumberDurationWorkedOverWeek,
+            rowNumberDurationWorkedOverFortnight,
+            rowNumberLastWeekendWorked,
+            rowCount;
 
     public RosteredShiftDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
         super(context, callbacks);
@@ -70,99 +69,105 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         };
     }
 
-    private static int adjustForLogged(int valueIfLogged, @NonNull RosteredShift shift) {
-        return shift.getLoggedShiftData() == null ? valueIfLogged - NUMBER_OF_ROWS_FOR_LOGGED : valueIfLogged;
-    }
-
-    private static int getRowNumberDurationBetweenShifts(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED, shift);
-    }
-
-    private static int getRowNumberDurationWorkedOverDay(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, shift);
-    }
-
-    private static int getRowNumberDurationWorkedOverWeek(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, shift);
-    }
-
-    private static int getRowNumberDurationWorkedOverFortnight(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, shift);
-    }
-
-    private static int getRowNumberLastWeekendWorked(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, shift);
+    @Override
+    void initialiseRowNumbers(@NonNull RosteredShift rosteredShift) {
+        int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
+        if (rosteredShift.getLoggedShiftData() == null) {
+            rowNumberLoggedStart = rowNumberLoggedEnd = RecyclerView.NO_POSITION;
+        } else {
+            rowNumberLoggedStart = ++lastPosition;
+            rowNumberLoggedEnd = ++lastPosition;
+        }
+        rowNumberComment = ++lastPosition;
+        rowNumberDurationBetweenShifts = ++lastPosition;
+        rowNumberDurationWorkedOverDay = ++lastPosition;
+        rowNumberDurationWorkedOverWeek = ++lastPosition;
+        rowNumberDurationWorkedOverFortnight = ++lastPosition;
+        rowNumberLastWeekendWorked = rosteredShift.getCompliance().getCurrentWeekend() == null ? RecyclerView.NO_POSITION : ++lastPosition;
+        rowCount = ++lastPosition;
     }
 
     @Override
-    int getRowNumberComment(@NonNull RosteredShift shift) {
-        return adjustForLogged(ROW_NUMBER_COMMENT_IF_LOGGED, shift);
+    int getRowNumberComment() {
+        return rowNumberComment;
     }
 
     @Override
-    int getItemCount(@NonNull RosteredShift shift) {
-        int countIfWeekend = adjustForLogged(ROW_COUNT_IF_LOGGED, shift);
-        return shift.getCompliance().getCurrentWeekend() == null ? --countIfWeekend : countIfWeekend;
+    int getRowCount(@NonNull RosteredShift data) {
+        return rowCount;
     }
 
     @Override
-    void onChanged(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
+    void notifyUpdated(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
         if (oldShift.getCompliance().getCurrentWeekend() == null && newShift.getCompliance().getCurrentWeekend() != null) {
-            Log.i(TAG, "notifyItemInserted(getRowNumberLastWeekendWorked(oldShift))");
-            Log.i(TAG, "position: " + getRowNumberLastWeekendWorked(oldShift));
-            notifyItemInserted(getRowNumberLastWeekendWorked(oldShift));
+            int lastPosition = rowNumberDurationWorkedOverFortnight;
+            rowNumberLastWeekendWorked = ++lastPosition;
+            rowCount = ++lastPosition;
+            notifyItemInserted(rowNumberLastWeekendWorked);
         } else if (oldShift.getCompliance().getCurrentWeekend() != null && newShift.getCompliance().getCurrentWeekend() == null) {
-            Log.i(TAG, "notifyItemRemoved(getRowNumberLastWeekendWorked(oldShift))");
-            Log.i(TAG, "position: " + getRowNumberLastWeekendWorked(oldShift));
-            notifyItemRemoved(getRowNumberLastWeekendWorked(oldShift));
+            notifyItemRemoved(rowNumberLastWeekendWorked);
+            rowNumberLastWeekendWorked = RecyclerView.NO_POSITION;
+            rowCount = rowNumberDurationWorkedOverFortnight + 1;
         } else if (oldShift.getCompliance().getCurrentWeekend() != null && newShift.getCompliance().getCurrentWeekend() != null && (
                 !oldShift.getCompliance().getCurrentWeekend().isEqual(newShift.getCompliance().getCurrentWeekend()) ||
                         !Comparators.equalDates(oldShift.getCompliance().getLastWeekendWorked(), newShift.getCompliance().getLastWeekendWorked()) ||
                         !Comparators.equalCompliance(oldShift.getCompliance().previousWeekendFree(), newShift.getCompliance().previousWeekendFree())
         )) {
-            Log.i(TAG, "notifyItemChanged(getRowNumberLastWeekendWorked(oldShift))");
-            notifyItemChanged(getRowNumberLastWeekendWorked(oldShift));
+            notifyItemChanged(rowNumberLastWeekendWorked);
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverFortnight(), newShift.getCompliance().compliesWithMaximumDurationOverFortnight()) || !oldShift.getCompliance().getDurationOverFortnight().equals(newShift.getCompliance().getDurationOverFortnight())) {
-            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverFortnight(oldShift))");
-            notifyItemChanged(getRowNumberDurationWorkedOverFortnight(oldShift));
+            notifyItemChanged(rowNumberDurationWorkedOverFortnight);
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverWeek(), newShift.getCompliance().compliesWithMaximumDurationOverWeek()) || !oldShift.getCompliance().getDurationOverWeek().equals(newShift.getCompliance().getDurationOverWeek())) {
-            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverWeek(oldShift))");
-            notifyItemChanged(getRowNumberDurationWorkedOverWeek(oldShift));
+            notifyItemChanged(rowNumberDurationWorkedOverWeek);
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDurationOverDay(), newShift.getCompliance().compliesWithMaximumDurationOverDay()) || !oldShift.getCompliance().getDurationOverDay().equals(newShift.getCompliance().getDurationOverDay())) {
-            Log.i(TAG, "notifyItemChanged(getRowNumberDurationWorkedOverDay(oldShift))");
-            notifyItemChanged(getRowNumberDurationWorkedOverDay(oldShift));
+            notifyItemChanged(rowNumberDurationWorkedOverDay);
         }
         if (!Comparators.equalCompliance(oldShift.getCompliance().sufficientDurationBetweenShifts(), newShift.getCompliance().sufficientDurationBetweenShifts()) || !(oldShift.getCompliance().getDurationBetweenShifts() == null ? newShift.getCompliance().getDurationBetweenShifts() == null : (newShift.getCompliance().getDurationBetweenShifts() != null && oldShift.getCompliance().getDurationBetweenShifts().equals(newShift.getCompliance().getDurationBetweenShifts())))) {
-            Log.i(TAG, "notifyItemChanged(getRowNumberDurationBetweenShifts(oldShift))");
-            notifyItemChanged(getRowNumberDurationBetweenShifts(oldShift));
+            notifyItemChanged(rowNumberDurationBetweenShifts);
         }
-        super.onChanged(oldShift, newShift);
+        super.notifyUpdated(oldShift, newShift);
+        boolean loggedChanged = false;
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
-            Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
-            notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
-            Log.i(TAG, "notifyItemRangeInserted" + "(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED)");
-            notifyItemRangeInserted(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
+            int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
+            rowNumberLoggedStart = ++lastPosition;
+            rowNumberLoggedEnd = ++lastPosition;
+            rowNumberComment = ++lastPosition;
+            rowNumberDurationBetweenShifts = ++lastPosition;
+            rowNumberDurationWorkedOverDay = ++lastPosition;
+            rowNumberDurationWorkedOverWeek = ++lastPosition;
+            rowNumberDurationWorkedOverFortnight = ++lastPosition;
+            if (rowNumberLastWeekendWorked != RecyclerView.NO_POSITION)
+                rowNumberLastWeekendWorked = ++lastPosition;
+            rowCount = ++lastPosition;
+            notifyItemRangeInserted(rowNumberLoggedStart, NUMBER_OF_ROWS_FOR_LOGGED);
+            loggedChanged = true;
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() == null) {
-            Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
-            notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
-            Log.i(TAG, "notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED)");
-            notifyItemRangeRemoved(ROW_NUMBER_LOGGED_START, NUMBER_OF_ROWS_FOR_LOGGED);
+            notifyItemRangeRemoved(rowNumberLoggedStart, NUMBER_OF_ROWS_FOR_LOGGED);
+            rowNumberLoggedStart = RecyclerView.NO_POSITION;
+            rowNumberLoggedEnd = RecyclerView.NO_POSITION;
+            int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
+            rowNumberComment = ++lastPosition;
+            rowNumberDurationBetweenShifts = ++lastPosition;
+            rowNumberDurationWorkedOverDay = ++lastPosition;
+            rowNumberDurationWorkedOverWeek = ++lastPosition;
+            rowNumberDurationWorkedOverFortnight = ++lastPosition;
+            if (rowNumberLastWeekendWorked != RecyclerView.NO_POSITION)
+                rowNumberLastWeekendWorked = ++lastPosition;
+            rowCount = ++lastPosition;
+            loggedChanged = true;
         } else if (oldShift.getLoggedShiftData() != null && newShift.getLoggedShiftData() != null) {
-            if (!oldShift.getLoggedShiftData().getDuration().equals(newShift.getLoggedShiftData().getDuration())) {
-                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED)");
-                notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
-            }
+            loggedChanged = !oldShift.getLoggedShiftData().getDuration().equals(newShift.getLoggedShiftData().getDuration());
             if (!oldShift.getLoggedShiftData().getStart().toLocalTime().equals(newShift.getLoggedShiftData().getStart().toLocalTime())) {
-                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_LOGGED_START)");
-                notifyItemChanged(ROW_NUMBER_LOGGED_START);
+                notifyItemChanged(rowNumberLoggedStart);
             }
             if (!oldShift.getLoggedShiftData().getEnd().toLocalTime().equals(newShift.getLoggedShiftData().getEnd().toLocalTime()) || (oldShift.getShiftData().getStart().toLocalDate().isEqual(oldShift.getLoggedShiftData().getEnd().toLocalDate()) ? !newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getLoggedShiftData().getEnd().toLocalDate()) : (newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getLoggedShiftData().getEnd().toLocalDate()) || !oldShift.getLoggedShiftData().getEnd().getDayOfWeek().equals(newShift.getLoggedShiftData().getEnd().getDayOfWeek())))) {
-                Log.i(TAG, "notifyItemChanged(ROW_NUMBER_LOGGED_END)");
-                notifyItemChanged(ROW_NUMBER_LOGGED_END);
+                notifyItemChanged(rowNumberLoggedEnd);
             }
+        }
+        if (loggedChanged) {
+            notifyItemChanged(ROW_NUMBER_TOGGLE_LOGGED);
         }
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
     }
@@ -180,10 +185,11 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             holder.setPrimaryIcon(R.drawable.ic_clipboard_black_24dp);
             holder.hideSecondaryIcon();
             holder.setText(getContext().getString(R.string.logged), shift.getLoggedShiftData() == null ? null : DateTimeUtils.getDurationString(getContext(), shift.getLoggedShiftData().getDuration()));
-        } else if (position == ROW_NUMBER_LOGGED_START && shift.getLoggedShiftData() != null) {
+        } else if (position == rowNumberLoggedStart) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_clipboard_play_black_24dp);
             holder.hideSecondaryIcon();
+            //noinspection ConstantConditions
             holder.setText(getContext().getString(R.string.logged_start), DateTimeUtils.getTimeString(shift.getLoggedShiftData().getStart().toLocalTime()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -191,10 +197,11 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.changeTime(true, true);
                 }
             });
-        } else if (position == ROW_NUMBER_LOGGED_END && shift.getLoggedShiftData() != null) {
+        } else if (position == rowNumberLoggedEnd) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_clipboard_stop_black_24dp);
             holder.hideSecondaryIcon();
+            //noinspection ConstantConditions
             holder.setText(getContext().getString(R.string.logged_end), DateTimeUtils.getEndTimeString(shift.getLoggedShiftData().getEnd().toLocalDateTime(), shift.getShiftData().getStart().toLocalDate()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -202,7 +209,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.changeTime(false, true);
                 }
             });
-        } else if (position == adjustForLogged(ROW_NUMBER_DURATION_BETWEEN_SHIFTS_IF_LOGGED, shift)) {
+        } else if (position == rowNumberDurationBetweenShifts) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_sleep_black_24dp);
             holder.setCompliant(shift.getCompliance().sufficientDurationBetweenShifts());
@@ -213,7 +220,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.showMessage(getContext().getString(R.string.meca_minimum_hours_between_shifts, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS));
                 }
             });
-        } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_DAY_IF_LOGGED, shift)) {
+        } else if (position == rowNumberDurationWorkedOverDay) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_duration_black_24dp);
             holder.setCompliant(shift.getCompliance().compliesWithMaximumDurationOverDay());
@@ -224,7 +231,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_day, AppConstants.MAXIMUM_HOURS_OVER_DAY));
                 }
             });
-        } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_WEEK_IF_LOGGED, shift)) {
+        } else if (position == rowNumberDurationWorkedOverWeek) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_week_black_24dp);
             holder.setCompliant(shift.getCompliance().compliesWithMaximumDurationOverWeek());
@@ -235,7 +242,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_week, AppConstants.MAXIMUM_HOURS_OVER_WEEK));
                 }
             });
-        } else if (position == adjustForLogged(ROW_NUMBER_DURATION_WORKED_OVER_FORTNIGHT_IF_LOGGED, shift)) {
+        } else if (position == rowNumberDurationWorkedOverFortnight) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_fortnight_black_24dp);
             holder.setCompliant(shift.getCompliance().compliesWithMaximumDurationOverFortnight());
@@ -246,7 +253,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.showMessage(getContext().getString(R.string.meca_maximum_hours_over_fortnight, AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT));
                 }
             });
-        } else if (shift.getCompliance().getCurrentWeekend() != null && position == adjustForLogged(ROW_NUMBER_LAST_WEEKEND_WORKED_IF_LOGGED, shift)) {
+        } else if (position == rowNumberLastWeekendWorked) {
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_weekend_black_24dp);
             holder.setCompliant(shift.getCompliance().previousWeekendFree());
@@ -256,6 +263,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 thirdLine = null;
             } else {
                 secondLine = DateTimeUtils.getWeekendDateSpanString(shift.getCompliance().getLastWeekendWorked());
+                //noinspection ConstantConditions
                 thirdLine = DateTimeUtils.getWeeksAgo(getContext(), shift.getCompliance().getCurrentWeekend(), shift.getCompliance().getLastWeekendWorked());
             }
             holder.setText(getContext().getString(R.string.last_weekend_worked), secondLine, thirdLine);

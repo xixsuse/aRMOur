@@ -45,12 +45,12 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    int getRowNumberComment(@NonNull Expense expense) {
+    int getRowNumberComment() {
         return ROW_NUMBER_COMMENT;
     }
 
     @Override
-    int getItemCount(@NonNull Expense expense) {
+    int getRowCount(@NonNull Expense data) {
         return ROW_COUNT;
     }
 
@@ -62,8 +62,8 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    void onChanged(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
-        super.onChanged(oldExpense, newExpense);
+    void notifyUpdated(@NonNull Expense oldExpense, @NonNull Expense newExpense) {
+        super.notifyUpdated(oldExpense, newExpense);
         payableDetailAdapterHelper.onChanged(oldExpense, newExpense, this);
         if (!oldExpense.getTitle().equals(newExpense.getTitle())) {
             notifyItemChanged(ROW_NUMBER_TITLE);

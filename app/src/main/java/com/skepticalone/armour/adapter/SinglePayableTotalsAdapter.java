@@ -20,7 +20,7 @@ public final class SinglePayableTotalsAdapter<FinalItem extends Payment> extends
     }
 
     @Override
-    int getFixedItemCount() {
+    int getFixedRowCount() {
         return ROW_COUNT;
     }
 

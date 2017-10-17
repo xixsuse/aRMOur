@@ -31,28 +31,32 @@ abstract class ObservableAdapter<Data> extends RecyclerView.Adapter<ItemViewHold
         return mContext;
     }
 
+    void initialiseRowNumbers(@NonNull Data data) {
+    }
+
     @Override
     public final void onChanged(@Nullable Data data) {
         if (mData == null && data == null) {
             return;
         } else if (mData == null) {
-            notifyItemRangeInserted(0, getItemCount(data));
+            initialiseRowNumbers(data);
+            notifyItemRangeInserted(0, getRowCount(data));
         } else if (data == null) {
-            notifyItemRangeRemoved(0, getItemCount(mData));
+            notifyItemRangeRemoved(0, getRowCount(mData));
         } else {
-            onChanged(mData, data);
+            notifyUpdated(mData, data);
         }
         mData = data;
     }
 
-    abstract void onChanged(@NonNull Data oldData, @NonNull Data newData);
+    abstract void notifyUpdated(@NonNull Data oldData, @NonNull Data newData);
 
     @Override
     public final int getItemCount() {
-        return mData == null ? 0 : getItemCount(mData);
+        return mData == null ? 0 : getRowCount(mData);
     }
 
-    abstract int getItemCount(@NonNull Data data);
+    abstract int getRowCount(@NonNull Data data);
 
     @CallSuper
     @Override
@@ -67,7 +71,7 @@ abstract class ObservableAdapter<Data> extends RecyclerView.Adapter<ItemViewHold
     }
 
     long getItemId(int position, @NonNull Data data) {
-        return super.getItemId(position);
+        return RecyclerView.NO_ID;
     }
 
     @Override

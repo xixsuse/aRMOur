@@ -31,7 +31,7 @@ public abstract class ItemListAdapter<FinalItem extends Item> extends Observable
     }
 
     @Override
-    final void onChanged(@NonNull final List<FinalItem> oldList, @NonNull final List<FinalItem> newList) {
+    final void notifyUpdated(@NonNull final List<FinalItem> oldList, @NonNull final List<FinalItem> newList) {
         DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
@@ -98,7 +98,7 @@ public abstract class ItemListAdapter<FinalItem extends Item> extends Observable
     }
 
     @Override
-    final int getItemCount(@NonNull List<FinalItem> items) {
+    final int getRowCount(@NonNull List<FinalItem> items) {
         return items.size();
     }
 

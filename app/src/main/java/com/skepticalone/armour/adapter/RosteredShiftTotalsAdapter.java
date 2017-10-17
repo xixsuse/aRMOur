@@ -37,7 +37,7 @@ public final class RosteredShiftTotalsAdapter extends FilteredItemTotalsAdapter<
     }
 
     @Override
-    int getFixedItemCount() {
+    int getFixedRowCount() {
         return ShiftTotalsAdapterHelper.ROW_COUNT;
     }
 

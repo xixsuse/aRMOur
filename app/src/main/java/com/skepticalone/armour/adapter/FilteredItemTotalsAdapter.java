@@ -19,7 +19,7 @@ public abstract class FilteredItemTotalsAdapter<FinalItem> extends ItemTotalsAda
 
     @Override
     public final void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        notifyItemRangeChanged(0, getFixedItemCount());
+        notifyItemRangeChanged(0, getFixedRowCount());
     }
 
     @NonNull

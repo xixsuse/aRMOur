@@ -3,7 +3,6 @@ package com.skepticalone.armour.adapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -13,8 +12,6 @@ import com.skepticalone.armour.util.DateTimeUtils;
 import org.threeten.bp.LocalDate;
 
 abstract class ShiftDetailAdapterHelper<FinalItem extends Shift> extends DateDetailAdapterHelper<FinalItem> {
-
-    private static final String TAG = "ShiftDetailAdapterHelpe";
 
     ShiftDetailAdapterHelper(@NonNull Callbacks callbacks) {
         super(callbacks);
@@ -36,15 +33,12 @@ abstract class ShiftDetailAdapterHelper<FinalItem extends Shift> extends DateDet
     void onItemUpdated(@NonNull FinalItem oldShift, @NonNull FinalItem newShift, @NonNull RecyclerView.Adapter adapter) {
         super.onItemUpdated(oldShift, newShift, adapter);
         if (!oldShift.getShiftData().getStart().toLocalTime().equals(newShift.getShiftData().getStart().toLocalTime())) {
-            Log.i(TAG, "adapter.notifyItemChanged(getRowNumberStart())");
             adapter.notifyItemChanged(getRowNumberStart());
         }
         if (!oldShift.getShiftData().getEnd().toLocalTime().equals(newShift.getShiftData().getEnd().toLocalTime()) || (oldShift.getShiftData().getStart().toLocalDate().isEqual(oldShift.getShiftData().getEnd().toLocalDate()) ? !newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getEnd().toLocalDate()) : (newShift.getShiftData().getStart().toLocalDate().isEqual(newShift.getShiftData().getEnd().toLocalDate()) || !oldShift.getShiftData().getEnd().getDayOfWeek().equals(newShift.getShiftData().getEnd().getDayOfWeek())))) {
-            Log.i(TAG, "adapter.notifyItemChanged(getRowNumberEnd())");
             adapter.notifyItemChanged(getRowNumberEnd());
         }
         if (oldShift.getShiftType() != newShift.getShiftType() || !oldShift.getShiftData().getDuration().equals(newShift.getShiftData().getDuration())) {
-            Log.i(TAG, "adapter.notifyItemChanged(getRowNumberShiftType())");
             adapter.notifyItemChanged(getRowNumberShiftType());
         }
     }
