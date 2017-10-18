@@ -12,8 +12,8 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.RosteredShiftListAdapter;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
-import com.skepticalone.armour.ui.totals.LoggedShiftTotalsDialogFragment;
 import com.skepticalone.armour.ui.totals.RosteredShiftTotalsDialogFragment;
+import com.skepticalone.armour.ui.totals.RunReviewDialogFragment;
 
 public final class RosteredShiftListFragment extends ShiftAddListFragment<RosteredShift> {
 
@@ -62,7 +62,7 @@ public final class RosteredShiftListFragment extends ShiftAddListFragment<Roster
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if (item.getItemId() == R.id.logged_shifts) {
-            showDialogFragment(new LoggedShiftTotalsDialogFragment());
+            showDialogFragment(new RunReviewDialogFragment());
             return true;
         }
         return super.onActionItemClicked(mode, item);

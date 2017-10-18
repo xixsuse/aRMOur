@@ -107,7 +107,7 @@
             android:title="@string/check_duration_over_week_title" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_duration_over_fortnight"
-            android:icon="@drawable/ic_fortnight_black_24dp"
+            android:icon="@drawable/ic_weeks_black_24dp"
             android:key="@string/key_check_duration_over_fortnight"
             android:title="@string/check_duration_over_fortnight_title" />
         <SwitchPreference

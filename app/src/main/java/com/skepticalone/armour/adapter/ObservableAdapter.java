@@ -31,15 +31,12 @@ abstract class ObservableAdapter<Data> extends RecyclerView.Adapter<ItemViewHold
         return mContext;
     }
 
-    void initialiseRowNumbers(@NonNull Data data) {
-    }
-
     @Override
-    public final void onChanged(@Nullable Data data) {
+    @CallSuper
+    public void onChanged(@Nullable Data data) {
         if (mData == null && data == null) {
             return;
         } else if (mData == null) {
-            initialiseRowNumbers(data);
             notifyItemRangeInserted(0, getRowCount(data));
         } else if (data == null) {
             notifyItemRangeRemoved(0, getRowCount(mData));

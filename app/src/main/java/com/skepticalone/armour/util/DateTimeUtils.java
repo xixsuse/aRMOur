@@ -70,7 +70,7 @@ public final class DateTimeUtils {
 
     public static String getWeeksAgo(@NonNull Context context, @NonNull LocalDate currentWeekend, @NonNull LocalDate lastWeekendWorked) {
         int weeksAgo = (int) ((currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
-        return context.getResources().getQuantityString(R.plurals.weeks_ago, weeksAgo, weeksAgo);
+        return context.getString(R.string.time_ago_format, context.getResources().getQuantityString(R.plurals.weeks, weeksAgo, weeksAgo));
     }
 
     public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {

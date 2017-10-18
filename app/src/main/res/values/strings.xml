@@ -4,7 +4,6 @@
     <string name="feedback">Feedback</string>
     <string name="totals">Totals</string>
     <string name="subtotals">Subtotals</string>
-    <string name="logged_shift_totals">Logged shift totals</string>
     <string name="date">Date</string>
     <string name="start">Start</string>
     <string name="end">End</string>
@@ -30,6 +29,18 @@
     <string name="all_rostered_shifts">All rostered shifts</string>
     <string name="selected_rostered_shifts">Selected rostered shifts</string>
 
+    <string name="run_review">Run review</string>
+    <string name="run_review_period">Run review period</string>
+    <string name="rostered_duration">Rostered duration</string>
+    <string name="logged_duration">Logged duration</string>
+    <string name="unrostered_duration">Difference (unrostered)</string>
+    <string name="run_category">Run category</string>
+    <string name="x_category">%c category</string>
+    <string name="hours_per_week_over_period_format">%.1f hours per week (over %s)</string>
+    <string name="range_hours_per_week_format">%d - %.1f hours per week</string>
+    <string name="highest_category_hours_per_week_format">%d+ hours per week</string>
+    <string name="insufficient_hours_per_week">Insufficient hours per week</string>
+
     <string name="additional_shift">Additional shift</string>
     <string name="additional_shifts">Additional shifts</string>
     <string name="all_additional_shifts">All additional shifts</string>
@@ -49,8 +60,17 @@
     <string name="percentage_format">%1$s (%2$d%%)</string>
     <string name="payment_format">$%.2f</string>
     <string name="logged_format">%1$s\nLogged: %2$s</string>
+    <string name="time_ago_format">%s ago</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="default_hourly_rate">Default hourly rate</string>
+    <plurals name="weeks">
+        <item quantity="one">%d week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
     <plurals name="hours">
         <item quantity="one">%d hour</item>
         <item quantity="other">%d hours</item>
@@ -75,9 +95,13 @@
         <item quantity="one">%d rostered shift</item>
         <item quantity="other">%d rostered shifts</item>
     </plurals>
-    <plurals name="weeks_ago">
-        <item quantity="one">%d week ago</item>
-        <item quantity="other">%d weeks ago</item>
+    <plurals name="logged_shifts">
+        <item quantity="one">%d logged shift</item>
+        <item quantity="other">%d logged shifts</item>
+    </plurals>
+    <plurals name="shifts_not_logged">
+        <item quantity="one">%d shift selected but ignored (not logged)</item>
+        <item quantity="other">%d shifts selected but ignored (not logged)</item>
     </plurals>
     <string name="duration_in_hours_and_minutes">%1$s, %2$s</string>
     <string name="title">Title</string>

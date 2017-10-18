@@ -2,6 +2,7 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -24,7 +25,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     private final ShiftDetailAdapterHelper<RosteredShift> shiftDetailAdapterHelper;
     @NonNull
     private final Callbacks callbacks;
-    //            ROW_COUNT_MAXIMUM = 13;
+    private boolean initialised = false;
     private int
             rowNumberLoggedStart,
             rowNumberLoggedEnd,
@@ -70,21 +71,25 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    void initialiseRowNumbers(@NonNull RosteredShift rosteredShift) {
-        int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
-        if (rosteredShift.getLoggedShiftData() == null) {
-            rowNumberLoggedStart = rowNumberLoggedEnd = RecyclerView.NO_POSITION;
-        } else {
-            rowNumberLoggedStart = ++lastPosition;
-            rowNumberLoggedEnd = ++lastPosition;
+    public void onChanged(@Nullable RosteredShift rosteredShift) {
+        if (!initialised && rosteredShift != null) {
+            initialised = true;
+            int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
+            if (rosteredShift.getLoggedShiftData() == null) {
+                rowNumberLoggedStart = rowNumberLoggedEnd = RecyclerView.NO_POSITION;
+            } else {
+                rowNumberLoggedStart = ++lastPosition;
+                rowNumberLoggedEnd = ++lastPosition;
+            }
+            rowNumberComment = ++lastPosition;
+            rowNumberDurationBetweenShifts = ++lastPosition;
+            rowNumberDurationWorkedOverDay = ++lastPosition;
+            rowNumberDurationWorkedOverWeek = ++lastPosition;
+            rowNumberDurationWorkedOverFortnight = ++lastPosition;
+            rowNumberLastWeekendWorked = rosteredShift.getCompliance().getCurrentWeekend() == null ? RecyclerView.NO_POSITION : ++lastPosition;
+            rowCount = ++lastPosition;
         }
-        rowNumberComment = ++lastPosition;
-        rowNumberDurationBetweenShifts = ++lastPosition;
-        rowNumberDurationWorkedOverDay = ++lastPosition;
-        rowNumberDurationWorkedOverWeek = ++lastPosition;
-        rowNumberDurationWorkedOverFortnight = ++lastPosition;
-        rowNumberLastWeekendWorked = rosteredShift.getCompliance().getCurrentWeekend() == null ? RecyclerView.NO_POSITION : ++lastPosition;
-        rowCount = ++lastPosition;
+        super.onChanged(rosteredShift);
     }
 
     @Override
@@ -244,7 +249,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             });
         } else if (position == rowNumberDurationWorkedOverFortnight) {
             holder.setupPlain();
-            holder.setPrimaryIcon(R.drawable.ic_fortnight_black_24dp);
+            holder.setPrimaryIcon(R.drawable.ic_weeks_black_24dp);
             holder.setCompliant(shift.getCompliance().compliesWithMaximumDurationOverFortnight());
             holder.setText(getContext().getString(R.string.duration_worked_over_fortnight), DateTimeUtils.getDurationString(getContext(), shift.getCompliance().getDurationOverFortnight()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
