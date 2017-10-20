@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.model.Compliance;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.DateTimeUtils;
 
@@ -22,7 +23,7 @@ public final class RosteredShiftListAdapter extends ShiftListAdapter<RosteredShi
 
     @Override
     int getSecondaryIcon(@NonNull RosteredShift shift) {
-        return RosteredShift.Compliance.getComplianceIcon(shift.getCompliance().isCompliant());
+        return Compliance.getComplianceIcon(shift.getCompliance().isCompliant());
     }
 
     @NonNull

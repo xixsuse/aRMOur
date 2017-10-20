@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.Compliance;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,7 +60,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         if (compliant == null) {
             secondaryIcon.setVisibility(View.GONE);
         } else {
-            secondaryIcon.setImageResource(RosteredShift.Compliance.getComplianceIcon(compliant));
+            secondaryIcon.setImageResource(Compliance.getComplianceIcon(compliant));
             secondaryIcon.setVisibility(View.VISIBLE);
         }
     }

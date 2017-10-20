@@ -17,7 +17,6 @@ import com.skepticalone.armour.settings.TimePreference;
 import com.skepticalone.armour.util.DateTimeUtils;
 import com.skepticalone.armour.util.LiveConfig;
 
-import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
@@ -299,12 +298,6 @@ public abstract class Shift extends Item {
         @NonNull
         public Duration getDuration() {
             return duration;
-        }
-
-        @Nullable
-        LocalDate calculateCurrentWeekend() {
-            ZonedDateTime weekendStart = getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
-            return weekendStart.isBefore(getEnd()) && getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
         }
 
         @NonNull

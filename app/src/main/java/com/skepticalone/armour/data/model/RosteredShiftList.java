@@ -14,14 +14,14 @@ import java.util.List;
 public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, RosteredShift> {
 
     @NonNull
-    private final LiveData<RosteredShift.Compliance.Configuration> liveComplianceConfig;
+    private final LiveData<Compliance.Configuration> liveComplianceConfig;
 
     public RosteredShiftList(@NonNull Context context, @NonNull LiveData<List<RosteredShiftEntity>> liveRawRosteredShifts) {
         super(context, liveRawRosteredShifts);
-        liveComplianceConfig = RosteredShift.Compliance.LiveComplianceConfig.getInstance(context);
-        addSource(liveComplianceConfig, new Observer<RosteredShift.Compliance.Configuration>() {
+        liveComplianceConfig = Compliance.LiveComplianceConfig.getInstance(context);
+        addSource(liveComplianceConfig, new Observer<Compliance.Configuration>() {
             @Override
-            public void onChanged(@Nullable RosteredShift.Compliance.Configuration complianceConfig) {
+            public void onChanged(@Nullable Compliance.Configuration complianceConfig) {
                 onUpdated(liveRawItems.getValue(), liveTimeZone.getValue(), liveShiftConfig.getValue(), complianceConfig);
             }
         });
@@ -32,7 +32,7 @@ public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, Rost
         onUpdated(rawRosteredShifts, timeZone, shiftConfig, liveComplianceConfig.getValue());
     }
 
-    private void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable RosteredShift.Compliance.Configuration complianceConfig) {
+    private void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable Compliance.Configuration complianceConfig) {
         if (rawRosteredShifts != null && timeZone != null && shiftConfig != null && complianceConfig != null) {
             List<RosteredShift> rosteredShifts = new ArrayList<>(rawRosteredShifts.size());
             for (RosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
