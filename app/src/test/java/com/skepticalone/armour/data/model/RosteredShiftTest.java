@@ -24,8 +24,9 @@ public abstract class RosteredShiftTest {
             true,
             true,
             true,
-            Compliance.DEFAULT_MAXIMUM_CONSECUTIVE_NIGHTS_WORKED,
-            Compliance.Configuration.AdequateRecoveryDefinition.DEFAULT
+            true,
+            true,
+            null
     );
     @NonNull
     final static Compliance.Configuration NONE_COMPLIANT = new Compliance.Configuration(
@@ -34,7 +35,8 @@ public abstract class RosteredShiftTest {
             false,
             false,
             false,
-            null,
+            false,
+            false,
             null
     );
     @NonNull
@@ -71,7 +73,8 @@ public abstract class RosteredShiftTest {
             assertTrue("compliesWithMaximumDurationOverFortnight: " + shift.getShiftData().toString(), shift.getCompliance().compliesWithMaximumDurationOverFortnight() == null || shift.getCompliance().compliesWithMaximumDurationOverFortnight());
             assertTrue("sufficientDurationBetweenShifts: " + shift.getShiftData().toString(), shift.getCompliance().sufficientDurationBetweenShifts() == null || shift.getCompliance().sufficientDurationBetweenShifts());
             assertTrue("previousWeekendFree: " + shift.getShiftData().toString(), shift.getCompliance().previousWeekendFree() == null || shift.getCompliance().previousWeekendFree());
-            assertTrue("adequateRecovery: " + shift.getShiftData().toString(), shift.getCompliance().adequateRecovery() == null || shift.getCompliance().adequateRecovery());
+            assertTrue("consecutiveNightsWorked: " + shift.getShiftData().toString(), shift.getCompliance().compliesWithMaximumConsecutiveNightsWorked() == null || shift.getCompliance().compliesWithMaximumConsecutiveNightsWorked());
+            assertTrue("recoveryDaysFollowingNights: " + shift.getShiftData().toString(), shift.getCompliance().sufficientRecoveryFollowingNights() == null || shift.getCompliance().sufficientRecoveryFollowingNights());
             assertTrue("isCompliant: " + shift.getShiftData().toString(), shift.getCompliance().isCompliant());
         }
     }
@@ -86,7 +89,8 @@ public abstract class RosteredShiftTest {
         assertEquals(configuration.checkDurationOverFortnight, compliance.compliesWithMaximumDurationOverFortnight() == null || compliance.compliesWithMaximumDurationOverFortnight());
         assertEquals(configuration.checkDurationBetweenShifts, compliance.sufficientDurationBetweenShifts() == null || compliance.sufficientDurationBetweenShifts());
         assertEquals(configuration.checkPreviousWeekendFree, compliance.previousWeekendFree() == null || compliance.previousWeekendFree());
-        assertEquals(configuration.checkAdequateRecovery != null, compliance.adequateRecovery() == null || compliance.adequateRecovery());
+        assertEquals(configuration.checkConsecutiveNightsWorked, compliance.compliesWithMaximumConsecutiveNightsWorked() == null || compliance.compliesWithMaximumConsecutiveNightsWorked());
+        assertEquals(configuration.checkRecoveryDaysFollowingNights, compliance.sufficientRecoveryFollowingNights() == null || compliance.sufficientRecoveryFollowingNights());
         assertFalse(compliance.isCompliant());
     }
 

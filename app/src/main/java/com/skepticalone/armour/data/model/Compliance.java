@@ -20,7 +20,6 @@ import org.threeten.bp.ZonedDateTime;
 import java.util.List;
 
 public final class Compliance {
-    public static final int DEFAULT_MAXIMUM_CONSECUTIVE_NIGHTS_WORKED = 7;
 
     @NonNull
     private final Duration durationOverDay, durationOverWeek, durationOverFortnight;
@@ -29,7 +28,9 @@ public final class Compliance {
     @Nullable
     private final LocalDate currentWeekend, lastWeekendWorked;
     @Nullable
-    private final Long indexOfNightShift, recoveryDaysFollowingNights;
+    private final Long indexOfNightShift;
+    @Nullable
+    private final RecoveryInformation recoveryInformation;
     @Nullable
     private final Boolean
             compliesWithMaximumDurationOverDay,
@@ -38,7 +39,7 @@ public final class Compliance {
             sufficientDurationBetweenShifts,
             previousWeekendFree,
             compliesWithMaximumConsecutiveNightsWorked,
-            adequateRecovery;
+            sufficientRecoveryDaysFollowingNights;
     private final boolean compliant;
 
     Compliance(
@@ -53,28 +54,38 @@ public final class Compliance {
         durationOverFortnight = getDurationSince(shiftData, shiftData.getEnd().minusWeeks(2), previousShifts);
         compliesWithMaximumDurationOverFortnight = configuration.checkDurationOverFortnight ? durationOverFortnight.compareTo(Duration.ofHours(AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT)) != 1 : null;
         durationBetweenShifts = getDurationBetweenShifts(shiftData, previousShifts);
-        sufficientDurationBetweenShifts = (configuration.checkDurationBetweenShifts && durationBetweenShifts != null) ? durationBetweenShifts.compareTo(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1 : null;
+        sufficientDurationBetweenShifts = configuration.checkDurationBetweenShifts && durationBetweenShifts != null ? durationBetweenShifts.compareTo(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1 : null;
         ZonedDateTime weekendStart = shiftData.getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
         currentWeekend = weekendStart.isBefore(shiftData.getEnd()) && shiftData.getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
         lastWeekendWorked = getLastWeekendWorked(currentWeekend, previousShifts);
-        previousWeekendFree = (configuration.checkPreviousWeekendFree && currentWeekend != null && lastWeekendWorked != null) ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
+        previousWeekendFree = configuration.checkPreviousWeekendFree && currentWeekend != null && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
         RosteredShift previousShift = previousShifts.isEmpty() ? null : previousShifts.get(previousShifts.size() - 1);
         indexOfNightShift = getIndexOfNightShift(shiftData, previousShift);
-        compliesWithMaximumConsecutiveNightsWorked = (configuration.maximumConsecutiveNightsWorked != null && indexOfNightShift != null) ? indexOfNightShift < configuration.maximumConsecutiveNightsWorked : null;
-        if (indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null) {
-            recoveryDaysFollowingNights = shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay();
-            adequateRecovery = configuration.checkAdequateRecovery != null && previousShift.getCompliance().indexOfNightShift + 1 >= configuration.checkAdequateRecovery.minimumNightsRequiredForRecoveryDays ? recoveryDaysFollowingNights >= configuration.checkAdequateRecovery.minimumRecoveryDays : null;
-        } else {
-            recoveryDaysFollowingNights = null;
-            adequateRecovery = null;
-        }
+        compliesWithMaximumConsecutiveNightsWorked = configuration.checkConsecutiveNightsWorked && indexOfNightShift != null ? indexOfNightShift < getMaximumConsecutiveNights(configuration.saferRostersOptions) : null;
+        recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay()) : null;
+        sufficientRecoveryDaysFollowingNights = configuration.checkRecoveryDaysFollowingNights && recoveryInformation != null && recoveryInformation.previousConsecutiveNightShifts >= getMinimumNightsBeforeRecovery(configuration.saferRostersOptions) ? recoveryInformation.recoveryDaysFollowingNights >= getMinimumRecoveryDaysFollowingNights(configuration.saferRostersOptions, recoveryInformation.previousConsecutiveNightShifts) : null;
         compliant = (compliesWithMaximumDurationOverDay == null || compliesWithMaximumDurationOverDay) &&
                 (compliesWithMaximumDurationOverWeek == null || compliesWithMaximumDurationOverWeek) &&
                 (compliesWithMaximumDurationOverFortnight == null || compliesWithMaximumDurationOverFortnight) &&
                 (sufficientDurationBetweenShifts == null || sufficientDurationBetweenShifts) &&
                 (previousWeekendFree == null || previousWeekendFree) &&
                 (compliesWithMaximumConsecutiveNightsWorked == null || compliesWithMaximumConsecutiveNightsWorked) &&
-                (adequateRecovery == null || adequateRecovery);
+                (sufficientRecoveryDaysFollowingNights == null || sufficientRecoveryDaysFollowingNights);
+    }
+
+    public static int getMaximumConsecutiveNights(@Nullable Configuration.SaferRostersOptions saferRostersOptions) {
+        return saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS : saferRostersOptions.allow5ConsecutiveNights ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT;
+    }
+
+    public static int getMinimumNightsBeforeRecovery(@Nullable Configuration.SaferRostersOptions saferRostersOptions) {
+        return saferRostersOptions == null ? AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY : AppConstants.SAFER_ROSTERS_MINIMUM_NIGHTS_BEFORE_RECOVERY;
+    }
+
+    public static int getMinimumRecoveryDaysFollowingNights(@Nullable Configuration.SaferRostersOptions saferRostersOptions, long previousConsecutiveNightShifts) {
+        return saferRostersOptions == null ? AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS :
+                previousConsecutiveNightShifts < 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_2_NIGHTS :
+                        previousConsecutiveNightShifts > 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_4_OR_MORE_NIGHTS :
+                                saferRostersOptions.allowOnly1RecoveryDayFollowing3Nights ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_STRICT;
     }
 
     @DrawableRes
@@ -196,32 +207,45 @@ public final class Compliance {
     }
 
     @Nullable
-    public Long getRecoveryDaysFollowingNights() {
-        return recoveryDaysFollowingNights;
+    public RecoveryInformation getRecoveryInformation() {
+        return recoveryInformation;
     }
 
     @Nullable
-    public Boolean adequateRecovery() {
-        return adequateRecovery;
+    public Boolean sufficientRecoveryFollowingNights() {
+        return sufficientRecoveryDaysFollowingNights;
     }
 
     public boolean isCompliant() {
         return compliant;
     }
 
-    static final class Configuration {
+    public static final class RecoveryInformation {
+        public final long previousConsecutiveNightShifts, recoveryDaysFollowingNights;
+
+        private RecoveryInformation(long indexOfPreviousNightShift, long recoveryDaysFollowingNights) {
+            previousConsecutiveNightShifts = indexOfPreviousNightShift + 1;
+            this.recoveryDaysFollowingNights = recoveryDaysFollowingNights;
+        }
+
+        public boolean isEqualTo(@NonNull RecoveryInformation other) {
+            return previousConsecutiveNightShifts == other.previousConsecutiveNightShifts && recoveryDaysFollowingNights == other.recoveryDaysFollowingNights;
+        }
+    }
+
+    public static final class Configuration {
 
         final boolean
                 checkDurationOverDay,
                 checkDurationOverWeek,
                 checkDurationOverFortnight,
                 checkDurationBetweenShifts,
-                checkPreviousWeekendFree;
+                checkPreviousWeekendFree,
+                checkConsecutiveNightsWorked,
+                checkRecoveryDaysFollowingNights;
+
         @Nullable
-        final Integer maximumConsecutiveNightsWorked;
-        @Nullable
-        final AdequateRecoveryDefinition
-                checkAdequateRecovery;
+        final SaferRostersOptions saferRostersOptions;
 
         Configuration(
                 boolean checkDurationOverDay,
@@ -229,28 +253,31 @@ public final class Compliance {
                 boolean checkDurationOverFortnight,
                 boolean checkDurationBetweenShifts,
                 boolean checkPreviousWeekendFree,
-                @Nullable Integer maximumConsecutiveNightsWorked,
-                @Nullable AdequateRecoveryDefinition checkAdequateRecovery
+                boolean checkConsecutiveNightsWorked,
+                boolean checkRecoveryDaysFollowingNights,
+                @Nullable SaferRostersOptions saferRostersOptions
         ) {
             this.checkDurationOverDay = checkDurationOverDay;
             this.checkDurationOverWeek = checkDurationOverWeek;
             this.checkDurationOverFortnight = checkDurationOverFortnight;
             this.checkDurationBetweenShifts = checkDurationBetweenShifts;
             this.checkPreviousWeekendFree = checkPreviousWeekendFree;
-            this.maximumConsecutiveNightsWorked = maximumConsecutiveNightsWorked;
-            this.checkAdequateRecovery = checkAdequateRecovery;
+            this.checkConsecutiveNightsWorked = checkConsecutiveNightsWorked;
+            this.checkRecoveryDaysFollowingNights = checkRecoveryDaysFollowingNights;
+            this.saferRostersOptions = saferRostersOptions;
         }
 
         @NonNull
-        Configuration withCheckDurationOverDay(boolean checkDurationOverDay) {
+        public Configuration withCheckDurationOverDay(boolean checkDurationOverDay) {
             return new Configuration(
                     checkDurationOverDay,
                     checkDurationOverWeek,
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
@@ -262,8 +289,9 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
@@ -275,8 +303,9 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
@@ -288,8 +317,9 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
@@ -301,50 +331,93 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
         @NonNull
-        Configuration withMaximumConsecutiveNightsWorked(@Nullable Integer maximumConsecutiveNightsWorked) {
+        Configuration withCheckConsecutiveNightsWorked(boolean checkConsecutiveNightsWorked) {
             return new Configuration(
                     checkDurationOverDay,
                     checkDurationOverWeek,
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
         @NonNull
-        Configuration withCheckAdequateRecovery(@Nullable AdequateRecoveryDefinition checkAdequateRecovery) {
+        Configuration withCheckRecoveryDaysFollowingNights(boolean checkRecoveryDaysFollowingNights) {
             return new Configuration(
                     checkDurationOverDay,
                     checkDurationOverWeek,
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkPreviousWeekendFree,
-                    maximumConsecutiveNightsWorked,
-                    checkAdequateRecovery
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
             );
         }
 
-        static final class AdequateRecoveryDefinition {
+        @NonNull
+        Configuration withSaferRostersOptions(@Nullable SaferRostersOptions saferRostersOptions) {
+            return new Configuration(
+                    checkDurationOverDay,
+                    checkDurationOverWeek,
+                    checkDurationOverFortnight,
+                    checkDurationBetweenShifts,
+                    checkPreviousWeekendFree,
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
+            );
+        }
 
-            // TODO: 21/10/17 remove this
-            @NonNull
-            static final AdequateRecoveryDefinition DEFAULT = new AdequateRecoveryDefinition(2, 5);
+        public static final class SaferRostersOptions {
+            public final boolean allow5ConsecutiveNights, allowOnly1RecoveryDayFollowing3Nights;
 
-            final int minimumRecoveryDays, minimumNightsRequiredForRecoveryDays;
-
-            AdequateRecoveryDefinition(int minimumRecoveryDays, int minimumNightsRequiredForRecoveryDays) {
-                this.minimumRecoveryDays = minimumRecoveryDays;
-                this.minimumNightsRequiredForRecoveryDays = minimumNightsRequiredForRecoveryDays;
+            public SaferRostersOptions(boolean allow5ConsecutiveNights, boolean allowOnly1RecoveryDayFollowing3Nights) {
+                this.allow5ConsecutiveNights = allow5ConsecutiveNights;
+                this.allowOnly1RecoveryDayFollowing3Nights = allowOnly1RecoveryDayFollowing3Nights;
             }
+
         }
+
+//        static final class AdequateRecoveryDefinition {
+//
+//            // TODO: 21/10/17 remove this
+//            @NonNull
+//            static final AdequateRecoveryDefinition
+//                    DEFAULT = new AdequateRecoveryDefinition(2, 5),
+//                    SAFER = new AdequateRecoveryDefinition(2, 5);
+//
+////            final int minimumRecoveryDays, minimumNightsRequiredForRecoveryDays;
+////
+////            AdequateRecoveryDefinition(int minimumRecoveryDays, int minimumNightsRequiredForRecoveryDays) {
+////                this.minimumRecoveryDays = minimumRecoveryDays;
+////                this.minimumNightsRequiredForRecoveryDays = minimumNightsRequiredForRecoveryDays;
+////            }
+//
+//            static final int RECOVERY_AFTER_MORE_THAN_4_NIGHTS = 2;
+//            final int
+//                    recoveryAfterLessThan3Nights,
+//                    recoveryAfter3Nights,
+//                    recoveryAfter4Nights,
+//                    recoveryAfterMoreThan4Nights;
+//            public AdequateRecoveryDefinition(boolean saferRosters) {
+//                if (saferRosters) {
+//
+//                } else {
+//
+//                }
+//            }
+//        }
 
     }
 
@@ -355,39 +428,64 @@ public final class Compliance {
 
         @NonNull
         private final String
+                keySaferRosters,
                 keyCheckDurationOverDay,
                 keyCheckDurationOverWeek,
                 keyCheckDurationOverFortnight,
                 keyCheckDurationBetweenShifts,
-                keyCheckConsecutiveWeekends;
+                keyCheckConsecutiveWeekends,
+                keyCheckConsecutiveNightsWorked,
+                keyCheckRecoveryDaysFollowingNights,
+                keyAllow5ConsecutiveNights,
+                keyAllowOnly1RecoveryDayFollowing3Nights;
 
         private final boolean
+                defaultSaferRosters,
                 defaultCheckDurationOverDay,
                 defaultCheckDurationOverWeek,
                 defaultCheckDurationOverFortnight,
                 defaultCheckDurationBetweenShifts,
-                defaultCheckConsecutiveWeekends;
+                defaultCheckConsecutiveWeekends,
+                defaultCheckConsecutiveNightsWorked,
+                defaultCheckRecoveryDaysFollowingNights,
+                defaultAllow5ConsecutiveNights,
+                defaultAllowOnly1RecoveryDayFollowing3Nights;
 
         @NonNull
         private final String[] watchKeys;
 
         private LiveComplianceConfig(@NonNull Resources resources) {
+            keySaferRosters = resources.getString(R.string.key_safer_rosters);
             keyCheckDurationOverDay = resources.getString(R.string.key_check_duration_over_day);
             keyCheckDurationOverWeek = resources.getString(R.string.key_check_duration_over_week);
             keyCheckDurationOverFortnight = resources.getString(R.string.key_check_duration_over_fortnight);
             keyCheckDurationBetweenShifts = resources.getString(R.string.key_check_duration_between_shifts);
             keyCheckConsecutiveWeekends = resources.getString(R.string.key_check_consecutive_weekends);
+            keyCheckConsecutiveNightsWorked = resources.getString(R.string.key_check_consecutive_nights_worked);
+            keyCheckRecoveryDaysFollowingNights = resources.getString(R.string.key_check_recovery_days_following_nights);
+            keyAllow5ConsecutiveNights = resources.getString(R.string.key_allow_5_consecutive_nights);
+            keyAllowOnly1RecoveryDayFollowing3Nights = resources.getString(R.string.key_allow_only_1_recovery_day_following_3_nights);
+            defaultSaferRosters = resources.getBoolean(R.bool.default_safer_rosters);
             defaultCheckDurationOverDay = resources.getBoolean(R.bool.default_check_duration_over_day);
             defaultCheckDurationOverWeek = resources.getBoolean(R.bool.default_check_duration_over_week);
             defaultCheckDurationOverFortnight = resources.getBoolean(R.bool.default_check_duration_over_fortnight);
             defaultCheckDurationBetweenShifts = resources.getBoolean(R.bool.default_check_duration_between_shifts);
             defaultCheckConsecutiveWeekends = resources.getBoolean(R.bool.default_check_consecutive_weekends);
+            defaultCheckConsecutiveNightsWorked = resources.getBoolean(R.bool.default_check_consecutive_nights_worked);
+            defaultCheckRecoveryDaysFollowingNights = resources.getBoolean(R.bool.default_check_recovery_days_following_nights);
+            defaultAllow5ConsecutiveNights = resources.getBoolean(R.bool.default_allow_5_consecutive_nights);
+            defaultAllowOnly1RecoveryDayFollowing3Nights = resources.getBoolean(R.bool.default_allow_only_1_recovery_day_following_3_nights);
             watchKeys = new String[]{
+                    keySaferRosters,
                     keyCheckDurationOverDay,
                     keyCheckDurationOverWeek,
                     keyCheckDurationOverFortnight,
                     keyCheckDurationBetweenShifts,
-                    keyCheckConsecutiveWeekends
+                    keyCheckConsecutiveWeekends,
+                    keyCheckConsecutiveNightsWorked,
+                    keyCheckRecoveryDaysFollowingNights,
+                    keyAllow5ConsecutiveNights,
+                    keyAllowOnly1RecoveryDayFollowing3Nights
             };
         }
 
@@ -419,9 +517,9 @@ public final class Compliance {
                     sharedPreferences.getBoolean(keyCheckDurationOverFortnight, defaultCheckDurationOverFortnight),
                     sharedPreferences.getBoolean(keyCheckDurationBetweenShifts, defaultCheckDurationBetweenShifts),
                     sharedPreferences.getBoolean(keyCheckConsecutiveWeekends, defaultCheckConsecutiveWeekends),
-                    // TODO: 20/10/17 remove these
-                    DEFAULT_MAXIMUM_CONSECUTIVE_NIGHTS_WORKED,
-                    Configuration.AdequateRecoveryDefinition.DEFAULT
+                    sharedPreferences.getBoolean(keyCheckConsecutiveNightsWorked, defaultCheckConsecutiveNightsWorked),
+                    sharedPreferences.getBoolean(keyCheckRecoveryDaysFollowingNights, defaultCheckRecoveryDaysFollowingNights),
+                    sharedPreferences.getBoolean(keySaferRosters, defaultSaferRosters) ? new Configuration.SaferRostersOptions(sharedPreferences.getBoolean(keyAllow5ConsecutiveNights, defaultAllow5ConsecutiveNights), sharedPreferences.getBoolean(keyAllowOnly1RecoveryDayFollowing3Nights, defaultAllowOnly1RecoveryDayFollowing3Nights)) : null
             );
         }
 
