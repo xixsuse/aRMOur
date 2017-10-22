@@ -27,10 +27,12 @@ public abstract class RosteredShiftTest {
             true,
             true,
             true,
+            true,
             null
     );
     @NonNull
     final static Compliance.Configuration NONE_COMPLIANT = new Compliance.Configuration(
+            false,
             false,
             false,
             false,

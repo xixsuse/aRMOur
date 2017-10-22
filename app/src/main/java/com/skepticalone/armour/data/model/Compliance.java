@@ -26,11 +26,9 @@ public final class Compliance {
     @Nullable
     private final Duration durationBetweenShifts;
     @Nullable
-    private final Integer indexOfLongDay;
+    private final Integer indexOfDay, indexOfLongDay, indexOfNightShift;
     @Nullable
     private final LocalDate currentWeekend, lastWeekendWorked;
-    @Nullable
-    private final Long indexOfNightShift;
     @Nullable
     private final RecoveryInformation recoveryInformation;
     @Nullable
@@ -39,6 +37,7 @@ public final class Compliance {
             compliesWithMaximumDurationOverWeek,
             compliesWithMaximumDurationOverFortnight,
             sufficientDurationBetweenShifts,
+            compliesWithMaximumDaysPerWeek,
             compliesWithMaximumLongDaysPerWeek,
             previousWeekendFree,
             compliesWithMaximumConsecutiveNightsWorked,
@@ -66,14 +65,17 @@ public final class Compliance {
         previousWeekendFree = configuration.checkConsecutiveWeekends && currentWeekend != null && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
         indexOfNightShift = getIndexOfNightShift(shiftData, previousShift);
         compliesWithMaximumConsecutiveNightsWorked = configuration.checkConsecutiveNightsWorked && indexOfNightShift != null ? indexOfNightShift < getMaximumConsecutiveNights(configuration.saferRostersOptions) : null;
-        recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay()) : null;
+        recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, (int) (shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay())) : null;
         sufficientRecoveryDaysFollowingNights = configuration.checkRecoveryDaysFollowingNights && recoveryInformation != null ? recoveryInformation.previousConsecutiveNightShifts < getMinimumNightsBeforeRecovery(configuration.saferRostersOptions) || recoveryInformation.recoveryDaysFollowingNights >= getMinimumRecoveryDaysFollowingNights(configuration.saferRostersOptions, recoveryInformation.previousConsecutiveNightShifts) : null;
+        indexOfDay = indexOfNightShift == null ? getIndexOfDay(shiftData, previousShift) : null;
+        compliesWithMaximumDaysPerWeek = configuration.checkConsecutiveDays && indexOfDay != null ? indexOfDay < AppConstants.MAXIMUM_CONSECUTIVE_DAYS : null;
         indexOfLongDay = indexOfNightShift == null ? getIndexOfLongDay(shiftData, previousShifts) : null;
         compliesWithMaximumLongDaysPerWeek = configuration.checkLongDaysPerWeek && indexOfLongDay != null ? indexOfLongDay < AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK : null;
         compliant = (compliesWithMaximumDurationOverDay == null || compliesWithMaximumDurationOverDay) &&
                 (compliesWithMaximumDurationOverWeek == null || compliesWithMaximumDurationOverWeek) &&
                 (compliesWithMaximumDurationOverFortnight == null || compliesWithMaximumDurationOverFortnight) &&
                 (sufficientDurationBetweenShifts == null || sufficientDurationBetweenShifts) &&
+                (compliesWithMaximumDaysPerWeek == null || compliesWithMaximumDaysPerWeek) &&
                 (compliesWithMaximumLongDaysPerWeek == null || compliesWithMaximumLongDaysPerWeek) &&
                 (previousWeekendFree == null || previousWeekendFree) &&
                 (compliesWithMaximumConsecutiveNightsWorked == null || compliesWithMaximumConsecutiveNightsWorked) &&
@@ -129,22 +131,32 @@ public final class Compliance {
     }
 
     @Nullable
-    private static Long getIndexOfNightShift(@NonNull Shift.Data shiftData, @Nullable RosteredShift previousShift) {
+    private static Integer getIndexOfNightShift(@NonNull Shift.Data shiftData, @Nullable RosteredShift previousShift) {
         LocalDate shiftEnd = shiftData.getEnd().toLocalDate();
         if (!shiftData.getStart().toLocalDate().isEqual(shiftEnd) || shiftData.getStart().toLocalTime().isBefore(LocalTime.of(6, 0))) {
-            if (previousShift != null && previousShift.getCompliance().indexOfNightShift != null) {
-                LocalDate previousShiftEnd = previousShift.getShiftData().getEnd().toLocalDate();
-                if (!previousShiftEnd.plusDays(1).isBefore(shiftEnd)) {
-                    return previousShift.getCompliance().indexOfNightShift + (shiftEnd.toEpochDay() - previousShiftEnd.toEpochDay());
+            if (previousShift != null && previousShift.getCompliance().getIndexOfNightShift() != null) {
+                long differenceInNights = shiftEnd.toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay();
+                if (differenceInNights <= 1) {
+                    return previousShift.getCompliance().getIndexOfNightShift() + (int) differenceInNights;
                 }
             }
-            return 0L;
+            return 0;
         }
         return null;
     }
 
+    private static int getIndexOfDay(@NonNull Shift.Data shiftData, @Nullable RosteredShift previousShift) {
+        if (previousShift != null && previousShift.getCompliance().getIndexOfDay() != null) {
+            long differenceInDays = shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getStart().toLocalDate().toEpochDay();
+            if (differenceInDays <= 1) {
+                return previousShift.getCompliance().getIndexOfDay() + (int) differenceInDays;
+            }
+        }
+        return 0;
+    }
+
     @Nullable
-    private Integer getIndexOfLongDay(@NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
+    private static Integer getIndexOfLongDay(@NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
         if (shiftData.getDuration().compareTo(Duration.ofHours(AppConstants.MAXIMUM_HOURS_IN_NORMAL_DAY)) == 1) {
             final LocalDate oneWeekAgo = shiftData.getStart().toLocalDate().minusWeeks(1);
             int index = 0;
@@ -152,7 +164,7 @@ public final class Compliance {
                 RosteredShift previousShift = previousShifts.get(i);
                 if (!previousShift.getShiftData().getStart().toLocalDate().isAfter(oneWeekAgo))
                     break;
-                else if (previousShift.getCompliance().indexOfLongDay != null) index++;
+                else if (previousShift.getCompliance().getIndexOfLongDay() != null) index++;
             }
             return index;
         } else return null;
@@ -199,6 +211,16 @@ public final class Compliance {
     }
 
     @Nullable
+    public Integer getIndexOfDay() {
+        return indexOfDay;
+    }
+
+    @Nullable
+    public Boolean compliesWithMaximumDaysPerWeek() {
+        return compliesWithMaximumDaysPerWeek;
+    }
+
+    @Nullable
     public Integer getIndexOfLongDay() {
         return indexOfLongDay;
     }
@@ -224,7 +246,7 @@ public final class Compliance {
     }
 
     @Nullable
-    public Long getIndexOfNightShift() {
+    public Integer getIndexOfNightShift() {
         return indexOfNightShift;
     }
 
@@ -248,9 +270,9 @@ public final class Compliance {
     }
 
     public static final class RecoveryInformation {
-        public final long previousConsecutiveNightShifts, recoveryDaysFollowingNights;
+        public final int previousConsecutiveNightShifts, recoveryDaysFollowingNights;
 
-        private RecoveryInformation(long indexOfPreviousNightShift, long recoveryDaysFollowingNights) {
+        private RecoveryInformation(int indexOfPreviousNightShift, int recoveryDaysFollowingNights) {
             previousConsecutiveNightShifts = indexOfPreviousNightShift + 1;
             this.recoveryDaysFollowingNights = recoveryDaysFollowingNights;
         }
@@ -268,6 +290,7 @@ public final class Compliance {
                 checkDurationOverFortnight,
                 checkDurationBetweenShifts,
                 checkLongDaysPerWeek,
+                checkConsecutiveDays,
                 checkConsecutiveWeekends,
                 checkConsecutiveNightsWorked,
                 checkRecoveryDaysFollowingNights;
@@ -281,6 +304,7 @@ public final class Compliance {
                 boolean checkDurationOverFortnight,
                 boolean checkDurationBetweenShifts,
                 boolean checkLongDaysPerWeek,
+                boolean checkConsecutiveDays,
                 boolean checkConsecutiveWeekends,
                 boolean checkConsecutiveNightsWorked,
                 boolean checkRecoveryDaysFollowingNights,
@@ -291,6 +315,7 @@ public final class Compliance {
             this.checkDurationOverFortnight = checkDurationOverFortnight;
             this.checkDurationBetweenShifts = checkDurationBetweenShifts;
             this.checkLongDaysPerWeek = checkLongDaysPerWeek;
+            this.checkConsecutiveDays = checkConsecutiveDays;
             this.checkConsecutiveWeekends = checkConsecutiveWeekends;
             this.checkConsecutiveNightsWorked = checkConsecutiveNightsWorked;
             this.checkRecoveryDaysFollowingNights = checkRecoveryDaysFollowingNights;
@@ -306,6 +331,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -322,6 +348,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -338,6 +365,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -354,6 +382,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -370,6 +399,24 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
+                    checkConsecutiveWeekends,
+                    checkConsecutiveNightsWorked,
+                    checkRecoveryDaysFollowingNights,
+                    saferRostersOptions
+            );
+        }
+
+        @SuppressWarnings("SameParameterValue")
+        @NonNull
+        Configuration withCheckConsecutiveDays(boolean checkConsecutiveDays) {
+            return new Configuration(
+                    checkDurationOverDay,
+                    checkDurationOverWeek,
+                    checkDurationOverFortnight,
+                    checkDurationBetweenShifts,
+                    checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -386,6 +433,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -402,6 +450,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -418,6 +467,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -433,6 +483,7 @@ public final class Compliance {
                     checkDurationOverFortnight,
                     checkDurationBetweenShifts,
                     checkLongDaysPerWeek,
+                    checkConsecutiveDays,
                     checkConsecutiveWeekends,
                     checkConsecutiveNightsWorked,
                     checkRecoveryDaysFollowingNights,
@@ -467,6 +518,7 @@ public final class Compliance {
                 keyCheckDurationBetweenShifts,
                 keyCheckLongDaysPerWeek,
                 keyCheckConsecutiveWeekends,
+                keyCheckConsecutiveDays,
                 keyCheckConsecutiveNightsWorked,
                 keyCheckRecoveryDaysFollowingNights,
                 keyAllow5ConsecutiveNights,
@@ -480,6 +532,7 @@ public final class Compliance {
                 defaultCheckDurationBetweenShifts,
                 defaultCheckLongDaysPerWeek,
                 defaultCheckConsecutiveWeekends,
+                defaultCheckConsecutiveDays,
                 defaultCheckConsecutiveNightsWorked,
                 defaultCheckRecoveryDaysFollowingNights,
                 defaultAllow5ConsecutiveNights,
@@ -496,6 +549,7 @@ public final class Compliance {
             keyCheckDurationBetweenShifts = resources.getString(R.string.key_check_duration_between_shifts);
             keyCheckLongDaysPerWeek = resources.getString(R.string.key_check_long_days_per_week);
             keyCheckConsecutiveWeekends = resources.getString(R.string.key_check_consecutive_weekends);
+            keyCheckConsecutiveDays = resources.getString(R.string.key_check_consecutive_days);
             keyCheckConsecutiveNightsWorked = resources.getString(R.string.key_check_consecutive_nights_worked);
             keyCheckRecoveryDaysFollowingNights = resources.getString(R.string.key_check_recovery_days_following_nights);
             keyAllow5ConsecutiveNights = resources.getString(R.string.key_allow_5_consecutive_nights);
@@ -507,6 +561,7 @@ public final class Compliance {
             defaultCheckDurationBetweenShifts = resources.getBoolean(R.bool.default_check_duration_between_shifts);
             defaultCheckLongDaysPerWeek = resources.getBoolean(R.bool.default_check_long_days_per_week);
             defaultCheckConsecutiveWeekends = resources.getBoolean(R.bool.default_check_consecutive_weekends);
+            defaultCheckConsecutiveDays = resources.getBoolean(R.bool.default_check_consecutive_days);
             defaultCheckConsecutiveNightsWorked = resources.getBoolean(R.bool.default_check_consecutive_nights_worked);
             defaultCheckRecoveryDaysFollowingNights = resources.getBoolean(R.bool.default_check_recovery_days_following_nights);
             defaultAllow5ConsecutiveNights = resources.getBoolean(R.bool.default_allow_5_consecutive_nights);
@@ -519,6 +574,7 @@ public final class Compliance {
                     keyCheckDurationBetweenShifts,
                     keyCheckLongDaysPerWeek,
                     keyCheckConsecutiveWeekends,
+                    keyCheckConsecutiveDays,
                     keyCheckConsecutiveNightsWorked,
                     keyCheckRecoveryDaysFollowingNights,
                     keyAllow5ConsecutiveNights,
@@ -554,6 +610,7 @@ public final class Compliance {
                     sharedPreferences.getBoolean(keyCheckDurationOverFortnight, defaultCheckDurationOverFortnight),
                     sharedPreferences.getBoolean(keyCheckDurationBetweenShifts, defaultCheckDurationBetweenShifts),
                     sharedPreferences.getBoolean(keyCheckLongDaysPerWeek, defaultCheckLongDaysPerWeek),
+                    sharedPreferences.getBoolean(keyCheckConsecutiveDays, defaultCheckConsecutiveDays),
                     sharedPreferences.getBoolean(keyCheckConsecutiveWeekends, defaultCheckConsecutiveWeekends),
                     sharedPreferences.getBoolean(keyCheckConsecutiveNightsWorked, defaultCheckConsecutiveNightsWorked),
                     sharedPreferences.getBoolean(keyCheckRecoveryDaysFollowingNights, defaultCheckRecoveryDaysFollowingNights),

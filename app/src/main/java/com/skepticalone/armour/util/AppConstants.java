@@ -7,6 +7,7 @@ public final class AppConstants {
             MAXIMUM_HOURS_OVER_DAY = 16,
             MAXIMUM_HOURS_OVER_WEEK = 72,
             MAXIMUM_HOURS_OVER_FORTNIGHT = 144,
+            MAXIMUM_CONSECUTIVE_DAYS = 12,
             MAXIMUM_CONSECUTIVE_NIGHTS = 7,
             MINIMUM_NIGHTS_BEFORE_RECOVERY = 5,
             MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS = 2,

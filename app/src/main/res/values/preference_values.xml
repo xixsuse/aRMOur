@@ -50,6 +50,11 @@
     <string name="key_check_long_days_per_week" translatable="false">key_check_long_days_per_week</string>
     <string name="check_long_days_per_week_title">Check long days per week</string>
     <bool name="default_check_long_days_per_week">true</bool>
+
+    <string name="key_check_consecutive_days" translatable="false">key_check_consecutive_days</string>
+    <string name="check_consecutive_days_title">Check consecutive days</string>
+    <bool name="default_check_consecutive_days">true</bool>
+
     <string name="key_check_consecutive_weekends" translatable="false">key_check_consecutive_weekends</string>
     <string name="check_consecutive_weekends_title">Check consecutive weekends</string>
     <bool name="default_check_consecutive_weekends">true</bool>

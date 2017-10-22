@@ -42,7 +42,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             rowNumberDurationWorkedOverFortnight,
             rowNumberLastWeekendWorked,
             rowNumberLongDays,
-            rowNumberNights,
+            rowNumberConsecutiveDays,
+            rowNumberConsecutiveNights,
             rowNumberRecoveryAfterNights,
             rowCount;
 
@@ -97,7 +98,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             rowNumberDurationWorkedOverFortnight = ++lastPosition;
             rowNumberLastWeekendWorked = rosteredShift.getCompliance().getCurrentWeekend() == null ? RecyclerView.NO_POSITION : ++lastPosition;
             rowNumberLongDays = rosteredShift.getCompliance().getIndexOfLongDay() == null ? RecyclerView.NO_POSITION : ++lastPosition;
-            rowNumberNights = rosteredShift.getCompliance().getIndexOfNightShift() == null ? RecyclerView.NO_POSITION : ++lastPosition;
+            rowNumberConsecutiveDays = rosteredShift.getCompliance().getIndexOfDay() == null ? RecyclerView.NO_POSITION : ++lastPosition;
+            rowNumberConsecutiveNights = rosteredShift.getCompliance().getIndexOfNightShift() == null ? RecyclerView.NO_POSITION : ++lastPosition;
             rowNumberRecoveryAfterNights = rosteredShift.getCompliance().getRecoveryInformation() == null ? RecyclerView.NO_POSITION : ++lastPosition;
             rowCount = ++lastPosition;
         }
@@ -125,7 +127,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         Log.d(TAG, "logAllRowNumbers: rowNumberDurationWorkedOverFortnight: " + rowNumberDurationWorkedOverFortnight);
         Log.d(TAG, "logAllRowNumbers: rowNumberLastWeekendWorked: " + rowNumberLastWeekendWorked);
         Log.d(TAG, "logAllRowNumbers: rowNumberLongDays: " + rowNumberLongDays);
-        Log.d(TAG, "logAllRowNumbers: rowNumberNights: " + rowNumberNights);
+        Log.d(TAG, "logAllRowNumbers: rowNumberConsecutiveDays: " + rowNumberConsecutiveDays);
+        Log.d(TAG, "logAllRowNumbers: rowNumberConsecutiveNights: " + rowNumberConsecutiveNights);
         Log.d(TAG, "logAllRowNumbers: rowNumberRecoveryAfterNights: " + rowNumberRecoveryAfterNights);
         Log.d(TAG, "logAllRowNumbers: rowCount: " + rowCount);
     }
@@ -152,8 +155,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 rowNumberLastWeekendWorked = ++lastPosition;
             if (rowNumberLongDays != RecyclerView.NO_POSITION)
                 rowNumberLongDays = ++lastPosition;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
@@ -173,8 +178,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                 rowNumberLastWeekendWorked = ++lastPosition;
             if (rowNumberLongDays != RecyclerView.NO_POSITION)
                 rowNumberLongDays = ++lastPosition;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
@@ -206,8 +213,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             rowNumberLastWeekendWorked = ++lastPosition;
             if (rowNumberLongDays != RecyclerView.NO_POSITION)
                 rowNumberLongDays = ++lastPosition;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
@@ -218,8 +227,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             int lastPosition = rowNumberDurationWorkedOverFortnight;
             if (rowNumberLongDays != RecyclerView.NO_POSITION)
                 rowNumberLongDays = ++lastPosition;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
@@ -233,8 +244,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         if (oldShift.getCompliance().getIndexOfLongDay() == null && newShift.getCompliance().getIndexOfLongDay() != null) {
             int lastPosition = rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
             rowNumberLongDays = ++lastPosition;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
@@ -243,46 +256,72 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             notifyItemRemoved(rowNumberLongDays);
             rowNumberLongDays = RecyclerView.NO_POSITION;
             int lastPosition = rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
-            if (rowNumberNights != RecyclerView.NO_POSITION)
-                rowNumberNights = ++lastPosition;
+            if (rowNumberConsecutiveDays != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
         } else if (oldShift.getCompliance().getIndexOfLongDay() != null && newShift.getCompliance().getIndexOfLongDay() != null && (
-                oldShift.getCompliance().getIndexOfLongDay().longValue() != newShift.getCompliance().getIndexOfLongDay().longValue() ||
+                !oldShift.getCompliance().getIndexOfLongDay().equals(newShift.getCompliance().getIndexOfLongDay()) ||
                         !Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumLongDaysPerWeek(), newShift.getCompliance().compliesWithMaximumLongDaysPerWeek())
         )) {
             notifyItemChanged(rowNumberLongDays);
         }
-        if (oldShift.getCompliance().getIndexOfNightShift() == null && newShift.getCompliance().getIndexOfNightShift() != null) {
+        if (oldShift.getCompliance().getIndexOfDay() == null && newShift.getCompliance().getIndexOfDay() != null) {
             int lastPosition = rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
-            rowNumberNights = ++lastPosition;
+            rowNumberConsecutiveDays = ++lastPosition;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
-            notifyItemInserted(rowNumberNights);
-        } else if (oldShift.getCompliance().getIndexOfNightShift() != null && newShift.getCompliance().getIndexOfNightShift() == null) {
-            notifyItemRemoved(rowNumberNights);
-            rowNumberNights = RecyclerView.NO_POSITION;
+            notifyItemInserted(rowNumberConsecutiveDays);
+        } else if (oldShift.getCompliance().getIndexOfDay() != null && newShift.getCompliance().getIndexOfDay() == null) {
+            notifyItemRemoved(rowNumberConsecutiveDays);
+            rowNumberConsecutiveDays = RecyclerView.NO_POSITION;
             int lastPosition = rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
+            if (rowNumberConsecutiveNights != RecyclerView.NO_POSITION)
+                rowNumberConsecutiveNights = ++lastPosition;
+            if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
+                rowNumberRecoveryAfterNights = ++lastPosition;
+            rowCount = ++lastPosition;
+        } else if (oldShift.getCompliance().getIndexOfDay() != null && newShift.getCompliance().getIndexOfDay() != null && (
+                !oldShift.getCompliance().getIndexOfDay().equals(newShift.getCompliance().getIndexOfDay()) ||
+                        !Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumDaysPerWeek(), newShift.getCompliance().compliesWithMaximumDaysPerWeek())
+        )) {
+            notifyItemChanged(rowNumberConsecutiveDays);
+        }
+        if (oldShift.getCompliance().getIndexOfNightShift() == null && newShift.getCompliance().getIndexOfNightShift() != null) {
+            int lastPosition = rowNumberConsecutiveDays != RecyclerView.NO_POSITION ? rowNumberConsecutiveDays : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
+            rowNumberConsecutiveNights = ++lastPosition;
+            if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
+                rowNumberRecoveryAfterNights = ++lastPosition;
+            rowCount = ++lastPosition;
+            notifyItemInserted(rowNumberConsecutiveNights);
+        } else if (oldShift.getCompliance().getIndexOfNightShift() != null && newShift.getCompliance().getIndexOfNightShift() == null) {
+            notifyItemRemoved(rowNumberConsecutiveNights);
+            rowNumberConsecutiveNights = RecyclerView.NO_POSITION;
+            int lastPosition = rowNumberConsecutiveDays != RecyclerView.NO_POSITION ? rowNumberConsecutiveDays : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
             if (rowNumberRecoveryAfterNights != RecyclerView.NO_POSITION)
                 rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
         } else if (oldShift.getCompliance().getIndexOfNightShift() != null && newShift.getCompliance().getIndexOfNightShift() != null && (
-                oldShift.getCompliance().getIndexOfNightShift().longValue() != newShift.getCompliance().getIndexOfNightShift().longValue() ||
+                !oldShift.getCompliance().getIndexOfNightShift().equals(newShift.getCompliance().getIndexOfNightShift()) ||
                         !Comparators.equalCompliance(oldShift.getCompliance().compliesWithMaximumConsecutiveNightsWorked(), newShift.getCompliance().compliesWithMaximumConsecutiveNightsWorked())
         )) {
-            notifyItemChanged(rowNumberNights);
+            notifyItemChanged(rowNumberConsecutiveNights);
         }
         if (oldShift.getCompliance().getRecoveryInformation() == null && newShift.getCompliance().getRecoveryInformation() != null) {
-            int lastPosition = rowNumberNights != RecyclerView.NO_POSITION ? rowNumberNights : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
+            int lastPosition = rowNumberConsecutiveNights != RecyclerView.NO_POSITION ? rowNumberConsecutiveNights : rowNumberConsecutiveDays != RecyclerView.NO_POSITION ? rowNumberConsecutiveDays : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
             rowNumberRecoveryAfterNights = ++lastPosition;
             rowCount = ++lastPosition;
             notifyItemInserted(rowNumberRecoveryAfterNights);
         } else if (oldShift.getCompliance().getRecoveryInformation() != null && newShift.getCompliance().getRecoveryInformation() == null) {
             notifyItemRemoved(rowNumberRecoveryAfterNights);
             rowNumberRecoveryAfterNights = RecyclerView.NO_POSITION;
-            int lastPosition = rowNumberNights != RecyclerView.NO_POSITION ? rowNumberNights : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
+            int lastPosition = rowNumberConsecutiveNights != RecyclerView.NO_POSITION ? rowNumberConsecutiveNights : rowNumberConsecutiveDays != RecyclerView.NO_POSITION ? rowNumberConsecutiveDays : rowNumberLongDays != RecyclerView.NO_POSITION ? rowNumberLongDays : rowNumberLastWeekendWorked != RecyclerView.NO_POSITION ? rowNumberLastWeekendWorked : rowNumberDurationWorkedOverFortnight;
             rowCount = ++lastPosition;
         } else if (oldShift.getCompliance().getRecoveryInformation() != null && newShift.getCompliance().getRecoveryInformation() != null && (
                 !oldShift.getCompliance().getRecoveryInformation().isEqualTo(newShift.getCompliance().getRecoveryInformation()) ||
@@ -412,12 +451,25 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
                     callbacks.showMessage(getContext().getString(R.string.meca_maximum_long_days_over_week, AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK, AppConstants.MAXIMUM_HOURS_IN_NORMAL_DAY));
                 }
             });
-        } else if (position == rowNumberNights) {
+        } else if (position == rowNumberConsecutiveDays) {
             holder.setupPlain();
-            holder.setPrimaryIcon(R.drawable.ic_consecutive_nights_black_24dp);
+            holder.setPrimaryIcon(R.drawable.ic_consecutive_shifts_black_24dp);
+            holder.setCompliant(shift.getCompliance().compliesWithMaximumDaysPerWeek());
+            //noinspection ConstantConditions
+            int days = shift.getCompliance().getIndexOfDay() + 1;
+            holder.setText(getContext().getString(R.string.number_of_consecutive_days_worked), getContext().getResources().getQuantityString(R.plurals.days, days, days));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callbacks.showMessage(getContext().getString(R.string.meca_maximum_consecutive_days, AppConstants.MAXIMUM_CONSECUTIVE_DAYS));
+                }
+            });
+        } else if (position == rowNumberConsecutiveNights) {
+            holder.setupPlain();
+            holder.setPrimaryIcon(R.drawable.ic_consecutive_shifts_black_24dp);
             holder.setCompliant(shift.getCompliance().compliesWithMaximumConsecutiveNightsWorked());
             //noinspection ConstantConditions
-            int nights = shift.getCompliance().getIndexOfNightShift().intValue() + 1;
+            int nights = shift.getCompliance().getIndexOfNightShift() + 1;
             holder.setText(getContext().getString(R.string.number_of_consecutive_nights_worked), getContext().getResources().getQuantityString(R.plurals.nights, nights, nights));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -429,25 +481,24 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             holder.setupPlain();
             holder.setPrimaryIcon(R.drawable.ic_recovery_days_following_nights);
             holder.setCompliant(shift.getCompliance().sufficientRecoveryFollowingNights());
+            final Compliance.RecoveryInformation recoveryInformation = shift.getCompliance().getRecoveryInformation();
             //noinspection ConstantConditions
-            int days = (int) shift.getCompliance().getRecoveryInformation().recoveryDaysFollowingNights;
-            final long nights = shift.getCompliance().getRecoveryInformation().previousConsecutiveNightShifts;
-            holder.setText(getContext().getString(R.string.recovery_days_following_nights), getContext().getString(R.string.n_days_following_n_nights, getContext().getResources().getQuantityString(R.plurals.days, days, days), getContext().getResources().getQuantityString(R.plurals.nights, (int) nights, (int) nights)));
+            holder.setText(getContext().getString(R.string.recovery_days_following_nights), getContext().getString(R.string.n_days_following_n_nights, getContext().getResources().getQuantityString(R.plurals.days, recoveryInformation.recoveryDaysFollowingNights, recoveryInformation.recoveryDaysFollowingNights), getContext().getResources().getQuantityString(R.plurals.nights, recoveryInformation.previousConsecutiveNightShifts, recoveryInformation.previousConsecutiveNightShifts)));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Compliance.Configuration.SaferRostersOptions saferRostersOptions = getSaferRostersOptions();
                     int minimumNightsBeforeRecovery = Compliance.getMinimumNightsBeforeRecovery(saferRostersOptions);
-                    if (nights < minimumNightsBeforeRecovery) {
+                    if (recoveryInformation.previousConsecutiveNightShifts < minimumNightsBeforeRecovery) {
                         callbacks.showMessage(getContext().getString(R.string.recovery_days_only_required_following_n_nights, getContext().getResources().getQuantityString(R.plurals.nights, minimumNightsBeforeRecovery, minimumNightsBeforeRecovery)));
                     } else {
-                        int minimumRecoveryDaysFollowingNights = Compliance.getMinimumRecoveryDaysFollowingNights(saferRostersOptions, nights);
+                        int minimumRecoveryDaysFollowingNights = Compliance.getMinimumRecoveryDaysFollowingNights(saferRostersOptions, recoveryInformation.previousConsecutiveNightShifts);
                         final String nNights;
                         if (saferRostersOptions == null) {
                             nNights = getContext().getString(R.string.n_or_more_nights, minimumNightsBeforeRecovery);
-                        } else if (nights == 2 || nights == 3) {
-                            nNights = getContext().getResources().getQuantityString(R.plurals.nights, (int) nights, (int) nights);
-                        } else if (nights > 3) {
+                        } else if (recoveryInformation.previousConsecutiveNightShifts == 2 || recoveryInformation.previousConsecutiveNightShifts == 3) {
+                            nNights = getContext().getResources().getQuantityString(R.plurals.nights, recoveryInformation.previousConsecutiveNightShifts, recoveryInformation.previousConsecutiveNightShifts);
+                        } else if (recoveryInformation.previousConsecutiveNightShifts > 3) {
                             nNights = getContext().getString(R.string.n_or_more_nights, 4);
                         } else throw new IllegalStateException();
                         callbacks.showMessage(getContext().getString(R.string.minimum_n_recovery_days_following_n_nights, getContext().getResources().getQuantityString(R.plurals.days, minimumRecoveryDaysFollowingNights, minimumRecoveryDaysFollowingNights), nNights));

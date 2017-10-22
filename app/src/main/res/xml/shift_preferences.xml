@@ -116,13 +116,18 @@
             android:key="@string/key_check_long_days_per_week"
             android:title="@string/check_long_days_per_week_title" />
         <SwitchPreference
+            android:defaultValue="@bool/default_check_consecutive_days"
+            android:icon="@drawable/ic_consecutive_shifts_black_24dp"
+            android:key="@string/key_check_consecutive_days"
+            android:title="@string/check_consecutive_days_title" />
+        <SwitchPreference
             android:defaultValue="@bool/default_check_consecutive_weekends"
             android:icon="@drawable/ic_weekend_black_24dp"
             android:key="@string/key_check_consecutive_weekends"
             android:title="@string/check_consecutive_weekends_title" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_consecutive_nights_worked"
-            android:icon="@drawable/ic_consecutive_nights_black_24dp"
+            android:icon="@drawable/ic_consecutive_shifts_black_24dp"
             android:key="@string/key_check_consecutive_nights_worked"
             android:title="@string/check_consecutive_nights_worked_title" />
         <SwitchPreference
@@ -141,7 +146,7 @@
             android:title="Safer rosters options">
             <SwitchPreference
                 android:defaultValue="@bool/default_allow_5_consecutive_nights"
-                android:icon="@drawable/ic_consecutive_nights_black_24dp"
+                android:icon="@drawable/ic_consecutive_shifts_black_24dp"
                 android:key="@string/key_allow_5_consecutive_nights"
                 android:title="@string/allow_5_consecutive_nights_title" />
             <SwitchPreference
