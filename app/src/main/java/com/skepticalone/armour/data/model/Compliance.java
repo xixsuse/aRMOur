@@ -42,6 +42,7 @@ public final class Compliance {
             sufficientRecoveryDaysFollowingNights;
     private final boolean compliant;
 
+    @SuppressWarnings("ConstantConditions")
     Compliance(
             @NonNull Shift.Data shiftData,
             @NonNull List<RosteredShift> previousShifts,
@@ -267,8 +268,9 @@ public final class Compliance {
             this.saferRostersOptions = saferRostersOptions;
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
-        public Configuration withCheckDurationOverDay(boolean checkDurationOverDay) {
+        Configuration withCheckDurationOverDay(boolean checkDurationOverDay) {
             return new Configuration(
                     checkDurationOverDay,
                     checkDurationOverWeek,
@@ -281,6 +283,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckDurationOverWeek(boolean checkDurationOverWeek) {
             return new Configuration(
@@ -295,6 +298,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckDurationOverFortnight(boolean checkDurationOverFortnight) {
             return new Configuration(
@@ -309,6 +313,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckDurationBetweenShifts(boolean checkDurationBetweenShifts) {
             return new Configuration(
@@ -323,6 +328,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckPreviousWeekendFree(boolean checkPreviousWeekendFree) {
             return new Configuration(
@@ -337,6 +343,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckConsecutiveNightsWorked(boolean checkConsecutiveNightsWorked) {
             return new Configuration(
@@ -351,6 +358,7 @@ public final class Compliance {
             );
         }
 
+        @SuppressWarnings("SameParameterValue")
         @NonNull
         Configuration withCheckRecoveryDaysFollowingNights(boolean checkRecoveryDaysFollowingNights) {
             return new Configuration(
@@ -380,7 +388,7 @@ public final class Compliance {
         }
 
         public static final class SaferRostersOptions {
-            public final boolean allow5ConsecutiveNights, allowOnly1RecoveryDayFollowing3Nights;
+            final boolean allow5ConsecutiveNights, allowOnly1RecoveryDayFollowing3Nights;
 
             public SaferRostersOptions(boolean allow5ConsecutiveNights, boolean allowOnly1RecoveryDayFollowing3Nights) {
                 this.allow5ConsecutiveNights = allow5ConsecutiveNights;
@@ -389,35 +397,6 @@ public final class Compliance {
 
         }
 
-//        static final class AdequateRecoveryDefinition {
-//
-//            // TODO: 21/10/17 remove this
-//            @NonNull
-//            static final AdequateRecoveryDefinition
-//                    DEFAULT = new AdequateRecoveryDefinition(2, 5),
-//                    SAFER = new AdequateRecoveryDefinition(2, 5);
-//
-////            final int minimumRecoveryDays, minimumNightsRequiredForRecoveryDays;
-////
-////            AdequateRecoveryDefinition(int minimumRecoveryDays, int minimumNightsRequiredForRecoveryDays) {
-////                this.minimumRecoveryDays = minimumRecoveryDays;
-////                this.minimumNightsRequiredForRecoveryDays = minimumNightsRequiredForRecoveryDays;
-////            }
-//
-//            static final int RECOVERY_AFTER_MORE_THAN_4_NIGHTS = 2;
-//            final int
-//                    recoveryAfterLessThan3Nights,
-//                    recoveryAfter3Nights,
-//                    recoveryAfter4Nights,
-//                    recoveryAfterMoreThan4Nights;
-//            public AdequateRecoveryDefinition(boolean saferRosters) {
-//                if (saferRosters) {
-//
-//                } else {
-//
-//                }
-//            }
-//        }
 
     }
 

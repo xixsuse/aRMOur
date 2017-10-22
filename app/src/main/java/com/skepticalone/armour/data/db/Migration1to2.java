@@ -28,7 +28,7 @@ final class Migration1to2 extends Migration {
     }
 
     @Override
-    public void migrate(SupportSQLiteDatabase database) {
+    public void migrate(@NonNull SupportSQLiteDatabase database) {
         database.beginTransaction();
         try {
             String[] columns;

@@ -26,6 +26,7 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     @NonNull
     private final LocalTime end;
 
+    @SuppressWarnings("SameParameterValue")
     ShiftSpec(int startHour, int startMinute, int endHour, int endMinute) {
         this(0, startHour, startMinute, endHour, endMinute);
     }
@@ -50,6 +51,7 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     }
 
     @NonNull
+    @SuppressWarnings("SameParameterValue")
     RosteredShift toSingleTestShift(@NonNull Compliance.Configuration complianceConfig) {
         return toTestShift(complianceConfig, null);
     }
