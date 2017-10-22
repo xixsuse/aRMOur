@@ -168,7 +168,7 @@ public class ComplianceConfigTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.remove(spec));
         spec = new ShiftSpec(11, 16, 0, 0, 1);
         assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckPreviousWeekendFree(false), 11);
+        expectNonCompliant(ALL_COMPLIANT.withCheckConsecutiveWeekends(false), 11);
         assertTrue(shiftSpecs.remove(spec));
         spec = new ShiftSpec(11, 16, 0, 0, 0);
         assertTrue(shiftSpecs.add(spec));
@@ -180,7 +180,7 @@ public class ComplianceConfigTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.remove(spec));
         spec = new ShiftSpec(13, 23, 59, 0, 0);
         assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckPreviousWeekendFree(false), 17);
+        expectNonCompliant(ALL_COMPLIANT.withCheckConsecutiveWeekends(false), 17);
 
     }
 

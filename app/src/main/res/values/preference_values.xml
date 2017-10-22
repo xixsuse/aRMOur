@@ -47,6 +47,9 @@
     <string name="key_check_duration_between_shifts" translatable="false">key_check_duration_between_shifts</string>
     <string name="check_duration_between_shifts_title">Check duration between shifts</string>
     <bool name="default_check_duration_between_shifts">true</bool>
+    <string name="key_check_long_days_per_week" translatable="false">key_check_long_days_per_week</string>
+    <string name="check_long_days_per_week_title">Check long days per week</string>
+    <bool name="default_check_long_days_per_week">true</bool>
     <string name="key_check_consecutive_weekends" translatable="false">key_check_consecutive_weekends</string>
     <string name="check_consecutive_weekends_title">Check consecutive weekends</string>
     <bool name="default_check_consecutive_weekends">true</bool>

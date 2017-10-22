@@ -111,6 +111,11 @@
             android:key="@string/key_check_duration_over_fortnight"
             android:title="@string/check_duration_over_fortnight_title" />
         <SwitchPreference
+            android:defaultValue="@bool/default_check_long_days_per_week"
+            android:icon="@drawable/ic_long_day_black_24dp"
+            android:key="@string/key_check_long_days_per_week"
+            android:title="@string/check_long_days_per_week_title" />
+        <SwitchPreference
             android:defaultValue="@bool/default_check_consecutive_weekends"
             android:icon="@drawable/ic_weekend_black_24dp"
             android:key="@string/key_check_consecutive_weekends"

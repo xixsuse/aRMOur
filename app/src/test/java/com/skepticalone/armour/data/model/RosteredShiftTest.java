@@ -26,10 +26,12 @@ public abstract class RosteredShiftTest {
             true,
             true,
             true,
+            true,
             null
     );
     @NonNull
     final static Compliance.Configuration NONE_COMPLIANT = new Compliance.Configuration(
+            false,
             false,
             false,
             false,
@@ -73,6 +75,7 @@ public abstract class RosteredShiftTest {
             assertTrue("compliesWithMaximumDurationOverFortnight: " + shift.getShiftData().toString(), shift.getCompliance().compliesWithMaximumDurationOverFortnight() == null || shift.getCompliance().compliesWithMaximumDurationOverFortnight());
             assertTrue("sufficientDurationBetweenShifts: " + shift.getShiftData().toString(), shift.getCompliance().sufficientDurationBetweenShifts() == null || shift.getCompliance().sufficientDurationBetweenShifts());
             assertTrue("previousWeekendFree: " + shift.getShiftData().toString(), shift.getCompliance().previousWeekendFree() == null || shift.getCompliance().previousWeekendFree());
+            assertTrue("compliesWithMaximumLongDaysPerWeek: " + shift.getShiftData().toString(), shift.getCompliance().compliesWithMaximumLongDaysPerWeek() == null || shift.getCompliance().compliesWithMaximumLongDaysPerWeek());
             assertTrue("consecutiveNightsWorked: " + shift.getShiftData().toString(), shift.getCompliance().compliesWithMaximumConsecutiveNightsWorked() == null || shift.getCompliance().compliesWithMaximumConsecutiveNightsWorked());
             assertTrue("recoveryDaysFollowingNights: " + shift.getShiftData().toString(), shift.getCompliance().sufficientRecoveryFollowingNights() == null || shift.getCompliance().sufficientRecoveryFollowingNights());
             assertTrue("isCompliant: " + shift.getShiftData().toString(), shift.getCompliance().isCompliant());
@@ -88,7 +91,8 @@ public abstract class RosteredShiftTest {
         assertEquals(configuration.checkDurationOverWeek, compliance.compliesWithMaximumDurationOverWeek() == null || compliance.compliesWithMaximumDurationOverWeek());
         assertEquals(configuration.checkDurationOverFortnight, compliance.compliesWithMaximumDurationOverFortnight() == null || compliance.compliesWithMaximumDurationOverFortnight());
         assertEquals(configuration.checkDurationBetweenShifts, compliance.sufficientDurationBetweenShifts() == null || compliance.sufficientDurationBetweenShifts());
-        assertEquals(configuration.checkPreviousWeekendFree, compliance.previousWeekendFree() == null || compliance.previousWeekendFree());
+        assertEquals(configuration.checkConsecutiveWeekends, compliance.previousWeekendFree() == null || compliance.previousWeekendFree());
+        assertEquals(configuration.checkLongDaysPerWeek, compliance.compliesWithMaximumLongDaysPerWeek() == null || compliance.compliesWithMaximumLongDaysPerWeek());
         assertEquals(configuration.checkConsecutiveNightsWorked, compliance.compliesWithMaximumConsecutiveNightsWorked() == null || compliance.compliesWithMaximumConsecutiveNightsWorked());
         assertEquals(configuration.checkRecoveryDaysFollowingNights, compliance.sufficientRecoveryFollowingNights() == null || compliance.sufficientRecoveryFollowingNights());
         assertFalse(compliance.isCompliant());

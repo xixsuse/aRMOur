@@ -71,10 +71,17 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <plurals name="long_days">
+        <item quantity="one">%d long day</item>
+        <item quantity="other">%d long days</item>
+    </plurals>
     <plurals name="nights">
         <item quantity="one">%d night</item>
         <item quantity="other">%d nights</item>
     </plurals>
+    <string name="number_of_long_days_in_week">Number of long days in week</string>
+    <string name="number_of_consecutive_nights_worked">Number of consecutive nights worked</string>
+    <string name="maximum_consecutive_nights" tools:ignore="PluralsCandidate">Maximum %d consecutive nights</string>
     <string name="n_or_more_nights">%d or more nights</string>
     <string name="recovery_days_following_nights">Recovery days following nights</string>
     <string name="n_days_following_n_nights">%s following %s</string>
@@ -138,9 +145,10 @@
     <string name="title_required">Title required</string>
     <string name="value_required">Value required</string>
     <string name="overlapping_shifts">Overlapping shifts</string>
-    <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
     <string name="meca_maximum_hours_over_day" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %d hours in any day.</string>
     <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is rostered on duty in excess of %d hours in any seven day period then a penalty payment of $550 shall apply for that period.</string>
     <string name="meca_maximum_hours_over_fortnight" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is required to work in excess of %d hours in a period of 14 consecutive days the employer shall pay a penalty of $1000 to the employee.</string>
+    <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
+    <string name="meca_maximum_long_days_over_week" tools:ignore="PluralsCandidate">(13.4.8) Employees shall not be rostered on duty for more than %1$d long days in 7. For the purposes of this clause, a "long day" shall be hours worked in excess of %2$d hours.</string>
     <string name="meca_consecutive_weekends">(13.5.1) Employees shall have every second weekend completely free from duties.</string>
 </resources>
