@@ -26,11 +26,6 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     @NonNull
     private final LocalTime end;
 
-    @SuppressWarnings("SameParameterValue")
-    ShiftSpec(int startHour, int startMinute, int endHour, int endMinute) {
-        this(0, startHour, startMinute, endHour, endMinute);
-    }
-
     ShiftSpec(int daysAfterStart, int startHour, int startMinute, int endHour, int endMinute) {
         start = LocalDateTime.of(START_DATE.plusDays(daysAfterStart), LocalTime.of(startHour, startMinute));
         end = LocalTime.of(endHour, endMinute);

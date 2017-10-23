@@ -1,5 +1,6 @@
 package com.skepticalone.armour.data.model;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,9 +14,8 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("ConstantConditions")
 public class LongDaysTest extends RosteredShiftTest {
 
-    @Override
-    public void prepareShiftSpecs() {
-        super.prepareShiftSpecs();
+    @Before
+    public void setUp() {
         assertTrue(shiftSpecs.add(new ShiftSpec(0, 8, 0, 16, 30)));
         assertTrue(shiftSpecs.add(new ShiftSpec(1, 8, 0, 16, 30)));
         assertTrue(shiftSpecs.add(new ShiftSpec(2, 8, 0, 22, 30)));

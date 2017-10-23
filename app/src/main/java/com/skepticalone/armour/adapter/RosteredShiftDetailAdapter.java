@@ -6,11 +6,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.skepticalone.armour.BuildConfig;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Compliance;
 import com.skepticalone.armour.data.model.RosteredShift;
@@ -19,7 +17,6 @@ import com.skepticalone.armour.util.Comparators;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<RosteredShift> {
-    private static final String TAG = "RosteredDetailAdapter";
     private static final int
             ROW_NUMBER_DATE = 0,
             ROW_NUMBER_START = 1,
@@ -114,29 +111,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         return rowCount;
     }
 
-    private void logAllRowNumbers() {
-        Log.d(TAG, "logAllRowNumbers() called");
-        Log.d(TAG, "logAllRowNumbers: rowNumberLoggedStart: " + rowNumberLoggedStart);
-        Log.d(TAG, "logAllRowNumbers: rowNumberLoggedEnd: " + rowNumberLoggedEnd);
-        Log.d(TAG, "logAllRowNumbers: rowNumberComment: " + rowNumberComment);
-        Log.d(TAG, "logAllRowNumbers: rowNumberDurationBetweenShifts: " + rowNumberDurationBetweenShifts);
-        Log.d(TAG, "logAllRowNumbers: rowNumberDurationWorkedOverDay: " + rowNumberDurationWorkedOverDay);
-        Log.d(TAG, "logAllRowNumbers: rowNumberDurationWorkedOverWeek: " + rowNumberDurationWorkedOverWeek);
-        Log.d(TAG, "logAllRowNumbers: rowNumberDurationWorkedOverFortnight: " + rowNumberDurationWorkedOverFortnight);
-        Log.d(TAG, "logAllRowNumbers: rowNumberLastWeekendWorked: " + rowNumberLastWeekendWorked);
-        Log.d(TAG, "logAllRowNumbers: rowNumberLongDays: " + rowNumberLongDays);
-        Log.d(TAG, "logAllRowNumbers: rowNumberConsecutiveDays: " + rowNumberConsecutiveDays);
-        Log.d(TAG, "logAllRowNumbers: rowNumberConsecutiveNights: " + rowNumberConsecutiveNights);
-        Log.d(TAG, "logAllRowNumbers: rowNumberRecoveryAfterNights: " + rowNumberRecoveryAfterNights);
-        Log.d(TAG, "logAllRowNumbers: rowCount: " + rowCount);
-    }
-
     @Override
     void notifyUpdated(@NonNull RosteredShift oldShift, @NonNull RosteredShift newShift) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "notifyUpdated() called with: oldShift = [" + oldShift.getShiftData() + "], newShift = [" + newShift.getShiftData() + "]");
-            logAllRowNumbers();
-        }
         super.notifyUpdated(oldShift, newShift);
         shiftDetailAdapterHelper.onItemUpdated(oldShift, newShift, this);
         if (oldShift.getLoggedShiftData() == null && newShift.getLoggedShiftData() != null) {
@@ -327,16 +303,10 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
         )) {
             notifyItemChanged(rowNumberRecoveryAfterNights);
         }
-        if (BuildConfig.DEBUG) {
-            logAllRowNumbers();
-        }
     }
 
     @Override
     void onBindViewHolder(@NonNull RosteredShift shift, int position, @NonNull ItemViewHolder holder) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onBindViewHolder() called with: shift = [" + shift.getShiftData() + "], position = [" + position + "], holder = [" + holder + "]");
-        }
         if (position == ROW_NUMBER_TOGGLE_LOGGED) {
             holder.setupSwitch();
             holder.bindSwitch(shift.getLoggedShiftData() != null, new CompoundButton.OnCheckedChangeListener() {

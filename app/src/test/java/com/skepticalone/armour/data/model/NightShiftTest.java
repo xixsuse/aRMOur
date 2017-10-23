@@ -1,5 +1,6 @@
 package com.skepticalone.armour.data.model;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,9 +14,8 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("ConstantConditions")
 public class NightShiftTest extends RosteredShiftTest {
 
-    @Override
-    public void prepareShiftSpecs() {
-        super.prepareShiftSpecs();
+    @Before
+    public void setUp() {
         assertTrue(shiftSpecs.add(new ShiftSpec(0, 22, 0, 8, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(1, 22, 0, 8, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(2, 22, 0, 8, 0)));
@@ -25,10 +25,10 @@ public class NightShiftTest extends RosteredShiftTest {
 
     @Test
     public void calculateIsNightShift() {
-        assertNull(new ShiftSpec(8, 0, 16, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(22, 30, 8, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(1, 0, 10, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(6, 0, 0, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNull(new ShiftSpec(0, 8, 0, 16, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(0, 22, 30, 8, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(0, 1, 0, 10, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(0, 6, 0, 0, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
     }
 
     @Test

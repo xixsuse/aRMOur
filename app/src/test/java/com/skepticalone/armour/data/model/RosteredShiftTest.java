@@ -1,9 +1,8 @@
 package com.skepticalone.armour.data.model;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
-import org.junit.Before;
+import org.junit.After;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +28,8 @@ public abstract class RosteredShiftTest {
     @NonNull
     final SortedSet<ShiftSpec> shiftSpecs = new TreeSet<>();
 
-    @Before
-    @CallSuper
-    public void prepareShiftSpecs() {
+    @After
+    public final void tearDown() {
         shiftSpecs.clear();
     }
 
