@@ -51,12 +51,6 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     }
 
     @NonNull
-    @SuppressWarnings("SameParameterValue")
-    RosteredShift toSingleTestShift(@NonNull Compliance.Configuration complianceConfig) {
-        return toTestShift(complianceConfig, null);
-    }
-
-    @NonNull
     RosteredShift toTestShift(@NonNull Compliance.Configuration complianceConfig, @Nullable List<RosteredShift> previousShifts) {
         return new RosteredShift(
                 new RosteredShiftEntity(NO_ID, null, ShiftData.from(start.atZone(zoneId), end), null),

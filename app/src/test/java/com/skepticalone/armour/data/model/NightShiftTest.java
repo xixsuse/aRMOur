@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("ConstantConditions")
 public class NightShiftTest extends RosteredShiftTest {
 
     @Override
@@ -24,16 +25,15 @@ public class NightShiftTest extends RosteredShiftTest {
 
     @Test
     public void calculateIsNightShift() {
-        assertNull(new ShiftSpec(8, 0, 16, 0).toSingleTestShift(ALL_COMPLIANT).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(22, 30, 8, 0).toSingleTestShift(ALL_COMPLIANT).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(1, 0, 10, 0).toSingleTestShift(ALL_COMPLIANT).getCompliance().getIndexOfNightShift());
-        assertNotNull(new ShiftSpec(6, 0, 0, 0).toSingleTestShift(ALL_COMPLIANT).getCompliance().getIndexOfNightShift());
+        assertNull(new ShiftSpec(8, 0, 16, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(22, 30, 8, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(1, 0, 10, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
+        assertNotNull(new ShiftSpec(6, 0, 0, 0).toTestShift(NONE_COMPLIANT, null).getCompliance().getIndexOfNightShift());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void defineNights() {
-        List<RosteredShift> rosteredShifts = getRosteredShifts(ALL_COMPLIANT);
+        List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT);
         for (int i = 0; i < rosteredShifts.size(); i++) {
             Compliance compliance = rosteredShifts.get(i).getCompliance();
             assertEquals(i, compliance.getIndexOfNightShift().intValue());
@@ -42,7 +42,6 @@ public class NightShiftTest extends RosteredShiftTest {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void doNotIncrementIndexUnlessNightsDistinct() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(4, 22, 0, 8, 0)));
@@ -53,7 +52,6 @@ public class NightShiftTest extends RosteredShiftTest {
         assertEquals(4, rosteredShifts.get(5).getCompliance().getIndexOfNightShift().intValue());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void consecutiveNights() {
         final Compliance.Configuration baseConfig = NONE_COMPLIANT.withCheckConsecutiveNightsWorked(true);
@@ -77,7 +75,6 @@ public class NightShiftTest extends RosteredShiftTest {
 
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void oneRecoveryDayFollowingNights() {
         final Compliance.Configuration baseConfig = NONE_COMPLIANT.withCheckRecoveryDaysFollowingNights(true);
@@ -100,7 +97,7 @@ public class NightShiftTest extends RosteredShiftTest {
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(4, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
         assertEquals(1, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-        assertNull(compliance.sufficientRecoveryFollowingNights());
+        assertTrue(compliance.sufficientRecoveryFollowingNights());
         assertTrue(compliance.isCompliant());
 
         rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(new Compliance.Configuration.SaferRostersOptions(true, true)));
@@ -146,34 +143,11 @@ public class NightShiftTest extends RosteredShiftTest {
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(1, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
         assertEquals(1, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-        assertNull(compliance.sufficientRecoveryFollowingNights());
+        assertTrue(compliance.sufficientRecoveryFollowingNights());
         assertTrue(compliance.isCompliant());
 
-//        rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(new Compliance.Configuration.SaferRostersOptions(1, 5)));
-//        compliance = rosteredShifts.get(rosteredShifts.size() - 1).getCompliance();
-//        assertNull(compliance.getIndexOfNightShift());
-//        assertEquals(1, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-//        assertTrue(compliance.sufficientRecoveryFollowingNights());
-//        assertTrue(compliance.isCompliant());
-//
-//        rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(new Compliance.Configuration.SaferRostersOptions(2, 6)));
-//        compliance = rosteredShifts.get(rosteredShifts.size() - 1).getCompliance();
-//        assertNull(compliance.getIndexOfNightShift());
-//        assertEquals(1, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-//        assertNull(compliance.sufficientRecoveryFollowingNights());
-//        assertTrue(compliance.isCompliant());
-//
-//        assertTrue(shiftSpecs.remove(new ShiftSpec(6, 8, 0, 16, 0)));
-//        assertTrue(shiftSpecs.add(new ShiftSpec(7, 8, 0, 16, 0)));
-//        rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(new Compliance.Configuration.SaferRostersOptions(2, 5)));
-//        compliance = rosteredShifts.get(rosteredShifts.size() - 1).getCompliance();
-//        assertNull(compliance.getIndexOfNightShift());
-//        assertEquals(2, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-//        assertTrue(compliance.sufficientRecoveryFollowingNights());
-//        assertTrue(compliance.isCompliant());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void twoRecoveryDaysFollowingNights() {
         final Compliance.Configuration baseConfig = NONE_COMPLIANT.withCheckRecoveryDaysFollowingNights(true);
@@ -181,7 +155,7 @@ public class NightShiftTest extends RosteredShiftTest {
         Compliance compliance;
         assertTrue(shiftSpecs.add(new ShiftSpec(7, 8, 0, 16, 0)));
 
-        rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(null));
+        rosteredShifts = getRosteredShifts(baseConfig);
         compliance = rosteredShifts.get(rosteredShifts.size() - 1).getCompliance();
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(5, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
@@ -191,12 +165,12 @@ public class NightShiftTest extends RosteredShiftTest {
 
         assertTrue(shiftSpecs.remove(new ShiftSpec(0, 22, 0, 8, 0)));
 
-        rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(null));
+        rosteredShifts = getRosteredShifts(baseConfig);
         compliance = rosteredShifts.get(rosteredShifts.size() - 1).getCompliance();
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(4, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
         assertEquals(2, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-        assertNull(compliance.sufficientRecoveryFollowingNights());
+        assertTrue(compliance.sufficientRecoveryFollowingNights());
         assertTrue(compliance.isCompliant());
 
         rosteredShifts = getRosteredShifts(baseConfig.withSaferRostersOptions(new Compliance.Configuration.SaferRostersOptions(true, false)));
@@ -234,14 +208,12 @@ public class NightShiftTest extends RosteredShiftTest {
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(1, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
         assertEquals(2, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-        assertNull(compliance.sufficientRecoveryFollowingNights());
+        assertTrue(compliance.sufficientRecoveryFollowingNights());
         assertTrue(compliance.isCompliant());
-
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
-    public void adequateRecoveryOnlyAppliesForConsecutiveNights() {
+    public void sufficientRecoveryOnlyAppliesForConsecutiveNights() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(0, 22, 0, 8, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(-1, 22, 0, 8, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(6, 8, 0, 16, 0)));
@@ -250,7 +222,7 @@ public class NightShiftTest extends RosteredShiftTest {
         assertNull(compliance.getIndexOfNightShift());
         assertEquals(4, compliance.getRecoveryInformation().previousConsecutiveNightShifts);
         assertEquals(1, compliance.getRecoveryInformation().recoveryDaysFollowingNights);
-        assertNull(compliance.sufficientRecoveryFollowingNights());
+        assertTrue(compliance.sufficientRecoveryFollowingNights());
         assertTrue(compliance.isCompliant());
     }
 

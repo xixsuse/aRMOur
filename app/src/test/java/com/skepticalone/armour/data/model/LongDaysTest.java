@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("ConstantConditions")
 public class LongDaysTest extends RosteredShiftTest {
 
     @Override
@@ -26,8 +27,6 @@ public class LongDaysTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.add(new ShiftSpec(11, 8, 0, 16, 30)));
     }
 
-
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void defineLongDays() {
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true));
@@ -45,7 +44,6 @@ public class LongDaysTest extends RosteredShiftTest {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void checkMaximumLongDaysPerWeek() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(9, 8, 0, 16, 30)));
@@ -70,7 +68,6 @@ public class LongDaysTest extends RosteredShiftTest {
         assertTrue(compliance.compliesWithMaximumLongDaysPerWeek());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void doNotIncrementOrResetCounterIfNightShift() {
         assertTrue(shiftSpecs.add(new ShiftSpec(2, 23, 0, 6, 30)));

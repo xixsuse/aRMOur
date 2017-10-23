@@ -39,7 +39,7 @@ public final class Compliance {
             sufficientDurationBetweenShifts,
             compliesWithMaximumDaysPerWeek,
             compliesWithMaximumLongDaysPerWeek,
-            previousWeekendFree,
+            compliesWithMaximumWeekendsWorked,
             compliesWithMaximumConsecutiveNightsWorked,
             sufficientRecoveryDaysFollowingNights;
     private final boolean compliant;
@@ -62,13 +62,13 @@ public final class Compliance {
         ZonedDateTime weekendStart = shiftData.getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
         currentWeekend = weekendStart.isBefore(shiftData.getEnd()) && shiftData.getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
         lastWeekendWorked = getLastWeekendWorked(currentWeekend, previousShifts);
-        previousWeekendFree = configuration.checkConsecutiveWeekends && currentWeekend != null && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
+        compliesWithMaximumWeekendsWorked = configuration.checkConsecutiveWeekends && currentWeekend != null && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
         indexOfNightShift = getIndexOfNightShift(shiftData, previousShift);
-        compliesWithMaximumConsecutiveNightsWorked = configuration.checkConsecutiveNightsWorked && indexOfNightShift != null ? indexOfNightShift < getMaximumConsecutiveNights(configuration.saferRostersOptions) : null;
+        compliesWithMaximumConsecutiveNightsWorked = configuration.checkConsecutiveNightsWorked && indexOfNightShift != null ? indexOfNightShift < (configuration.saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS : configuration.saferRostersOptions.allow5ConsecutiveNights ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT) : null;
         recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, (int) (shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay())) : null;
-        sufficientRecoveryDaysFollowingNights = configuration.checkRecoveryDaysFollowingNights && recoveryInformation != null ? recoveryInformation.previousConsecutiveNightShifts < getMinimumNightsBeforeRecovery(configuration.saferRostersOptions) || recoveryInformation.recoveryDaysFollowingNights >= getMinimumRecoveryDaysFollowingNights(configuration.saferRostersOptions, recoveryInformation.previousConsecutiveNightShifts) : null;
+        sufficientRecoveryDaysFollowingNights = configuration.checkRecoveryDaysFollowingNights && recoveryInformation != null ? recoveryInformation.previousConsecutiveNightShifts < (configuration.saferRostersOptions == null ? AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY : AppConstants.SAFER_ROSTERS_MINIMUM_NIGHTS_BEFORE_RECOVERY) || recoveryInformation.recoveryDaysFollowingNights >= (configuration.saferRostersOptions == null ? AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS : getMinimumRecoveryDaysFollowingNightsSaferRosters(recoveryInformation.previousConsecutiveNightShifts, configuration.saferRostersOptions.allowOnly1RecoveryDayFollowing3Nights)) : null;
         indexOfDay = indexOfNightShift == null ? getIndexOfDay(shiftData, previousShift) : null;
-        compliesWithMaximumDaysPerWeek = configuration.checkConsecutiveDays && indexOfDay != null ? indexOfDay < AppConstants.MAXIMUM_CONSECUTIVE_DAYS : null;
+        compliesWithMaximumDaysPerWeek = configuration.checkConsecutiveDays && indexOfDay != null ? indexOfDay < (configuration.saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_DAYS : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_DAYS) : null;
         indexOfLongDay = indexOfNightShift == null ? getIndexOfLongDay(shiftData, previousShifts) : null;
         compliesWithMaximumLongDaysPerWeek = configuration.checkLongDaysPerWeek && indexOfLongDay != null ? indexOfLongDay < AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK : null;
         compliant = (compliesWithMaximumDurationOverDay == null || compliesWithMaximumDurationOverDay) &&
@@ -77,24 +77,15 @@ public final class Compliance {
                 (sufficientDurationBetweenShifts == null || sufficientDurationBetweenShifts) &&
                 (compliesWithMaximumDaysPerWeek == null || compliesWithMaximumDaysPerWeek) &&
                 (compliesWithMaximumLongDaysPerWeek == null || compliesWithMaximumLongDaysPerWeek) &&
-                (previousWeekendFree == null || previousWeekendFree) &&
+                (compliesWithMaximumWeekendsWorked == null || compliesWithMaximumWeekendsWorked) &&
                 (compliesWithMaximumConsecutiveNightsWorked == null || compliesWithMaximumConsecutiveNightsWorked) &&
                 (sufficientRecoveryDaysFollowingNights == null || sufficientRecoveryDaysFollowingNights);
     }
 
-    public static int getMaximumConsecutiveNights(@Nullable Configuration.SaferRostersOptions saferRostersOptions) {
-        return saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS : saferRostersOptions.allow5ConsecutiveNights ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT;
-    }
-
-    public static int getMinimumNightsBeforeRecovery(@Nullable Configuration.SaferRostersOptions saferRostersOptions) {
-        return saferRostersOptions == null ? AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY : AppConstants.SAFER_ROSTERS_MINIMUM_NIGHTS_BEFORE_RECOVERY;
-    }
-
-    public static int getMinimumRecoveryDaysFollowingNights(@Nullable Configuration.SaferRostersOptions saferRostersOptions, long previousConsecutiveNightShifts) {
-        return saferRostersOptions == null ? AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS :
-                previousConsecutiveNightShifts < 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_2_NIGHTS :
-                        previousConsecutiveNightShifts > 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_4_OR_MORE_NIGHTS :
-                                saferRostersOptions.allowOnly1RecoveryDayFollowing3Nights ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_STRICT;
+    private static int getMinimumRecoveryDaysFollowingNightsSaferRosters(long previousConsecutiveNightShifts, boolean allowOnly1RecoveryDayFollowing3Nights) {
+        return previousConsecutiveNightShifts < 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_2_NIGHTS :
+                previousConsecutiveNightShifts > 3 ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_4_OR_MORE_NIGHTS :
+                        allowOnly1RecoveryDayFollowing3Nights ? AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MINIMUM_RECOVERY_DAYS_FOLLOWING_3_NIGHTS_STRICT;
     }
 
     @DrawableRes
@@ -241,8 +232,8 @@ public final class Compliance {
     }
 
     @Nullable
-    public Boolean previousWeekendFree() {
-        return previousWeekendFree;
+    public Boolean compliesWithMaximumWeekendsWorked() {
+        return compliesWithMaximumWeekendsWorked;
     }
 
     @Nullable
@@ -491,10 +482,10 @@ public final class Compliance {
             );
         }
 
-        public static final class SaferRostersOptions {
+        static final class SaferRostersOptions {
             final boolean allow5ConsecutiveNights, allowOnly1RecoveryDayFollowing3Nights;
 
-            public SaferRostersOptions(boolean allow5ConsecutiveNights, boolean allowOnly1RecoveryDayFollowing3Nights) {
+            SaferRostersOptions(boolean allow5ConsecutiveNights, boolean allowOnly1RecoveryDayFollowing3Nights) {
                 this.allow5ConsecutiveNights = allow5ConsecutiveNights;
                 this.allowOnly1RecoveryDayFollowing3Nights = allowOnly1RecoveryDayFollowing3Nights;
             }

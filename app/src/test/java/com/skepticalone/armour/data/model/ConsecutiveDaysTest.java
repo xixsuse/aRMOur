@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("ConstantConditions")
 public class ConsecutiveDaysTest extends RosteredShiftTest {
 
     @Override
@@ -29,8 +30,6 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.add(new ShiftSpec(11, 8, 0, 16, 30)));
     }
 
-
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void checkConsecutiveDays() {
         List<RosteredShift> rosteredShifts;
@@ -51,7 +50,6 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertFalse(compliance.isCompliant());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void resetCounterAfterSkippedDays() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(2, 8, 0, 16, 30)));
@@ -62,7 +60,6 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertEquals(1, rosteredShifts.get(3).getCompliance().getIndexOfDay().intValue());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void incrementCounterIfLongDay() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(2, 8, 0, 16, 30)));
@@ -78,7 +75,6 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertEquals(4, rosteredShifts.get(4).getCompliance().getIndexOfDay().intValue());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void doNotIncrementCounterUnlessDifferentDays() {
         assertTrue(shiftSpecs.add(new ShiftSpec(2, 18, 0, 20, 30)));
@@ -90,7 +86,6 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertEquals(3, rosteredShifts.get(4).getCompliance().getIndexOfDay().intValue());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void resetCounterIfNightShift() {
         assertTrue(shiftSpecs.remove(new ShiftSpec(2, 8, 0, 16, 30)));

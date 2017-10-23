@@ -2,185 +2,160 @@ package com.skepticalone.armour.data.model;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("ConstantConditions")
 public class ComplianceConfigTest extends RosteredShiftTest {
-
-    @Override
-    public void prepareShiftSpecs() {
-        super.prepareShiftSpecs();
-        shiftSpecs.add(new ShiftSpec(0, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(1, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(2, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(3, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(4, 8, 0, 16, 0));
-
-        // weekend worked
-        shiftSpecs.add(new ShiftSpec(5, 8, 0, 22, 30));
-        shiftSpecs.add(new ShiftSpec(6, 8, 0, 22, 30));
-
-        shiftSpecs.add(new ShiftSpec(7, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(8, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(9, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(10, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(11, 8, 0, 16, 0));
-
-        // weekend free
-
-        shiftSpecs.add(new ShiftSpec(14, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(15, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(16, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(17, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(18, 8, 0, 16, 0));
-
-        // weekend worked
-        shiftSpecs.add(new ShiftSpec(19, 8, 0, 22, 30));
-        shiftSpecs.add(new ShiftSpec(20, 8, 0, 22, 30));
-
-        shiftSpecs.add(new ShiftSpec(21, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(22, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(23, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(24, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(25, 8, 0, 16, 0));
-
-        // weekend free
-
-        shiftSpecs.add(new ShiftSpec(28, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(29, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(30, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(31, 8, 0, 16, 0));
-
-        // going onto 7 nights
-        shiftSpecs.add(new ShiftSpec(32, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(33, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(34, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(35, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(36, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(37, 22, 0, 8, 0));
-        shiftSpecs.add(new ShiftSpec(38, 22, 0, 8, 0));
-
-        // weekend free
-
-        shiftSpecs.add(new ShiftSpec(42, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(43, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(44, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(45, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(46, 8, 0, 16, 0));
-
-        // weekend free
-
-        shiftSpecs.add(new ShiftSpec(49, 8, 0, 16, 0));
-        shiftSpecs.add(new ShiftSpec(50, 8, 0, 16, 0));
-    }
 
     @Test
     public void insufficientDurationBetweenShifts() {
-        ShiftSpec spec = new ShiftSpec(50, 23, 59, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckDurationBetweenShifts(false), shiftSpecs.size() - 1);
+        Compliance.Configuration configuration = NONE_COMPLIANT.withCheckDurationBetweenShifts(true);
+        assertTrue(shiftSpecs.add(new ShiftSpec(0, 16, 0, 0, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(1, 8, 0, 16, 0)));
+        Compliance compliance = getRosteredShifts(configuration).get(1).getCompliance();
+        assertTrue(compliance.sufficientDurationBetweenShifts());
+        assertTrue(compliance.isCompliant());
+        assertTrue(shiftSpecs.remove(new ShiftSpec(1, 8, 0, 16, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(1, 7, 59, 16, 0)));
+        compliance = getRosteredShifts(configuration).get(1).getCompliance();
+        assertFalse(compliance.sufficientDurationBetweenShifts());
+        assertFalse(compliance.isCompliant());
     }
 
     @Test
     public void exceedsMaximumDurationOverDay() {
-        assertTrue(shiftSpecs.remove(shiftSpecs.last()));
-        ShiftSpec spec = new ShiftSpec(50, 8, 0, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        checkBaselineCompliant();
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(50, 7, 59, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckDurationOverDay(false), shiftSpecs.size() - 1);
+        Compliance.Configuration configuration = NONE_COMPLIANT.withCheckDurationOverDay(true);
+        assertTrue(shiftSpecs.add(new ShiftSpec(0, 6, 0, 22, 0)));
+        Compliance compliance = getRosteredShifts(configuration).get(0).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverDay());
+        assertTrue(compliance.isCompliant());
+        assertTrue(shiftSpecs.remove(new ShiftSpec(0, 6, 0, 22, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(0, 6, 0, 22, 1)));
+        compliance = getRosteredShifts(configuration).get(0).getCompliance();
+        assertFalse(compliance.compliesWithMaximumDurationOverDay());
+        assertFalse(compliance.isCompliant());
     }
 
     @Test
     public void exceedsMaximumDurationOverWeek() {
-        ShiftSpec spec = new ShiftSpec(7, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(7, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
-        checkBaselineCompliant();
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(7, 8, 0, 19, 1);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckDurationOverWeek(false), 7);
+        Compliance.Configuration configuration = NONE_COMPLIANT.withCheckDurationOverWeek(true);
+        assertTrue(shiftSpecs.add(new ShiftSpec(0, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(1, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(2, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(3, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(4, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(5, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(6, 6, 0, 18, 0)));
+
+        Compliance compliance = getRosteredShifts(configuration).get(6).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverWeek());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(6, 6, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(6, 5, 59, 18, 0)));
+
+        compliance = getRosteredShifts(configuration).get(6).getCompliance();
+        assertFalse(compliance.compliesWithMaximumDurationOverWeek());
+        assertFalse(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(6, 5, 59, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(6, 6, 0, 18, 0)));
+
+        compliance = getRosteredShifts(configuration).get(6).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverWeek());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 0, 18, 0)));
+
+        compliance = getRosteredShifts(configuration).get(7).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverWeek());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(-1, 8, 0, 18, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 0, 18, 1)));
+
+        compliance = getRosteredShifts(configuration).get(7).getCompliance();
+        assertFalse(compliance.compliesWithMaximumDurationOverWeek());
+        assertFalse(compliance.isCompliant());
+
     }
 
     @Test
     public void exceedsMaximumDurationOverFortnight() {
-        ShiftSpec spec;
-        spec = new ShiftSpec(0, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(0, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(1, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(1, 8, 0, 20, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(2, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(2, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(3, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(3, 8, 0, 20, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(4, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(4, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
+        Compliance.Configuration configuration = NONE_COMPLIANT.withCheckDurationOverFortnight(true);
 
-        spec = new ShiftSpec(7, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(7, 8, 0, 20, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(8, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(8, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(9, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(9, 8, 0, 20, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(10, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(10, 8, 0, 19, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(11, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(11, 8, 0, 20, 0);
-        assertTrue(shiftSpecs.add(spec));
-        expectCompliant(getRosteredShifts(ALL_COMPLIANT.withCheckDurationOverWeek(false)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(0, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(1, 8, 0, 20, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(2, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(3, 8, 0, 20, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(4, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(5, 8, 0, 22, 30)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(6, 8, 0, 22, 30)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(7, 8, 0, 20, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(8, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(9, 8, 0, 20, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(10, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(13, 7, 0, 19, 1)));
 
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(11, 8, 0, 20, 1);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckDurationOverWeek(false).withCheckDurationOverFortnight(false), 11);
+        Compliance compliance = getRosteredShifts(configuration).get(11).getCompliance();
+        assertFalse(compliance.compliesWithMaximumDurationOverFortnight());
+        assertFalse(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(13, 7, 0, 19, 1)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(13, 7, 0, 19, 0)));
+
+        compliance = getRosteredShifts(configuration).get(11).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverFortnight());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 0, 19, 0)));
+
+        compliance = getRosteredShifts(configuration).get(12).getCompliance();
+        assertTrue(compliance.compliesWithMaximumDurationOverFortnight());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(-1, 8, 0, 19, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 1, 19, 1)));
+
+        compliance = getRosteredShifts(configuration).get(12).getCompliance();
+        assertFalse(compliance.compliesWithMaximumDurationOverFortnight());
+        assertFalse(compliance.isCompliant());
     }
 
     @Test
     public void consecutiveWeekendsWorked() {
-        ShiftSpec spec;
-        spec = new ShiftSpec(11, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(11, 16, 0, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        checkBaselineCompliant();
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(11, 16, 0, 0, 1);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckConsecutiveWeekends(false), 11);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(11, 16, 0, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        spec = new ShiftSpec(14, 8, 0, 16, 0);
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(14, 0, 0, 8, 0);
-        assertTrue(shiftSpecs.add(spec));
-        checkBaselineCompliant();
-        assertTrue(shiftSpecs.remove(spec));
-        spec = new ShiftSpec(13, 23, 59, 0, 0);
-        assertTrue(shiftSpecs.add(spec));
-        expectNonCompliant(ALL_COMPLIANT.withCheckConsecutiveWeekends(false), 17);
+
+        Compliance.Configuration configuration = NONE_COMPLIANT.withCheckConsecutiveWeekends(true);
+
+        assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 0, 16, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(4, 8, 0, 0, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(12, 8, 0, 16, 0)));
+
+        Compliance compliance = getRosteredShifts(configuration).get(2).getCompliance();
+        assertTrue(compliance.compliesWithMaximumWeekendsWorked());
+        assertTrue(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(4, 8, 0, 0, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(5, 0, 0, 0, 1)));
+
+        compliance = getRosteredShifts(configuration).get(2).getCompliance();
+        assertFalse(compliance.compliesWithMaximumWeekendsWorked());
+        assertFalse(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(5, 0, 0, 0, 1)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(6, 23, 59, 0, 0)));
+
+        compliance = getRosteredShifts(configuration).get(2).getCompliance();
+        assertFalse(compliance.compliesWithMaximumWeekendsWorked());
+        assertFalse(compliance.isCompliant());
+
+        assertTrue(shiftSpecs.remove(new ShiftSpec(6, 23, 59, 0, 0)));
+        assertTrue(shiftSpecs.add(new ShiftSpec(7, 0, 0, 0, 1)));
+
+        compliance = getRosteredShifts(configuration).get(2).getCompliance();
+        assertTrue(compliance.compliesWithMaximumWeekendsWorked());
+        assertTrue(compliance.isCompliant());
 
     }
 
