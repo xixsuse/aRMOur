@@ -42,6 +42,13 @@ public abstract class ItemDetailAdapter<FinalItem extends Item> extends Observab
         } else throw new IllegalStateException();
     }
 
+    @Override
+    final int getRowCount(@NonNull FinalItem item) {
+        return getFixedRowCount();
+    }
+
+    abstract int getFixedRowCount();
+
     abstract int getRowNumberComment();
 
     public interface Callbacks {

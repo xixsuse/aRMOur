@@ -31,7 +31,6 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     private final ShiftDetailAdapterHelper<RosteredShift> shiftDetailAdapterHelper;
     @NonNull
     private final Callbacks callbacks;
-    private boolean initialised = false;
     private int
             rowNumberLoggedStart,
             rowNumberLoggedEnd,
@@ -81,9 +80,8 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    public void onChanged(@Nullable RosteredShift rosteredShift) {
-        if (!initialised && rosteredShift != null) {
-            initialised = true;
+    void onChanged(@Nullable RosteredShift oldRosteredShift, @Nullable RosteredShift rosteredShift) {
+        if (oldRosteredShift == null && rosteredShift != null) {
             int lastPosition = ROW_NUMBER_TOGGLE_LOGGED;
             if (rosteredShift.getLoggedShiftData() == null) {
                 rowNumberLoggedStart = rowNumberLoggedEnd = RecyclerView.NO_POSITION;
@@ -103,7 +101,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
             rowNumberRecoveryAfterNights = rosteredShift.getCompliance().getRecoveryInformation() == null ? RecyclerView.NO_POSITION : ++lastPosition;
             rowCount = ++lastPosition;
         }
-        super.onChanged(rosteredShift);
+        super.onChanged(oldRosteredShift, rosteredShift);
     }
 
     @Override
@@ -112,7 +110,7 @@ public final class RosteredShiftDetailAdapter extends ItemDetailAdapter<Rostered
     }
 
     @Override
-    int getRowCount(@NonNull RosteredShift data) {
+    int getFixedRowCount() {
         return rowCount;
     }
 

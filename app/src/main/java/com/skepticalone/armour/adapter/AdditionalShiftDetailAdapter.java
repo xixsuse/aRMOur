@@ -89,7 +89,7 @@ public final class AdditionalShiftDetailAdapter extends ItemDetailAdapter<Additi
     }
 
     @Override
-    int getRowCount(@NonNull AdditionalShift data) {
+    int getFixedRowCount() {
         return ROW_COUNT;
     }
 

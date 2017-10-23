@@ -32,18 +32,20 @@ abstract class ObservableAdapter<Data> extends RecyclerView.Adapter<ItemViewHold
     }
 
     @Override
+    public final void onChanged(@Nullable Data newData) {
+        onChanged(mData, newData);
+        mData = newData;
+    }
+
     @CallSuper
-    public void onChanged(@Nullable Data data) {
-        if (mData == null && data == null) {
-            return;
-        } else if (mData == null) {
-            notifyItemRangeInserted(0, getRowCount(data));
-        } else if (data == null) {
-            notifyItemRangeRemoved(0, getRowCount(mData));
-        } else {
-            notifyUpdated(mData, data);
+    void onChanged(@Nullable Data oldData, @Nullable Data newData) {
+        if (oldData != null && newData != null) {
+            notifyUpdated(oldData, newData);
+        } else if (newData != null) {
+            notifyItemRangeInserted(0, getRowCount(newData));
+        } else if (oldData != null) {
+            notifyItemRangeRemoved(0, getRowCount(oldData));
         }
-        mData = data;
     }
 
     abstract void notifyUpdated(@NonNull Data oldData, @NonNull Data newData);

@@ -50,7 +50,7 @@ public final class ExpenseDetailAdapter extends ItemDetailAdapter<Expense> {
     }
 
     @Override
-    int getRowCount(@NonNull Expense data) {
+    int getFixedRowCount() {
         return ROW_COUNT;
     }
 

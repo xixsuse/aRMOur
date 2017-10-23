@@ -62,7 +62,7 @@ public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover>
     }
 
     @Override
-    int getRowCount(@NonNull CrossCover data) {
+    int getFixedRowCount() {
         return ROW_COUNT;
     }
 
