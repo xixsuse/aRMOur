@@ -65,7 +65,7 @@ public final class Compliance {
         compliesWithMaximumWeekendsWorked = configuration.checkConsecutiveWeekends && currentWeekend != null && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
         indexOfNightShift = getIndexOfNightShift(shiftData, previousShift);
         compliesWithMaximumConsecutiveNightsWorked = configuration.checkConsecutiveNightsWorked && indexOfNightShift != null ? indexOfNightShift < (configuration.saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS : configuration.saferRostersOptions.allow5ConsecutiveNights ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT) : null;
-        recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, (int) (shiftData.getStart().toLocalDate().toEpochDay() - previousShift.getShiftData().getEnd().toLocalDate().toEpochDay())) : null;
+        recoveryInformation = indexOfNightShift == null && previousShift != null && previousShift.getCompliance().indexOfNightShift != null ? new RecoveryInformation(previousShift.getCompliance().indexOfNightShift, shiftData.getStart().toLocalDate(), previousShift.getShiftData().getEnd().toLocalDate()) : null;
         sufficientRecoveryDaysFollowingNights = configuration.checkRecoveryDaysFollowingNights && recoveryInformation != null ? recoveryInformation.previousConsecutiveNightShifts < (configuration.saferRostersOptions == null ? AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY : AppConstants.SAFER_ROSTERS_MINIMUM_NIGHTS_BEFORE_RECOVERY) || recoveryInformation.recoveryDaysFollowingNights >= (configuration.saferRostersOptions == null ? AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS : getMinimumRecoveryDaysFollowingNightsSaferRosters(recoveryInformation.previousConsecutiveNightShifts, configuration.saferRostersOptions.allowOnly1RecoveryDayFollowing3Nights)) : null;
         indexOfDay = indexOfNightShift == null ? getIndexOfDay(shiftData, previousShift) : null;
         compliesWithMaximumDaysPerWeek = configuration.checkConsecutiveDays && indexOfDay != null ? indexOfDay < (configuration.saferRostersOptions == null ? AppConstants.MAXIMUM_CONSECUTIVE_DAYS : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_DAYS) : null;
@@ -263,9 +263,9 @@ public final class Compliance {
     public static final class RecoveryInformation {
         public final int previousConsecutiveNightShifts, recoveryDaysFollowingNights;
 
-        private RecoveryInformation(int indexOfPreviousNightShift, int recoveryDaysFollowingNights) {
+        private RecoveryInformation(int indexOfPreviousNightShift, @NonNull LocalDate start, @NonNull LocalDate previousShiftEnd) {
             previousConsecutiveNightShifts = indexOfPreviousNightShift + 1;
-            this.recoveryDaysFollowingNights = recoveryDaysFollowingNights;
+            recoveryDaysFollowingNights = start.isEqual(previousShiftEnd) ? 0 : (int) (start.toEpochDay() - previousShiftEnd.toEpochDay() - 1);
         }
 
         public boolean isEqualTo(@NonNull RecoveryInformation other) {
