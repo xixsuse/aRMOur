@@ -43,6 +43,8 @@ public final class Compliance {
             compliesWithMaximumConsecutiveNightsWorked,
             sufficientRecoveryDaysFollowingNights;
     private final boolean compliant;
+    @Nullable
+    private LocalDate rosteredDayOff;
 
     @SuppressWarnings("ConstantConditions")
     Compliance(
@@ -254,6 +256,15 @@ public final class Compliance {
     @Nullable
     public Boolean sufficientRecoveryFollowingNights() {
         return sufficientRecoveryDaysFollowingNights;
+    }
+
+    @Nullable
+    LocalDate getRosteredDayOff() {
+        return rosteredDayOff;
+    }
+
+    void setRosteredDayOff(@Nullable LocalDate rosteredDayOff) {
+        this.rosteredDayOff = rosteredDayOff;
     }
 
     public boolean isCompliant() {

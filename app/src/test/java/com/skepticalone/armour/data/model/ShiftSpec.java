@@ -16,11 +16,11 @@ import static com.skepticalone.armour.data.model.Item.NO_ID;
 final class ShiftSpec implements Comparable<ShiftSpec> {
 
     @NonNull
+    static final LocalDate START_DATE = LocalDate.of(2017, 5, 1);
+    @NonNull
     private static final ZoneId zoneId = ZoneId.systemDefault();
     @NonNull
     private static final Shift.ShiftType.Configuration DEFAULT_CONFIG = new Shift.ShiftType.Configuration(480, 960, 480, 1350, 1320, 480);
-    @NonNull
-    private static final LocalDate START_DATE = LocalDate.of(2017, 5, 1);
     @NonNull
     private final LocalDateTime start;
     @NonNull
