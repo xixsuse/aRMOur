@@ -67,28 +67,33 @@ final class RDO {
         for (TemporalAdjuster weekdayTemporalAdjuster : WEEKDAY_TEMPORAL_ADJUSTERS) {
             LocalDate proposedWeekdayRdo = weekendShiftDate.with(weekdayTemporalAdjuster);
             if (workedDates.contains(proposedWeekdayRdo)) continue;
-            if (strict && !isAttachedToWeekendRDO(proposedWeekdayRdo)) continue;
+            if (strict ? isSeparatedFromWeekend(proposedWeekdayRdo) : isSingletonRDO(proposedWeekdayRdo))
+                continue;
             if (weekdayRosteredDaysOff.add(proposedWeekdayRdo)) return proposedWeekdayRdo;
         }
         return null;
     }
 
-    private boolean isAttachedToWeekendRDO(@NonNull LocalDate proposedWeekdayRdo) {
-        return isAttachedToPreviousWeekendRDO(proposedWeekdayRdo) || isAttachedToNextWeekendRDO(proposedWeekdayRdo);
+    private boolean isSeparatedFromWeekend(@NonNull LocalDate proposedWeekdayRdo) {
+        return isSeparatedFromPreviousWeekend(proposedWeekdayRdo) && isSeparatedFromNextWeekend(proposedWeekdayRdo);
     }
 
-    private boolean isAttachedToPreviousWeekendRDO(@NonNull LocalDate proposedWeekdayRdo) {
+    private boolean isSeparatedFromPreviousWeekend(@NonNull LocalDate proposedWeekdayRdo) {
         for (LocalDate currentDay = proposedWeekdayRdo.minusDays(1); currentDay.getDayOfWeek() != SATURDAY; currentDay = currentDay.minusDays(1)) {
-            if (workedDates.contains(currentDay)) return false;
+            if (workedDates.contains(currentDay)) return true;
         }
-        return true;
+        return false;
     }
 
-    private boolean isAttachedToNextWeekendRDO(@NonNull LocalDate proposedWeekdayRdo) {
+    private boolean isSeparatedFromNextWeekend(@NonNull LocalDate proposedWeekdayRdo) {
         for (LocalDate currentDay = proposedWeekdayRdo.plusDays(1); currentDay.getDayOfWeek() != SUNDAY; currentDay = currentDay.plusDays(1)) {
-            if (workedDates.contains(currentDay)) return false;
+            if (workedDates.contains(currentDay)) return true;
         }
-        return true;
+        return false;
+    }
+
+    private boolean isSingletonRDO(@NonNull LocalDate proposedWeekdayRdo) {
+        return workedDates.contains(proposedWeekdayRdo.minusDays(1)) && workedDates.contains(proposedWeekdayRdo.plusDays(1));
     }
 
     @NonNull

@@ -75,7 +75,13 @@ public class RDOTest extends RosteredShiftTest {
                 if (j == i) continue;
                 dates[j < i ? j : j - 1] = j;
             }
-            testDaysOff(false, dates, new int[]{i < 5 ? 4 : 5}, new int[]{i});
+            if (i == 0 || i == 11) {
+                testDaysOff(false, dates, new int[]{i < 5 ? 4 : 5}, new int[]{i});
+                testDaysOff(true, dates, new int[]{i < 5 ? 4 : 5}, new int[]{i});
+            } else {
+                testDaysOff(false, dates, new int[]{}, new int[]{});
+                testDaysOff(true, dates, new int[]{}, new int[]{});
+            }
         }
     }
 
@@ -117,8 +123,8 @@ public class RDOTest extends RosteredShiftTest {
 
     @Test
     public void threeScatteredDaysOff() {
-        testDaysOff(false, new int[]{1, 2, 3, 5, 6, 7, 9, 10}, new int[]{3, 4}, new int[]{0, 4});
-        testDaysOff(true, new int[]{1, 2, 3, 5, 6, 7, 9, 10}, new int[]{3, 4}, new int[]{0, 11});
+        testDaysOff(false, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17}, new int[]{4, 5, 9, 10}, new int[]{0, 9, 10, 18});
+        testDaysOff(true, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17}, new int[]{4, 9}, new int[]{0, 18});
     }
 
 }
