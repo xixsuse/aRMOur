@@ -3,6 +3,8 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.data.compliance.Configuration;
+
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
@@ -46,7 +48,7 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     }
 
     @NonNull
-    RosteredShift toTestShift(@NonNull Compliance.Configuration complianceConfig, @Nullable List<RosteredShift> previousShifts) {
+    RosteredShift toTestShift(@NonNull Configuration complianceConfig, @Nullable List<RosteredShift> previousShifts) {
         return new RosteredShift(
                 new RosteredShiftEntity(NO_ID, null, ShiftData.from(start.atZone(zoneId), end), null),
                 zoneId,

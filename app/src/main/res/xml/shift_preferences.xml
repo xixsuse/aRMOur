@@ -154,6 +154,18 @@
             android:icon="@drawable/ic_recovery_days_following_nights"
             android:key="@string/key_allow_only_1_recovery_day_following_3_nights"
             android:title="@string/allow_only_1_recovery_day_following_3_nights_title" />
+        <SwitchPreference
+            android:defaultValue="@bool/default_allow_midweek_rostered_days_off"
+            android:dependency="@string/key_safer_rosters"
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:key="@string/key_allow_midweek_rostered_days_off"
+            android:title="@string/allow_midweek_rostered_days_off_title" />
+        <SwitchPreference
+            android:defaultValue="@bool/default_check_rostered_days_off"
+            android:dependency="@string/key_safer_rosters"
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:key="@string/key_check_rostered_days_off"
+            android:title="@string/check_rostered_days_off_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
         <com.skepticalone.armour.settings.CurrencyPreference

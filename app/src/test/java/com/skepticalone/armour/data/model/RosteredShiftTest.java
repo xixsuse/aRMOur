@@ -2,6 +2,8 @@ package com.skepticalone.armour.data.model;
 
 import android.support.annotation.NonNull;
 
+import com.skepticalone.armour.data.compliance.Configuration;
+
 import org.junit.After;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.TreeSet;
 public abstract class RosteredShiftTest {
 
     @NonNull
-    final static Compliance.Configuration NONE_COMPLIANT = new Compliance.Configuration(
+    final static Configuration NONE_COMPLIANT = new Configuration(
             false,
             false,
             false,
@@ -34,7 +36,7 @@ public abstract class RosteredShiftTest {
     }
 
     @NonNull
-    final List<RosteredShift> getRosteredShifts(@NonNull Compliance.Configuration complianceConfig) {
+    final List<RosteredShift> getRosteredShifts(@NonNull Configuration complianceConfig) {
         List<RosteredShift> shifts = new ArrayList<>();
         for (ShiftSpec spec : shiftSpecs) {
             shifts.add(spec.toTestShift(

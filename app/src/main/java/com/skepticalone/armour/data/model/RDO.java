@@ -3,6 +3,8 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.data.compliance.Configuration;
+
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.TemporalAdjuster;
 
@@ -36,17 +38,18 @@ final class RDO {
     };
     @NonNull
     private final Set<LocalDate> workedDates, weekdayRosteredDaysOff;
-    private final boolean strict;
+    @NonNull
+    private final Configuration.SaferRostersOptions saferRostersOptions;
 
-    RDO(@NonNull List<RosteredShift> rosteredShifts, boolean strict) {
-        this.strict = strict;
+    RDO(@NonNull List<RosteredShift> rosteredShifts, @NonNull Configuration.SaferRostersOptions saferRostersOptions) {
+        this.saferRostersOptions = saferRostersOptions;
         workedDates = new HashSet<>(rosteredShifts.size());
         int weekendShiftCount = 0;
         for (RosteredShift shift : rosteredShifts
                 ) {
             workedDates.add(shift.getShiftData().getStart().toLocalDate());
             workedDates.add(shift.getShiftData().getEnd().toLocalDate());
-            if (shift.getCompliance().getIndexOfNightShift() == null && shift.getCompliance().getCurrentWeekend() != null) {
+            if (shift.getCompliance().getIndexOfNightShift() == null && shift.getCompliance().getWeekend() != null) {
                 weekendShiftCount++;
             }
         }
@@ -57,8 +60,12 @@ final class RDO {
     }
 
     private void assignRosteredDayOff(@NonNull RosteredShift shift) {
-        if (shift.getCompliance().getIndexOfNightShift() == null && shift.getCompliance().getCurrentWeekend() != null) {
-            shift.getCompliance().setRosteredDayOff(getRosteredDayOff(shift.getShiftData().getStart().toLocalDate()));
+        if (shift.getCompliance().getIndexOfNightShift() == null && shift.getCompliance().getWeekend() != null) {
+            Compliance.Weekend.RosteredDayOffInformation rosteredDayOffInformation = new Compliance.Weekend.RosteredDayOffInformation(getRosteredDayOff(shift.getShiftData().getStart().toLocalDate()), saferRostersOptions.checkRDOs);
+            shift.getCompliance().getWeekend().setRosteredDayOffInformation(rosteredDayOffInformation);
+            if (rosteredDayOffInformation.compliesWithRosteredDayOff() != null && !rosteredDayOffInformation.compliesWithRosteredDayOff()) {
+                shift.getCompliance().setNonCompliant();
+            }
         }
     }
 
@@ -67,7 +74,7 @@ final class RDO {
         for (TemporalAdjuster weekdayTemporalAdjuster : WEEKDAY_TEMPORAL_ADJUSTERS) {
             LocalDate proposedWeekdayRdo = weekendShiftDate.with(weekdayTemporalAdjuster);
             if (workedDates.contains(proposedWeekdayRdo)) continue;
-            if (strict ? isSeparatedFromWeekend(proposedWeekdayRdo) : isSingletonRDO(proposedWeekdayRdo))
+            if (saferRostersOptions.allowMidweekRDOs ? isSingletonRDO(proposedWeekdayRdo) : isSeparatedFromWeekend(proposedWeekdayRdo))
                 continue;
             if (weekdayRosteredDaysOff.add(proposedWeekdayRdo)) return proposedWeekdayRdo;
         }

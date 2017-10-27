@@ -81,4 +81,12 @@
     <string name="allow_only_1_recovery_day_following_3_nights_title">Allow only 1 recovery day following 3 consecutive nights</string>
     <bool name="default_allow_only_1_recovery_day_following_3_nights">false</bool>
 
+    <string name="key_allow_midweek_rostered_days_off" translatable="false">key_allow_midweek_rostered_days_off</string>
+    <string name="allow_midweek_rostered_days_off_title">Allow midweek RDOs</string>
+    <bool name="default_allow_midweek_rostered_days_off">false</bool>
+
+    <string name="key_check_rostered_days_off" translatable="false">key_check_rostered_days_off</string>
+    <string name="check_rostered_days_off_title">Check RDOs</string>
+    <bool name="default_check_rostered_days_off">false</bool>
+
 </resources>

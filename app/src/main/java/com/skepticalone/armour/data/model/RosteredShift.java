@@ -3,6 +3,8 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.data.compliance.Configuration;
+
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public final class RosteredShift extends Shift {
             @NonNull ZoneId zoneId,
             @NonNull ShiftType.Configuration shiftConfig,
             @NonNull List<RosteredShift> previousShifts,
-            @NonNull Compliance.Configuration complianceConfig
+            @NonNull Configuration complianceConfig
     ) {
         super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, shiftConfig);
         loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new Data(rawShift.getLoggedShiftData(), zoneId);
