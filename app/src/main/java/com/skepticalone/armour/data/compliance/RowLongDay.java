@@ -10,11 +10,11 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-final class RowLongDaysOverWeek extends Row {
+final class RowLongDay extends Row {
 
     private final int indexOfLongDay;
 
-    RowLongDaysOverWeek(@NonNull Configuration configuration, @NonNull Shift.Data longDay, @NonNull List<RosteredShift> previousShifts) {
+    RowLongDay(@NonNull Configuration configuration, @NonNull Shift.Data longDay, @NonNull List<RosteredShift> previousShifts) {
         super(configuration.checkLongDaysPerWeek());
         indexOfLongDay = calculateIndexOfLongDay(longDay, previousShifts);
     }
@@ -27,7 +27,7 @@ final class RowLongDaysOverWeek extends Row {
                 RosteredShift previousShift = previousShifts.get(i);
                 if (!previousShift.getShiftData().getStart().toLocalDate().isAfter(oneWeekAgo)) {
                     break;
-                } else if (previousShift.getCompliance().getLongDaysOverWeek() != null) {
+                } else if (previousShift.getCompliance().getLongDay() != null) {
                     index++;
                 }
             }
@@ -40,4 +40,7 @@ final class RowLongDaysOverWeek extends Row {
         return indexOfLongDay < AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK;
     }
 
+    int getIndexOfLongDay() {
+        return indexOfLongDay;
+    }
 }

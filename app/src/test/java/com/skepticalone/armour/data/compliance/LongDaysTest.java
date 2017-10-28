@@ -1,4 +1,7 @@
-package com.skepticalone.armour.data.model;
+package com.skepticalone.armour.data.compliance;
+
+import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.ShiftSpec;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +35,12 @@ public class LongDaysTest extends RosteredShiftTest {
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true));
         for (int i = 0; i < rosteredShifts.size(); i++) {
             Compliance compliance = rosteredShifts.get(i).getCompliance();
-            assertNull(compliance.getIndexOfNightShift());
+            assertNull(compliance.getNight());
             if (i == 2 || i == 4) {
-                assertNotNull(compliance.getIndexOfLongDay());
-                assertTrue(compliance.compliesWithMaximumLongDaysPerWeek());
+                assertNotNull(compliance.getLongDay());
+                assertTrue(compliance.getLongDay().isCompliant());
             } else {
-                assertNull(compliance.getIndexOfLongDay());
-                assertNull(compliance.compliesWithMaximumLongDaysPerWeek());
+                assertNull(compliance.getLongDay());
             }
             assertTrue(compliance.isCompliant());
         }
@@ -52,32 +54,32 @@ public class LongDaysTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.add(new ShiftSpec(8, 8, 0, 22, 30)));
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true));
         Compliance compliance = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true)).get(rosteredShifts.size() - 1).getCompliance();
-        assertEquals(2, compliance.getIndexOfLongDay().intValue());
-        assertFalse(compliance.compliesWithMaximumLongDaysPerWeek());
+        assertEquals(2, compliance.getLongDay().getIndexOfLongDay());
+        assertFalse(compliance.getLongDay().isCompliant());
         assertTrue(shiftSpecs.remove(new ShiftSpec(8, 8, 0, 22, 30)));
         assertTrue(shiftSpecs.add(new ShiftSpec(9, 8, 0, 22, 30)));
         rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true));
         compliance = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true)).get(rosteredShifts.size() - 1).getCompliance();
-        assertEquals(1, compliance.getIndexOfLongDay().intValue());
-        assertTrue(compliance.compliesWithMaximumLongDaysPerWeek());
+        assertEquals(1, compliance.getLongDay().getIndexOfLongDay());
+        assertTrue(compliance.getLongDay().isCompliant());
         assertTrue(shiftSpecs.remove(new ShiftSpec(9, 8, 0, 22, 30)));
         assertTrue(shiftSpecs.add(new ShiftSpec(11, 8, 0, 22, 30)));
         rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true));
         compliance = getRosteredShifts(NONE_COMPLIANT.withCheckLongDaysPerWeek(true)).get(rosteredShifts.size() - 1).getCompliance();
-        assertEquals(0, compliance.getIndexOfLongDay().intValue());
-        assertTrue(compliance.compliesWithMaximumLongDaysPerWeek());
+        assertEquals(0, compliance.getLongDay().getIndexOfLongDay());
+        assertTrue(compliance.getLongDay().isCompliant());
     }
 
     @Test
     public void doNotIncrementOrResetCounterIfNightShift() {
         assertTrue(shiftSpecs.add(new ShiftSpec(2, 23, 0, 6, 30)));
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckConsecutiveDays(true));
-        assertNull(rosteredShifts.get(0).getCompliance().getIndexOfLongDay());
-        assertNull(rosteredShifts.get(1).getCompliance().getIndexOfLongDay());
-        assertEquals(0, rosteredShifts.get(2).getCompliance().getIndexOfLongDay().intValue());
-        assertNotNull(rosteredShifts.get(3).getCompliance().getIndexOfNightShift());
-        assertNull(rosteredShifts.get(3).getCompliance().getIndexOfLongDay());
-        assertNull(rosteredShifts.get(4).getCompliance().getIndexOfLongDay());
-        assertEquals(1, rosteredShifts.get(5).getCompliance().getIndexOfLongDay().intValue());
+        assertNull(rosteredShifts.get(0).getCompliance().getLongDay());
+        assertNull(rosteredShifts.get(1).getCompliance().getLongDay());
+        assertEquals(0, rosteredShifts.get(2).getCompliance().getLongDay().getIndexOfLongDay());
+        assertNotNull(rosteredShifts.get(3).getCompliance().getNight().getIndexOfNightShift());
+        assertNull(rosteredShifts.get(3).getCompliance().getLongDay());
+        assertNull(rosteredShifts.get(4).getCompliance().getLongDay());
+        assertEquals(1, rosteredShifts.get(5).getCompliance().getLongDay().getIndexOfLongDay());
     }
 }

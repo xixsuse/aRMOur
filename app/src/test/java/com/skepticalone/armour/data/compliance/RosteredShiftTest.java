@@ -1,8 +1,9 @@
-package com.skepticalone.armour.data.model;
+package com.skepticalone.armour.data.compliance;
 
 import android.support.annotation.NonNull;
 
-import com.skepticalone.armour.data.compliance.Configuration;
+import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.ShiftSpec;
 
 import org.junit.After;
 
@@ -13,19 +14,7 @@ import java.util.TreeSet;
 
 public abstract class RosteredShiftTest {
 
-    @NonNull
-    final static Configuration NONE_COMPLIANT = new Configuration(
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            null
-    );
+    final static MockConfiguration NONE_COMPLIANT = new MockConfiguration();
 
     @NonNull
     final SortedSet<ShiftSpec> shiftSpecs = new TreeSet<>();

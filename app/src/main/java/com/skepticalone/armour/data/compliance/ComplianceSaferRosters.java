@@ -15,8 +15,6 @@ final class ComplianceSaferRosters extends Compliance {
     @Nullable
     private final RowConsecutiveDaysSaferRosters consecutiveDays;
     @Nullable
-    private final RowConsecutiveNightsSaferRosters consecutiveNights;
-    @Nullable
     private final RowRecoveryFollowingNightsSaferRosters recoveryFollowingNights;
 
     @Nullable
@@ -25,14 +23,19 @@ final class ComplianceSaferRosters extends Compliance {
     ComplianceSaferRosters(@NonNull ConfigurationSaferRosters configuration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
         super(configuration, shift, previousShifts);
         weekend = RowWeekendSaferRosters.from(configuration, shift, previousShifts);
-        if (getShiftType() == ShiftType.NIGHT_SHIFT) {
-            consecutiveDays = null;
-            recoveryFollowingNights = null;
-            consecutiveNights = new RowConsecutiveNightsSaferRosters(configuration, shift, previousShifts);
-        } else {
+        if (getNight() == null) {
             consecutiveDays = new RowConsecutiveDaysSaferRosters(configuration, shift, previousShifts);
             recoveryFollowingNights = RowRecoveryFollowingNightsSaferRosters.from(configuration, shift, previousShifts);
-            consecutiveNights = null;
+        } else {
+            consecutiveDays = null;
+            recoveryFollowingNights = null;
+        }
+        if (isCompliant()) {
+            updateCompliant(
+                    (weekend == null || weekend.isCompliant()) &&
+                            (consecutiveDays == null || consecutiveDays.isCompliant()) &&
+                            (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant())
+            );
         }
     }
 
@@ -52,12 +55,6 @@ final class ComplianceSaferRosters extends Compliance {
     @Override
     RowRecoveryFollowingNightsSaferRosters getRecoveryFollowingNights() {
         return recoveryFollowingNights;
-    }
-
-    @Nullable
-    @Override
-    RowConsecutiveNightsSaferRosters getConsecutiveNights() {
-        return consecutiveNights;
     }
 
     @Nullable

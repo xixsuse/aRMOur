@@ -54,6 +54,14 @@ abstract class RowWeekend extends Row {
         return currentWeekend;
     }
 
+    int getNumerator() {
+        return numerator;
+    }
+
+    int getCalculatedNumerator() {
+        return calculatedNumerator;
+    }
+
     @Override
     public final boolean isCompliantIfChecked() {
         return calculatedNumerator <= numerator;

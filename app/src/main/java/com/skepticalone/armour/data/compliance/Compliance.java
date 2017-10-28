@@ -1,10 +1,13 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
+import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
 
 import org.threeten.bp.Duration;
@@ -24,9 +27,9 @@ public abstract class Compliance {
     @Nullable
     private final RowDurationBetweenShifts durationBetweenShifts;
     @Nullable
-    private final RowLongDaysOverWeek longDaysOverWeek;
-    @NonNull
-    private final ShiftType shiftType;
+    private final RowNight night;
+    @Nullable
+    private final RowLongDay longDay;
 
     private boolean compliant;
 
@@ -35,22 +38,19 @@ public abstract class Compliance {
             @NonNull com.skepticalone.armour.data.model.Shift.Data shift,
             @NonNull List<RosteredShift> previousShifts
     ) {
-        shiftType = calculateShiftType(shift);
-        longDaysOverWeek = shiftType == ShiftType.LONG_DAY ? new RowLongDaysOverWeek(configuration, shift, previousShifts) : null;
+        night = calculateIsNightShift(shift) ? new RowNight(configuration, shift, previousShifts) : null;
+        longDay = night == null && calculateIsLongDay(shift) ? new RowLongDay(configuration, shift, previousShifts) : null;
         durationOverDay = new RowDurationOverDay(configuration, shift, previousShifts);
         durationOverWeek = new RowDurationOverWeek(configuration, shift, previousShifts);
         durationOverFortnight = new RowDurationOverFortnight(configuration, shift, previousShifts);
         durationBetweenShifts = RowDurationBetweenShifts.from(configuration, shift, previousShifts);
         compliant =
-                (!durationOverDay.isChecked() || durationOverDay.isCompliantIfChecked()) &&
-                        (!durationOverWeek.isChecked() || durationOverWeek.isCompliantIfChecked()) &&
-                        (!durationOverFortnight.isChecked() || durationOverFortnight.isCompliantIfChecked()) &&
-                        (durationBetweenShifts == null || !durationBetweenShifts.isChecked() || durationBetweenShifts.isCompliantIfChecked()) &&
-                        (longDaysOverWeek == null || !longDaysOverWeek.isChecked() || longDaysOverWeek.isCompliantIfChecked()) &&
-                        (getWeekend() == null || !getWeekend().isChecked() || getWeekend().isCompliantIfChecked()) &&
-                        (getConsecutiveDays() == null || !getConsecutiveDays().isChecked() || getConsecutiveDays().isCompliantIfChecked()) &&
-                        (getConsecutiveNights() == null || !getConsecutiveNights().isChecked() || getConsecutiveNights().isCompliantIfChecked()) &&
-                        (getRecoveryFollowingNights() == null || !getRecoveryFollowingNights().isChecked() || getRecoveryFollowingNights().isCompliantIfChecked());
+                durationOverDay.isCompliant() &&
+                        durationOverWeek.isCompliant() &&
+                        durationOverFortnight.isCompliant() &&
+                        (durationBetweenShifts == null || durationBetweenShifts.isCompliant()) &&
+                        (night == null || night.isCompliant()) &&
+                        (longDay == null || longDay.isCompliant());
     }
 
     @NonNull
@@ -66,34 +66,33 @@ public abstract class Compliance {
         }
     }
 
-    @NonNull
-    private static ShiftType calculateShiftType(@NonNull com.skepticalone.armour.data.model.Shift.Data shift) {
-        if (shift.getStart().toLocalDate().isEqual(shift.getEnd().toLocalDate()) || shift.getStart().toLocalTime().isBefore(EARLIEST_DAY_SHIFT_START)) {
-            return ShiftType.NIGHT_SHIFT;
-        } else if (shift.getDuration().compareTo(Duration.ofHours(AppConstants.MAXIMUM_HOURS_IN_NORMAL_DAY)) == 1) {
-            return ShiftType.LONG_DAY;
-        } else {
-            return ShiftType.NORMAL_DAY;
-        }
+    private static boolean calculateIsNightShift(Shift.Data shift) {
+        return !shift.getStart().toLocalDate().isEqual(shift.getEnd().toLocalDate()) || shift.getStart().toLocalTime().isBefore(EARLIEST_DAY_SHIFT_START);
+    }
+
+    private static boolean calculateIsLongDay(Shift.Data shift) {
+        return shift.getDuration().compareTo(Duration.ofHours(AppConstants.MAXIMUM_HOURS_IN_NORMAL_DAY)) == 1;
+    }
+
+    @DrawableRes
+    public static int getComplianceIcon(boolean compliant) {
+        return compliant ? R.drawable.compliant_black_24dp : R.drawable.non_compliant_red_24dp;
     }
 
     @Nullable
     abstract RowConsecutiveDays getConsecutiveDays();
 
     @Nullable
-    abstract RowConsecutiveNights getConsecutiveNights();
-
-    @Nullable
     abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
 
     @Nullable
-    final RowLongDaysOverWeek getLongDaysOverWeek() {
-        return longDaysOverWeek;
+    final RowNight getNight() {
+        return night;
     }
 
-    @NonNull
-    final ShiftType getShiftType() {
-        return shiftType;
+    @Nullable
+    final RowLongDay getLongDay() {
+        return longDay;
     }
 
     @Nullable
@@ -124,14 +123,8 @@ public abstract class Compliance {
         this.compliant &= compliant;
     }
 
-    final boolean isCompliant() {
+    public final boolean isCompliant() {
         return compliant;
-    }
-
-    enum ShiftType {
-        NORMAL_DAY,
-        LONG_DAY,
-        NIGHT_SHIFT
     }
 
 }

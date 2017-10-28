@@ -27,7 +27,7 @@ class RowConsecutiveDays extends Row {
                 LocalDate thisDayShiftDate = dayShift.getStart().toLocalDate(), previousDayShiftDate = previousShift.getShiftData().getStart().toLocalDate();
                 if (thisDayShiftDate.equals(previousDayShiftDate)) {
                     return previousShiftConsecutiveDays.indexOfDayShift;
-                } else if (previousDayShiftDate.plusDays(1) == thisDayShiftDate) {
+                } else if (previousDayShiftDate.plusDays(1).isEqual(thisDayShiftDate)) {
                     return previousShiftConsecutiveDays.indexOfDayShift + 1;
                 }
             }
@@ -38,6 +38,10 @@ class RowConsecutiveDays extends Row {
     @Override
     public final boolean isCompliantIfChecked() {
         return indexOfDayShift < getMaximumConsecutiveDays();
+    }
+
+    int getIndexOfDayShift() {
+        return indexOfDayShift;
     }
 
     int getMaximumConsecutiveDays() {

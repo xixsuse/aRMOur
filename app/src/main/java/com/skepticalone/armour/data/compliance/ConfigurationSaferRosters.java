@@ -1,6 +1,6 @@
 package com.skepticalone.armour.data.compliance;
 
-public final class ConfigurationSaferRosters extends Configuration {
+public class ConfigurationSaferRosters extends Configuration {
 
     private final boolean
             allowFrequentConsecutiveWeekends,

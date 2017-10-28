@@ -10,7 +10,7 @@ public class Configuration {
             checkLongDaysPerWeek,
             checkConsecutiveDays,
             checkConsecutiveNightsWorked,
-            checkRecoveryDaysFollowingNights,
+            checkRecoveryFollowingNights,
             allow1in2Weekends,
             checkFrequencyOfWeekends;
 
@@ -22,7 +22,7 @@ public class Configuration {
             boolean checkLongDaysPerWeek,
             boolean checkConsecutiveDays,
             boolean checkConsecutiveNightsWorked,
-            boolean checkRecoveryDaysFollowingNights,
+            boolean checkRecoveryFollowingNights,
             boolean allow1in2Weekends,
             boolean checkFrequencyOfWeekends
     ) {
@@ -33,7 +33,7 @@ public class Configuration {
         this.checkLongDaysPerWeek = checkLongDaysPerWeek;
         this.checkConsecutiveDays = checkConsecutiveDays;
         this.checkConsecutiveNightsWorked = checkConsecutiveNightsWorked;
-        this.checkRecoveryDaysFollowingNights = checkRecoveryDaysFollowingNights;
+        this.checkRecoveryFollowingNights = checkRecoveryFollowingNights;
         this.allow1in2Weekends = allow1in2Weekends;
         this.checkFrequencyOfWeekends = checkFrequencyOfWeekends;
     }
@@ -67,7 +67,7 @@ public class Configuration {
     }
 
     public final boolean checkRecoveryFollowingNights() {
-        return checkRecoveryDaysFollowingNights;
+        return checkRecoveryFollowingNights;
     }
 
     public final boolean allow1in2Weekends() {
@@ -77,4 +77,5 @@ public class Configuration {
     public final boolean checkFrequencyOfWeekends() {
         return checkFrequencyOfWeekends;
     }
+
 }

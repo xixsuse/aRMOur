@@ -8,20 +8,20 @@ import org.threeten.bp.LocalDate;
 final class RowRosteredDayOff extends Row {
 
     @Nullable
-    private final LocalDate rosteredDayOff;
+    private final LocalDate date;
 
-    RowRosteredDayOff(@NonNull ConfigurationSaferRosters configuration, @Nullable LocalDate rosteredDayOff) {
+    RowRosteredDayOff(@NonNull ConfigurationSaferRosters configuration, @Nullable LocalDate date) {
         super(configuration.checkRDOs());
-        this.rosteredDayOff = rosteredDayOff;
+        this.date = date;
     }
 
-//    @Nullable
-//    public LocalDate getRosteredDayOff() {
-//        return rosteredDayOff;
-//    }
+    @Nullable
+    LocalDate getDate() {
+        return date;
+    }
 
     @Override
     public boolean isCompliantIfChecked() {
-        return rosteredDayOff != null;
+        return date != null;
     }
 }

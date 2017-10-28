@@ -15,22 +15,26 @@ final class ComplianceLegacy extends Compliance {
     @Nullable
     private final RowConsecutiveDays consecutiveDays;
     @Nullable
-    private final RowConsecutiveNights consecutiveNights;
-    @Nullable
     private final RowRecoveryFollowingNights recoveryFollowingNights;
 
     ComplianceLegacy(@NonNull Configuration configuration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
         super(configuration, shift, previousShifts);
         weekend = RowWeekendLegacy.from(configuration, shift, previousShifts);
-        if (getShiftType() == ShiftType.NIGHT_SHIFT) {
-            consecutiveDays = null;
-            recoveryFollowingNights = null;
-            consecutiveNights = new RowConsecutiveNights(configuration, shift, previousShifts);
-        } else {
+        if (getNight() == null) {
             consecutiveDays = new RowConsecutiveDays(configuration, shift, previousShifts);
             recoveryFollowingNights = RowRecoveryFollowingNights.from(configuration, shift, previousShifts);
-            consecutiveNights = null;
+        } else {
+            consecutiveDays = null;
+            recoveryFollowingNights = null;
         }
+        if (isCompliant()) {
+            updateCompliant(
+                    (weekend == null || weekend.isCompliant()) &&
+                            (consecutiveDays == null || consecutiveDays.isCompliant()) &&
+                            (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant())
+            );
+        }
+
     }
 
     @Nullable
@@ -51,9 +55,4 @@ final class ComplianceLegacy extends Compliance {
         return recoveryFollowingNights;
     }
 
-    @Nullable
-    @Override
-    RowConsecutiveNights getConsecutiveNights() {
-        return consecutiveNights;
-    }
 }

@@ -1,5 +1,7 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.support.annotation.RestrictTo;
+
 public abstract class Row {
 
     private final boolean isChecked;
@@ -8,10 +10,11 @@ public abstract class Row {
         this.isChecked = isChecked;
     }
 
-    public abstract boolean isCompliantIfChecked();
+    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
+    abstract boolean isCompliantIfChecked();
 
-    public final boolean isChecked() {
-        return isChecked;
+    public final boolean isCompliant() {
+        return !isChecked || isCompliantIfChecked();
     }
 
 }

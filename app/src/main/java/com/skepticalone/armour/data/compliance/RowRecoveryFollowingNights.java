@@ -28,7 +28,7 @@ class RowRecoveryFollowingNights extends Row {
     static RowRecoveryFollowingNights from(@NonNull Configuration configuration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
         if (!previousShifts.isEmpty()) {
             RosteredShift previousShift = previousShifts.get(previousShifts.size() - 1);
-            RowConsecutiveNights previousShiftConsecutiveNights = previousShift.getCompliance().getConsecutiveNights();
+            RowNight previousShiftConsecutiveNights = previousShift.getCompliance().getNight();
             if (previousShiftConsecutiveNights != null) {
                 return new RowRecoveryFollowingNights(configuration, dayShift, previousShift.getShiftData(), previousShiftConsecutiveNights.getIndexOfNightShift(), false);
             }
@@ -46,4 +46,11 @@ class RowRecoveryFollowingNights extends Row {
         return consecutiveNights < AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY || recoveryDays >= AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS;
     }
 
+    final int getConsecutiveNights() {
+        return consecutiveNights;
+    }
+
+    final int getRecoveryDays() {
+        return recoveryDays;
+    }
 }

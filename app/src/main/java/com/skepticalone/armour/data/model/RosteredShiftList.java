@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.compliance.Configuration;
+import com.skepticalone.armour.data.compliance.ConfigurationSaferRosters;
 import com.skepticalone.armour.data.compliance.LiveComplianceConfig;
+import com.skepticalone.armour.data.compliance.RDO;
 
 import org.threeten.bp.ZoneId;
 
@@ -41,8 +43,8 @@ public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, Rost
             for (RosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
                 rosteredShifts.add(new RosteredShift(rawRosteredShift, timeZone, shiftConfig, rosteredShifts, complianceConfig));
             }
-            if (complianceConfig.saferRostersOptions != null) {
-                new RDO(rosteredShifts, complianceConfig.saferRostersOptions);
+            if (complianceConfig instanceof ConfigurationSaferRosters) {
+                new RDO(rosteredShifts, (ConfigurationSaferRosters) complianceConfig);
             }
             setValue(rosteredShifts);
         }

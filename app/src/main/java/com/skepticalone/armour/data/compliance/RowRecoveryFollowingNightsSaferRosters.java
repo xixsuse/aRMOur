@@ -19,7 +19,7 @@ final class RowRecoveryFollowingNightsSaferRosters extends RowRecoveryFollowingN
     static RowRecoveryFollowingNightsSaferRosters from(@NonNull ConfigurationSaferRosters configuration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
         if (!previousShifts.isEmpty()) {
             RosteredShift previousShift = previousShifts.get(previousShifts.size() - 1);
-            RowConsecutiveNights previousShiftConsecutiveNights = previousShift.getCompliance().getConsecutiveNights();
+            RowNight previousShiftConsecutiveNights = previousShift.getCompliance().getNight();
             if (previousShiftConsecutiveNights != null) {
                 return new RowRecoveryFollowingNightsSaferRosters(configuration, dayShift, previousShift.getShiftData(), previousShiftConsecutiveNights.getIndexOfNightShift());
             }
