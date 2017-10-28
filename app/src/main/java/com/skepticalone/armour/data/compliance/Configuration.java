@@ -1,6 +1,6 @@
 package com.skepticalone.armour.data.compliance;
 
-public abstract class Configuration {
+public class Configuration {
 
     private final boolean
             checkDurationOverDay,
@@ -10,7 +10,9 @@ public abstract class Configuration {
             checkLongDaysPerWeek,
             checkConsecutiveDays,
             checkConsecutiveNightsWorked,
-            checkRecoveryDaysFollowingNights;
+            checkRecoveryDaysFollowingNights,
+            allow1in2Weekends,
+            checkFrequencyOfWeekends;
 
     Configuration(
             boolean checkDurationOverDay,
@@ -20,7 +22,9 @@ public abstract class Configuration {
             boolean checkLongDaysPerWeek,
             boolean checkConsecutiveDays,
             boolean checkConsecutiveNightsWorked,
-            boolean checkRecoveryDaysFollowingNights
+            boolean checkRecoveryDaysFollowingNights,
+            boolean allow1in2Weekends,
+            boolean checkFrequencyOfWeekends
     ) {
         this.checkDurationOverDay = checkDurationOverDay;
         this.checkDurationOverWeek = checkDurationOverWeek;
@@ -30,6 +34,8 @@ public abstract class Configuration {
         this.checkConsecutiveDays = checkConsecutiveDays;
         this.checkConsecutiveNightsWorked = checkConsecutiveNightsWorked;
         this.checkRecoveryDaysFollowingNights = checkRecoveryDaysFollowingNights;
+        this.allow1in2Weekends = allow1in2Weekends;
+        this.checkFrequencyOfWeekends = checkFrequencyOfWeekends;
     }
 
     public final boolean checkDurationOverDay() {
@@ -60,8 +66,15 @@ public abstract class Configuration {
         return checkConsecutiveNightsWorked;
     }
 
-    public final boolean checkRecoveryDaysFollowingNights() {
+    public final boolean checkRecoveryFollowingNights() {
         return checkRecoveryDaysFollowingNights;
     }
 
+    public final boolean allow1in2Weekends() {
+        return allow1in2Weekends;
+    }
+
+    public final boolean checkFrequencyOfWeekends() {
+        return checkFrequencyOfWeekends;
+    }
 }

@@ -12,7 +12,6 @@ import com.skepticalone.armour.data.compliance.Configuration;
 import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.LiveConfig;
 
-import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
@@ -266,74 +265,6 @@ public final class Compliance {
         public boolean isEqualTo(@NonNull RecoveryInformation other) {
             return previousConsecutiveNightShifts == other.previousConsecutiveNightShifts && recoveryDaysFollowingNights == other.recoveryDaysFollowingNights;
         }
-    }
-
-    public static final class Weekend {
-        @NonNull
-        public final LocalDate currentWeekend;
-        @Nullable
-        public final LocalDate lastWeekendWorked;
-        @Nullable
-        public final Boolean compliesWithMaximumWeekendsWorked;
-        @Nullable
-        private RosteredDayOffInformation rosteredDayOffInformation;
-
-        private Weekend(@NonNull LocalDate currentWeekend, @NonNull List<RosteredShift> previousShifts, @NonNull Configuration configuration) {
-            this.currentWeekend = currentWeekend;
-            this.lastWeekendWorked = getLastWeekendWorked(currentWeekend, previousShifts);
-            compliesWithMaximumWeekendsWorked = configuration.checkConsecutiveWeekends && lastWeekendWorked != null ? !currentWeekend.minusWeeks(1).isEqual(lastWeekendWorked) : null;
-        }
-
-        @Nullable
-        static Weekend from(@NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts, @NonNull Configuration configuration) {
-            ZonedDateTime weekendStart = shiftData.getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
-            if (!weekendStart.isBefore(shiftData.getEnd()) || !shiftData.getStart().isBefore(weekendStart.plusDays(2)))
-                return null;
-            return new Weekend(weekendStart.toLocalDate(), previousShifts, configuration);
-        }
-
-        @Nullable
-        private static LocalDate getLastWeekendWorked(@NonNull LocalDate currentWeekend, @NonNull List<RosteredShift> previousShifts) {
-            for (int i = previousShifts.size() - 1; i >= 0; i--) {
-                Weekend previousShiftWeekend = previousShifts.get(i).getCompliance().getWeekend();
-                if (previousShiftWeekend != null) {
-                    return previousShiftWeekend.currentWeekend.isEqual(currentWeekend) ? previousShiftWeekend.lastWeekendWorked : previousShiftWeekend.currentWeekend;
-                }
-            }
-            return null;
-        }
-
-        @Nullable
-        public RosteredDayOffInformation getRosteredDayOffInformation() {
-            return rosteredDayOffInformation;
-        }
-
-        public void setRosteredDayOffInformation(@NonNull RosteredDayOffInformation rosteredDayOffInformation) {
-            this.rosteredDayOffInformation = rosteredDayOffInformation;
-        }
-
-        static final class RosteredDayOffInformation {
-            @Nullable
-            private final LocalDate rosteredDayOff;
-            @Nullable
-            private final Boolean compliesWithRosteredDayOff;
-
-            public RosteredDayOffInformation(@Nullable LocalDate rosteredDayOff, boolean checkRDOs) {
-                this.rosteredDayOff = rosteredDayOff;
-                compliesWithRosteredDayOff = checkRDOs ? rosteredDayOff != null : null;
-            }
-
-            @Nullable
-            public LocalDate getRosteredDayOff() {
-                return rosteredDayOff;
-            }
-
-            @Nullable
-            public Boolean compliesWithRosteredDayOff() {
-                return compliesWithRosteredDayOff;
-            }
-        }
-
     }
 
     static final class LiveComplianceConfig extends LiveConfig<Configuration> {

@@ -32,9 +32,9 @@ public class RDOTest extends RosteredShiftTest {
         RDO rdo = new RDO(rosteredShifts, SAFER_ROSTERS_OPTIONS);
         for (int i = 0; i < rosteredShifts.size(); i++) {
             RosteredShift shift = rosteredShifts.get(i);
-            Compliance.Weekend weekend = shift.getCompliance().getWeekend();
+            Weekend weekend = shift.getCompliance().getWeekend();
             if (weekend != null) {
-                Compliance.Weekend.RosteredDayOffInformation rosteredDayOffInformation = weekend.getRosteredDayOffInformation();
+                Weekend.RosteredDayOffInformation rosteredDayOffInformation = weekend.getRosteredDayOffInformation();
                 assertNotNull(rosteredDayOffInformation);
                 assertNull(rosteredDayOffInformation.getRosteredDayOff());
             }
@@ -74,7 +74,7 @@ public class RDOTest extends RosteredShiftTest {
             }
             if (!shouldHaveAssignedRDO) {
                 assertTrue(message + ", shift = " + shift.getShiftData().getStart().toLocalDate().toString(), shift.getCompliance().getWeekend() == null || shift.getCompliance().getWeekend().getRosteredDayOffInformation().compliesWithRosteredDayOff() == null);
-//                assertNull(message, shift.getCompliance().getWeekend().getRosteredDayOffInformation().getRosteredDayOff());
+//                assertNull(message, shift.getCompliance().getWeekend().getRowRosteredDayOff().getRosteredDayOff());
             }
         }
         assertEquals(message, assignedWeekdayRDOsIndices.length, rdo.getWeekdayRosteredDaysOff().size());

@@ -3,19 +3,20 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.data.compliance.Compliance;
 import com.skepticalone.armour.data.compliance.Configuration;
 
 import org.threeten.bp.ZoneId;
 
 import java.util.List;
 
-public final class RosteredShift extends Shift {
+public final class RosteredShift extends com.skepticalone.armour.data.model.Shift {
 
     @Nullable
     private final Data loggedShiftData;
 
     @NonNull
-    private final Compliance compliance;
+    private final com.skepticalone.armour.data.compliance.Compliance compliance;
 
     RosteredShift(
             @NonNull RosteredShiftEntity rawShift,
@@ -26,7 +27,7 @@ public final class RosteredShift extends Shift {
     ) {
         super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, shiftConfig);
         loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new Data(rawShift.getLoggedShiftData(), zoneId);
-        compliance = new Compliance(getShiftData(), previousShifts, complianceConfig);
+        compliance = Compliance.from(complianceConfig, getShiftData(), previousShifts);
     }
 
     @Nullable
