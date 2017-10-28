@@ -1,8 +1,5 @@
 package com.skepticalone.armour.data.model;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.compliance.Configuration;
 import com.skepticalone.armour.util.AppConstants;
-import com.skepticalone.armour.util.LiveConfig;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -267,136 +263,4 @@ public final class Compliance {
         }
     }
 
-    static final class LiveComplianceConfig extends LiveConfig<Configuration> {
-
-        @Nullable
-        private static LiveComplianceConfig INSTANCE;
-
-        @NonNull
-        private final String
-                keySaferRosters,
-                keyCheckDurationOverDay,
-                keyCheckDurationOverWeek,
-                keyCheckDurationOverFortnight,
-                keyCheckDurationBetweenShifts,
-                keyCheckLongDaysPerWeek,
-                keyCheckConsecutiveWeekends,
-                keyCheckConsecutiveDays,
-                keyCheckConsecutiveNightsWorked,
-                keyCheckRecoveryDaysFollowingNights,
-                keyAllow5ConsecutiveNights,
-                keyAllowOnly1RecoveryDayFollowing3Nights,
-                keyAllowMidweekRDOs,
-                keyCheckRDOs;
-
-        private final boolean
-                defaultSaferRosters,
-                defaultCheckDurationOverDay,
-                defaultCheckDurationOverWeek,
-                defaultCheckDurationOverFortnight,
-                defaultCheckDurationBetweenShifts,
-                defaultCheckLongDaysPerWeek,
-                defaultCheckConsecutiveWeekends,
-                defaultCheckConsecutiveDays,
-                defaultCheckConsecutiveNightsWorked,
-                defaultCheckRecoveryDaysFollowingNights,
-                defaultAllow5ConsecutiveNights,
-                defaultAllowOnly1RecoveryDayFollowing3Nights,
-                defaultAllowMidweekRDOs,
-                defaultCheckRDOs;
-
-        @NonNull
-        private final String[] watchKeys;
-
-        private LiveComplianceConfig(@NonNull Resources resources) {
-            keySaferRosters = resources.getString(R.string.key_safer_rosters);
-            keyCheckDurationOverDay = resources.getString(R.string.key_check_duration_over_day);
-            keyCheckDurationOverWeek = resources.getString(R.string.key_check_duration_over_week);
-            keyCheckDurationOverFortnight = resources.getString(R.string.key_check_duration_over_fortnight);
-            keyCheckDurationBetweenShifts = resources.getString(R.string.key_check_duration_between_shifts);
-            keyCheckLongDaysPerWeek = resources.getString(R.string.key_check_long_days_per_week);
-            keyCheckConsecutiveWeekends = resources.getString(R.string.key_check_consecutive_weekends);
-            keyCheckConsecutiveDays = resources.getString(R.string.key_check_consecutive_days);
-            keyCheckConsecutiveNightsWorked = resources.getString(R.string.key_check_consecutive_nights_worked);
-            keyCheckRecoveryDaysFollowingNights = resources.getString(R.string.key_check_recovery_days_following_nights);
-            keyAllow5ConsecutiveNights = resources.getString(R.string.key_allow_5_consecutive_nights);
-            keyAllowOnly1RecoveryDayFollowing3Nights = resources.getString(R.string.key_allow_only_1_recovery_day_following_3_nights);
-            keyAllowMidweekRDOs = resources.getString(R.string.key_allow_midweek_rostered_days_off);
-            keyCheckRDOs = resources.getString(R.string.key_check_rostered_days_off);
-            defaultSaferRosters = resources.getBoolean(R.bool.default_safer_rosters);
-            defaultCheckDurationOverDay = resources.getBoolean(R.bool.default_check_duration_over_day);
-            defaultCheckDurationOverWeek = resources.getBoolean(R.bool.default_check_duration_over_week);
-            defaultCheckDurationOverFortnight = resources.getBoolean(R.bool.default_check_duration_over_fortnight);
-            defaultCheckDurationBetweenShifts = resources.getBoolean(R.bool.default_check_duration_between_shifts);
-            defaultCheckLongDaysPerWeek = resources.getBoolean(R.bool.default_check_long_days_per_week);
-            defaultCheckConsecutiveWeekends = resources.getBoolean(R.bool.default_check_consecutive_weekends);
-            defaultCheckConsecutiveDays = resources.getBoolean(R.bool.default_check_consecutive_days);
-            defaultCheckConsecutiveNightsWorked = resources.getBoolean(R.bool.default_check_consecutive_nights_worked);
-            defaultCheckRecoveryDaysFollowingNights = resources.getBoolean(R.bool.default_check_recovery_days_following_nights);
-            defaultAllow5ConsecutiveNights = resources.getBoolean(R.bool.default_allow_5_consecutive_nights);
-            defaultAllowOnly1RecoveryDayFollowing3Nights = resources.getBoolean(R.bool.default_allow_only_1_recovery_day_following_3_nights);
-            defaultAllowMidweekRDOs = resources.getBoolean(R.bool.default_allow_midweek_rostered_days_off);
-            defaultCheckRDOs = resources.getBoolean(R.bool.default_check_rostered_days_off);
-            watchKeys = new String[]{
-                    keySaferRosters,
-                    keyCheckDurationOverDay,
-                    keyCheckDurationOverWeek,
-                    keyCheckDurationOverFortnight,
-                    keyCheckDurationBetweenShifts,
-                    keyCheckLongDaysPerWeek,
-                    keyCheckConsecutiveWeekends,
-                    keyCheckConsecutiveDays,
-                    keyCheckConsecutiveNightsWorked,
-                    keyCheckRecoveryDaysFollowingNights,
-                    keyAllow5ConsecutiveNights,
-                    keyAllowOnly1RecoveryDayFollowing3Nights,
-                    keyAllowMidweekRDOs,
-                    keyCheckRDOs
-            };
-        }
-
-        @NonNull
-        public static LiveComplianceConfig getInstance(@NonNull Context context) {
-            if (INSTANCE == null) {
-                synchronized (LiveComplianceConfig.class) {
-                    if (INSTANCE == null) {
-                        INSTANCE = new LiveComplianceConfig(context.getResources());
-                        INSTANCE.init(context);
-                    }
-                }
-            }
-            return INSTANCE;
-        }
-
-        @Override
-        @NonNull
-        public String[] getWatchKeys() {
-            return watchKeys;
-        }
-
-        @NonNull
-        @Override
-        public Configuration getNewValue(@NonNull SharedPreferences sharedPreferences) {
-            return new Configuration(
-                    sharedPreferences.getBoolean(keyCheckDurationOverDay, defaultCheckDurationOverDay),
-                    sharedPreferences.getBoolean(keyCheckDurationOverWeek, defaultCheckDurationOverWeek),
-                    sharedPreferences.getBoolean(keyCheckDurationOverFortnight, defaultCheckDurationOverFortnight),
-                    sharedPreferences.getBoolean(keyCheckDurationBetweenShifts, defaultCheckDurationBetweenShifts),
-                    sharedPreferences.getBoolean(keyCheckLongDaysPerWeek, defaultCheckLongDaysPerWeek),
-                    sharedPreferences.getBoolean(keyCheckConsecutiveDays, defaultCheckConsecutiveDays),
-                    sharedPreferences.getBoolean(keyCheckConsecutiveWeekends, defaultCheckConsecutiveWeekends),
-                    sharedPreferences.getBoolean(keyCheckConsecutiveNightsWorked, defaultCheckConsecutiveNightsWorked),
-                    sharedPreferences.getBoolean(keyCheckRecoveryDaysFollowingNights, defaultCheckRecoveryDaysFollowingNights),
-                    sharedPreferences.getBoolean(keySaferRosters, defaultSaferRosters) ?
-                            new Configuration.SaferRostersOptions(
-                                    sharedPreferences.getBoolean(keyAllow5ConsecutiveNights, defaultAllow5ConsecutiveNights),
-                                    sharedPreferences.getBoolean(keyAllowOnly1RecoveryDayFollowing3Nights, defaultAllowOnly1RecoveryDayFollowing3Nights),
-                                    sharedPreferences.getBoolean(keyAllowMidweekRDOs, defaultAllowMidweekRDOs),
-                                    sharedPreferences.getBoolean(keyCheckRDOs, defaultCheckRDOs)
-                            ) :
-                            null
-            );
-        }
-
-    }
 }

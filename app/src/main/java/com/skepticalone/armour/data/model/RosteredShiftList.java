@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.compliance.Configuration;
+import com.skepticalone.armour.data.compliance.LiveComplianceConfig;
 
 import org.threeten.bp.ZoneId;
 
@@ -20,7 +21,7 @@ public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, Rost
 
     public RosteredShiftList(@NonNull Context context, @NonNull LiveData<List<RosteredShiftEntity>> liveRawRosteredShifts) {
         super(context, liveRawRosteredShifts);
-        liveComplianceConfig = Compliance.LiveComplianceConfig.getInstance(context);
+        liveComplianceConfig = LiveComplianceConfig.getInstance(context);
         addSource(liveComplianceConfig, new Observer<Configuration>() {
             @Override
             public void onChanged(@Nullable Configuration complianceConfig) {

@@ -55,9 +55,13 @@
     <string name="check_consecutive_days_title">Consecutive days</string>
     <bool name="default_check_consecutive_days">true</bool>
 
-    <string name="key_check_consecutive_weekends" translatable="false">key_check_consecutive_weekends</string>
-    <string name="check_consecutive_weekends_title">Consecutive weekends</string>
-    <bool name="default_check_consecutive_weekends">true</bool>
+    <string name="key_check_frequency_of_weekends" translatable="false">key_check_frequency_of_weekends</string>
+    <string name="check_frequency_of_weekends_title">Check frequency of weekends</string>
+    <bool name="default_check_frequency_of_weekends">true</bool>
+
+    <string name="key_allow_1_in_2_weekends" translatable="false">key_allow_1_in_2_weekends</string>
+    <string name="allow_1_in_2_weekends_title">Consecutive weekends</string>
+    <bool name="default_allow_1_in_2_weekends">true</bool>
 
     <string name="key_check_consecutive_nights_worked" translatable="false">key_check_consecutive_nights_worked</string>
     <string name="check_consecutive_nights_worked_title">Consecutive nights</string>
@@ -72,6 +76,10 @@
     <string name="key_safer_rosters" translatable="false">key_safer_rosters</string>
     <string name="safer_rosters_title">Safer Rosters</string>
     <bool name="default_safer_rosters">false</bool>
+
+    <string name="key_allow_frequent_consecutive_weekends" translatable="false">key_allow_frequent_consecutive_weekends</string>
+    <string name="allow_frequent_consecutive_weekends_title">Allow frequent consecutive weekends</string>
+    <bool name="default_allow_frequent_consecutive_weekends">false</bool>
 
     <string name="key_allow_5_consecutive_nights" translatable="false">key_allow_5_consecutive_nights</string>
     <string name="allow_5_consecutive_nights_title">Allow 5 consecutive nights</string>

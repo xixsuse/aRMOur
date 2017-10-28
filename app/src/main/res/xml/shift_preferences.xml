@@ -121,10 +121,10 @@
             android:key="@string/key_check_consecutive_days"
             android:title="@string/check_consecutive_days_title" />
         <SwitchPreference
-            android:defaultValue="@bool/default_check_consecutive_weekends"
+            android:defaultValue="@bool/default_check_frequency_of_weekends"
             android:icon="@drawable/ic_weekend_black_24dp"
-            android:key="@string/key_check_consecutive_weekends"
-            android:title="@string/check_consecutive_weekends_title" />
+            android:key="@string/key_check_frequency_of_weekends"
+            android:title="@string/check_frequency_of_weekends_title" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_consecutive_nights_worked"
             android:icon="@drawable/ic_consecutive_shifts_black_24dp"
@@ -135,6 +135,11 @@
             android:icon="@drawable/ic_recovery_days_following_nights"
             android:key="@string/key_check_recovery_days_following_nights"
             android:title="@string/check_recovery_days_following_nights_title" />
+        <SwitchPreference
+            android:defaultValue="@bool/default_allow_1_in_2_weekends"
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:key="@string/key_allow_1_in_2_weekends"
+            android:title="@string/allow_1_in_2_weekends_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/schedule_ten">
         <SwitchPreference
@@ -142,6 +147,12 @@
             android:icon="@drawable/ic_safer_rosters_black_24dp"
             android:key="@string/key_safer_rosters"
             android:title="@string/safer_rosters_title" />
+        <SwitchPreference
+            android:defaultValue="@bool/default_allow_frequent_consecutive_weekends"
+            android:dependency="@string/key_safer_rosters"
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:key="@string/key_allow_frequent_consecutive_weekends"
+            android:title="@string/allow_frequent_consecutive_weekends_title" />
         <SwitchPreference
             android:defaultValue="@bool/default_allow_5_consecutive_nights"
             android:dependency="@string/key_safer_rosters"
