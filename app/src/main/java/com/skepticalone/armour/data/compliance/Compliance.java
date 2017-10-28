@@ -2,6 +2,7 @@ package com.skepticalone.armour.data.compliance;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.util.AppConstants;
@@ -27,6 +28,8 @@ public abstract class Compliance {
     @NonNull
     private final ShiftType shiftType;
 
+    private boolean compliant;
+
     Compliance(
             @NonNull Configuration configuration,
             @NonNull com.skepticalone.armour.data.model.Shift.Data shift,
@@ -38,6 +41,16 @@ public abstract class Compliance {
         durationOverWeek = new RowDurationOverWeek(configuration, shift, previousShifts);
         durationOverFortnight = new RowDurationOverFortnight(configuration, shift, previousShifts);
         durationBetweenShifts = RowDurationBetweenShifts.from(configuration, shift, previousShifts);
+        compliant =
+                (!durationOverDay.isChecked() || durationOverDay.isCompliantIfChecked()) &&
+                        (!durationOverWeek.isChecked() || durationOverWeek.isCompliantIfChecked()) &&
+                        (!durationOverFortnight.isChecked() || durationOverFortnight.isCompliantIfChecked()) &&
+                        (durationBetweenShifts == null || !durationBetweenShifts.isChecked() || durationBetweenShifts.isCompliantIfChecked()) &&
+                        (longDaysOverWeek == null || !longDaysOverWeek.isChecked() || longDaysOverWeek.isCompliantIfChecked()) &&
+                        (getWeekend() == null || !getWeekend().isChecked() || getWeekend().isCompliantIfChecked()) &&
+                        (getConsecutiveDays() == null || !getConsecutiveDays().isChecked() || getConsecutiveDays().isCompliantIfChecked()) &&
+                        (getConsecutiveNights() == null || !getConsecutiveNights().isChecked() || getConsecutiveNights().isCompliantIfChecked()) &&
+                        (getRecoveryFollowingNights() == null || !getRecoveryFollowingNights().isChecked() || getRecoveryFollowingNights().isCompliantIfChecked());
     }
 
     @NonNull
@@ -104,6 +117,15 @@ public abstract class Compliance {
     @Nullable
     final RowDurationBetweenShifts getDurationBetweenShifts() {
         return durationBetweenShifts;
+    }
+
+    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
+    void updateCompliant(boolean compliant) {
+        this.compliant &= compliant;
+    }
+
+    final boolean isCompliant() {
+        return compliant;
     }
 
     enum ShiftType {

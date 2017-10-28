@@ -13,4 +13,5 @@ public abstract class Row {
     public final boolean isChecked() {
         return isChecked;
     }
+
 }
