@@ -13,8 +13,6 @@ final class ComplianceSaferRosters extends Compliance {
     @Nullable
     private final RowWeekendSaferRosters weekend;
     @Nullable
-    private final RowConsecutiveDaysSaferRosters consecutiveDays;
-    @Nullable
     private final RowRecoveryFollowingNightsSaferRosters recoveryFollowingNights;
 
     @Nullable
@@ -24,16 +22,13 @@ final class ComplianceSaferRosters extends Compliance {
         super(configuration, shift, previousShifts);
         weekend = RowWeekendSaferRosters.from(configuration, shift, previousShifts);
         if (getNight() == null) {
-            consecutiveDays = new RowConsecutiveDaysSaferRosters(configuration, shift, previousShifts);
             recoveryFollowingNights = RowRecoveryFollowingNightsSaferRosters.from(configuration, shift, previousShifts);
         } else {
-            consecutiveDays = null;
             recoveryFollowingNights = null;
         }
         if (isCompliant()) {
             updateCompliant(
                     (weekend == null || weekend.isCompliant()) &&
-                            (consecutiveDays == null || consecutiveDays.isCompliant()) &&
                             (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant())
             );
         }
@@ -43,12 +38,6 @@ final class ComplianceSaferRosters extends Compliance {
     @Override
     RowWeekendSaferRosters getWeekend() {
         return weekend;
-    }
-
-    @Nullable
-    @Override
-    RowConsecutiveDaysSaferRosters getConsecutiveDays() {
-        return consecutiveDays;
     }
 
     @Nullable

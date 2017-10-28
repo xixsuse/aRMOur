@@ -27,6 +27,8 @@ public abstract class Compliance {
     @Nullable
     private final RowDurationBetweenShifts durationBetweenShifts;
     @Nullable
+    private final RowConsecutiveDays consecutiveDays;
+    @Nullable
     private final RowNight night;
     @Nullable
     private final RowLongDay longDay;
@@ -39,6 +41,7 @@ public abstract class Compliance {
             @NonNull List<RosteredShift> previousShifts
     ) {
         night = calculateIsNightShift(shift) ? new RowNight(configuration, shift, previousShifts) : null;
+        consecutiveDays = night == null ? new RowConsecutiveDays(configuration, shift, previousShifts) : null;
         longDay = night == null && calculateIsLongDay(shift) ? new RowLongDay(configuration, shift, previousShifts) : null;
         durationOverDay = new RowDurationOverDay(configuration, shift, previousShifts);
         durationOverWeek = new RowDurationOverWeek(configuration, shift, previousShifts);
@@ -49,6 +52,7 @@ public abstract class Compliance {
                         durationOverWeek.isCompliant() &&
                         durationOverFortnight.isCompliant() &&
                         (durationBetweenShifts == null || durationBetweenShifts.isCompliant()) &&
+                        (consecutiveDays == null || consecutiveDays.isCompliant()) &&
                         (night == null || night.isCompliant()) &&
                         (longDay == null || longDay.isCompliant());
     }
@@ -80,10 +84,12 @@ public abstract class Compliance {
     }
 
     @Nullable
-    abstract RowConsecutiveDays getConsecutiveDays();
+    abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
 
     @Nullable
-    abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
+    final RowConsecutiveDays getConsecutiveDays() {
+        return consecutiveDays;
+    }
 
     @Nullable
     final RowNight getNight() {

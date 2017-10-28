@@ -10,12 +10,13 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-class RowConsecutiveDays extends Row {
+final class RowConsecutiveDays extends Row {
 
-    private final int indexOfDayShift;
+    private final int maximumConsecutiveDays, indexOfDayShift;
 
     RowConsecutiveDays(@NonNull Configuration configuration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
         super(configuration.checkConsecutiveDays());
+        maximumConsecutiveDays = configuration instanceof ConfigurationSaferRosters ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_DAYS : AppConstants.MAXIMUM_CONSECUTIVE_DAYS;
         indexOfDayShift = calculateIndexOfDayShift(dayShift, previousShifts);
     }
 
@@ -37,14 +38,11 @@ class RowConsecutiveDays extends Row {
 
     @Override
     public final boolean isCompliantIfChecked() {
-        return indexOfDayShift < getMaximumConsecutiveDays();
+        return indexOfDayShift < maximumConsecutiveDays;
     }
 
     int getIndexOfDayShift() {
         return indexOfDayShift;
     }
 
-    int getMaximumConsecutiveDays() {
-        return AppConstants.MAXIMUM_CONSECUTIVE_DAYS;
-    }
 }
