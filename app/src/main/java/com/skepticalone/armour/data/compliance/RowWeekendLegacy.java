@@ -11,7 +11,7 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-final class RowWeekendLegacy extends RowWeekend {
+public final class RowWeekendLegacy extends RowWeekend {
 
     @Nullable
     private final LocalDate previousWeekend;
@@ -37,7 +37,12 @@ final class RowWeekendLegacy extends RowWeekend {
         }
         return null;
     }
-//
+
+    @Nullable
+    public LocalDate getPreviousWeekend() {
+        return previousWeekend;
+    }
+    //
 //    @Override
 //    public boolean isCompliantIfChecked() {
 //        return previousWeekend == null || !getCurrentWeekend().minusWeeks(1).isEqual(previousWeekend);

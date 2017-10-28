@@ -68,5 +68,6 @@ dependencies {
     androidTestImplementation 'android.arch.persistence.room:testing:1.0.0-rc1'
     androidTestImplementation 'com.android.support.test:rules:1.0.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support:support-annotations:27.0.0'
+    //noinspection GradleDependency
+    androidTestImplementation 'com.android.support:support-annotations:26.1.0'
 }

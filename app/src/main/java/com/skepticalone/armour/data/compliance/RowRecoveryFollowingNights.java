@@ -11,7 +11,7 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-class RowRecoveryFollowingNights extends Row {
+public class RowRecoveryFollowingNights extends Row {
 
     private final int consecutiveNights, recoveryDays;
     private final boolean lenient;
@@ -36,21 +36,31 @@ class RowRecoveryFollowingNights extends Row {
         return null;
     }
 
+    public final boolean isLenient() {
+        return lenient;
+    }
 
     @Override
     public final boolean isCompliantIfChecked() {
-        return isCompliant(consecutiveNights, recoveryDays, lenient);
+        return isCompliant(consecutiveNights, recoveryDays);
     }
 
-    boolean isCompliant(int consecutiveNights, int recoveryDays, boolean lenient) {
+    boolean isCompliant(int consecutiveNights, int recoveryDays) {
         return consecutiveNights < AppConstants.MINIMUM_NIGHTS_BEFORE_RECOVERY || recoveryDays >= AppConstants.MINIMUM_RECOVERY_DAYS_FOLLOWING_NIGHTS;
     }
 
-    final int getConsecutiveNights() {
+    public final int getConsecutiveNights() {
         return consecutiveNights;
     }
 
-    final int getRecoveryDays() {
+    public final int getRecoveryDays() {
         return recoveryDays;
+    }
+
+    public final boolean isEqual(@NonNull RowRecoveryFollowingNights other) {
+        return
+                consecutiveNights == other.consecutiveNights &&
+                        recoveryDays == other.recoveryDays &&
+                        equalCompliance(other);
     }
 }

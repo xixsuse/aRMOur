@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-final class RowNight extends Row {
+public final class RowNight extends Row {
 
     private final int maximumConsecutiveNights, indexOfNightShift;
 
@@ -41,8 +41,18 @@ final class RowNight extends Row {
         return indexOfNightShift < maximumConsecutiveNights;
     }
 
-    final int getIndexOfNightShift() {
+    public final int getMaximumConsecutiveNights() {
+        return maximumConsecutiveNights;
+    }
+
+    public final int getIndexOfNightShift() {
         return indexOfNightShift;
     }
 
+    public final boolean isEqual(@NonNull RowNight other) {
+        return
+                maximumConsecutiveNights == other.maximumConsecutiveNights &&
+                        indexOfNightShift == other.indexOfNightShift &&
+                        equalCompliance(other);
+    }
 }

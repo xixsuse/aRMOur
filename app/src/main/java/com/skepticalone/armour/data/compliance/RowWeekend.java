@@ -14,17 +14,18 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
-abstract class RowWeekend extends Row {
+public abstract class RowWeekend extends Row {
 
     @NonNull
     private final LocalDate currentWeekend;
-    private final int numerator, calculatedNumerator;
+    private final int numerator, denominator, calculatedNumerator;
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     RowWeekend(@NonNull Configuration configuration, @NonNull LocalDate currentWeekend, @NonNull List<RosteredShift> previousShifts, int numerator, int denominator) {
         super(configuration.checkFrequencyOfWeekends());
         this.currentWeekend = currentWeekend;
         this.numerator = numerator;
+        this.denominator = denominator;
         LocalDate cutOff = currentWeekend.minusWeeks(denominator);
         int indexOfWeekendInPeriod = 0;
         LocalDate lastWeekendCounted = currentWeekend;
@@ -50,15 +51,19 @@ abstract class RowWeekend extends Row {
     }
 
     @NonNull
-    final LocalDate getCurrentWeekend() {
+    public final LocalDate getCurrentWeekend() {
         return currentWeekend;
     }
 
-    int getNumerator() {
+    public final int getNumerator() {
         return numerator;
     }
 
-    int getCalculatedNumerator() {
+    public final int getDenominator() {
+        return numerator;
+    }
+
+    final int getCalculatedNumerator() {
         return calculatedNumerator;
     }
 
@@ -66,4 +71,13 @@ abstract class RowWeekend extends Row {
     public final boolean isCompliantIfChecked() {
         return calculatedNumerator <= numerator;
     }
+
+    public final boolean isEqual(@NonNull RowWeekend other) {
+        return
+                currentWeekend.isEqual(other.currentWeekend) &&
+                        numerator == other.numerator &&
+                        calculatedNumerator == other.calculatedNumerator &&
+                        equalCompliance(other);
+    }
+
 }

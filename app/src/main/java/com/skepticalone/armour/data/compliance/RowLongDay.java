@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-final class RowLongDay extends Row {
+public final class RowLongDay extends Row {
 
     private final int indexOfLongDay;
 
@@ -40,7 +40,13 @@ final class RowLongDay extends Row {
         return indexOfLongDay < AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK;
     }
 
-    int getIndexOfLongDay() {
+    public int getIndexOfLongDay() {
         return indexOfLongDay;
+    }
+
+    public final boolean isEqual(@NonNull RowLongDay other) {
+        return
+                indexOfLongDay == other.indexOfLongDay &&
+                        equalCompliance(other);
     }
 }

@@ -20,10 +20,10 @@ public final class Comparators {
     public static boolean equalDates(@Nullable final LocalDate date1, @Nullable final LocalDate date2) {
         return date1 == null ? date2 == null : (date2 != null && date1.isEqual(date2));
     }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean equalCompliance(@Nullable final Boolean compliance1, @Nullable final Boolean compliance2) {
-        return compliance1 == null ? compliance2 == null : (compliance2 != null && compliance1.booleanValue() == compliance2.booleanValue());
-    }
+//
+//    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+//    public static boolean equalCompliance(@NonNull final Row compliance1, @NonNull final Row compliance2) {
+//        return compliance1.isChecked() ? (compliance2.isChecked() && compliance1.isCompliantIfChecked() == compliance2.isCompliantIfChecked()): !compliance2.isChecked();
+//    }
 
 }

@@ -42,4 +42,10 @@ abstract class RowDurationOverPeriod extends Row {
     }
 
     abstract int getMaximumHoursOverPeriod();
+
+    public final boolean isEqual(@NonNull RowDurationOverPeriod other) {
+        return
+                duration.equals(other.duration) &&
+                        equalCompliance(other);
+    }
 }

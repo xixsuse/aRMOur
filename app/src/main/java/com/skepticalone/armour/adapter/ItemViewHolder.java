@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.data.compliance.Compliance;
+import com.skepticalone.armour.data.compliance.Row;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -54,15 +56,15 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
     void hideSecondaryIcon() {
         secondaryIcon.setVisibility(View.GONE);
     }
-//
-//    void setCompliant(@Nullable Boolean compliant) {
-//        if (compliant == null) {
-//            secondaryIcon.setVisibility(View.GONE);
-//        } else {
-//            secondaryIcon.setImageResource(Compliance.getComplianceIcon(compliant));
-//            secondaryIcon.setVisibility(View.VISIBLE);
-//        }
-//    }
+
+    void setCompliant(@NonNull Row row) {
+        if (row.isChecked()) {
+            secondaryIcon.setImageResource(Compliance.getComplianceIcon(row.isCompliantIfChecked()));
+            secondaryIcon.setVisibility(View.VISIBLE);
+        } else {
+            secondaryIcon.setVisibility(View.GONE);
+        }
+    }
 
     void setText(@NonNull String firstLine) {
         setText(firstLine, null);

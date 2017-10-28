@@ -8,7 +8,7 @@ import com.skepticalone.armour.util.AppConstants;
 
 import java.util.List;
 
-final class RowDurationOverDay extends RowDurationOverPeriod {
+public final class RowDurationOverDay extends RowDurationOverPeriod {
     RowDurationOverDay(@NonNull Configuration configuration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
         super(configuration.checkDurationOverDay(), shiftData, shiftData.getEnd().minusDays(1), previousShifts);
     }

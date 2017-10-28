@@ -1,6 +1,6 @@
 package com.skepticalone.armour.data.compliance;
 
-import android.support.annotation.RestrictTo;
+import android.support.annotation.NonNull;
 
 public abstract class Row {
 
@@ -10,11 +10,17 @@ public abstract class Row {
         this.isChecked = isChecked;
     }
 
-    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
-    abstract boolean isCompliantIfChecked();
+    public abstract boolean isCompliantIfChecked();
 
     public final boolean isCompliant() {
         return !isChecked || isCompliantIfChecked();
     }
 
+    public final boolean isChecked() {
+        return isChecked;
+    }
+
+    final boolean equalCompliance(@NonNull Row other) {
+        return isChecked ? (other.isChecked && isCompliantIfChecked() == other.isCompliantIfChecked()) : !other.isChecked;
+    }
 }

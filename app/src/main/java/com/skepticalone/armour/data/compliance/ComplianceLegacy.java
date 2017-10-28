@@ -34,13 +34,13 @@ final class ComplianceLegacy extends Compliance {
 
     @Nullable
     @Override
-    RowWeekendLegacy getWeekend() {
+    public RowWeekendLegacy getWeekend() {
         return weekend;
     }
 
     @Override
     @Nullable
-    RowRecoveryFollowingNights getRecoveryFollowingNights() {
+    public RowRecoveryFollowingNights getRecoveryFollowingNights() {
         return recoveryFollowingNights;
     }
 

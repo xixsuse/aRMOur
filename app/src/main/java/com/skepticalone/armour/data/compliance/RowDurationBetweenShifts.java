@@ -11,7 +11,7 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-final class RowDurationBetweenShifts extends Row {
+public final class RowDurationBetweenShifts extends Row {
 
     @NonNull
     private final Duration duration;
@@ -36,4 +36,9 @@ final class RowDurationBetweenShifts extends Row {
         return duration.compareTo(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1;
     }
 
+    public final boolean isEqual(@NonNull RowDurationBetweenShifts other) {
+        return
+                duration.equals(other.duration) &&
+                        equalCompliance(other);
+    }
 }

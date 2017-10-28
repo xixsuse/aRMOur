@@ -8,7 +8,7 @@ import com.skepticalone.armour.data.model.Shift;
 
 import java.util.List;
 
-final class ComplianceSaferRosters extends Compliance {
+public final class ComplianceSaferRosters extends Compliance {
 
     @Nullable
     private final RowWeekendSaferRosters weekend;
@@ -36,18 +36,18 @@ final class ComplianceSaferRosters extends Compliance {
 
     @Nullable
     @Override
-    RowWeekendSaferRosters getWeekend() {
+    public RowWeekendSaferRosters getWeekend() {
         return weekend;
     }
 
     @Nullable
     @Override
-    RowRecoveryFollowingNightsSaferRosters getRecoveryFollowingNights() {
+    public RowRecoveryFollowingNightsSaferRosters getRecoveryFollowingNights() {
         return recoveryFollowingNights;
     }
 
     @Nullable
-    RowRosteredDayOff getRosteredDayOff() {
+    public RowRosteredDayOff getRosteredDayOff() {
         return rosteredDayOff;
     }
 

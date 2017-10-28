@@ -84,43 +84,43 @@ public abstract class Compliance {
     }
 
     @Nullable
-    abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
+    public abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
 
     @Nullable
-    final RowConsecutiveDays getConsecutiveDays() {
+    public final RowConsecutiveDays getConsecutiveDays() {
         return consecutiveDays;
     }
 
     @Nullable
-    final RowNight getNight() {
+    public final RowNight getNight() {
         return night;
     }
 
     @Nullable
-    final RowLongDay getLongDay() {
+    public final RowLongDay getLongDay() {
         return longDay;
     }
 
     @Nullable
-    abstract RowWeekend getWeekend();
+    public abstract RowWeekend getWeekend();
 
     @NonNull
-    final RowDurationOverDay getDurationOverDay() {
+    public final RowDurationOverDay getDurationOverDay() {
         return durationOverDay;
     }
 
     @NonNull
-    final RowDurationOverWeek getDurationOverWeek() {
+    public final RowDurationOverWeek getDurationOverWeek() {
         return durationOverWeek;
     }
 
     @NonNull
-    final RowDurationOverFortnight getDurationOverFortnight() {
+    public final RowDurationOverFortnight getDurationOverFortnight() {
         return durationOverFortnight;
     }
 
     @Nullable
-    final RowDurationBetweenShifts getDurationBetweenShifts() {
+    public final RowDurationBetweenShifts getDurationBetweenShifts() {
         return durationBetweenShifts;
     }
 
