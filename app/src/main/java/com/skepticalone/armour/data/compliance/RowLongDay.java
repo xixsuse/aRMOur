@@ -1,7 +1,10 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.armour.R;
+import com.skepticalone.armour.adapter.ItemViewHolder;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
@@ -40,13 +43,42 @@ public final class RowLongDay extends Row {
         return indexOfLongDay < AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK;
     }
 
-    public int getIndexOfLongDay() {
+    int getIndexOfLongDay() {
         return indexOfLongDay;
     }
 
-    public final boolean isEqual(@NonNull RowLongDay other) {
-        return
-                indexOfLongDay == other.indexOfLongDay &&
-                        equalCompliance(other);
+    public static final class Binder extends Row.Binder<RowLongDay> {
+
+        public Binder(@NonNull Callbacks callbacks, @NonNull RowLongDay row) {
+            super(callbacks, row);
+        }
+
+        @Override
+        public int getPrimaryIcon() {
+            return R.drawable.ic_long_day_black_24dp;
+        }
+
+        @NonNull
+        @Override
+        public String getFirstLine(@NonNull Context context) {
+            return context.getString(R.string.number_of_long_days_in_week);
+        }
+
+        @Override
+        public String getSecondLine(@NonNull Context context) {
+            int longDays = getRow().indexOfLongDay + 1;
+            return context.getResources().getQuantityString(R.plurals.long_days, longDays, longDays);
+        }
+
+        @NonNull
+        @Override
+        String getMessage(@NonNull Context context) {
+            return context.getString(R.string.meca_maximum_long_days_over_week, AppConstants.MAXIMUM_LONG_DAYS_PER_WEEK, AppConstants.MAXIMUM_HOURS_IN_NORMAL_DAY);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
+            return super.areContentsTheSame(other) && getRow().indexOfLongDay == ((Binder) other).getRow().indexOfLongDay;
+        }
     }
 }

@@ -1,9 +1,11 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.adapter.ItemViewHolder;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
@@ -46,24 +48,48 @@ public final class RowConsecutiveDays extends Row {
         return indexOfDayShift < maximumConsecutiveDays;
     }
 
-    public final int getIndexOfDayShift() {
+    final int getIndexOfDayShift() {
         return indexOfDayShift;
     }
 
-    @StringRes
-    public final int getMessage() {
-        return message;
+    public static final class Binder extends Row.Binder<RowConsecutiveDays> {
+
+        public Binder(@NonNull Callbacks callbacks, @NonNull RowConsecutiveDays row) {
+            super(callbacks, row);
+        }
+
+        @Override
+        public int getPrimaryIcon() {
+            return R.drawable.ic_consecutive_shifts_black_24dp;
+        }
+
+        @NonNull
+        @Override
+        public String getFirstLine(@NonNull Context context) {
+            return context.getString(R.string.number_of_consecutive_days_worked);
+        }
+
+        @Override
+        public String getSecondLine(@NonNull Context context) {
+            int days = getRow().indexOfDayShift + 1;
+            return context.getResources().getQuantityString(R.plurals.days, days, days);
+        }
+
+        @NonNull
+        @Override
+        String getMessage(@NonNull Context context) {
+            return context.getString(getRow().message, getRow().maximumConsecutiveDays);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
+            if (!super.areContentsTheSame(other)) return false;
+            Binder newBinder = (Binder) other;
+            return
+                    getRow().indexOfDayShift == newBinder.getRow().indexOfDayShift &&
+                            getRow().maximumConsecutiveDays == newBinder.getRow().maximumConsecutiveDays &&
+                            getRow().message == newBinder.getRow().message;
+        }
     }
 
-    public final int getMaximumConsecutiveDays() {
-        return maximumConsecutiveDays;
-    }
-
-    public final boolean isEqual(@NonNull RowConsecutiveDays other) {
-        return
-                indexOfDayShift == other.indexOfDayShift &&
-                        maximumConsecutiveDays == other.maximumConsecutiveDays &&
-                        message == other.message &&
-                        equalCompliance(other);
-    }
 }

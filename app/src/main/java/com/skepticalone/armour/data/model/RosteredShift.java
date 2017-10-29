@@ -27,7 +27,7 @@ public final class RosteredShift extends com.skepticalone.armour.data.model.Shif
     ) {
         super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, shiftConfig);
         loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new Data(rawShift.getLoggedShiftData(), zoneId);
-        compliance = Compliance.from(complianceConfig, getShiftData(), previousShifts);
+        compliance = new Compliance(complianceConfig, getShiftData(), previousShifts);
     }
 
     @Nullable

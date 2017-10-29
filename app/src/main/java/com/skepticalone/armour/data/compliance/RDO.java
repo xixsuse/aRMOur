@@ -61,7 +61,7 @@ public final class RDO {
 
     private void assignRosteredDayOff(@NonNull RosteredShift shift) {
         if (shift.getCompliance().getNight() == null && shift.getCompliance().getWeekend() != null) {
-            ((ComplianceSaferRosters) shift.getCompliance()).setRosteredDayOff(new RowRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate())));
+            shift.getCompliance().setRosteredDayOff(new RowRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate())));
         }
     }
 

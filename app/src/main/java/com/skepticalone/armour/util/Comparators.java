@@ -16,7 +16,6 @@ public final class Comparators {
         return dateTime1 == null ? dateTime2 == null : (dateTime2 != null && dateTime1.isEqual(dateTime2));
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean equalDates(@Nullable final LocalDate date1, @Nullable final LocalDate date2) {
         return date1 == null ? date2 == null : (date2 != null && date1.isEqual(date2));
     }

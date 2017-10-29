@@ -3,7 +3,6 @@ package com.skepticalone.armour.data.compliance;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
@@ -15,7 +14,7 @@ import org.threeten.bp.LocalTime;
 
 import java.util.List;
 
-public abstract class Compliance {
+public final class Compliance {
 
     private static final LocalTime EARLIEST_DAY_SHIFT_START = LocalTime.of(6, 0);
     @NonNull
@@ -32,21 +31,29 @@ public abstract class Compliance {
     private final RowNight night;
     @Nullable
     private final RowLongDay longDay;
+    @Nullable
+    private final RowRecoveryFollowingNights recoveryFollowingNights;
+    @Nullable
+    private final RowWeekend weekend;
+    @Nullable
+    private RowRosteredDayOff rosteredDayOff;
 
     private boolean compliant;
 
-    Compliance(
+    public Compliance(
             @NonNull Configuration configuration,
             @NonNull com.skepticalone.armour.data.model.Shift.Data shift,
             @NonNull List<RosteredShift> previousShifts
     ) {
-        night = calculateIsNightShift(shift) ? new RowNight(configuration, shift, previousShifts) : null;
-        consecutiveDays = night == null ? new RowConsecutiveDays(configuration, shift, previousShifts) : null;
-        longDay = night == null && calculateIsLongDay(shift) ? new RowLongDay(configuration, shift, previousShifts) : null;
         durationOverDay = new RowDurationOverDay(configuration, shift, previousShifts);
         durationOverWeek = new RowDurationOverWeek(configuration, shift, previousShifts);
         durationOverFortnight = new RowDurationOverFortnight(configuration, shift, previousShifts);
         durationBetweenShifts = RowDurationBetweenShifts.from(configuration, shift, previousShifts);
+        night = calculateIsNightShift(shift) ? new RowNight(configuration, shift, previousShifts) : null;
+        consecutiveDays = night == null ? new RowConsecutiveDays(configuration, shift, previousShifts) : null;
+        longDay = night == null && calculateIsLongDay(shift) ? new RowLongDay(configuration, shift, previousShifts) : null;
+        recoveryFollowingNights = night == null ? RowRecoveryFollowingNights.from(configuration, shift, previousShifts) : null;
+        weekend = RowWeekend.from(configuration, shift, previousShifts);
         compliant =
                 durationOverDay.isCompliant() &&
                         durationOverWeek.isCompliant() &&
@@ -54,20 +61,8 @@ public abstract class Compliance {
                         (durationBetweenShifts == null || durationBetweenShifts.isCompliant()) &&
                         (consecutiveDays == null || consecutiveDays.isCompliant()) &&
                         (night == null || night.isCompliant()) &&
-                        (longDay == null || longDay.isCompliant());
-    }
-
-    @NonNull
-    public static Compliance from(
-            @NonNull Configuration configuration,
-            @NonNull com.skepticalone.armour.data.model.Shift.Data shift,
-            @NonNull List<RosteredShift> previousShifts
-    ) {
-        if (configuration instanceof ConfigurationSaferRosters) {
-            return new ComplianceSaferRosters((ConfigurationSaferRosters) configuration, shift, previousShifts);
-        } else {
-            return new ComplianceLegacy(configuration, shift, previousShifts);
-        }
+                        (longDay == null || longDay.isCompliant()) &&
+                        (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant());
     }
 
     private static boolean calculateIsNightShift(Shift.Data shift) {
@@ -84,7 +79,9 @@ public abstract class Compliance {
     }
 
     @Nullable
-    public abstract RowRecoveryFollowingNights getRecoveryFollowingNights();
+    public final RowRecoveryFollowingNights getRecoveryFollowingNights() {
+        return recoveryFollowingNights;
+    }
 
     @Nullable
     public final RowConsecutiveDays getConsecutiveDays() {
@@ -102,7 +99,9 @@ public abstract class Compliance {
     }
 
     @Nullable
-    public abstract RowWeekend getWeekend();
+    public final RowWeekend getWeekend() {
+        return weekend;
+    }
 
     @NonNull
     public final RowDurationOverDay getDurationOverDay() {
@@ -124,9 +123,14 @@ public abstract class Compliance {
         return durationBetweenShifts;
     }
 
-    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
-    void updateCompliant(boolean compliant) {
-        this.compliant &= compliant;
+    @Nullable
+    public final RowRosteredDayOff getRosteredDayOff() {
+        return rosteredDayOff;
+    }
+
+    final void setRosteredDayOff(@NonNull RowRosteredDayOff rosteredDayOff) {
+        this.rosteredDayOff = rosteredDayOff;
+        this.compliant &= rosteredDayOff.isCompliant();
     }
 
     public final boolean isCompliant() {

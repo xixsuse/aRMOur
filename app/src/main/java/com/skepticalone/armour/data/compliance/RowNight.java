@@ -1,7 +1,10 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.armour.R;
+import com.skepticalone.armour.adapter.ItemViewHolder;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
@@ -45,14 +48,46 @@ public final class RowNight extends Row {
         return maximumConsecutiveNights;
     }
 
-    public final int getIndexOfNightShift() {
+    final int getIndexOfNightShift() {
         return indexOfNightShift;
     }
 
-    public final boolean isEqual(@NonNull RowNight other) {
-        return
-                maximumConsecutiveNights == other.maximumConsecutiveNights &&
-                        indexOfNightShift == other.indexOfNightShift &&
-                        equalCompliance(other);
+    public static final class Binder extends Row.Binder<RowNight> {
+
+        public Binder(@NonNull Callbacks callbacks, @NonNull RowNight row) {
+            super(callbacks, row);
+        }
+
+        @Override
+        public int getPrimaryIcon() {
+            return R.drawable.ic_consecutive_shifts_black_24dp;
+        }
+
+        @NonNull
+        @Override
+        public String getFirstLine(@NonNull Context context) {
+            return context.getString(R.string.number_of_consecutive_nights_worked);
+        }
+
+        @Override
+        public String getSecondLine(@NonNull Context context) {
+            int nights = getRow().indexOfNightShift + 1;
+            return context.getResources().getQuantityString(R.plurals.nights, nights, nights);
+        }
+
+        @NonNull
+        @Override
+        String getMessage(@NonNull Context context) {
+            return context.getString(R.string.meca_maximum_consecutive_nights, getRow().maximumConsecutiveNights);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
+            if (!super.areContentsTheSame(other)) return false;
+            Binder newBinder = (Binder) other;
+            return
+                    getRow().indexOfNightShift == newBinder.getRow().indexOfNightShift &&
+                            getRow().maximumConsecutiveNights == newBinder.getRow().maximumConsecutiveNights;
+        }
     }
 }
