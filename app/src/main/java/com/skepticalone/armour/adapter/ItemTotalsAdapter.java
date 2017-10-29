@@ -12,7 +12,7 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<List<FinalItem>> {
+public abstract class ItemTotalsAdapter<FinalItem> extends GuidedObservableAdapter<List<FinalItem>> {
 
     @StringRes
     private final int totalItemsTitle;

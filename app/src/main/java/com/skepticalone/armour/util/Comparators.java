@@ -20,6 +20,11 @@ public final class Comparators {
     public static boolean equalDates(@Nullable final LocalDate date1, @Nullable final LocalDate date2) {
         return date1 == null ? date2 == null : (date2 != null && date1.isEqual(date2));
     }
+
+//    public static boolean equalDurations(@Nullable final Duration duration1, @Nullable final Duration duration2) {
+//        return duration1 == null ? duration2 == null : (duration2 != null && duration1.equals(duration2));
+//    }
+//
 //
 //    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 //    public static boolean equalCompliance(@NonNull final Row compliance1, @NonNull final Row compliance2) {

@@ -14,7 +14,7 @@ import com.skepticalone.armour.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<FinalItem extends Item> extends ObservableAdapter<List<FinalItem>> implements ListUpdateCallback {
+public abstract class ItemListAdapter<FinalItem extends Item> extends GuidedObservableAdapter<List<FinalItem>> implements ListUpdateCallback {
 
     @NonNull
     private final Callbacks mCallbacks;

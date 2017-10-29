@@ -9,7 +9,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.util.Comparators;
 
-public abstract class ItemDetailAdapter<FinalItem extends Item> extends ObservableAdapter<FinalItem> {
+public abstract class ItemDetailAdapter<FinalItem extends Item> extends GuidedObservableAdapter<FinalItem> {
     @NonNull
     private final Callbacks callbacks;
 

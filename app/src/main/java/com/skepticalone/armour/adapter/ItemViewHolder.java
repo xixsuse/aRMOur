@@ -1,5 +1,7 @@
 package com.skepticalone.armour.adapter;
 
+import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +21,7 @@ import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.compliance.Compliance;
 import com.skepticalone.armour.data.compliance.Row;
 
-final class ItemViewHolder extends RecyclerView.ViewHolder {
+public final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView primaryIcon, secondaryIcon;
     private final SwitchCompat switchControl;
@@ -37,27 +39,27 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         thirdLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Small);
     }
 
-    void setupPlain() {
+    public void setupPlain() {
         switchControl.setVisibility(View.GONE);
     }
 
-    void setupSwitch() {
+    public void setupSwitch() {
         switchControl.setVisibility(View.VISIBLE);
     }
 
-    void setPrimaryIcon(@DrawableRes int icon) {
+    public void setPrimaryIcon(@DrawableRes int icon) {
         primaryIcon.setImageResource(icon);
     }
 
-    void setSecondaryIcon(@DrawableRes int icon) {
+    public void setSecondaryIcon(@DrawableRes int icon) {
         secondaryIcon.setImageResource(icon);
     }
 
-    void hideSecondaryIcon() {
+    public void hideSecondaryIcon() {
         secondaryIcon.setVisibility(View.GONE);
     }
 
-    void setCompliant(@NonNull Row row) {
+    public void setCompliant(@NonNull Row row) {
         if (row.isChecked()) {
             secondaryIcon.setImageResource(Compliance.getComplianceIcon(row.isCompliantIfChecked()));
             secondaryIcon.setVisibility(View.VISIBLE);
@@ -66,15 +68,15 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    void setText(@NonNull String firstLine) {
+    public void setText(@NonNull String firstLine) {
         setText(firstLine, null);
     }
 
-    void setText(@NonNull String firstLine, @Nullable String secondLine) {
+    public void setText(@NonNull String firstLine, @Nullable String secondLine) {
         setText(firstLine, secondLine, null);
     }
 
-    void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
+    public void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(firstLine);
         ssb.setSpan(firstLineStyle, 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (secondLine != null) {
@@ -92,7 +94,7 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         text.setText(ssb);
     }
 
-    void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
+    public void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
         boolean enabled = onCheckedChangeListener != null;
         itemView.setOnClickListener(enabled ? new View.OnClickListener() {
             @Override
@@ -108,4 +110,88 @@ final class ItemViewHolder extends RecyclerView.ViewHolder {
         switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
+    public abstract static class Binder {
+        private Binder() {
+        }
+
+        @CallSuper
+        void onBindViewHolder(@NonNull ItemViewHolder holder) {
+            holder.primaryIcon.setImageResource(getPrimaryIcon());
+            Context context = holder.itemView.getContext();
+            holder.setText(getFirstLine(context), getSecondLine(context), getThirdLine(context));
+        }
+
+        final boolean areItemsTheSame(@NonNull Binder newItem) {
+            return getClass() == newItem.getClass();
+        }
+
+        public abstract boolean areContentsTheSame(@NonNull Binder other);
+
+        @DrawableRes
+        public abstract int getPrimaryIcon();
+
+        @NonNull
+        public abstract String getFirstLine(@NonNull Context context);
+
+        @Nullable
+        public String getSecondLine(@NonNull Context context) {
+            return null;
+        }
+
+        @Nullable
+        public String getThirdLine(@NonNull Context context) {
+            return null;
+        }
+
+    }
+
+    public static abstract class PlainBinder extends Binder implements View.OnClickListener {
+
+        @Override
+        final void onBindViewHolder(@NonNull ItemViewHolder holder) {
+            super.onBindViewHolder(holder);
+            holder.switchControl.setVisibility(View.GONE);
+            if (showSecondaryIcon()) {
+                holder.secondaryIcon.setImageResource(getSecondaryIcon());
+                holder.secondaryIcon.setVisibility(View.VISIBLE);
+            } else {
+                holder.secondaryIcon.setVisibility(View.GONE);
+            }
+            holder.itemView.setOnClickListener(this);
+        }
+
+        public abstract boolean showSecondaryIcon();
+
+        @DrawableRes
+        public abstract int getSecondaryIcon();
+
+    }
+
+    public static abstract class SwitchBinder extends Binder implements CompoundButton.OnCheckedChangeListener {
+
+        @Override
+        final void onBindViewHolder(@NonNull final ItemViewHolder holder) {
+            super.onBindViewHolder(holder);
+            holder.secondaryIcon.setVisibility(View.GONE);
+            boolean enabled = isEnabled(), checked = isChecked();
+            holder.itemView.setOnClickListener(enabled ? new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.switchControl.toggle();
+                }
+            } : null);
+            holder.switchControl.setEnabled(enabled);
+            if (holder.switchControl.isChecked() != checked) {
+                holder.switchControl.setOnCheckedChangeListener(null);
+                holder.switchControl.setChecked(checked);
+            }
+            holder.switchControl.setOnCheckedChangeListener(enabled ? this : null);
+            holder.switchControl.setVisibility(View.VISIBLE);
+        }
+
+        public abstract boolean isChecked();
+
+        public abstract boolean isEnabled();
+
+    }
 }
