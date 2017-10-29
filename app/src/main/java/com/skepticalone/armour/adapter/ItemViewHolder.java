@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.compliance.Compliance;
-import com.skepticalone.armour.data.compliance.Row;
 
 public final class ItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -57,15 +55,6 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     public void hideSecondaryIcon() {
         secondaryIcon.setVisibility(View.GONE);
-    }
-
-    public void setCompliant(@NonNull Row row) {
-        if (row.isChecked()) {
-            secondaryIcon.setImageResource(Compliance.getComplianceIcon(row.isCompliantIfChecked()));
-            secondaryIcon.setVisibility(View.VISIBLE);
-        } else {
-            secondaryIcon.setVisibility(View.GONE);
-        }
     }
 
     public void setText(@NonNull String firstLine) {
@@ -110,9 +99,7 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
-    public abstract static class Binder {
-        private Binder() {
-        }
+    public static abstract class Binder {
 
         @CallSuper
         void onBindViewHolder(@NonNull ItemViewHolder holder) {
@@ -121,8 +108,9 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
             holder.setText(getFirstLine(context), getSecondLine(context), getThirdLine(context));
         }
 
-        final boolean areItemsTheSame(@NonNull Binder newItem) {
-            return getClass() == newItem.getClass();
+        @CallSuper
+        public boolean areItemsTheSame(@NonNull Binder other) {
+            return getClass() == other.getClass();
         }
 
         public abstract boolean areContentsTheSame(@NonNull Binder other);
@@ -160,10 +148,18 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
             holder.itemView.setOnClickListener(this);
         }
 
-        public abstract boolean showSecondaryIcon();
+        @Override
+        public void onClick(View v) {
+        }
+
+        public boolean showSecondaryIcon() {
+            return false;
+        }
 
         @DrawableRes
-        public abstract int getSecondaryIcon();
+        public int getSecondaryIcon() {
+            throw new UnsupportedOperationException();
+        }
 
     }
 

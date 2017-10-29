@@ -7,9 +7,16 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.skepticalone.armour.data.compliance.Row;
+import com.skepticalone.armour.data.compliance.RowDurationBetweenShifts;
+import com.skepticalone.armour.data.compliance.RowDurationOverDay;
+import com.skepticalone.armour.data.compliance.RowDurationOverFortnight;
+import com.skepticalone.armour.data.compliance.RowDurationOverWeek;
+import com.skepticalone.armour.data.model.CommentBinder;
 import com.skepticalone.armour.data.model.DateBinder;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.ShiftDataBinder;
+import com.skepticalone.armour.data.model.ShiftTypeBinder;
 import com.skepticalone.armour.data.model.ToggleLoggedBinder;
 
 import java.util.ArrayList;
@@ -266,17 +273,19 @@ public final class RosteredShiftDetailAdapter extends ObservableAdapter<Rostered
         list.add(new DateBinder(callbacks, rosteredShift.getShiftData().getStart().toLocalDate()));
         list.add(new ShiftDataBinder(callbacks, rosteredShift.getShiftData(), true, false));
         list.add(new ShiftDataBinder(callbacks, rosteredShift.getShiftData(), false, false));
+        list.add(new ShiftTypeBinder(rosteredShift.getShiftType(), rosteredShift.getShiftData().getDuration()));
         list.add(new ToggleLoggedBinder(callbacks, rosteredShift.getLoggedShiftData()));
         if (rosteredShift.getLoggedShiftData() != null) {
             list.add(new ShiftDataBinder(callbacks, rosteredShift.getLoggedShiftData(), true, true));
             list.add(new ShiftDataBinder(callbacks, rosteredShift.getLoggedShiftData(), false, true));
         }
-//        if (rosteredShift.getCompliance().getDurationBetweenShifts() != null) {
-//            list.add(rosteredShift.getCompliance().getDurationBetweenShifts());
-//        }
-//        list.add(rosteredShift.getCompliance().getDurationOverDay());
-//        list.add(rosteredShift.getCompliance().getDurationOverWeek());
-//        list.add(rosteredShift.getCompliance().getDurationOverFortnight());
+        list.add(new CommentBinder(callbacks, rosteredShift.getComment()));
+        if (rosteredShift.getCompliance().getDurationBetweenShifts() != null) {
+            list.add(new RowDurationBetweenShifts.Binder(callbacks, rosteredShift.getCompliance().getDurationBetweenShifts()));
+        }
+        list.add(new RowDurationOverDay.Binder(callbacks, rosteredShift.getCompliance().getDurationOverDay()));
+        list.add(new RowDurationOverWeek.Binder(callbacks, rosteredShift.getCompliance().getDurationOverWeek()));
+        list.add(new RowDurationOverFortnight.Binder(callbacks, rosteredShift.getCompliance().getDurationOverFortnight()));
 //        if (rosteredShift.getCompliance().getConsecutiveDays() != null) {
 //            list.add(rosteredShift.getCompliance().getConsecutiveDays());
 //        }
@@ -812,7 +821,7 @@ public final class RosteredShiftDetailAdapter extends ObservableAdapter<Rostered
 //        }
 //    }
 
-    public interface Callbacks extends DateBinder.Callbacks, ToggleLoggedBinder.Callbacks, ShiftDataBinder.Callbacks {
+    public interface Callbacks extends DateBinder.Callbacks, ToggleLoggedBinder.Callbacks, ShiftDataBinder.Callbacks, CommentBinder.Callbacks, Row.Binder.Callbacks {
 //        void showMessage(@NonNull String message);
     }
 

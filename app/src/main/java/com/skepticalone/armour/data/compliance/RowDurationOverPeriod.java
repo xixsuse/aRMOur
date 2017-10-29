@@ -10,42 +10,33 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
-abstract class RowDurationOverPeriod extends Row {
-
-    @NonNull
-    private final Duration duration;
+abstract class RowDurationOverPeriod extends RowDuration {
 
     RowDurationOverPeriod(boolean isChecked, @NonNull Shift.Data shiftData, @NonNull ZonedDateTime cutOff, @NonNull List<RosteredShift> previousShifts) {
-        super(isChecked);
-        Duration totalDuration = getDurationAfterCutoff(shiftData, cutOff);
+        super(isChecked, calculateDurationOverPeriod(shiftData, cutOff, previousShifts));
+    }
+
+    @NonNull
+    private static Duration calculateDurationOverPeriod(@NonNull Shift.Data shiftData, @NonNull ZonedDateTime cutOff, @NonNull List<RosteredShift> previousShifts) {
+        Duration totalDuration = calculateDurationAfterCutoff(shiftData, cutOff);
         for (int i = previousShifts.size() - 1; i >= 0; i--) {
             Shift.Data pastShiftData = previousShifts.get(i).getShiftData();
             if (!pastShiftData.getEnd().isAfter(cutOff)) break;
-            totalDuration = totalDuration.plus(getDurationAfterCutoff(pastShiftData, cutOff));
+            totalDuration = totalDuration.plus(calculateDurationAfterCutoff(pastShiftData, cutOff));
         }
-        duration = totalDuration;
+        return totalDuration;
     }
 
     @NonNull
-    private static Duration getDurationAfterCutoff(@NonNull Shift.Data shiftData, @NonNull ZonedDateTime cutOff) {
+    private static Duration calculateDurationAfterCutoff(@NonNull Shift.Data shiftData, @NonNull ZonedDateTime cutOff) {
         return shiftData.getStart().isBefore(cutOff) ? Duration.between(cutOff, shiftData.getEnd()) : shiftData.getDuration();
-    }
-
-    @NonNull
-    public final Duration getDuration() {
-        return duration;
     }
 
     @Override
     public final boolean isCompliantIfChecked() {
-        return duration.compareTo(Duration.ofHours(getMaximumHoursOverPeriod())) != 1;
+        return getDuration().compareTo(Duration.ofHours(getMaximumHoursOverPeriod())) != 1;
     }
 
     abstract int getMaximumHoursOverPeriod();
 
-    public final boolean isEqual(@NonNull RowDurationOverPeriod other) {
-        return
-                duration.equals(other.duration) &&
-                        equalCompliance(other);
-    }
 }

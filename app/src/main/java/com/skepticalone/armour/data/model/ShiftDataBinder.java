@@ -25,9 +25,15 @@ public final class ShiftDataBinder extends ItemViewHolder.PlainBinder {
     }
 
     @Override
-    public boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
+    public boolean areItemsTheSame(@NonNull ItemViewHolder.Binder other) {
+        if (!super.areItemsTheSame(other)) return false;
         ShiftDataBinder newBinder = (ShiftDataBinder) other;
         return start == newBinder.start && logged == newBinder.logged && shift.isEqual(newBinder.shift);
+    }
+
+    @Override
+    public boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
+        return shift.isEqual(((ShiftDataBinder) other).shift);
     }
 
     @Override
@@ -45,16 +51,6 @@ public final class ShiftDataBinder extends ItemViewHolder.PlainBinder {
     @Override
     public String getSecondLine(@NonNull Context context) {
         return start ? DateTimeUtils.getTimeString(shift.getStart().toLocalTime()) : DateTimeUtils.getEndTimeString(shift.getEnd().toLocalDateTime(), shift.getStart().toLocalDate());
-    }
-
-    @Override
-    public boolean showSecondaryIcon() {
-        return false;
-    }
-
-    @Override
-    public int getSecondaryIcon() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.skepticalone.armour.data.compliance;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
@@ -11,14 +13,10 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public final class RowDurationBetweenShifts extends Row {
-
-    @NonNull
-    private final Duration duration;
+public final class RowDurationBetweenShifts extends RowDuration {
 
     private RowDurationBetweenShifts(boolean isChecked, @NonNull Shift.Data shift, @NonNull Shift.Data previousShift) {
-        super(isChecked);
-        duration = Duration.between(previousShift.getEnd(), shift.getStart());
+        super(isChecked, Duration.between(previousShift.getEnd(), shift.getStart()));
     }
 
     @Nullable
@@ -26,19 +24,32 @@ public final class RowDurationBetweenShifts extends Row {
         return previousShifts.isEmpty() ? null : new RowDurationBetweenShifts(configuration.checkDurationBetweenShifts(), shift, previousShifts.get(previousShifts.size() - 1).getShiftData());
     }
 
-    @NonNull
-    public final Duration getDuration() {
-        return duration;
-    }
-
     @Override
     public final boolean isCompliantIfChecked() {
-        return duration.compareTo(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1;
+        return getDuration().compareTo(Duration.ofHours(AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)) != -1;
     }
 
-    public final boolean isEqual(@NonNull RowDurationBetweenShifts other) {
-        return
-                duration.equals(other.duration) &&
-                        equalCompliance(other);
+    public static final class Binder extends RowDuration.Binder<RowDurationBetweenShifts> {
+
+        public Binder(@NonNull Callbacks callbacks, @NonNull RowDurationBetweenShifts row) {
+            super(callbacks, row);
+        }
+
+        @Override
+        public int getPrimaryIcon() {
+            return R.drawable.ic_sleep_black_24dp;
+        }
+
+        @NonNull
+        @Override
+        public String getFirstLine(@NonNull Context context) {
+            return context.getString(R.string.duration_between_shifts);
+        }
+
+        @NonNull
+        @Override
+        String getMessage(@NonNull Context context) {
+            return context.getString(R.string.meca_minimum_hours_between_shifts, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS);
+        }
     }
 }

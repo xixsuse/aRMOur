@@ -8,6 +8,7 @@ import com.skepticalone.armour.adapter.RosteredShiftDetailAdapter;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
+import com.skepticalone.armour.ui.dialog.MessageDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftCommentDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftDateDialogFragment;
 import com.skepticalone.armour.ui.dialog.RosteredShiftTimeDialogFragment;
@@ -62,8 +63,9 @@ public final class RosteredShiftDetailFragment
         getViewModel().setLogged(logged);
     }
 
-//    @Override
-//    public void showMessage(@NonNull String message) {
-//        showDialogFragment(MessageDialogFragment.newInstance(message));
-//    }
+    @Override
+    public void showMessage(@NonNull String message) {
+        showDialogFragment(MessageDialogFragment.newInstance(message));
+    }
+
 }
