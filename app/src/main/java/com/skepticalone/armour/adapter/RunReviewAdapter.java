@@ -74,7 +74,7 @@ public final class RunReviewAdapter extends ItemTotalsAdapter<RosteredShift> {
     void onBindViewHolder(@NonNull List<RosteredShift> rosteredShifts, int position, @NonNull ItemViewHolder holder) {
         if (position == ROW_NUMBER_LOGGED_SHIFTS) {
             holder.setPrimaryIcon(R.drawable.ic_sigma_black_24dp);
-            holder.setText(getContext().getResources().getQuantityString(R.plurals.logged_shifts, logged, logged), notLogged == 0 ? null : getContext().getResources().getQuantityString(R.plurals.shifts_not_logged, notLogged, notLogged));
+            holder.setText(getContext().getResources().getQuantityString(R.plurals.logged_shifts, logged, logged), notLogged == 0 ? null : getContext().getString(R.string.selected_but_ignored, getContext().getResources().getQuantityString(R.plurals.shifts, notLogged, notLogged)));
         } else if (position == ROW_NUMBER_TIME_PERIOD) {
             holder.setPrimaryIcon(R.drawable.ic_weeks_black_24dp);
             final String secondLine, thirdLine;

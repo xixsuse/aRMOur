@@ -3,53 +3,56 @@ package com.skepticalone.armour.data.compliance;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemViewHolder;
 import com.skepticalone.armour.data.model.RosteredShift;
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.AppConstants;
+import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZonedDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class RowWeekend extends Row {
 
     @NonNull
-    private final LocalDate currentWeekend;
-    private final int numerator, denominator, calculatedNumerator;
+    private final List<LocalDate> weekendsWorkedInPeriod = new ArrayList<>();
+    private final int periodInWeeks;
+    private final boolean saferRosters;
+    private final boolean includesConsecutiveWeekends;
 
     private RowWeekend(@NonNull Configuration configuration, @NonNull LocalDate currentWeekend, @NonNull List<RosteredShift> previousShifts) {
         super(configuration.checkFrequencyOfWeekends());
-        this.currentWeekend = currentWeekend;
         if (configuration instanceof ConfigurationSaferRosters) {
+            saferRosters = true;
             ConfigurationSaferRosters configurationSaferRosters = (ConfigurationSaferRosters) configuration;
-            this.numerator = 2;
-            this.denominator = configurationSaferRosters.allow1in2Weekends() ? (configurationSaferRosters.allowFrequentConsecutiveWeekends() ? 5 : 6) : (configurationSaferRosters.allowFrequentConsecutiveWeekends() ? 8 : 9);
+            periodInWeeks = configurationSaferRosters.allow1in2Weekends() ? (configurationSaferRosters.allowFrequentConsecutiveWeekends() ? 5 : 6) : (configurationSaferRosters.allowFrequentConsecutiveWeekends() ? 8 : 9);
         } else {
-            this.numerator = 1;
-            this.denominator = configuration.allow1in2Weekends() ? AppConstants.MAXIMUM_WEEKEND_FREQUENCY_DENOMINATOR_LENIENT : AppConstants.MAXIMUM_WEEKEND_FREQUENCY_DENOMINATOR_STRICT;
+            saferRosters = false;
+            periodInWeeks = configuration.allow1in2Weekends() ? AppConstants.MAXIMUM_CONSECUTIVE_WEEKEND_FREQUENCY_PERIOD_IN_WEEKS_LENIENT : AppConstants.MAXIMUM_CONSECUTIVE_WEEKEND_FREQUENCY_PERIOD_IN_WEEKS_STRICT;
         }
-        LocalDate cutOff = currentWeekend.minusWeeks(denominator);
-        int indexOfWeekendInPeriod = 0;
-        LocalDate lastWeekendCounted = currentWeekend;
+        weekendsWorkedInPeriod.add(currentWeekend);
+        boolean consecutiveWeekends = false;
         for (int i = previousShifts.size() - 1; i >= 0; i--) {
-            RowWeekend previousWeekend = previousShifts.get(i).getCompliance().getWeekend();
-            if (previousWeekend != null) {
-                if (!previousWeekend.currentWeekend.isAfter(cutOff)) {
-                    break;
-                } else if (!previousWeekend.currentWeekend.isEqual(lastWeekendCounted)) {
-                    indexOfWeekendInPeriod++;
-                    lastWeekendCounted = previousWeekend.currentWeekend;
+            RowWeekend weekend = previousShifts.get(i).getCompliance().getWeekend();
+            if (weekend != null) {
+                LocalDate cutOff = currentWeekend.minusWeeks(periodInWeeks);
+                for (LocalDate weekendWorked : weekend.weekendsWorkedInPeriod) {
+                    if (!weekendWorked.isAfter(cutOff)) break;
+                    else if (currentWeekend.isEqual(weekendWorked)) continue;
+                    consecutiveWeekends |= currentWeekend.minusWeeks(1).isEqual(weekendWorked);
+                    weekendsWorkedInPeriod.add(weekendWorked);
                 }
+                break;
             }
         }
-        calculatedNumerator = indexOfWeekendInPeriod + 1;
+        includesConsecutiveWeekends = consecutiveWeekends;
     }
 
     @Nullable
@@ -58,40 +61,15 @@ public final class RowWeekend extends Row {
         return currentWeekend == null ? null : new RowWeekend(configuration, currentWeekend, previousShifts);
     }
 
-    @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     @Nullable
     private static LocalDate calculateCurrentWeekend(@NonNull Shift.Data shift) {
         ZonedDateTime weekendStart = shift.getStart().with(DayOfWeek.SATURDAY).with(LocalTime.MIN);
         return weekendStart.isBefore(shift.getEnd()) && shift.getStart().isBefore(weekendStart.plusDays(2)) ? weekendStart.toLocalDate() : null;
     }
 
-//    @Nullable
-//    private static LocalDate calculatePreviousWeekend(@NonNull LocalDate currentWeekend, @NonNull List<RosteredShift> previousShifts) {
-//        for (int i = previousShifts.size() - 1; i >= 0; i--) {
-//            RowWeekend previousShiftWeekend = previousShifts.get(i).getCompliance().getWeekend();
-//            if (previousShiftWeekend != null) {
-//                return previousShiftWeekend.getCurrentWeekend().isEqual(currentWeekend) ? previousShiftWeekend.previousWeekend : previousShiftWeekend.getCurrentWeekend();
-//            }
-//        }
-//        return null;
-//    }
-
-    @NonNull
-    public final LocalDate getCurrentWeekend() {
-        return currentWeekend;
-    }
-
-    public final int getNumerator() {
-        return numerator;
-    }
-
-    final int getCalculatedNumerator() {
-        return calculatedNumerator;
-    }
-
     @Override
     public final boolean isCompliantIfChecked() {
-        return calculatedNumerator <= numerator;
+        return saferRosters ? weekendsWorkedInPeriod.size() <= 2 || !includesConsecutiveWeekends : weekendsWorkedInPeriod.size() <= 1;
     }
 
     public static final class Binder extends Row.Binder<RowWeekend> {
@@ -108,22 +86,40 @@ public final class RowWeekend extends Row {
         @NonNull
         @Override
         public String getFirstLine(@NonNull Context context) {
-            return "Weekend info";
+            return context.getString(R.string.weekend_frequency);
         }
 
         @Override
         public String getSecondLine(@NonNull Context context) {
-            return getRow().calculatedNumerator + " out of " + getRow().denominator;
+            return context.getString(R.string.n_weekends_worked_in_last_n_weeks, context.getResources().getQuantityString(R.plurals.weekends, getRow().weekendsWorkedInPeriod.size(), getRow().weekendsWorkedInPeriod.size()), context.getResources().getQuantityString(R.plurals.weeks, getRow().periodInWeeks, getRow().periodInWeeks));
+        }
+
+        @Override
+        public String getThirdLine(@NonNull Context context) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (LocalDate weekend : getRow().weekendsWorkedInPeriod) {
+                if (stringBuilder.length() != 0) stringBuilder.append('\n');
+                stringBuilder.append(DateTimeUtils.getWeekendDateSpanString(weekend));
+            }
+            if (getRow().includesConsecutiveWeekends) {
+                stringBuilder.append('\n').append(context.getString(R.string.includes_consecutive_weekends));
+            }
+            return stringBuilder.toString();
         }
 
         @NonNull
         @Override
         String getMessage(@NonNull Context context) {
-            return context.getString(
-                    R.string.meca_safer_rosters_maximum_consecutive_weekends,
-                    getRow().numerator,
-                    getRow().denominator,
-                    getRow().denominator - getRow().numerator
+            return getRow().saferRosters ?
+                    context.getString(
+                            R.string.meca_safer_rosters_maximum_consecutive_weekends,
+                            2,
+                            getRow().periodInWeeks,
+                            getRow().periodInWeeks - 2
+                    ) : context.getString(
+                    getRow().periodInWeeks == AppConstants.MAXIMUM_CONSECUTIVE_WEEKEND_FREQUENCY_PERIOD_IN_WEEKS_LENIENT ?
+                            R.string.meca_consecutive_weekends :
+                            R.string.meca_1_in_3_weekends
             );
         }
 
@@ -132,10 +128,10 @@ public final class RowWeekend extends Row {
             if (!super.areContentsTheSame(other)) return false;
             Binder newBinder = (Binder) other;
             return
-                    getRow().currentWeekend.isEqual(newBinder.getRow().currentWeekend) &&
-                            getRow().numerator == newBinder.getRow().numerator &&
-                            getRow().denominator == newBinder.getRow().denominator &&
-                            getRow().calculatedNumerator == newBinder.getRow().calculatedNumerator;
+                    getRow().periodInWeeks == newBinder.getRow().periodInWeeks &&
+                            getRow().saferRosters == newBinder.getRow().saferRosters &&
+                            getRow().includesConsecutiveWeekends == newBinder.getRow().includesConsecutiveWeekends &&
+                            getRow().weekendsWorkedInPeriod.equals(newBinder.getRow().weekendsWorkedInPeriod);
         }
     }
 

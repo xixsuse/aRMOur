@@ -52,7 +52,7 @@ public final class RowRosteredDayOff extends Row {
 
         @Override
         public String getSecondLine(@NonNull Context context) {
-            return getRow().date == null ? "No RDO found" : DateTimeUtils.getFullDateString(getRow().date);
+            return getRow().date == null ? context.getString(R.string.no_rostered_day_off_found) : DateTimeUtils.getFullDateString(getRow().date);
         }
 
         @NonNull

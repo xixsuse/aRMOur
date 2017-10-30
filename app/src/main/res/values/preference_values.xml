@@ -60,7 +60,7 @@
     <bool name="default_check_frequency_of_weekends">true</bool>
 
     <string name="key_allow_1_in_2_weekends" translatable="false">key_allow_1_in_2_weekends</string>
-    <string name="allow_1_in_2_weekends_title">Consecutive weekends</string>
+    <string name="allow_1_in_2_weekends_title">Allow 1 in 2 weekends</string>
     <bool name="default_allow_1_in_2_weekends">true</bool>
 
     <string name="key_check_consecutive_nights_worked" translatable="false">key_check_consecutive_nights_worked</string>

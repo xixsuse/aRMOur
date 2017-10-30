@@ -31,10 +31,13 @@ public class RDOTest extends RosteredShiftTest {
         RDO rdo = new RDO(rosteredShifts, CONFIGURATION_SAFER_ROSTERS);
         for (int i = 0; i < rosteredShifts.size(); i++) {
             RosteredShift shift = rosteredShifts.get(i);
-            RowRosteredDayOff rosteredDayOff = ((ComplianceSaferRosters) shift.getCompliance()).getRosteredDayOff();
-            if (rosteredDayOff != null) {
+            RowRosteredDayOff rosteredDayOff = shift.getCompliance().getRosteredDayOff();
+            if (i == 5 || i == 6) {
+                assertNotNull(rosteredDayOff);
                 assertNull(rosteredDayOff.getDate());
                 assertFalse(rosteredDayOff.isCompliant());
+            } else {
+                assertNull(rosteredDayOff);
             }
             LocalDate shiftDate = shift.getShiftData().getStart().toLocalDate();
             assertTrue(rdo.getWorkedDates().contains(shiftDate));
@@ -60,7 +63,7 @@ public class RDOTest extends RosteredShiftTest {
         RDO rdo = new RDO(rosteredShifts, configuration);
         for (int shiftIndex = 0; shiftIndex < rosteredShifts.size(); shiftIndex++) {
             RosteredShift shift = rosteredShifts.get(shiftIndex);
-            ComplianceSaferRosters compliance = (ComplianceSaferRosters) shift.getCompliance();
+            Compliance compliance = shift.getCompliance();
             boolean shouldHaveAssignedRDO = false;
             for (int assignedWeekdayRdoIndex = 0; !shouldHaveAssignedRDO && assignedWeekdayRdoIndex < assignedWeekdayRDOsIndices.length; assignedWeekdayRdoIndex++) {
                 if (shiftIndex == assignedWeekdayRDOsIndices[assignedWeekdayRdoIndex]) {

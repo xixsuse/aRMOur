@@ -4,7 +4,6 @@ import com.skepticalone.armour.data.model.ShiftSpec;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -144,8 +143,8 @@ public class ConfigurationTest extends RosteredShiftTest {
         assertNull(compliance.getWeekend());
 
         compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
-        assertEquals(1, compliance.getWeekend().getNumerator());
-        assertEquals(1, compliance.getWeekend().getCalculatedNumerator());
+        assertEquals(0, compliance.getWeekend().getMaximumConsecutiveWeekendsInPeriod());
+        assertEquals(1, compliance.getWeekend().getConsecutiveWeekendsInPeriod());
         assertTrue(compliance.getWeekend().isCompliant());
         assertTrue(compliance.isCompliant());
 
@@ -153,8 +152,8 @@ public class ConfigurationTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.add(new ShiftSpec(5, 0, 0, 0, 1)));
 
         compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
-        assertEquals(1, compliance.getWeekend().getNumerator());
-        assertEquals(2, compliance.getWeekend().getCalculatedNumerator());
+        assertEquals(1, compliance.getWeekend().getMaximumConsecutiveWeekendsInPeriod());
+        assertEquals(2, compliance.getWeekend().getConsecutiveWeekendsInPeriod());
         assertFalse(compliance.getWeekend().isCompliant());
         assertFalse(compliance.isCompliant());
 
