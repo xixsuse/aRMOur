@@ -4,6 +4,7 @@ import com.skepticalone.armour.data.model.ShiftSpec;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -130,44 +131,73 @@ public class ConfigurationTest extends RosteredShiftTest {
     @Test
     public void consecutiveWeekendsWorked() {
 
-        MockConfiguration mockConfiguration = NONE_COMPLIANT.withCheckFrequencyOfWeekends(true);
 
         assertTrue(shiftSpecs.add(new ShiftSpec(-1, 8, 0, 16, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(4, 8, 0, 0, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(12, 8, 0, 16, 0)));
+        assertNull(getRosteredShifts(NONE_COMPLIANT).get(1).getCompliance().getWeekend());
 
-        Compliance compliance = getRosteredShifts(mockConfiguration).get(0).getCompliance();
-        assertNotNull(compliance.getWeekend());
+        MockConfiguration configuration = NONE_COMPLIANT.withCheckFrequencyOfWeekends(true);
+        Compliance compliance;
 
-        compliance = getRosteredShifts(mockConfiguration).get(1).getCompliance();
-        assertNull(compliance.getWeekend());
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(false)).get(2).getCompliance();
+        assertEquals(2, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(3, compliance.getWeekend().getPeriodInWeeks());
+        assertFalse(compliance.getWeekend().isCompliant());
+        assertFalse(compliance.isCompliant());
 
-        compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
-        assertEquals(0, compliance.getWeekend().getMaximumConsecutiveWeekendsInPeriod());
-        assertEquals(1, compliance.getWeekend().getConsecutiveWeekendsInPeriod());
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(true)).get(2).getCompliance();
+        assertEquals(1, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(2, compliance.getWeekend().getPeriodInWeeks());
         assertTrue(compliance.getWeekend().isCompliant());
         assertTrue(compliance.isCompliant());
 
         assertTrue(shiftSpecs.remove(new ShiftSpec(4, 8, 0, 0, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(5, 0, 0, 0, 1)));
 
-        compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
-        assertEquals(1, compliance.getWeekend().getMaximumConsecutiveWeekendsInPeriod());
-        assertEquals(2, compliance.getWeekend().getConsecutiveWeekendsInPeriod());
+        assertNotNull(getRosteredShifts(NONE_COMPLIANT).get(1).getCompliance().getWeekend());
+
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(false)).get(2).getCompliance();
+        assertEquals(3, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(3, compliance.getWeekend().getPeriodInWeeks());
+        assertFalse(compliance.getWeekend().isCompliant());
+        assertFalse(compliance.isCompliant());
+
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(true)).get(2).getCompliance();
+        assertEquals(2, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(2, compliance.getWeekend().getPeriodInWeeks());
         assertFalse(compliance.getWeekend().isCompliant());
         assertFalse(compliance.isCompliant());
 
         assertTrue(shiftSpecs.remove(new ShiftSpec(5, 0, 0, 0, 1)));
         assertTrue(shiftSpecs.add(new ShiftSpec(6, 23, 59, 0, 0)));
+        assertNotNull(getRosteredShifts(NONE_COMPLIANT).get(1).getCompliance().getWeekend());
 
-        compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(false)).get(2).getCompliance();
+        assertEquals(3, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(3, compliance.getWeekend().getPeriodInWeeks());
+        assertFalse(compliance.getWeekend().isCompliant());
+        assertFalse(compliance.isCompliant());
+
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(true)).get(2).getCompliance();
+        assertEquals(2, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(2, compliance.getWeekend().getPeriodInWeeks());
         assertFalse(compliance.getWeekend().isCompliant());
         assertFalse(compliance.isCompliant());
 
         assertTrue(shiftSpecs.remove(new ShiftSpec(6, 23, 59, 0, 0)));
         assertTrue(shiftSpecs.add(new ShiftSpec(7, 0, 0, 0, 1)));
+        assertNull(getRosteredShifts(NONE_COMPLIANT).get(1).getCompliance().getWeekend());
 
-        compliance = getRosteredShifts(mockConfiguration).get(2).getCompliance();
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(false)).get(2).getCompliance();
+        assertEquals(2, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(3, compliance.getWeekend().getPeriodInWeeks());
+        assertFalse(compliance.getWeekend().isCompliant());
+        assertFalse(compliance.isCompliant());
+
+        compliance = getRosteredShifts(configuration.withAllow1in2Weekends(true)).get(2).getCompliance();
+        assertEquals(1, compliance.getWeekend().getWeekendsWorkedInPeriod().size());
+        assertEquals(2, compliance.getWeekend().getPeriodInWeeks());
         assertTrue(compliance.getWeekend().isCompliant());
         assertTrue(compliance.isCompliant());
 

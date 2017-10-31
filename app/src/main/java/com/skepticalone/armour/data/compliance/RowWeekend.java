@@ -72,6 +72,15 @@ public final class RowWeekend extends Row {
         return saferRosters ? weekendsWorkedInPeriod.size() <= 2 || !includesConsecutiveWeekends : weekendsWorkedInPeriod.size() <= 1;
     }
 
+    final int getPeriodInWeeks() {
+        return periodInWeeks;
+    }
+
+    @NonNull
+    final List<LocalDate> getWeekendsWorkedInPeriod() {
+        return weekendsWorkedInPeriod;
+    }
+
     public static final class Binder extends Row.Binder<RowWeekend> {
 
         public Binder(@NonNull Callbacks callbacks, @NonNull RowWeekend row) {

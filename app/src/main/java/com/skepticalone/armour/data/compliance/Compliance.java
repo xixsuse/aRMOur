@@ -26,15 +26,15 @@ public final class Compliance {
     @Nullable
     private final RowDurationBetweenShifts durationBetweenShifts;
     @Nullable
-    private final RowConsecutiveDays consecutiveDays;
-    @Nullable
     private final RowNight night;
+    @Nullable
+    private final RowConsecutiveDays consecutiveDays;
     @Nullable
     private final RowLongDay longDay;
     @Nullable
-    private final RowRecoveryFollowingNights recoveryFollowingNights;
-    @Nullable
     private final RowWeekend weekend;
+    @Nullable
+    private final RowRecoveryFollowingNights recoveryFollowingNights;
     @Nullable
     private RowRosteredDayOff rosteredDayOff;
 
@@ -52,17 +52,19 @@ public final class Compliance {
         night = calculateIsNightShift(shift) ? new RowNight(configuration, shift, previousShifts) : null;
         consecutiveDays = night == null ? new RowConsecutiveDays(configuration, shift, previousShifts) : null;
         longDay = night == null && calculateIsLongDay(shift) ? new RowLongDay(configuration, shift, previousShifts) : null;
-        recoveryFollowingNights = night == null ? RowRecoveryFollowingNights.from(configuration, shift, previousShifts) : null;
         weekend = RowWeekend.from(configuration, shift, previousShifts);
+        recoveryFollowingNights = night == null ? RowRecoveryFollowingNights.from(configuration, shift, previousShifts) : null;
         compliant =
                 durationOverDay.isCompliant() &&
                         durationOverWeek.isCompliant() &&
                         durationOverFortnight.isCompliant() &&
                         (durationBetweenShifts == null || durationBetweenShifts.isCompliant()) &&
-                        (consecutiveDays == null || consecutiveDays.isCompliant()) &&
                         (night == null || night.isCompliant()) &&
+                        (consecutiveDays == null || consecutiveDays.isCompliant()) &&
                         (longDay == null || longDay.isCompliant()) &&
-                        (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant());
+                        (weekend == null || weekend.isCompliant()) &&
+                        (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant()) &&
+                        (rosteredDayOff == null || rosteredDayOff.isCompliant());
     }
 
     private static boolean calculateIsNightShift(Shift.Data shift) {
