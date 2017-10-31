@@ -22,7 +22,7 @@ import static org.threeten.bp.DayOfWeek.WEDNESDAY;
 import static org.threeten.bp.temporal.TemporalAdjusters.next;
 import static org.threeten.bp.temporal.TemporalAdjusters.previous;
 
-public final class RDO {
+public final class RosteredDayOff {
 
     private final static TemporalAdjuster[] WEEKDAY_TEMPORAL_ADJUSTERS = {
             previous(MONDAY),
@@ -36,14 +36,9 @@ public final class RDO {
             next(THURSDAY),
             next(FRIDAY)
     };
-    @NonNull
-    private final Set<LocalDate> workedDates, weekdayRosteredDaysOff;
-    @NonNull
-    private final ConfigurationSaferRosters configuration;
 
-    public RDO(@NonNull List<RosteredShift> rosteredShifts, @NonNull ConfigurationSaferRosters configuration) {
-        this.configuration = configuration;
-        workedDates = new HashSet<>(rosteredShifts.size());
+    public static void process(@NonNull List<RosteredShift> rosteredShifts, @NonNull ConfigurationSaferRosters configuration) {
+        Set<LocalDate> workedDates = new HashSet<>(rosteredShifts.size());
         int weekendShiftCount = 0;
         for (RosteredShift shift : rosteredShifts) {
             workedDates.add(shift.getShiftData().getStart().toLocalDate());
@@ -53,59 +48,50 @@ public final class RDO {
                 weekendShiftCount++;
             }
         }
-        weekdayRosteredDaysOff = new HashSet<>(weekendShiftCount);
+        Set<LocalDate> weekdayRosteredDaysOff = new HashSet<>(weekendShiftCount);
         for (RosteredShift shift : rosteredShifts) {
-            assignRosteredDayOff(shift);
+            assignRosteredDayOff(shift, workedDates, weekdayRosteredDaysOff, configuration);
         }
     }
 
-    private void assignRosteredDayOff(@NonNull RosteredShift shift) {
+    private static void assignRosteredDayOff(@NonNull RosteredShift shift, @NonNull Set<LocalDate> workedDates, @NonNull Set<LocalDate> weekdayRosteredDaysOff, @NonNull ConfigurationSaferRosters configuration) {
         if (shift.getCompliance().getNight() == null && shift.getCompliance().getWeekend() != null) {
-            shift.getCompliance().setRosteredDayOff(new RowRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate())));
+            shift.getCompliance().setRosteredDayOff(new RowRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate(), workedDates, weekdayRosteredDaysOff, configuration.allowMidweekRDOs())));
         }
     }
 
     @Nullable
-    private LocalDate getRosteredDayOff(@NonNull final LocalDate weekendShiftDate) {
+    private static LocalDate getRosteredDayOff(@NonNull final LocalDate weekendShiftDate, @NonNull Set<LocalDate> workedDates, @NonNull Set<LocalDate> weekdayRosteredDaysOff, boolean allowMidweekRDOs) {
         for (TemporalAdjuster weekdayTemporalAdjuster : WEEKDAY_TEMPORAL_ADJUSTERS) {
             LocalDate proposedWeekdayRdo = weekendShiftDate.with(weekdayTemporalAdjuster);
             if (workedDates.contains(proposedWeekdayRdo)) continue;
-            if (configuration.allowMidweekRDOs() ? isSingletonRDO(proposedWeekdayRdo) : isSeparatedFromWeekend(proposedWeekdayRdo))
+            if (allowMidweekRDOs ? isSingletonRDO(proposedWeekdayRdo, workedDates) : isSeparatedFromWeekend(proposedWeekdayRdo, workedDates))
                 continue;
             if (weekdayRosteredDaysOff.add(proposedWeekdayRdo)) return proposedWeekdayRdo;
         }
         return null;
     }
 
-    private boolean isSeparatedFromWeekend(@NonNull LocalDate proposedWeekdayRdo) {
-        return isSeparatedFromPreviousWeekend(proposedWeekdayRdo) && isSeparatedFromNextWeekend(proposedWeekdayRdo);
+    private static boolean isSeparatedFromWeekend(@NonNull LocalDate proposedWeekdayRdo, @NonNull Set<LocalDate> workedDates) {
+        return isSeparatedFromPreviousWeekend(proposedWeekdayRdo, workedDates) && isSeparatedFromNextWeekend(proposedWeekdayRdo, workedDates);
     }
 
-    private boolean isSeparatedFromPreviousWeekend(@NonNull LocalDate proposedWeekdayRdo) {
+    private static boolean isSeparatedFromPreviousWeekend(@NonNull LocalDate proposedWeekdayRdo, @NonNull Set<LocalDate> workedDates) {
         for (LocalDate currentDay = proposedWeekdayRdo.minusDays(1); currentDay.getDayOfWeek() != SATURDAY; currentDay = currentDay.minusDays(1)) {
             if (workedDates.contains(currentDay)) return true;
         }
         return false;
     }
 
-    private boolean isSeparatedFromNextWeekend(@NonNull LocalDate proposedWeekdayRdo) {
+    private static boolean isSeparatedFromNextWeekend(@NonNull LocalDate proposedWeekdayRdo, @NonNull Set<LocalDate> workedDates) {
         for (LocalDate currentDay = proposedWeekdayRdo.plusDays(1); currentDay.getDayOfWeek() != SUNDAY; currentDay = currentDay.plusDays(1)) {
             if (workedDates.contains(currentDay)) return true;
         }
         return false;
     }
 
-    private boolean isSingletonRDO(@NonNull LocalDate proposedWeekdayRdo) {
+    private static boolean isSingletonRDO(@NonNull LocalDate proposedWeekdayRdo, @NonNull Set<LocalDate> workedDates) {
         return workedDates.contains(proposedWeekdayRdo.minusDays(1)) && workedDates.contains(proposedWeekdayRdo.plusDays(1));
     }
 
-    @NonNull
-    Set<LocalDate> getWeekdayRosteredDaysOff() {
-        return weekdayRosteredDaysOff;
-    }
-
-    @NonNull
-    Set<LocalDate> getWorkedDates() {
-        return workedDates;
-    }
 }
