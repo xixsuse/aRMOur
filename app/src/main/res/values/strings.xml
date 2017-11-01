@@ -60,7 +60,6 @@
     <string name="percentage_format">%1$s (%2$d%%)</string>
     <string name="payment_format">$%.2f</string>
     <string name="logged_format">%1$s\nLogged: %2$s</string>
-    <string name="time_ago_format">%s ago</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="default_hourly_rate">Default hourly rate</string>
     <string name="number_of_long_days_in_week">Number of long days in week</string>
@@ -94,7 +93,6 @@
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
     <string name="weekend_frequency">Weekend frequency</string>
-    <string name="last_weekend_worked">Last weekend worked</string>
     <string name="rostered_day_off">Rostered day off</string>
     <string name="no_rostered_day_off_found">No rostered day off found</string>
     <string name="invalid_format">Invalid format</string>

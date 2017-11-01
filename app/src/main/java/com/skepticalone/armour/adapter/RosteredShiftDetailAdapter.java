@@ -5,23 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 
-import com.skepticalone.armour.data.compliance.Row;
-import com.skepticalone.armour.data.compliance.RowConsecutiveDays;
-import com.skepticalone.armour.data.compliance.RowDurationBetweenShifts;
-import com.skepticalone.armour.data.compliance.RowDurationOverDay;
-import com.skepticalone.armour.data.compliance.RowDurationOverFortnight;
-import com.skepticalone.armour.data.compliance.RowDurationOverWeek;
-import com.skepticalone.armour.data.compliance.RowLongDay;
-import com.skepticalone.armour.data.compliance.RowNight;
-import com.skepticalone.armour.data.compliance.RowRecoveryFollowingNights;
-import com.skepticalone.armour.data.compliance.RowRosteredDayOff;
-import com.skepticalone.armour.data.compliance.RowWeekend;
-import com.skepticalone.armour.data.model.CommentBinder;
-import com.skepticalone.armour.data.model.DateBinder;
 import com.skepticalone.armour.data.model.RosteredShift;
-import com.skepticalone.armour.data.model.ShiftDataBinder;
-import com.skepticalone.armour.data.model.ShiftTypeBinder;
-import com.skepticalone.armour.data.model.ToggleLoggedBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,33 +81,33 @@ public final class RosteredShiftDetailAdapter extends ObservableAdapter<Rostered
         }
         list.add(new CommentBinder(callbacks, rosteredShift.getComment()));
         if (rosteredShift.getCompliance().getDurationBetweenShifts() != null) {
-            list.add(new RowDurationBetweenShifts.Binder(callbacks, rosteredShift.getCompliance().getDurationBetweenShifts()));
+            list.add(new DurationBetweenShiftsBinder(callbacks, rosteredShift.getCompliance().getDurationBetweenShifts()));
         }
-        list.add(new RowDurationOverDay.Binder(callbacks, rosteredShift.getCompliance().getDurationOverDay()));
-        list.add(new RowDurationOverWeek.Binder(callbacks, rosteredShift.getCompliance().getDurationOverWeek()));
-        list.add(new RowDurationOverFortnight.Binder(callbacks, rosteredShift.getCompliance().getDurationOverFortnight()));
+        list.add(new DurationOverDayBinder(callbacks, rosteredShift.getCompliance().getDurationOverDay()));
+        list.add(new DurationOverWeekBinder(callbacks, rosteredShift.getCompliance().getDurationOverWeek()));
+        list.add(new DurationOverFortnightBinder(callbacks, rosteredShift.getCompliance().getDurationOverFortnight()));
         if (rosteredShift.getCompliance().getConsecutiveDays() != null) {
-            list.add(new RowConsecutiveDays.Binder(callbacks, rosteredShift.getCompliance().getConsecutiveDays()));
+            list.add(new ConsecutiveDaysBinder(callbacks, rosteredShift.getCompliance().getConsecutiveDays()));
         }
         if (rosteredShift.getCompliance().getLongDay() != null) {
-            list.add(new RowLongDay.Binder(callbacks, rosteredShift.getCompliance().getLongDay()));
+            list.add(new LongDayBinder(callbacks, rosteredShift.getCompliance().getLongDay()));
         }
         if (rosteredShift.getCompliance().getNight() != null) {
-            list.add(new RowNight.Binder(callbacks, rosteredShift.getCompliance().getNight()));
+            list.add(new NightBinder(callbacks, rosteredShift.getCompliance().getNight()));
         }
         if (rosteredShift.getCompliance().getRecoveryFollowingNights() != null) {
-            list.add(new RowRecoveryFollowingNights.Binder(callbacks, rosteredShift.getCompliance().getRecoveryFollowingNights()));
+            list.add(new RecoveryFollowingNightsBinder(callbacks, rosteredShift.getCompliance().getRecoveryFollowingNights()));
         }
         if (rosteredShift.getCompliance().getWeekend() != null) {
-            list.add(new RowWeekend.Binder(callbacks, rosteredShift.getCompliance().getWeekend()));
+            list.add(new WeekendBinder(callbacks, rosteredShift.getCompliance().getWeekend()));
         }
         if (rosteredShift.getCompliance().getRosteredDayOff() != null) {
-            list.add(new RowRosteredDayOff.Binder(callbacks, rosteredShift.getCompliance().getRosteredDayOff()));
+            list.add(new RosteredDayOffBinder(callbacks, rosteredShift.getCompliance().getRosteredDayOff()));
         }
         return list;
     }
 
-    public interface Callbacks extends DateBinder.Callbacks, ToggleLoggedBinder.Callbacks, ShiftDataBinder.Callbacks, CommentBinder.Callbacks, Row.Binder.Callbacks {
+    public interface Callbacks extends DateBinder.Callbacks, ToggleLoggedBinder.Callbacks, ShiftDataBinder.Callbacks, CommentBinder.Callbacks, ComplianceDataBinder.Callbacks {
     }
 
 }

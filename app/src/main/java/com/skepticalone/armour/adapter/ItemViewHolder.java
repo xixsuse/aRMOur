@@ -83,7 +83,7 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         text.setText(ssb);
     }
 
-    public void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
+    void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
         boolean enabled = onCheckedChangeListener != null;
         itemView.setOnClickListener(enabled ? new View.OnClickListener() {
             @Override
@@ -109,31 +109,31 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         }
 
         @CallSuper
-        public boolean areItemsTheSame(@NonNull Binder other) {
+        boolean areItemsTheSame(@NonNull Binder other) {
             return getClass() == other.getClass();
         }
 
-        public abstract boolean areContentsTheSame(@NonNull Binder other);
+        abstract boolean areContentsTheSame(@NonNull Binder other);
 
         @DrawableRes
-        public abstract int getPrimaryIcon();
+        abstract int getPrimaryIcon();
 
         @NonNull
-        public abstract String getFirstLine(@NonNull Context context);
+        abstract String getFirstLine(@NonNull Context context);
 
         @Nullable
-        public String getSecondLine(@NonNull Context context) {
+        String getSecondLine(@NonNull Context context) {
             return null;
         }
 
         @Nullable
-        public String getThirdLine(@NonNull Context context) {
+        String getThirdLine(@NonNull Context context) {
             return null;
         }
 
     }
 
-    public static abstract class PlainBinder extends Binder implements View.OnClickListener {
+    static abstract class PlainBinder extends Binder implements View.OnClickListener {
 
         @Override
         final void onBindViewHolder(@NonNull ItemViewHolder holder) {
@@ -152,18 +152,18 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         public void onClick(View v) {
         }
 
-        public boolean showSecondaryIcon() {
+        boolean showSecondaryIcon() {
             return false;
         }
 
         @DrawableRes
-        public int getSecondaryIcon() {
+        int getSecondaryIcon() {
             throw new UnsupportedOperationException();
         }
 
     }
 
-    public static abstract class SwitchBinder extends Binder implements CompoundButton.OnCheckedChangeListener {
+    static abstract class SwitchBinder extends Binder implements CompoundButton.OnCheckedChangeListener {
 
         @Override
         final void onBindViewHolder(@NonNull final ItemViewHolder holder) {
@@ -185,9 +185,9 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
             holder.switchControl.setVisibility(View.VISIBLE);
         }
 
-        public abstract boolean isChecked();
+        abstract boolean isChecked();
 
-        public abstract boolean isEnabled();
+        abstract boolean isEnabled();
 
     }
 }

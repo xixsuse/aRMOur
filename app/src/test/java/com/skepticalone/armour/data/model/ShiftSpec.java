@@ -3,8 +3,6 @@ package com.skepticalone.armour.data.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.compliance.Configuration;
-
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
@@ -15,7 +13,7 @@ import java.util.List;
 
 import static com.skepticalone.armour.data.model.Item.NO_ID;
 
-public final class ShiftSpec implements Comparable<ShiftSpec> {
+final class ShiftSpec implements Comparable<ShiftSpec> {
 
     @NonNull
     public static final LocalDate START_DATE = LocalDate.of(2017, 5, 1);

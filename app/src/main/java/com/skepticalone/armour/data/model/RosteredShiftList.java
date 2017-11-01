@@ -6,11 +6,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.skepticalone.armour.data.compliance.Configuration;
-import com.skepticalone.armour.data.compliance.ConfigurationSaferRosters;
-import com.skepticalone.armour.data.compliance.LiveComplianceConfig;
-import com.skepticalone.armour.data.compliance.RosteredDayOff;
-
 import org.threeten.bp.ZoneId;
 
 import java.util.ArrayList;

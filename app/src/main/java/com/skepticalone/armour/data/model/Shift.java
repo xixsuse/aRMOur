@@ -324,10 +324,6 @@ public abstract class Shift extends Item {
             return DateTimeUtils.getDateTimeString(getStart().toLocalDateTime()) + " - " + DateTimeUtils.getDateTimeString(getEnd().toLocalDateTime());
         }
 
-        public final boolean isEqual(@NonNull Data other) {
-            return start.isEqual(other.start) && end.isEqual(other.end);
-        }
-
     }
 
 }

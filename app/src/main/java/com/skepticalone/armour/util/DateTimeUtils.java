@@ -68,11 +68,6 @@ public final class DateTimeUtils {
         return getSpanString(timeFormatter.format(start), timeFormatter.format(end));
     }
 
-    public static String getWeeksAgo(@NonNull Context context, @NonNull LocalDate currentWeekend, @NonNull LocalDate lastWeekendWorked) {
-        int weeksAgo = (int) ((currentWeekend.toEpochDay() - lastWeekendWorked.toEpochDay()) / 7);
-        return context.getString(R.string.time_ago_format, context.getResources().getQuantityString(R.plurals.weeks, weeksAgo, weeksAgo));
-    }
-
     public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {
         long hours = duration.getSeconds() / 3600, minutes = duration.getSeconds() % 3600 / 60;
         if (hours > 0 && minutes > 0) {
