@@ -1,58 +1,69 @@
 package com.skepticalone.armour.adapter;
 
 import android.content.Context;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.annotation.Nullable;
+import android.support.v7.util.DiffUtil;
 
-import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.Item;
-import com.skepticalone.armour.util.Comparators;
+import java.util.List;
 
-public abstract class ItemDetailAdapter<FinalItem extends Item> extends GuidedObservableAdapter<FinalItem> {
-    @NonNull
-    private final Callbacks callbacks;
+public abstract class ItemDetailAdapter<FinalItem> extends ObservableAdapter<FinalItem> {
 
-    ItemDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
+    @Nullable
+    private List<ItemViewHolder.Binder> mList;
+
+    ItemDetailAdapter(@NonNull Context context) {
         super(context);
-        this.callbacks = callbacks;
+    }
+
+    private static int getItemCount(@Nullable List<ItemViewHolder.Binder> list) {
+        return list == null ? 0 : list.size();
     }
 
     @Override
-    @CallSuper
-    void notifyUpdated(@NonNull FinalItem oldItem, @NonNull FinalItem newItem) {
-        if (!Comparators.equalStrings(oldItem.getComment(), newItem.getComment())) {
-            notifyItemChanged(getRowNumberComment());
-        }
+    public final void onChanged(@Nullable FinalItem item) {
+        final List<ItemViewHolder.Binder> newList = item == null ? null : getNewList(item);
+        DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return getItemCount(mList);
+            }
+
+            @Override
+            public int getNewListSize() {
+                return getItemCount(newList);
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                //noinspection ConstantConditions
+                return mList.get(oldItemPosition).areItemsTheSame(newList.get(newItemPosition));
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                //noinspection ConstantConditions
+                return mList.get(oldItemPosition).areContentsTheSame(newList.get(newItemPosition));
+            }
+
+        }, false).dispatchUpdatesTo(this);
+        mList = newList;
     }
 
     @Override
-    @CallSuper
-    void onBindViewHolder(@NonNull FinalItem item, int position, @NonNull ItemViewHolder holder) {
-        if (position == getRowNumberComment()) {
-            holder.setupPlain();
-            holder.setPrimaryIcon(R.drawable.ic_comment_black_24dp);
-            holder.setText(getContext().getString(R.string.comment), item.getComment());
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    callbacks.changeComment();
-                }
-            });
-        } else throw new IllegalStateException();
+    public final void onBindViewHolder(ItemViewHolder holder, int position) {
+        //noinspection ConstantConditions
+        mList.get(position).onBindViewHolder(holder);
     }
+
+    @NonNull
+    abstract List<ItemViewHolder.Binder> getNewList(@NonNull FinalItem item);
 
     @Override
-    final int getRowCount(@NonNull FinalItem item) {
-        return getFixedRowCount();
+    public final int getItemCount() {
+        return getItemCount(mList);
     }
 
-    abstract int getFixedRowCount();
-
-    abstract int getRowNumberComment();
-
-    public interface Callbacks {
-        void changeComment();
+    public interface Callbacks extends CommentBinder.Callbacks {
     }
-
 }

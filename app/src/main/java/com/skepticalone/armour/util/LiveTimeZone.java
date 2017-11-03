@@ -9,7 +9,7 @@ import com.skepticalone.armour.R;
 
 import org.threeten.bp.ZoneId;
 
-public final class LiveTimeZone extends LiveConfig<ZoneId> {
+public final class LiveTimeZone extends LiveConfiguration<ZoneId> {
 
     @Nullable
     private static LiveTimeZone INSTANCE;

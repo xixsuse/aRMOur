@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.skepticalone.armour.R;
@@ -52,7 +51,7 @@ final class ShiftDataBinder extends ItemViewHolder.PlainBinder {
         return context.getString(!logged ? (start ? R.string.start : R.string.end) : (start ? R.string.logged_start : R.string.logged_end));
     }
 
-    @Nullable
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         return start ? DateTimeUtils.getTimeString(shift.getStart().toLocalTime()) : DateTimeUtils.getEndTimeString(shift.getEnd().toLocalDateTime(), shift.getStart().toLocalDate());

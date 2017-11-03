@@ -10,15 +10,15 @@ import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
-public final class ComplianceDataLongDay extends ComplianceDataIndex {
+public final class ComplianceDataLongDaysPerWeek extends ComplianceDataIndex {
 
-    private ComplianceDataLongDay(boolean isChecked, int indexOfLongDay) {
+    private ComplianceDataLongDaysPerWeek(boolean isChecked, int indexOfLongDay) {
         super(isChecked, indexOfLongDay);
     }
 
     @Nullable
-    static ComplianceDataLongDay from(@NonNull Configuration configuration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
-        return calculateIsLongDay(shift) ? new ComplianceDataLongDay(configuration.checkLongDaysPerWeek(), calculateIndexOfLongDay(shift, previousShifts)) : null;
+    static ComplianceDataLongDaysPerWeek from(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
+        return calculateIsLongDay(shift) ? new ComplianceDataLongDaysPerWeek(complianceConfiguration.checkLongDaysPerWeek(), calculateIndexOfLongDay(shift, previousShifts)) : null;
     }
 
     private static boolean calculateIsLongDay(Shift.Data shift) {
@@ -33,7 +33,7 @@ public final class ComplianceDataLongDay extends ComplianceDataIndex {
                 RosteredShift previousShift = previousShifts.get(i);
                 if (!previousShift.getShiftData().getStart().toLocalDate().isAfter(oneWeekAgo)) {
                     break;
-                } else if (previousShift.getCompliance().getLongDay() != null) {
+                } else if (previousShift.getCompliance().getLongDaysPerWeek() != null) {
                     index++;
                 }
             }

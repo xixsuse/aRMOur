@@ -18,10 +18,10 @@ public final class ComplianceDataConsecutiveDays extends ComplianceDataIndex {
     }
 
     @NonNull
-    static ComplianceDataConsecutiveDays from(@NonNull Configuration configuration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
+    static ComplianceDataConsecutiveDays from(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
         return new ComplianceDataConsecutiveDays(
-                configuration.checkConsecutiveDays(),
-                configuration instanceof ConfigurationSaferRosters,
+                complianceConfiguration.checkConsecutiveDays(),
+                complianceConfiguration instanceof ComplianceConfigurationSaferRosters,
                 calculateIndexOfDayShift(dayShift, previousShifts)
         );
     }

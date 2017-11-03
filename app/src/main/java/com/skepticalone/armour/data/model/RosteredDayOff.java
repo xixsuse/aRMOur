@@ -35,14 +35,14 @@ final class RosteredDayOff {
             next(FRIDAY)
     };
 
-    public static void process(@NonNull List<RosteredShift> rosteredShifts, @NonNull ConfigurationSaferRosters configuration) {
+    static void process(@NonNull List<RosteredShift> rosteredShifts, @NonNull ComplianceConfigurationSaferRosters configuration) {
         Set<LocalDate> workedDates = new HashSet<>(rosteredShifts.size());
         int weekendShiftCount = 0;
         for (RosteredShift shift : rosteredShifts) {
             workedDates.add(shift.getShiftData().getStart().toLocalDate());
-            if (shift.getCompliance().getNight() != null) {
+            if (shift.getCompliance().getConsecutiveNights() != null) {
                 workedDates.add(shift.getShiftData().getEnd().toLocalDate());
-            } else if (shift.getCompliance().getWeekend() != null) {
+            } else if (shift.getCompliance().getConsecutiveWeekends() != null) {
                 weekendShiftCount++;
             }
         }
@@ -52,9 +52,9 @@ final class RosteredDayOff {
         }
     }
 
-    private static void assignRosteredDayOff(@NonNull RosteredShift shift, @NonNull Set<LocalDate> workedDates, @NonNull Set<LocalDate> weekdayRosteredDaysOff, @NonNull ConfigurationSaferRosters configuration) {
-        if (shift.getCompliance().getNight() == null && shift.getCompliance().getWeekend() != null) {
-            shift.getCompliance().setRosteredDayOff(new ComplianceDataRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate(), workedDates, weekdayRosteredDaysOff, configuration.allowMidweekRDOs())));
+    private static void assignRosteredDayOff(@NonNull RosteredShift shift, @NonNull Set<LocalDate> workedDates, @NonNull Set<LocalDate> weekdayRosteredDaysOff, @NonNull ComplianceConfigurationSaferRosters configuration) {
+        if (shift.getCompliance().getConsecutiveNights() == null && shift.getCompliance().getConsecutiveWeekends() != null) {
+            shift.getCompliance().setRosteredDayOff(new ComplianceDataRosteredDayOff(configuration, getRosteredDayOff(shift.getShiftData().getStart().toLocalDate(), workedDates, weekdayRosteredDaysOff, configuration.allowMidweekRosteredDaysOff())));
         }
     }
 
@@ -65,7 +65,9 @@ final class RosteredDayOff {
             if (workedDates.contains(proposedWeekdayRdo)) continue;
             if (allowMidweekRDOs ? isSingletonRDO(proposedWeekdayRdo, workedDates) : isSeparatedFromWeekend(proposedWeekdayRdo, workedDates))
                 continue;
-            if (weekdayRosteredDaysOff.add(proposedWeekdayRdo)) return proposedWeekdayRdo;
+            if (weekdayRosteredDaysOff.add(proposedWeekdayRdo)) {
+                return proposedWeekdayRdo;
+            }
         }
         return null;
     }

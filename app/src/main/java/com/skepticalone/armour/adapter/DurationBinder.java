@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.ComplianceDataDuration;
 import com.skepticalone.armour.util.DateTimeUtils;
@@ -18,7 +17,7 @@ abstract class DurationBinder extends ComplianceDataBinder<ComplianceDataDuratio
         return A.getDuration().equals(B.getDuration());
     }
 
-    @Nullable
+    @NonNull
     @Override
     final String getSecondLine(@NonNull Context context) {
         return DateTimeUtils.getDurationString(context, getData().getDuration());

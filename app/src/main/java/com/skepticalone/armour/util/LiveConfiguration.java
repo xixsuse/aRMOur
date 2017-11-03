@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 
-public abstract class LiveConfig<T> extends LiveData<T> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class LiveConfiguration<T> extends LiveData<T> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @RestrictTo(RestrictTo.Scope.SUBCLASSES)
     public final void init(@NonNull Context context) {

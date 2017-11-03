@@ -15,13 +15,13 @@ public final class Compliance {
     @Nullable
     private final ComplianceDataDuration durationBetweenShifts;
     @Nullable
-    private final ComplianceDataNight night;
+    private final ComplianceDataConsecutiveNights consecutiveNights;
     @Nullable
     private final ComplianceDataConsecutiveDays consecutiveDays;
     @Nullable
-    private final ComplianceDataLongDay longDay;
+    private final ComplianceDataLongDaysPerWeek longDaysPerWeek;
     @Nullable
-    private final ComplianceDataWeekend weekend;
+    private final ComplianceDataConsecutiveWeekends consecutiveWeekends;
     @Nullable
     private final ComplianceDataRecoveryFollowingNights recoveryFollowingNights;
     @Nullable
@@ -30,34 +30,34 @@ public final class Compliance {
     private boolean compliant;
 
     public Compliance(
-            @NonNull Configuration configuration,
+            @NonNull ComplianceConfiguration complianceConfiguration,
             @NonNull com.skepticalone.armour.data.model.Shift.Data shift,
             @NonNull List<RosteredShift> previousShifts
     ) {
-        durationOverDay = ComplianceDataDuration.overDay(configuration, shift, previousShifts);
-        durationOverWeek = ComplianceDataDuration.overWeek(configuration, shift, previousShifts);
-        durationOverFortnight = ComplianceDataDuration.overFortnight(configuration, shift, previousShifts);
-        durationBetweenShifts = ComplianceDataDuration.betweenShifts(configuration, shift, previousShifts);
-        night = ComplianceDataNight.from(configuration, shift, previousShifts);
-        if (night == null) {
-            consecutiveDays = ComplianceDataConsecutiveDays.from(configuration, shift, previousShifts);
-            longDay = ComplianceDataLongDay.from(configuration, shift, previousShifts);
-            recoveryFollowingNights = ComplianceDataRecoveryFollowingNights.from(configuration, shift, previousShifts);
+        durationOverDay = ComplianceDataDuration.overDay(complianceConfiguration, shift, previousShifts);
+        durationOverWeek = ComplianceDataDuration.overWeek(complianceConfiguration, shift, previousShifts);
+        durationOverFortnight = ComplianceDataDuration.overFortnight(complianceConfiguration, shift, previousShifts);
+        durationBetweenShifts = ComplianceDataDuration.betweenShifts(complianceConfiguration, shift, previousShifts);
+        consecutiveNights = ComplianceDataConsecutiveNights.from(complianceConfiguration, shift, previousShifts);
+        if (consecutiveNights == null) {
+            consecutiveDays = ComplianceDataConsecutiveDays.from(complianceConfiguration, shift, previousShifts);
+            longDaysPerWeek = ComplianceDataLongDaysPerWeek.from(complianceConfiguration, shift, previousShifts);
+            recoveryFollowingNights = ComplianceDataRecoveryFollowingNights.from(complianceConfiguration, shift, previousShifts);
         } else {
             consecutiveDays = null;
-            longDay = null;
+            longDaysPerWeek = null;
             recoveryFollowingNights = null;
         }
-        weekend = ComplianceDataWeekend.from(configuration, shift, previousShifts);
+        consecutiveWeekends = ComplianceDataConsecutiveWeekends.from(complianceConfiguration, shift, previousShifts);
         compliant =
                 durationOverDay.isCompliant() &&
                         durationOverWeek.isCompliant() &&
                         durationOverFortnight.isCompliant() &&
                         (durationBetweenShifts == null || durationBetweenShifts.isCompliant()) &&
-                        (night == null || night.isCompliant()) &&
+                        (consecutiveNights == null || consecutiveNights.isCompliant()) &&
                         (consecutiveDays == null || consecutiveDays.isCompliant()) &&
-                        (longDay == null || longDay.isCompliant()) &&
-                        (weekend == null || weekend.isCompliant()) &&
+                        (longDaysPerWeek == null || longDaysPerWeek.isCompliant()) &&
+                        (consecutiveWeekends == null || consecutiveWeekends.isCompliant()) &&
                         (recoveryFollowingNights == null || recoveryFollowingNights.isCompliant());
     }
 
@@ -77,18 +77,18 @@ public final class Compliance {
     }
 
     @Nullable
-    public final ComplianceDataNight getNight() {
-        return night;
+    public final ComplianceDataConsecutiveNights getConsecutiveNights() {
+        return consecutiveNights;
     }
 
     @Nullable
-    public final ComplianceDataLongDay getLongDay() {
-        return longDay;
+    public final ComplianceDataLongDaysPerWeek getLongDaysPerWeek() {
+        return longDaysPerWeek;
     }
 
     @Nullable
-    public final ComplianceDataWeekend getWeekend() {
-        return weekend;
+    public final ComplianceDataConsecutiveWeekends getConsecutiveWeekends() {
+        return consecutiveWeekends;
     }
 
     @NonNull

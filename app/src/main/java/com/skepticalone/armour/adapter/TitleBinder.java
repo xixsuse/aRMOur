@@ -5,52 +5,49 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.util.DateTimeUtils;
 
-import org.threeten.bp.LocalDate;
-
-final class DateBinder extends ItemViewHolder.PlainBinder {
+final class TitleBinder extends ItemViewHolder.PlainBinder {
 
     @NonNull
     private final Callbacks callbacks;
     @NonNull
-    private final LocalDate date;
+    private final String title;
 
-    DateBinder(@NonNull Callbacks callbacks, @NonNull LocalDate date) {
+    TitleBinder(@NonNull Callbacks callbacks, @NonNull String title) {
         this.callbacks = callbacks;
-        this.date = date;
+        this.title = title;
     }
 
     @Override
     boolean areContentsTheSame(@NonNull ItemViewHolder.Binder other) {
-        DateBinder newBinder = (DateBinder) other;
-        return date.isEqual(newBinder.date);
+        TitleBinder newBinder = (TitleBinder) other;
+        return title.equals(newBinder.title);
     }
 
     @Override
     int getPrimaryIcon() {
-        return R.drawable.ic_calendar_black_24dp;
+        return R.drawable.ic_title_black_24dp;
     }
 
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.date);
+        return context.getString(R.string.title);
     }
 
     @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
-        return DateTimeUtils.getFullDateString(date);
+        return title;
     }
 
     @Override
     public void onClick(View v) {
-        callbacks.changeDate();
+        callbacks.changeTitle();
     }
 
     interface Callbacks {
-        void changeDate();
+        void changeTitle();
     }
 
 }

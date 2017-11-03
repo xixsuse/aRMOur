@@ -24,14 +24,17 @@ public final class DateTimeUtils {
     private static final DateTimeFormatter dayFormatter = new DateTimeFormatterBuilder().appendText(ChronoField.DAY_OF_WEEK, TextStyle.SHORT).toFormatter();
     private final static int MINUTES_PER_HOUR = 60;
 
+    @NonNull
     private static String getQualifiedString(@NonNull String main, @NonNull String qualifier) {
         return main + " (" + qualifier + ")";
     }
 
+    @NonNull
     public static String getTimeString(@NonNull LocalTime time) {
         return timeFormatter.format(time);
     }
 
+    @NonNull
     public static String getEndTimeString(@NonNull LocalDateTime endDateTime, @NonNull LocalDate startDate) {
         String endTimeString = timeFormatter.format(endDateTime);
         if (!endDateTime.toLocalDate().isEqual(startDate)) {
@@ -40,34 +43,42 @@ public final class DateTimeUtils {
         return endTimeString;
     }
 
+    @NonNull
     public static String getDateTimeString(@NonNull LocalDateTime dateTime) {
         return dateTimeFormatter.format(dateTime);
     }
 
+    @NonNull
     public static String getFullDateString(@NonNull LocalDate date) {
         return fullDateFormatter.format(date);
     }
 
+    @NonNull
     private static String getSpanString(@NonNull String start, @NonNull String end) {
-        return start + " - " + end;
+        return start + " – " + end;
     }
 
+    @NonNull
     public static String getDateSpanString(@NonNull LocalDate start, @NonNull LocalDate end) {
         return getSpanString(dateFormatter.format(start), dateFormatter.format(end));
     }
 
+    @NonNull
     public static String getWeekendDateSpanString(@NonNull LocalDate saturday) {
         return getDateSpanString(saturday, saturday.plusDays(1));
     }
 
+    @NonNull
     public static String getTimeSpanString(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
         return getSpanString(timeFormatter.format(start), getEndTimeString(end, start.toLocalDate()));
     }
 
+    @NonNull
     public static String getTimeSpanString(@NonNull LocalTime start, @NonNull LocalTime end) {
         return getSpanString(timeFormatter.format(start), timeFormatter.format(end));
     }
 
+    @NonNull
     public static String getDurationString(@NonNull Context context, @NonNull Duration duration) {
         long hours = duration.getSeconds() / 3600, minutes = duration.getSeconds() % 3600 / 60;
         if (hours > 0 && minutes > 0) {

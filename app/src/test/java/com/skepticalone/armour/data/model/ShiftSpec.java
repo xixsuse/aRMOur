@@ -16,7 +16,7 @@ import static com.skepticalone.armour.data.model.Item.NO_ID;
 final class ShiftSpec implements Comparable<ShiftSpec> {
 
     @NonNull
-    public static final LocalDate START_DATE = LocalDate.of(2017, 5, 1);
+    static final LocalDate START_DATE = LocalDate.of(2017, 5, 1);
     @NonNull
     private static final ZoneId zoneId = ZoneId.systemDefault();
     @NonNull
@@ -26,7 +26,7 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     @NonNull
     private final LocalTime end;
 
-    public ShiftSpec(int daysAfterStart, int startHour, int startMinute, int endHour, int endMinute) {
+    ShiftSpec(int daysAfterStart, int startHour, int startMinute, int endHour, int endMinute) {
         start = LocalDateTime.of(START_DATE.plusDays(daysAfterStart), LocalTime.of(startHour, startMinute));
         end = LocalTime.of(endHour, endMinute);
     }
@@ -46,7 +46,7 @@ final class ShiftSpec implements Comparable<ShiftSpec> {
     }
 
     @NonNull
-    public RosteredShift toTestShift(@NonNull Configuration complianceConfig, @Nullable List<RosteredShift> previousShifts) {
+    RosteredShift toTestShift(@NonNull ComplianceConfiguration complianceConfig, @Nullable List<RosteredShift> previousShifts) {
         return new RosteredShift(
                 new RosteredShiftEntity(NO_ID, null, ShiftData.from(start.atZone(zoneId), end), null),
                 zoneId,

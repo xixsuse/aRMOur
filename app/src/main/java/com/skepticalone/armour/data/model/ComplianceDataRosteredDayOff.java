@@ -11,10 +11,10 @@ public final class ComplianceDataRosteredDayOff extends ComplianceData {
     private final LocalDate date;
     private final boolean allowMidweekRDOs;
 
-    ComplianceDataRosteredDayOff(@NonNull ConfigurationSaferRosters configuration, @Nullable LocalDate date) {
-        super(configuration.checkRDOs());
+    ComplianceDataRosteredDayOff(@NonNull ComplianceConfigurationSaferRosters configuration, @Nullable LocalDate date) {
+        super(configuration.checkRosteredDaysOff());
         this.date = date;
-        this.allowMidweekRDOs = configuration.allowMidweekRDOs();
+        this.allowMidweekRDOs = configuration.allowMidweekRosteredDaysOff();
     }
 
     @Nullable

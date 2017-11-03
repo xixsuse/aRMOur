@@ -41,7 +41,7 @@ public final class CrossCoverListAdapter extends ItemListAdapter<CrossCover> {
     @NonNull
     @Override
     String getSecondLine(@NonNull CrossCover crossCover) {
-        return getPaymentString(crossCover.getTotalPayment());
+        return getContext().getString(R.string.payment_format, crossCover.getTotalPayment());
     }
 
 }

@@ -2,7 +2,6 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.model.Shift;
 import com.skepticalone.armour.util.DateTimeUtils;
@@ -38,7 +37,7 @@ final class ShiftTypeBinder extends ItemViewHolder.PlainBinder {
         return context.getString(shiftType.getSingularTitle());
     }
 
-    @Nullable
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         return DateTimeUtils.getDurationString(context, duration);

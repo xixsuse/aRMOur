@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.skepticalone.armour.R;
 
-public final class ItemViewHolder extends RecyclerView.ViewHolder {
+final class ItemViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView primaryIcon, secondaryIcon;
     private final SwitchCompat switchControl;
@@ -37,35 +37,27 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         thirdLineStyle = new TextAppearanceSpan(parent.getContext(), R.style.TextAppearance_AppCompat_Small);
     }
 
-    public void setupPlain() {
+    void setupPlain() {
         switchControl.setVisibility(View.GONE);
     }
 
-    public void setupSwitch() {
-        switchControl.setVisibility(View.VISIBLE);
-    }
-
-    public void setPrimaryIcon(@DrawableRes int icon) {
+    void setPrimaryIcon(@DrawableRes int icon) {
         primaryIcon.setImageResource(icon);
     }
 
-    public void setSecondaryIcon(@DrawableRes int icon) {
+    void setSecondaryIcon(@DrawableRes int icon) {
         secondaryIcon.setImageResource(icon);
     }
 
-    public void hideSecondaryIcon() {
+    void hideSecondaryIcon() {
         secondaryIcon.setVisibility(View.GONE);
     }
 
-    public void setText(@NonNull String firstLine) {
-        setText(firstLine, null);
-    }
-
-    public void setText(@NonNull String firstLine, @Nullable String secondLine) {
+    void setText(@NonNull String firstLine, @Nullable String secondLine) {
         setText(firstLine, secondLine, null);
     }
 
-    public void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
+    void setText(@NonNull String firstLine, @Nullable String secondLine, @Nullable String thirdLine) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(firstLine);
         ssb.setSpan(firstLineStyle, 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (secondLine != null) {
@@ -83,23 +75,7 @@ public final class ItemViewHolder extends RecyclerView.ViewHolder {
         text.setText(ssb);
     }
 
-    void bindSwitch(boolean checked, @Nullable CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
-        boolean enabled = onCheckedChangeListener != null;
-        itemView.setOnClickListener(enabled ? new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchControl.toggle();
-            }
-        } : null);
-        switchControl.setEnabled(enabled);
-        if (switchControl.isChecked() != checked) {
-            switchControl.setOnCheckedChangeListener(null);
-            switchControl.setChecked(checked);
-        }
-        switchControl.setOnCheckedChangeListener(onCheckedChangeListener);
-    }
-
-    public static abstract class Binder {
+    static abstract class Binder {
 
         @CallSuper
         void onBindViewHolder(@NonNull ItemViewHolder holder) {

@@ -2,92 +2,36 @@ package com.skepticalone.armour.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.CrossCover;
 
-import org.threeten.bp.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class CrossCoverDetailAdapter extends ItemDetailAdapter<CrossCover> {
 
-    private static final int
-            ROW_NUMBER_DATE = 0,
-            ROW_NUMBER_PAYMENT = 1,
-            ROW_NUMBER_COMMENT = 2,
-            ROW_NUMBER_CLAIMED = 3,
-            ROW_NUMBER_PAID = 4,
-            ROW_COUNT = 5;
-
     @NonNull
-    private final PayableDetailAdapterHelper<CrossCover> payableDetailAdapterHelper;
-
-    @NonNull
-    private final DateDetailAdapterHelper<CrossCover> dateDetailAdapterHelper;
+    private final Callbacks callbacks;
 
     public CrossCoverDetailAdapter(@NonNull Context context, @NonNull Callbacks callbacks) {
-        super(context, callbacks);
-        payableDetailAdapterHelper = new PayableDetailAdapterHelper<CrossCover>(callbacks) {
-            @Override
-            int getRowNumberPayment() {
-                return ROW_NUMBER_PAYMENT;
-            }
-
-            @Override
-            int getRowNumberClaimed() {
-                return ROW_NUMBER_CLAIMED;
-            }
-
-            @Override
-            int getRowNumberPaid() {
-                return ROW_NUMBER_PAID;
-            }
-        };
-        dateDetailAdapterHelper = new DateDetailAdapterHelper<CrossCover>(callbacks) {
-            @Override
-            int getRowNumberDate() {
-                return ROW_NUMBER_DATE;
-            }
-
-            @NonNull
-            @Override
-            LocalDate getDate(@NonNull CrossCover crossCover) {
-                return crossCover.getDate();
-            }
-        };
+        super(context);
+        this.callbacks = callbacks;
     }
 
+    @NonNull
     @Override
-    int getRowNumberComment() {
-        return ROW_NUMBER_COMMENT;
+    List<ItemViewHolder.Binder> getNewList(@NonNull CrossCover crossCover) {
+        List<ItemViewHolder.Binder> list = new ArrayList<>(5);
+        list.add(new DateBinder(callbacks, crossCover.getDate()));
+        list.add(new PaymentBinder(callbacks, crossCover.getPaymentData().getPayment(), R.drawable.ic_dollar_black_24dp, R.string.payment));
+        list.add(new CommentBinder(callbacks, crossCover.getComment()));
+        list.add(new ClaimedSwitchBinder(callbacks, crossCover.getPaymentData()));
+        list.add(new PaidSwitchBinder(callbacks, crossCover.getPaymentData()));
+        return list;
     }
 
-    @Override
-    int getFixedRowCount() {
-        return ROW_COUNT;
-    }
-
-    @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemViewHolder holder = super.onCreateViewHolder(parent, viewType);
-        holder.hideSecondaryIcon();
-        return holder;
-    }
-
-    @Override
-    void notifyUpdated(@NonNull CrossCover oldCrossCover, @NonNull CrossCover newCrossCover) {
-        super.notifyUpdated(oldCrossCover, newCrossCover);
-        payableDetailAdapterHelper.onChanged(oldCrossCover, newCrossCover, this);
-        dateDetailAdapterHelper.onItemUpdated(oldCrossCover, newCrossCover, this);
-    }
-
-    @Override
-    void onBindViewHolder(@NonNull CrossCover crossCover, int position, @NonNull ItemViewHolder holder) {
-        if (!dateDetailAdapterHelper.bindViewHolder(crossCover, position, holder, this) && !payableDetailAdapterHelper.bindViewHolder(crossCover, position, holder, this)) {
-            super.onBindViewHolder(crossCover, position, holder);
-        }
-    }
-
-    public interface Callbacks extends PayableDetailAdapterHelper.Callbacks, DateDetailAdapterHelper.Callbacks {
+    public interface Callbacks extends ItemDetailAdapter.Callbacks, DateBinder.Callbacks, PaymentBinder.Callbacks, ClaimedSwitchBinder.Callbacks, PaidSwitchBinder.Callbacks {
     }
 
 }

@@ -30,7 +30,13 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
     private Callbacks callbacks;
 
     private RecyclerView recyclerView;
-
+    @NonNull
+    private final RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            recyclerView.getLayoutManager().scrollToPosition(positionStart + itemCount - 1);
+        }
+    };
     @Nullable
     private ActionMode mSelectMode;
 
@@ -53,6 +59,13 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
         super.onAttach(context);
         callbacks = (Callbacks) context;
         setHasOptionsMenu(true);
+        getAdapter().registerAdapterDataObserver(dataObserver);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getAdapter().unregisterAdapterDataObserver(dataObserver);
     }
 
     @Override
@@ -94,11 +107,6 @@ public abstract class ListFragment<FinalItem extends Item> extends BaseFragment<
             }
         });
         return recyclerView;
-    }
-
-    @Override
-    public void scrollToPosition(int position) {
-        recyclerView.getLayoutManager().scrollToPosition(position);
     }
 
     @Override

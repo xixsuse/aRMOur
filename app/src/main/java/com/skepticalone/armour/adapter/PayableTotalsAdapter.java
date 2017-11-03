@@ -3,6 +3,7 @@ package com.skepticalone.armour.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.skepticalone.armour.R;
 import com.skepticalone.armour.data.model.Payment;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ public abstract class PayableTotalsAdapter<FinalItem extends Payment> extends Fi
 
     @NonNull
     private String getPaymentPercentage(@NonNull BigDecimal payment, @NonNull BigDecimal totalPayment) {
-        return getPercentage(getPaymentString(payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
+        return getPercentage(getContext().getString(R.string.payment_format, payment), payment.movePointRight(2).divide(totalPayment, BigDecimal.ROUND_HALF_UP).intValue());
     }
 
     @NonNull
@@ -36,7 +37,7 @@ public abstract class PayableTotalsAdapter<FinalItem extends Payment> extends Fi
             }
             return getPaymentPercentage(filteredPayment, totalPayment);
         } else {
-            return getPaymentString(totalPayment);
+            return getContext().getString(R.string.payment_format, totalPayment);
         }
     }
 

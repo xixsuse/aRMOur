@@ -140,7 +140,7 @@ public abstract class ItemViewModel<Entity, FinalItem extends Item> extends Andr
 
     @NonNull
     final Shift.ShiftType.Configuration getFreshShiftConfiguration() {
-        return Shift.ShiftType.LiveShiftConfig.getInstance(getApplication()).getNewValue(getDefaultSharedPreferences());
+        return Shift.ShiftType.LiveShiftConfiguration.getInstance(getApplication()).getNewValue(getDefaultSharedPreferences());
     }
 
     @PluralsRes

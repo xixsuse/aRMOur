@@ -4,13 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.ComplianceDataLongDay;
+import com.skepticalone.armour.data.model.ComplianceDataLongDaysPerWeek;
 import com.skepticalone.armour.util.AppConstants;
 
-final class LongDayBinder extends ComplianceDataBinder<ComplianceDataLongDay> {
+final class LongDaysPerWeekBinder extends ComplianceDataBinder<ComplianceDataLongDaysPerWeek> {
 
-    LongDayBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataLongDay complianceDataLongDay) {
-        super(callbacks, complianceDataLongDay);
+    LongDaysPerWeekBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataLongDaysPerWeek complianceDataLongDaysPerWeek) {
+        super(callbacks, complianceDataLongDaysPerWeek);
     }
 
     @Override
@@ -21,9 +21,10 @@ final class LongDayBinder extends ComplianceDataBinder<ComplianceDataLongDay> {
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.number_of_long_days_in_week);
+        return context.getString(R.string.long_days_per_week);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         int longDays = getData().getIndex() + 1;
@@ -37,7 +38,7 @@ final class LongDayBinder extends ComplianceDataBinder<ComplianceDataLongDay> {
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull ComplianceDataLongDay A, @NonNull ComplianceDataLongDay B) {
+    boolean areContentsTheSame(@NonNull ComplianceDataLongDaysPerWeek A, @NonNull ComplianceDataLongDaysPerWeek B) {
         return A.getIndex() == B.getIndex();
     }
 

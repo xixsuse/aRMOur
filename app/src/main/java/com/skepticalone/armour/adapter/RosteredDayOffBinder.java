@@ -25,6 +25,7 @@ final class RosteredDayOffBinder extends ComplianceDataBinder<ComplianceDataRost
         return context.getString(R.string.rostered_day_off);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         return getData().getDate() == null ? context.getString(R.string.no_rostered_day_off_found) : DateTimeUtils.getFullDateString(getData().getDate());

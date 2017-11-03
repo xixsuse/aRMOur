@@ -20,7 +20,7 @@ public final class RosteredShift extends com.skepticalone.armour.data.model.Shif
             @NonNull ZoneId zoneId,
             @NonNull ShiftType.Configuration shiftConfig,
             @NonNull List<RosteredShift> previousShifts,
-            @NonNull Configuration complianceConfig
+            @NonNull ComplianceConfiguration complianceConfig
     ) {
         super(rawShift.getId(), rawShift.getComment(), rawShift.getShiftData(), zoneId, shiftConfig);
         loggedShiftData = rawShift.getLoggedShiftData() == null ? null : new Data(rawShift.getLoggedShiftData(), zoneId);

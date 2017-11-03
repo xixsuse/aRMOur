@@ -43,23 +43,23 @@ public final class ComplianceDataDuration extends ComplianceData {
     }
 
     @NonNull
-    static ComplianceDataDuration overDay(@NonNull Configuration configuration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
-        return new ComplianceDataDuration(configuration.checkDurationOverDay(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusDays(1), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_DAY, true);
+    static ComplianceDataDuration overDay(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
+        return new ComplianceDataDuration(complianceConfiguration.checkDurationOverDay(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusDays(1), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_DAY, true);
     }
 
     @NonNull
-    static ComplianceDataDuration overWeek(@NonNull Configuration configuration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
-        return new ComplianceDataDuration(configuration.checkDurationOverDay(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusWeeks(1), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_WEEK, true);
+    static ComplianceDataDuration overWeek(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
+        return new ComplianceDataDuration(complianceConfiguration.checkDurationOverWeek(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusWeeks(1), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_WEEK, true);
     }
 
     @NonNull
-    static ComplianceDataDuration overFortnight(@NonNull Configuration configuration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
-        return new ComplianceDataDuration(configuration.checkDurationOverDay(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusWeeks(2), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT, true);
+    static ComplianceDataDuration overFortnight(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shiftData, @NonNull List<RosteredShift> previousShifts) {
+        return new ComplianceDataDuration(complianceConfiguration.checkDurationOverFortnight(), calculateDurationOverPeriod(shiftData, shiftData.getEnd().minusWeeks(2), previousShifts), AppConstants.MAXIMUM_HOURS_OVER_FORTNIGHT, true);
     }
 
     @Nullable
-    static ComplianceDataDuration betweenShifts(@NonNull Configuration configuration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
-        return previousShifts.isEmpty() ? null : new ComplianceDataDuration(configuration.checkDurationBetweenShifts(), Duration.between(previousShifts.get(previousShifts.size() - 1).getShiftData().getEnd(), shift.getStart()), AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS, false);
+    static ComplianceDataDuration betweenShifts(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
+        return previousShifts.isEmpty() ? null : new ComplianceDataDuration(complianceConfiguration.checkDurationBetweenShifts(), Duration.between(previousShifts.get(previousShifts.size() - 1).getShiftData().getEnd(), shift.getStart()), AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS, false);
     }
 
     @Override

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="category_new_shifts_title">New shifts</string>
+    <string name="category_compliance_options_title">Compliance options</string>
+    <string name="category_compliance_checks_title">Compliance checks</string>
+
     <string name="key_normal_day" translatable="false">key_normal_day</string>
     <string name="key_start_normal_day" translatable="false">key_start_normal_day</string>
     <string name="key_end_normal_day" translatable="false">key_end_normal_day</string>
@@ -36,45 +39,37 @@
     <string name="key_time_zone_id" translatable="false">key_time_zone_id</string>
 
     <string name="key_check_duration_over_day" translatable="false">key_check_duration_over_day</string>
-    <string name="check_duration_over_day_title">Duration over day</string>
     <bool name="default_check_duration_over_day">true</bool>
     <string name="key_check_duration_over_week" translatable="false">key_check_duration_over_week</string>
-    <string name="check_duration_over_week_title">Duration over week</string>
     <bool name="default_check_duration_over_week">true</bool>
     <string name="key_check_duration_over_fortnight" translatable="false">key_check_duration_over_fortnight</string>
-    <string name="check_duration_over_fortnight_title">Duration over fortnight</string>
     <bool name="default_check_duration_over_fortnight">true</bool>
     <string name="key_check_duration_between_shifts" translatable="false">key_check_duration_between_shifts</string>
-    <string name="check_duration_between_shifts_title">Duration between shifts</string>
     <bool name="default_check_duration_between_shifts">true</bool>
     <string name="key_check_long_days_per_week" translatable="false">key_check_long_days_per_week</string>
-    <string name="check_long_days_per_week_title">Long days per week</string>
     <bool name="default_check_long_days_per_week">true</bool>
 
     <string name="key_check_consecutive_days" translatable="false">key_check_consecutive_days</string>
-    <string name="check_consecutive_days_title">Consecutive days</string>
     <bool name="default_check_consecutive_days">true</bool>
 
-    <string name="key_check_frequency_of_weekends" translatable="false">key_check_frequency_of_weekends</string>
-    <string name="check_frequency_of_weekends_title">Check frequency of weekends</string>
-    <bool name="default_check_frequency_of_weekends">true</bool>
+    <string name="key_check_consecutive_weekends" translatable="false">key_check_consecutive_weekends</string>
+    <bool name="default_check_consecutive_weekends">true</bool>
 
-    <string name="key_allow_1_in_2_weekends" translatable="false">key_allow_1_in_2_weekends</string>
-    <string name="allow_1_in_2_weekends_title">Allow 1 in 2 weekends</string>
-    <bool name="default_allow_1_in_2_weekends">true</bool>
+    <string name="key_check_consecutive_nights" translatable="false">key_check_consecutive_nights_worked</string>
+    <bool name="default_check_consecutive_nights">true</bool>
 
-    <string name="key_check_consecutive_nights_worked" translatable="false">key_check_consecutive_nights_worked</string>
-    <string name="check_consecutive_nights_worked_title">Consecutive nights</string>
-    <bool name="default_check_consecutive_nights_worked">true</bool>
+    <string name="key_check_recovery_following_nights" translatable="false">key_check_recovery_following_nights</string>
+    <bool name="default_check_recovery_following_nights">true</bool>
 
-    <string name="key_check_recovery_days_following_nights" translatable="false">key_check_recovery_days_following_nights</string>
-    <string name="check_recovery_days_following_nights_title">Recovery following nights</string>
-    <bool name="default_check_recovery_days_following_nights">true</bool>
+    <string name="key_check_rostered_days_off" translatable="false">key_check_rostered_days_off</string>
+    <bool name="default_check_rostered_days_off">true</bool>
 
-    <string name="schedule_ten">Schedule Ten</string>
+    <string name="key_1_in_3_weekends" translatable="false">key_1_in_3_weekends</string>
+    <string name="_1_in_3_weekends_title">1 in 3 weekends</string>
+    <bool name="default_1_in_3_weekends">false</bool>
 
     <string name="key_safer_rosters" translatable="false">key_safer_rosters</string>
-    <string name="safer_rosters_title">Safer Rosters</string>
+    <string name="safer_rosters_title">Safer Rosters (Schedule Ten)</string>
     <bool name="default_safer_rosters">false</bool>
 
     <string name="key_allow_frequent_consecutive_weekends" translatable="false">key_allow_frequent_consecutive_weekends</string>
@@ -86,15 +81,12 @@
     <bool name="default_allow_5_consecutive_nights">false</bool>
 
     <string name="key_allow_only_1_recovery_day_following_3_nights" translatable="false">key_allow_only_1_recovery_day_following_3_nights</string>
-    <string name="allow_only_1_recovery_day_following_3_nights_title">Allow only 1 recovery day following 3 consecutive nights</string>
+    <string name="allow_only_1_recovery_day_following_3_nights_title">Allow only 1 recovery day following 3 nights</string>
     <bool name="default_allow_only_1_recovery_day_following_3_nights">false</bool>
 
     <string name="key_allow_midweek_rostered_days_off" translatable="false">key_allow_midweek_rostered_days_off</string>
     <string name="allow_midweek_rostered_days_off_title">Allow midweek RDOs</string>
     <bool name="default_allow_midweek_rostered_days_off">false</bool>
 
-    <string name="key_check_rostered_days_off" translatable="false">key_check_rostered_days_off</string>
-    <string name="check_rostered_days_off_title">Check RDOs</string>
-    <bool name="default_check_rostered_days_off">false</bool>
 
 </resources>

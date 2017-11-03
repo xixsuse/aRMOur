@@ -15,18 +15,19 @@ final class RecoveryFollowingNightsBinder extends ComplianceDataBinder<Complianc
 
     @Override
     int getPrimaryIcon() {
-        return R.drawable.ic_recovery_days_following_nights;
+        return R.drawable.ic_recovery_following_nights;
     }
 
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.recovery_days_following_nights);
+        return context.getString(R.string.recovery_following_nights);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
-        return context.getString(R.string.n_days_following_n_nights, context.getResources().getQuantityString(R.plurals.days, getData().getRecoveryDays(), getData().getRecoveryDays()), context.getResources().getQuantityString(R.plurals.nights, getData().getConsecutiveNights(), getData().getConsecutiveNights()));
+        return context.getString(R.string.x_following_y, context.getResources().getQuantityString(R.plurals.days, getData().getRecoveryDays(), getData().getRecoveryDays()), context.getResources().getQuantityString(R.plurals.nights, getData().getConsecutiveNights(), getData().getConsecutiveNights()));
     }
 
     @NonNull

@@ -14,11 +14,11 @@ public final class ComplianceDataRecoveryFollowingNights extends ComplianceData 
     private final int consecutiveNights, recoveryDays;
     private final boolean saferRosters, lenient;
 
-    private ComplianceDataRecoveryFollowingNights(@NonNull Configuration configuration, @NonNull Shift.Data dayShift, @NonNull Shift.Data previousNightShift, int indexOfPreviousNightShift) {
-        super(configuration.checkRecoveryFollowingNights());
-        if (configuration instanceof ConfigurationSaferRosters) {
+    private ComplianceDataRecoveryFollowingNights(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data dayShift, @NonNull Shift.Data previousNightShift, int indexOfPreviousNightShift) {
+        super(complianceConfiguration.checkRecoveryFollowingNights());
+        if (complianceConfiguration instanceof ComplianceConfigurationSaferRosters) {
             saferRosters = true;
-            lenient = ((ConfigurationSaferRosters) configuration).allowOnly1RecoveryDayFollowing3Nights();
+            lenient = ((ComplianceConfigurationSaferRosters) complianceConfiguration).allowOnly1RecoveryDayFollowing3Nights();
         } else {
             saferRosters = lenient = false;
         }
@@ -28,12 +28,12 @@ public final class ComplianceDataRecoveryFollowingNights extends ComplianceData 
     }
 
     @Nullable
-    static ComplianceDataRecoveryFollowingNights from(@NonNull Configuration configuration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
+    static ComplianceDataRecoveryFollowingNights from(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data dayShift, @NonNull List<RosteredShift> previousShifts) {
         if (!previousShifts.isEmpty()) {
             RosteredShift previousShift = previousShifts.get(previousShifts.size() - 1);
-            ComplianceDataNight previousShiftConsecutiveNights = previousShift.getCompliance().getNight();
+            ComplianceDataConsecutiveNights previousShiftConsecutiveNights = previousShift.getCompliance().getConsecutiveNights();
             if (previousShiftConsecutiveNights != null) {
-                return new ComplianceDataRecoveryFollowingNights(configuration, dayShift, previousShift.getShiftData(), previousShiftConsecutiveNights.getIndex());
+                return new ComplianceDataRecoveryFollowingNights(complianceConfiguration, dayShift, previousShift.getShiftData(), previousShiftConsecutiveNights.getIndex());
             }
         }
         return null;

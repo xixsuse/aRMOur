@@ -20,9 +20,10 @@ final class ConsecutiveDaysBinder extends ComplianceDataBinder<ComplianceDataCon
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.number_of_consecutive_days_worked);
+        return context.getString(R.string.consecutive_days);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         int days = getData().getIndex() + 1;

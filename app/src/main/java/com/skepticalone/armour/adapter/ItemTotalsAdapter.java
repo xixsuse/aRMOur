@@ -1,7 +1,9 @@
 package com.skepticalone.armour.adapter;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.ViewGroup;
 
@@ -12,10 +14,13 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<FinalItem> extends GuidedObservableAdapter<List<FinalItem>> {
+public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<List<FinalItem>> {
 
     @StringRes
     private final int totalItemsTitle;
+
+    @Nullable
+    private List<FinalItem> mItems;
 
     ItemTotalsAdapter(@NonNull Context context, @StringRes int totalItemsTitle) {
         super(context);
@@ -23,17 +28,26 @@ public abstract class ItemTotalsAdapter<FinalItem> extends GuidedObservableAdapt
     }
 
     @Override
-    final void notifyUpdated(@NonNull List<FinalItem> oldData, @NonNull List<FinalItem> newData) {
-        notifyItemRangeChanged(0, getFixedRowCount());
+    @CallSuper
+    public void onChanged(@Nullable List<FinalItem> newItems) {
+        if (mItems != null && newItems != null) {
+            notifyItemRangeChanged(0, getFixedRowCount());
+        } else if (newItems != null) {
+            notifyItemRangeInserted(0, getFixedRowCount());
+        } else if (mItems != null) {
+            notifyItemRangeRemoved(0, getFixedRowCount());
+        }
+        mItems = newItems;
     }
 
     @Override
-    final int getRowCount(@NonNull List<FinalItem> finalItems) {
-        return getFixedRowCount();
+    public final int getItemCount() {
+        return mItems == null ? 0 : getFixedRowCount();
     }
 
     abstract int getFixedRowCount();
 
+    @StringRes
     final int getTotalItemsTitle() {
         return totalItemsTitle;
     }
@@ -65,5 +79,13 @@ public abstract class ItemTotalsAdapter<FinalItem> extends GuidedObservableAdapt
         viewHolder.hideSecondaryIcon();
         return viewHolder;
     }
+
+    @Override
+    public final void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        //noinspection ConstantConditions
+        onBindViewHolder(mItems, position, holder);
+    }
+
+    abstract void onBindViewHolder(@NonNull List<FinalItem> items, int position, @NonNull ItemViewHolder holder);
 
 }

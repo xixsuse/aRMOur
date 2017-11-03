@@ -4,16 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.ComplianceDataWeekend;
+import com.skepticalone.armour.data.model.ComplianceDataConsecutiveWeekends;
 import com.skepticalone.armour.util.AppConstants;
 import com.skepticalone.armour.util.DateTimeUtils;
 
 import org.threeten.bp.LocalDate;
 
-final class WeekendBinder extends ComplianceDataBinder<ComplianceDataWeekend> {
+final class ConsecutiveWeekendsBinder extends ComplianceDataBinder<ComplianceDataConsecutiveWeekends> {
 
-    WeekendBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataWeekend complianceDataWeekend) {
-        super(callbacks, complianceDataWeekend);
+    ConsecutiveWeekendsBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataConsecutiveWeekends complianceDataConsecutiveWeekends) {
+        super(callbacks, complianceDataConsecutiveWeekends);
     }
 
     @Override
@@ -24,23 +24,30 @@ final class WeekendBinder extends ComplianceDataBinder<ComplianceDataWeekend> {
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.weekend_frequency);
+        return context.getString(R.string.consecutive_weekends);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
-        return context.getString(R.string.n_weekends_worked_in_last_n_weeks, context.getResources().getQuantityString(R.plurals.weekends, getData().getWeekendsWorkedInPeriod().size(), getData().getWeekendsWorkedInPeriod().size()), context.getResources().getQuantityString(R.plurals.weeks, getData().getPeriodInWeeks(), getData().getPeriodInWeeks()));
+        return context.getString(R.string.x_worked_in_last_y, context.getResources().getQuantityString(R.plurals.weekends, getData().getWeekendsWorkedInPeriod().size(), getData().getWeekendsWorkedInPeriod().size()), context.getResources().getQuantityString(R.plurals.weeks, getData().getPeriodInWeeks(), getData().getPeriodInWeeks()));
     }
 
     @Override
     String getThirdLine(@NonNull Context context) {
         StringBuilder stringBuilder = new StringBuilder();
+        LocalDate previousWeekendWorked = null;
         for (LocalDate weekend : getData().getWeekendsWorkedInPeriod()) {
-            if (stringBuilder.length() != 0) stringBuilder.append('\n');
-            stringBuilder.append(DateTimeUtils.getWeekendDateSpanString(weekend));
-        }
-        if (getData().includesConsecutiveWeekends()) {
-            stringBuilder.append('\n').append(context.getString(R.string.includes_consecutive_weekends));
+            if (previousWeekendWorked != null) {
+                stringBuilder.append('\n');
+            }
+            String weekendDateSpan = DateTimeUtils.getWeekendDateSpanString(weekend);
+            if (previousWeekendWorked != null && previousWeekendWorked.plusWeeks(1).isEqual(weekend)) {
+                stringBuilder.append(context.getString(R.string.consecutive, weekendDateSpan));
+            } else {
+                stringBuilder.append(weekendDateSpan);
+            }
+            previousWeekendWorked = weekend;
         }
         return stringBuilder.toString();
     }
@@ -55,17 +62,16 @@ final class WeekendBinder extends ComplianceDataBinder<ComplianceDataWeekend> {
                         getData().getPeriodInWeeks(),
                         getData().getPeriodInWeeks() - 2
                 ) : context.getString(
-                getData().getPeriodInWeeks() == AppConstants.MAXIMUM_CONSECUTIVE_WEEKEND_FREQUENCY_PERIOD_IN_WEEKS_LENIENT ?
+                getData().getPeriodInWeeks() == AppConstants.CONSECUTIVE_WEEKEND_LENIENT_PERIOD_IN_WEEKS ?
                         R.string.meca_consecutive_weekends :
                         R.string.meca_1_in_3_weekends
         );
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull ComplianceDataWeekend A, @NonNull ComplianceDataWeekend B) {
+    boolean areContentsTheSame(@NonNull ComplianceDataConsecutiveWeekends A, @NonNull ComplianceDataConsecutiveWeekends B) {
         return
                 A.getPeriodInWeeks() == B.getPeriodInWeeks() &&
-                        A.includesConsecutiveWeekends() == B.includesConsecutiveWeekends() &&
                         A.saferRosters() == B.saferRosters() &&
                         A.getWeekendsWorkedInPeriod().equals(B.getWeekendsWorkedInPeriod());
     }

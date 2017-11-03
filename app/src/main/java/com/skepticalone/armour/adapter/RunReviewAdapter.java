@@ -42,7 +42,7 @@ public final class RunReviewAdapter extends ItemTotalsAdapter<RosteredShift> {
     }
 
     @Override
-    void onChanged(@Nullable List<RosteredShift> oldRosteredShifts, @Nullable List<RosteredShift> newRosteredShifts) {
+    public void onChanged(@Nullable List<RosteredShift> newRosteredShifts) {
         if (newRosteredShifts != null) {
             logged = 0;
             start = end = null;
@@ -67,7 +67,7 @@ public final class RunReviewAdapter extends ItemTotalsAdapter<RosteredShift> {
                 hoursPerWeek = BigDecimal.valueOf(loggedDuration.getSeconds()).divide(BigDecimal.valueOf(3600L * weeks), 1, BigDecimal.ROUND_DOWN);
             }
         }
-        super.onChanged(oldRosteredShifts, newRosteredShifts);
+        super.onChanged(newRosteredShifts);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public abstract class RosteredShiftTest {
 
-    final static MockConfiguration NONE_COMPLIANT = new MockConfiguration();
+    final static MockComplianceConfiguration NONE_COMPLIANT = new MockComplianceConfiguration();
 
     @NonNull
     final SortedSet<ShiftSpec> shiftSpecs = new TreeSet<>();
@@ -22,7 +22,7 @@ public abstract class RosteredShiftTest {
     }
 
     @NonNull
-    final List<RosteredShift> getRosteredShifts(@NonNull Configuration complianceConfig) {
+    final List<RosteredShift> getRosteredShifts(@NonNull ComplianceConfiguration complianceConfig) {
         List<RosteredShift> shifts = new ArrayList<>();
         for (ShiftSpec spec : shiftSpecs) {
             shifts.add(spec.toTestShift(

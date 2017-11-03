@@ -4,12 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.skepticalone.armour.R;
-import com.skepticalone.armour.data.model.ComplianceDataNight;
+import com.skepticalone.armour.data.model.ComplianceDataConsecutiveNights;
 
-final class NightBinder extends ComplianceDataBinder<ComplianceDataNight> {
+final class ConsecutiveNightsBinder extends ComplianceDataBinder<ComplianceDataConsecutiveNights> {
 
-    NightBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataNight complianceDataNight) {
-        super(callbacks, complianceDataNight);
+    ConsecutiveNightsBinder(@NonNull Callbacks callbacks, @NonNull ComplianceDataConsecutiveNights complianceDataConsecutiveNights) {
+        super(callbacks, complianceDataConsecutiveNights);
     }
 
     @Override
@@ -20,9 +20,10 @@ final class NightBinder extends ComplianceDataBinder<ComplianceDataNight> {
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.number_of_consecutive_nights_worked);
+        return context.getString(R.string.consecutive_nights);
     }
 
+    @NonNull
     @Override
     String getSecondLine(@NonNull Context context) {
         int nights = getData().getIndex() + 1;
@@ -36,7 +37,7 @@ final class NightBinder extends ComplianceDataBinder<ComplianceDataNight> {
     }
 
     @Override
-    boolean areContentsTheSame(@NonNull ComplianceDataNight A, @NonNull ComplianceDataNight B) {
+    boolean areContentsTheSame(@NonNull ComplianceDataConsecutiveNights A, @NonNull ComplianceDataConsecutiveNights B) {
         return A.getIndex() == B.getIndex() && A.getMaximumConsecutiveNights() == B.getMaximumConsecutiveNights();
     }
 

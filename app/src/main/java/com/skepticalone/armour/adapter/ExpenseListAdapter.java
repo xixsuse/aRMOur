@@ -40,7 +40,7 @@ public final class ExpenseListAdapter extends ItemListAdapter<Expense> {
     @NonNull
     @Override
     String getSecondLine(@NonNull Expense expense) {
-        return getPaymentString(expense.getTotalPayment());
+        return getContext().getString(R.string.payment_format, expense.getTotalPayment());
     }
 
 }

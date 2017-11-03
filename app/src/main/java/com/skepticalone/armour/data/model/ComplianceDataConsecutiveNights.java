@@ -10,13 +10,13 @@ import org.threeten.bp.LocalTime;
 
 import java.util.List;
 
-public final class ComplianceDataNight extends ComplianceDataIndex {
+public final class ComplianceDataConsecutiveNights extends ComplianceDataIndex {
 
     private static final LocalTime EARLIEST_DAY_SHIFT_START = LocalTime.of(6, 0);
 
     private final int maximumConsecutiveNights;
 
-    private ComplianceDataNight(boolean isChecked, int indexOfNightShift, int maximumConsecutiveNights) {
+    private ComplianceDataConsecutiveNights(boolean isChecked, int indexOfNightShift, int maximumConsecutiveNights) {
         super(isChecked, indexOfNightShift);
         this.maximumConsecutiveNights = maximumConsecutiveNights;
     }
@@ -24,7 +24,7 @@ public final class ComplianceDataNight extends ComplianceDataIndex {
     private static int calculateIndexOfNightShift(@NonNull Shift.Data nightShift, @NonNull List<RosteredShift> previousShifts) {
         if (!previousShifts.isEmpty()) {
             RosteredShift previousShift = previousShifts.get(previousShifts.size() - 1);
-            ComplianceDataNight previousShiftNights = previousShift.getCompliance().getNight();
+            ComplianceDataConsecutiveNights previousShiftNights = previousShift.getCompliance().getConsecutiveNights();
             if (previousShiftNights != null) {
                 LocalDate thisNightShiftDate = nightShift.getEnd().toLocalDate(), previousNightShiftDate = previousShift.getShiftData().getEnd().toLocalDate();
                 if (thisNightShiftDate.equals(previousNightShiftDate)) {
@@ -37,8 +37,8 @@ public final class ComplianceDataNight extends ComplianceDataIndex {
         return 0;
     }
 
-    private static int calculateMaximumConsecutiveNights(@NonNull Configuration configuration) {
-        return configuration instanceof ConfigurationSaferRosters ? ((ConfigurationSaferRosters) configuration).allow5ConsecutiveNights() ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT : AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS;
+    private static int calculateMaximumConsecutiveNights(@NonNull ComplianceConfiguration complianceConfiguration) {
+        return complianceConfiguration instanceof ComplianceConfigurationSaferRosters ? ((ComplianceConfigurationSaferRosters) complianceConfiguration).allow5ConsecutiveNights() ? AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_LENIENT : AppConstants.SAFER_ROSTERS_MAXIMUM_CONSECUTIVE_NIGHTS_STRICT : AppConstants.MAXIMUM_CONSECUTIVE_NIGHTS;
     }
 
     private static boolean calculateIsNightShift(Shift.Data shift) {
@@ -46,10 +46,10 @@ public final class ComplianceDataNight extends ComplianceDataIndex {
     }
 
     @Nullable
-    static ComplianceDataNight from(@NonNull Configuration configuration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
-        return calculateIsNightShift(shift) ? new ComplianceDataNight(
-                configuration.checkConsecutiveNightsWorked(),
-                calculateIndexOfNightShift(shift, previousShifts), calculateMaximumConsecutiveNights(configuration)
+    static ComplianceDataConsecutiveNights from(@NonNull ComplianceConfiguration complianceConfiguration, @NonNull Shift.Data shift, @NonNull List<RosteredShift> previousShifts) {
+        return calculateIsNightShift(shift) ? new ComplianceDataConsecutiveNights(
+                complianceConfiguration.checkConsecutiveNights(),
+                calculateIndexOfNightShift(shift, previousShifts), calculateMaximumConsecutiveNights(complianceConfiguration)
         ) : null;
     }
 

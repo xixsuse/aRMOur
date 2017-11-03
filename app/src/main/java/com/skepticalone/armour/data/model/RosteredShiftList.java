@@ -14,14 +14,14 @@ import java.util.List;
 public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, RosteredShift> {
 
     @NonNull
-    private final LiveData<Configuration> liveComplianceConfig;
+    private final LiveData<ComplianceConfiguration> liveComplianceConfig;
 
     public RosteredShiftList(@NonNull Context context, @NonNull LiveData<List<RosteredShiftEntity>> liveRawRosteredShifts) {
         super(context, liveRawRosteredShifts);
-        liveComplianceConfig = LiveComplianceConfig.getInstance(context);
-        addSource(liveComplianceConfig, new Observer<Configuration>() {
+        liveComplianceConfig = LiveComplianceConfiguration.getInstance(context);
+        addSource(liveComplianceConfig, new Observer<ComplianceConfiguration>() {
             @Override
-            public void onChanged(@Nullable Configuration complianceConfig) {
+            public void onChanged(@Nullable ComplianceConfiguration complianceConfig) {
                 onUpdated(liveRawItems.getValue(), liveTimeZone.getValue(), liveShiftConfig.getValue(), complianceConfig);
             }
         });
@@ -32,14 +32,14 @@ public final class RosteredShiftList extends ShiftList<RosteredShiftEntity, Rost
         onUpdated(rawRosteredShifts, timeZone, shiftConfig, liveComplianceConfig.getValue());
     }
 
-    private void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable Configuration complianceConfig) {
+    private void onUpdated(@Nullable List<RosteredShiftEntity> rawRosteredShifts, @Nullable ZoneId timeZone, @Nullable Shift.ShiftType.Configuration shiftConfig, @Nullable ComplianceConfiguration complianceConfig) {
         if (rawRosteredShifts != null && timeZone != null && shiftConfig != null && complianceConfig != null) {
             List<RosteredShift> rosteredShifts = new ArrayList<>(rawRosteredShifts.size());
             for (RosteredShiftEntity rawRosteredShift : rawRosteredShifts) {
                 rosteredShifts.add(new RosteredShift(rawRosteredShift, timeZone, shiftConfig, rosteredShifts, complianceConfig));
             }
-            if (complianceConfig instanceof ConfigurationSaferRosters) {
-                RosteredDayOff.process(rosteredShifts, (ConfigurationSaferRosters) complianceConfig);
+            if (complianceConfig instanceof ComplianceConfigurationSaferRosters) {
+                RosteredDayOff.process(rosteredShifts, (ComplianceConfigurationSaferRosters) complianceConfig);
             }
             setValue(rosteredShifts);
         }

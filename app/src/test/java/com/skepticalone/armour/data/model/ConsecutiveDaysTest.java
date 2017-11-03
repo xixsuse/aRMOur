@@ -36,7 +36,7 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckConsecutiveDays(true));
         for (int i = 0; i < rosteredShifts.size(); i++) {
             Compliance compliance = rosteredShifts.get(i).getCompliance();
-            assertNull(compliance.getNight());
+            assertNull(compliance.getConsecutiveNights());
             assertEquals(i, compliance.getConsecutiveDays().getIndex());
             assertTrue(compliance.getConsecutiveDays().isCompliant());
             assertTrue(compliance.isCompliant());
@@ -44,7 +44,7 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         assertTrue(shiftSpecs.add(new ShiftSpec(12, 8, 0, 16, 30)));
         rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckConsecutiveDays(true));
         Compliance compliance = rosteredShifts.get(12).getCompliance();
-        assertNull(compliance.getNight());
+        assertNull(compliance.getConsecutiveNights());
         assertEquals(12, compliance.getConsecutiveDays().getIndex());
         assertFalse(compliance.getConsecutiveDays().isCompliant());
         assertFalse(compliance.isCompliant());
@@ -67,11 +67,11 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckConsecutiveDays(true));
         assertEquals(0, rosteredShifts.get(0).getCompliance().getConsecutiveDays().getIndex());
         assertEquals(1, rosteredShifts.get(1).getCompliance().getConsecutiveDays().getIndex());
-        assertNull(rosteredShifts.get(1).getCompliance().getLongDay());
+        assertNull(rosteredShifts.get(1).getCompliance().getLongDaysPerWeek());
         assertEquals(2, rosteredShifts.get(2).getCompliance().getConsecutiveDays().getIndex());
-        assertNotNull(rosteredShifts.get(2).getCompliance().getLongDay());
+        assertNotNull(rosteredShifts.get(2).getCompliance().getLongDaysPerWeek());
         assertEquals(3, rosteredShifts.get(3).getCompliance().getConsecutiveDays().getIndex());
-        assertNull(rosteredShifts.get(3).getCompliance().getLongDay());
+        assertNull(rosteredShifts.get(3).getCompliance().getLongDaysPerWeek());
         assertEquals(4, rosteredShifts.get(4).getCompliance().getConsecutiveDays().getIndex());
     }
 
@@ -93,7 +93,7 @@ public class ConsecutiveDaysTest extends RosteredShiftTest {
         List<RosteredShift> rosteredShifts = getRosteredShifts(NONE_COMPLIANT.withCheckConsecutiveDays(true));
         assertEquals(0, rosteredShifts.get(0).getCompliance().getConsecutiveDays().getIndex());
         assertEquals(1, rosteredShifts.get(1).getCompliance().getConsecutiveDays().getIndex());
-        assertNotNull(rosteredShifts.get(2).getCompliance().getNight());
+        assertNotNull(rosteredShifts.get(2).getCompliance().getConsecutiveNights());
         assertNull(rosteredShifts.get(2).getCompliance().getConsecutiveDays());
         assertEquals(0, rosteredShifts.get(3).getCompliance().getConsecutiveDays().getIndex());
         assertEquals(1, rosteredShifts.get(4).getCompliance().getConsecutiveDays().getIndex());

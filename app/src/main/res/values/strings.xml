@@ -62,21 +62,22 @@
     <string name="logged_format">%1$s\nLogged: %2$s</string>
     <string name="hourly_rate">Hourly rate</string>
     <string name="default_hourly_rate">Default hourly rate</string>
-    <string name="number_of_long_days_in_week">Number of long days in week</string>
-    <string name="number_of_consecutive_days_worked">Number of consecutive days worked</string>
-    <string name="number_of_consecutive_nights_worked">Number of consecutive nights worked</string>
-    <string name="recovery_days_following_nights">Recovery days following nights</string>
-    <string name="n_days_following_n_nights">%s following %s</string>
-    <string name="n_weekends_worked_in_last_n_weeks">%s worked in last %s</string>
-    <string name="includes_consecutive_weekends">(includes consecutive weekends)</string>
+    <string name="long_days_per_week">Long days per week</string>
+    <string name="consecutive_days">Consecutive days</string>
+    <string name="consecutive_weekends">Consecutive weekends</string>
+    <string name="consecutive_nights">Consecutive nights</string>
+    <string name="rostered_days_off">Rostered days off</string>
+    <string name="recovery_following_nights">Recovery following nights</string>
+    <string name="x_following_y">%1$s following %2$s</string>
+    <string name="x_worked_in_last_y">%1$s worked in last %2$s</string>
+    <string name="consecutive">%s (consecutive)</string>
     <string name="recovery_days_only_required_following_n_nights">Recovery days only required following %s</string>
     <string name="duration_in_hours_and_minutes">%1$s, %2$s</string>
     <string name="title">Title</string>
     <string name="payment">Payment</string>
     <string name="total_payment">Total payment</string>
-    <string name="default_cross_cover_payment">Default cross cover payment</string>
+    <string name="default_cross_cover_payment">Default cross cover total payment</string>
     <string name="currency_input_hint">Enter value ($)</string>
-    <string name="compliance_checks">Compliance checks</string>
     <string name="compliant">Compliant</string>
     <string name="non_compliant">Non-compliant</string>
     <string name="unclaimed">Unclaimed</string>
@@ -92,7 +93,6 @@
     <string name="duration_worked_over_day">Duration worked over day</string>
     <string name="duration_worked_over_week">Duration worked over week</string>
     <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
-    <string name="weekend_frequency">Weekend frequency</string>
     <string name="rostered_day_off">Rostered day off</string>
     <string name="no_rostered_day_off_found">No rostered day off found</string>
     <string name="invalid_format">Invalid format</string>
@@ -101,7 +101,7 @@
     <string name="overlapping_shifts">Overlapping shifts</string>
     <string name="meca_maximum_consecutive_nights" tools:ignore="PluralsCandidate">No more than %d consecutive night duties comprising no longer than 10 hours shall be rostered</string>
     <string name="meca_maximum_hours_over_day" tools:ignore="PluralsCandidate">(13.1) RMOs shall not be required to work more than %d hours in any day.</string>
-    <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is rostered on duty in excess of %d hours in any seven day period then a penalty payment of $550 shall apply for that period.</string>
+    <string name="meca_maximum_hours_over_week" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is rostered on duty in excess of %d hours in any seven day period then a penalty total payment of $550 shall apply for that period.</string>
     <string name="meca_maximum_hours_over_fortnight" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is required to work in excess of %d hours in a period of 14 consecutive days the employer shall pay a penalty of $1000 to the employee.</string>
     <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
     <string name="meca_minimum_recovery_after_consecutive_nights" tools:ignore="PluralsCandidate">(13.4.7) As a minimum provision, a minimum break comprising the balance of the calendar day upon which the employee ceased the last night duty plus a further %1$d calendar days must be provided immediately following a period of %2$d night duties or more.</string>
@@ -112,7 +112,7 @@
     <string name="meca_safer_rosters_maximum_consecutive_days" tools:ignore="PluralsCandidate">No employee shall be required to work more than %d consecutive days.</string>
     <string name="meca_safer_rosters_minimum_recovery_after_more_consecutive_nights" tools:ignore="PluralsCandidate">Following %1$d or more consecutive rostered night duties, a minimum break comprising the balance of the calendar day upon which the employee ceased the last night duty plus a further %2$d calendar days must be provided.</string>
     <string name="meca_safer_rosters_minimum_recovery_after_fewer_consecutive_nights" tools:ignore="PluralsCandidate">Following %1$d consecutive rostered night duties, a minimum break comprising the balance of the calendar day upon which the employee ceased the last night duty plus at least a further %2$d calendar day must be provided.</string>
-    <string name="meca_safer_rosters_maximum_consecutive_weekends" tools:ignore="PluralsCandidate">%1$d weekends can be rostered to work in a row but no more than once every %2$d consecutive weeks. The remaining %3$d weekends must be completely free from duties.</string>
+    <string name="meca_safer_rosters_maximum_consecutive_weekends" tools:ignore="PluralsCandidate">%1$d weekends can be rostered to work in a row but no more than once every %2$d weeks. The remaining %3$d weekends must be completely free from duties.</string>
     <string name="meca_safer_rosters_rostered_day_off_strict">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. These weekday RDO(s) must be attached to a weekend RDO(s).</string>
     <string name="meca_safer_rosters_rostered_day_off_lenient">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. Where attaching RDOs to a weekend RDO is not possible, 2 consecutive RDOs may fall during the week.</string>
     <plurals name="weeks">

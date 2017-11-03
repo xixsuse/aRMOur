@@ -17,7 +17,7 @@ abstract class ShiftList<Entity, FinalItem> extends ItemList<Entity, FinalItem> 
 
     ShiftList(@NonNull Context context, @NonNull LiveData<List<Entity>> liveRawShifts) {
         super(context, liveRawShifts);
-        liveShiftConfig = Shift.ShiftType.LiveShiftConfig.getInstance(context);
+        liveShiftConfig = Shift.ShiftType.LiveShiftConfiguration.getInstance(context);
         addSource(liveShiftConfig, new Observer<Shift.ShiftType.Configuration>() {
             @Override
             public void onChanged(@Nullable Shift.ShiftType.Configuration shiftConfig) {

@@ -48,7 +48,7 @@ public final class AdditionalShiftDetailFragment
     }
 
     @Override
-    public void changeTime(boolean start) {
+    public void changeTime(boolean start, boolean logged) {
         showDialogFragment(AdditionalShiftTimeDialogFragment.newInstance(start));
     }
 

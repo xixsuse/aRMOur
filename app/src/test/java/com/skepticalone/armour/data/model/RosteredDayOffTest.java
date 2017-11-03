@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class RosteredDayOffTest extends RosteredShiftTest {
 
-    private static final MockConfigurationSaferRosters CONFIGURATION_SAFER_ROSTERS = new MockConfiguration().toSaferRosters().withCheckRDOs(true);
+    private static final MockComplianceConfigurationSaferRosters CONFIGURATION_SAFER_ROSTERS = new MockComplianceConfiguration().toSaferRosters().withCheckRosteredDaysOff(true);
 
     @Test
     public void sanity() {
@@ -41,13 +41,13 @@ public class RosteredDayOffTest extends RosteredShiftTest {
 
     private void testDaysOff(boolean allowMidweekRDOs, @NonNull int[] dates, @NonNull int[] assignedWeekdayRDOsIndices, @NonNull int[] weekdayRDOs) {
         shiftSpecs.clear();
-        String message = "testDaysOff() called with: allowMidweekRDOs = [" + allowMidweekRDOs + "], dates = [" + Arrays.toString(dates) + "], assignedWeekdayRDOsIndex = [" + Arrays.toString(assignedWeekdayRDOsIndices) + "], weekdayRDOs = [" + Arrays.toString(weekdayRDOs) + "]";
+        String message = "testDaysOff() called with: allowMidweekRosteredDaysOff = [" + allowMidweekRDOs + "], dates = [" + Arrays.toString(dates) + "], assignedWeekdayRDOsIndex = [" + Arrays.toString(assignedWeekdayRDOsIndices) + "], weekdayRDOs = [" + Arrays.toString(weekdayRDOs) + "]";
         assertEquals(message, assignedWeekdayRDOsIndices.length, weekdayRDOs.length);
         for (int daysAfterStart : dates
                 ) {
             shiftSpecs.add(new ShiftSpec(daysAfterStart, 8, 0, 16, 0));
         }
-        MockConfigurationSaferRosters configuration = CONFIGURATION_SAFER_ROSTERS.withAllowMidweekRDOs(allowMidweekRDOs);
+        MockComplianceConfigurationSaferRosters configuration = CONFIGURATION_SAFER_ROSTERS.withAllowMidweekRosteredDaysOff(allowMidweekRDOs);
         List<RosteredShift> rosteredShifts = getRosteredShifts(configuration);
         RosteredDayOff.process(rosteredShifts, configuration);
         for (int assignedWeekdayRdoIndex : assignedWeekdayRDOsIndices) {
@@ -61,7 +61,7 @@ public class RosteredDayOffTest extends RosteredShiftTest {
                 if (shiftIndex == assignedWeekdayRDOsIndices[assignedWeekdayRdoIndex]) {
                     shouldHaveAssignedRDO = true;
                     assertTrue(message, shift.getShiftData().getStart().getDayOfWeek() == DayOfWeek.SATURDAY || shift.getShiftData().getStart().getDayOfWeek() == DayOfWeek.SUNDAY);
-                    assertNotNull(compliance.getWeekend());
+                    assertNotNull(compliance.getConsecutiveWeekends());
                     LocalDate rosteredDayOff = ShiftSpec.START_DATE.plusDays(weekdayRDOs[assignedWeekdayRdoIndex]);
                     assertNotNull(compliance.getRosteredDayOff());
                     assertNotNull(compliance.getRosteredDayOff().getDate());
@@ -69,7 +69,7 @@ public class RosteredDayOffTest extends RosteredShiftTest {
                 }
             }
             if (!shouldHaveAssignedRDO) {
-                if (compliance.getWeekend() != null) {
+                if (compliance.getConsecutiveWeekends() != null) {
                     assertNotNull(compliance.getRosteredDayOff());
                     assertNull(compliance.getRosteredDayOff().getDate());
                 } else {

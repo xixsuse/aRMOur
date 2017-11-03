@@ -15,7 +15,7 @@ import android.util.Pair;
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.settings.TimePreference;
 import com.skepticalone.armour.util.DateTimeUtils;
-import com.skepticalone.armour.util.LiveConfig;
+import com.skepticalone.armour.util.LiveConfiguration;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -189,10 +189,10 @@ public abstract class Shift extends Item {
 
         }
 
-        public static final class LiveShiftConfig extends LiveConfig<Configuration> {
+        public static final class LiveShiftConfiguration extends LiveConfiguration<Configuration> {
 
             @Nullable
-            private static LiveShiftConfig INSTANCE;
+            private static LiveShiftConfiguration INSTANCE;
 
             @NonNull
             private final String
@@ -214,7 +214,7 @@ public abstract class Shift extends Item {
             @NonNull
             private final String[] watchKeys;
 
-            private LiveShiftConfig(@NonNull Resources resources) {
+            private LiveShiftConfiguration(@NonNull Resources resources) {
                 keyNormalDayStart = resources.getString(R.string.key_start_normal_day);
                 keyNormalDayEnd = resources.getString(R.string.key_end_normal_day);
                 keyLongDayStart = resources.getString(R.string.key_start_long_day);
@@ -238,11 +238,11 @@ public abstract class Shift extends Item {
             }
 
             @NonNull
-            public static LiveShiftConfig getInstance(@NonNull Context context) {
+            public static LiveShiftConfiguration getInstance(@NonNull Context context) {
                 if (INSTANCE == null) {
-                    synchronized (LiveShiftConfig.class) {
+                    synchronized (LiveShiftConfiguration.class) {
                         if (INSTANCE == null) {
-                            INSTANCE = new LiveShiftConfig(context.getResources());
+                            INSTANCE = new LiveShiftConfiguration(context.getResources());
                             INSTANCE.init(context);
                         }
                     }
