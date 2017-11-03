@@ -121,7 +121,7 @@
         <SwitchPreference
             android:defaultValue="@bool/default_allow_midweek_rostered_days_off"
             android:dependency="@string/key_safer_rosters"
-            android:icon="@drawable/ic_weekend_black_24dp"
+            android:icon="@drawable/ic_rostered_days_off_black_24dp"
             android:key="@string/key_allow_midweek_rostered_days_off"
             android:title="@string/allow_midweek_rostered_days_off_title" />
     </PreferenceCategory>
@@ -135,17 +135,17 @@
             android:defaultValue="@bool/default_check_duration_over_day"
             android:icon="@drawable/ic_duration_black_24dp"
             android:key="@string/key_check_duration_over_day"
-            android:title="@string/duration_worked_over_day" />
+            android:title="@string/duration_over_day" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_duration_over_week"
             android:icon="@drawable/ic_week_black_24dp"
             android:key="@string/key_check_duration_over_week"
-            android:title="@string/duration_worked_over_week" />
+            android:title="@string/duration_over_week" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_duration_over_fortnight"
             android:icon="@drawable/ic_weeks_black_24dp"
             android:key="@string/key_check_duration_over_fortnight"
-            android:title="@string/duration_worked_over_fortnight" />
+            android:title="@string/duration_over_fortnight" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_long_days_per_week"
             android:icon="@drawable/ic_long_day_black_24dp"
@@ -174,7 +174,7 @@
         <SwitchPreference
             android:defaultValue="@bool/default_check_rostered_days_off"
             android:dependency="@string/key_safer_rosters"
-            android:icon="@drawable/ic_weekend_black_24dp"
+            android:icon="@drawable/ic_rostered_days_off_black_24dp"
             android:key="@string/key_check_rostered_days_off"
             android:title="@string/rostered_days_off" />
     </PreferenceCategory>

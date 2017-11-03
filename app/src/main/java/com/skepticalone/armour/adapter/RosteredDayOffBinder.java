@@ -16,7 +16,7 @@ final class RosteredDayOffBinder extends ComplianceDataBinder<ComplianceDataRost
 
     @Override
     int getPrimaryIcon() {
-        return R.drawable.ic_safer_rosters_black_24dp;
+        return R.drawable.ic_rostered_days_off_black_24dp;
     }
 
     @NonNull

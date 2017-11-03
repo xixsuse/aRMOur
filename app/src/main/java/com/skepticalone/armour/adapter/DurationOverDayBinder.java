@@ -21,7 +21,7 @@ final class DurationOverDayBinder extends DurationBinder {
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.duration_worked_over_day);
+        return context.getString(R.string.duration_over_day);
     }
 
     @NonNull

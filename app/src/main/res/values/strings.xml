@@ -90,9 +90,9 @@
     <string name="miscellaneous">Miscellaneous</string>
     <string name="time_zone">Time zone</string>
     <string name="duration_between_shifts">Duration between shifts</string>
-    <string name="duration_worked_over_day">Duration worked over day</string>
-    <string name="duration_worked_over_week">Duration worked over week</string>
-    <string name="duration_worked_over_fortnight">Duration worked over fortnight</string>
+    <string name="duration_over_day">Duration over day</string>
+    <string name="duration_over_week">Duration over week</string>
+    <string name="duration_over_fortnight">Duration over fortnight</string>
     <string name="rostered_day_off">Rostered day off</string>
     <string name="no_rostered_day_off_found">No rostered day off found</string>
     <string name="invalid_format">Invalid format</string>

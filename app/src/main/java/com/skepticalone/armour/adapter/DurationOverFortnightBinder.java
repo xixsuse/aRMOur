@@ -21,7 +21,7 @@ final class DurationOverFortnightBinder extends DurationBinder {
     @NonNull
     @Override
     String getFirstLine(@NonNull Context context) {
-        return context.getString(R.string.duration_worked_over_fortnight);
+        return context.getString(R.string.duration_over_fortnight);
     }
 
     @NonNull
