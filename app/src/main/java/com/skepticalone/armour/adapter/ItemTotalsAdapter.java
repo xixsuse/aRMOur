@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -14,7 +15,7 @@ import org.threeten.bp.Duration;
 
 import java.util.List;
 
-public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<List<FinalItem>> {
+public abstract class ItemTotalsAdapter<FinalItem> extends ContextAdapter<ItemViewHolder> implements Observer<List<FinalItem>> {
 
     @StringRes
     private final int totalItemsTitle;
@@ -74,7 +75,7 @@ public abstract class ItemTotalsAdapter<FinalItem> extends ObservableAdapter<Lis
 
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        ItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        ItemViewHolder viewHolder = new ItemViewHolder(parent);
         viewHolder.setupPlain();
         viewHolder.hideSecondaryIcon();
         return viewHolder;

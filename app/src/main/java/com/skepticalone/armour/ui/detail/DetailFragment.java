@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.R;
 import com.skepticalone.armour.adapter.ItemDetailAdapter;
-import com.skepticalone.armour.adapter.ObservableAdapter;
 import com.skepticalone.armour.data.model.Item;
 import com.skepticalone.armour.ui.common.BaseFragment;
 import com.skepticalone.armour.ui.dialog.CommentDialogFragment;
@@ -41,7 +40,7 @@ public abstract class DetailFragment<Entity extends Item> extends BaseFragment<E
 
     @NonNull
     @Override
-    protected abstract ObservableAdapter<Entity> getAdapter();
+    protected abstract ItemDetailAdapter<Entity> getAdapter();
 
     @Override
     public final void onActivityCreated(@Nullable Bundle savedInstanceState) {

@@ -21,12 +21,16 @@ import com.skepticalone.armour.R;
 
 final class ItemViewHolder extends RecyclerView.ViewHolder {
 
+    @NonNull
     private final ImageView primaryIcon, secondaryIcon;
+    @NonNull
     private final SwitchCompat switchControl;
+    @NonNull
     private final TextView text;
+    @NonNull
     private final TextAppearanceSpan firstLineStyle, secondLineStyle, thirdLineStyle;
 
-    ItemViewHolder(ViewGroup parent) {
+    ItemViewHolder(@NonNull ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false));
         primaryIcon = itemView.findViewById(R.id.primary_icon);
         text = itemView.findViewById(R.id.text);

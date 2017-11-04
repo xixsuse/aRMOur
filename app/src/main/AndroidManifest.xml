@@ -24,6 +24,10 @@
             android:name="com.skepticalone.armour.ui.detail.DetailActivity"
             android:parentActivityName="com.skepticalone.armour.ui.common.MainActivity" />
         <activity
+            android:name="com.skepticalone.armour.help.HelpActivity"
+            android:label="@string/help"
+            android:parentActivityName="com.skepticalone.armour.ui.common.MainActivity" />
+        <activity
             android:name="com.skepticalone.armour.settings.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName="com.skepticalone.armour.ui.common.MainActivity" />

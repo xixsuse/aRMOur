@@ -1,5 +1,6 @@
 package com.skepticalone.armour.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -14,7 +15,7 @@ import com.skepticalone.armour.data.model.Item;
 
 import java.util.List;
 
-public abstract class ItemListAdapter<FinalItem extends Item> extends ObservableAdapter<List<FinalItem>> {
+public abstract class ItemListAdapter<FinalItem extends Item> extends ContextAdapter<ItemViewHolder> implements Observer<List<FinalItem>> {
 
     @NonNull
     private final Callbacks mCallbacks;
@@ -75,7 +76,7 @@ public abstract class ItemListAdapter<FinalItem extends Item> extends Observable
 
     @Override
     public final ItemViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        final ItemViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        final ItemViewHolder viewHolder = new ItemViewHolder(parent);
         viewHolder.setupPlain();
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

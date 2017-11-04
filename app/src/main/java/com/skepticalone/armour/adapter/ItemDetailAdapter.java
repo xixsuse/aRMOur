@@ -1,13 +1,15 @@
 package com.skepticalone.armour.adapter;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
+import android.view.ViewGroup;
 
 import java.util.List;
 
-public abstract class ItemDetailAdapter<FinalItem> extends ObservableAdapter<FinalItem> {
+public abstract class ItemDetailAdapter<FinalItem> extends ContextAdapter<ItemViewHolder> implements Observer<FinalItem> {
 
     @Nullable
     private List<ItemViewHolder.Binder> mList;
@@ -48,6 +50,11 @@ public abstract class ItemDetailAdapter<FinalItem> extends ObservableAdapter<Fin
 
         }, false).dispatchUpdatesTo(this);
         mList = newList;
+    }
+
+    @Override
+    public final ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ItemViewHolder(parent);
     }
 
     @Override

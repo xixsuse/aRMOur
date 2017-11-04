@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.help.HelpActivity;
 import com.skepticalone.armour.settings.SettingsActivity;
 import com.skepticalone.armour.ui.detail.DetailActivity;
 import com.skepticalone.armour.ui.detail.DetailFragment;
@@ -81,6 +82,9 @@ public final class MainActivity extends CoordinatorActivity
                 return true;
             case R.id.feedback:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+                return true;
+            case R.id.help:
+                startActivity(new Intent(this, HelpActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
