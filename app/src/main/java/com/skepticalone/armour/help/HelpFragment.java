@@ -11,16 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.adapter.HelpAdapter;
-
+import com.skepticalone.armour.ui.common.MainActivity;
 
 public final class HelpFragment extends Fragment {
+
+    public static HelpFragment newInstance(int itemType) {
+        Bundle args = new Bundle();
+        args.putInt(MainActivity.ITEM_TYPE, itemType);
+        HelpFragment fragment = new HelpFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = new RecyclerView(getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(new HelpAdapter(getActivity()));
+        recyclerView.setAdapter(HelpAdapter.newInstance(getActivity(), getArguments().getInt(MainActivity.ITEM_TYPE)));
         return recyclerView;
     }
 

@@ -25,7 +25,7 @@ import com.skepticalone.armour.ui.list.ListFragment;
 public final class MainActivity extends CoordinatorActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener, ListFragment.Callbacks {
 
-    private static final String ITEM_TYPE = "ITEM_TYPE";
+    public static final String ITEM_TYPE = "ITEM_TYPE", ITEM_ID = "ITEM_ID";
     private BottomNavigationView navigation;
     private FloatingActionButton mFabPrimary, mFabLongDay, mFabNightShift;
     private boolean mTwoPane;
@@ -39,8 +39,8 @@ public final class MainActivity extends CoordinatorActivity
     public void onClick(@IdRes int itemType, long itemId) {
         if (!mTwoPane) {
             Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.ITEM_TYPE, itemType);
-            intent.putExtra(DetailActivity.ITEM_ID, itemId);
+            intent.putExtra(ITEM_TYPE, itemType);
+            intent.putExtra(ITEM_ID, itemId);
             startActivity(intent);
         }
     }
@@ -84,7 +84,9 @@ public final class MainActivity extends CoordinatorActivity
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
                 return true;
             case R.id.help:
-                startActivity(new Intent(this, HelpActivity.class));
+                Intent intent = new Intent(this, HelpActivity.class);
+                intent.putExtra(ITEM_TYPE, navigation.getSelectedItemId());
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

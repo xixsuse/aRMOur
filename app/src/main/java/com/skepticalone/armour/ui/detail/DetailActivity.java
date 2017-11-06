@@ -11,14 +11,11 @@ import com.skepticalone.armour.data.viewModel.ExpenseViewModel;
 import com.skepticalone.armour.data.viewModel.ItemViewModel;
 import com.skepticalone.armour.data.viewModel.RosteredShiftViewModel;
 import com.skepticalone.armour.ui.common.CoordinatorActivity;
+import com.skepticalone.armour.ui.common.MainActivity;
 
 public final class DetailActivity extends CoordinatorActivity {
 
-    public static final String ITEM_TYPE = "ITEM_TYPE";
-    public static final String ITEM_ID = "ITEM_ID";
-    private static final int NO_ITEM_TYPE = 0;
     private static final String DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
-    private static final long NO_ID = -1L;
 
     @Override
     protected int getContentView() {
@@ -32,7 +29,7 @@ public final class DetailActivity extends CoordinatorActivity {
             finish();
             return;
         }
-        final int name, itemType = getIntent().getIntExtra(ITEM_TYPE, NO_ITEM_TYPE);
+        final int name, itemType = getIntent().getIntExtra(MainActivity.ITEM_TYPE, -1);
         final Class<? extends ItemViewModel> viewModelClass;
         switch (itemType) {
             case R.id.rostered:
@@ -55,7 +52,7 @@ public final class DetailActivity extends CoordinatorActivity {
                 throw new IllegalStateException();
         }
         setTitle(name);
-        ViewModelProviders.of(this).get(viewModelClass).setCurrentItemId(getIntent().getLongExtra(ITEM_ID, NO_ID));
+        ViewModelProviders.of(this).get(viewModelClass).setCurrentItemId(getIntent().getLongExtra(MainActivity.ITEM_ID, -1L));
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
