@@ -8,16 +8,20 @@
         android:id="@+id/title"
         style="@style/help_title"
         android:text="Compliance"
+        app:layout_constraintBottom_toTopOf="@+id/compliant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <ImageView
         android:id="@+id/compliant"
         style="@style/help_icon"
+        android:contentDescription="@string/compliant"
         android:src="@drawable/compliant_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/non_compliant"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         style="@style/help_label"
@@ -30,9 +34,11 @@
     <ImageView
         android:id="@+id/non_compliant"
         style="@style/help_icon"
+        android:contentDescription="@string/non_compliant"
         android:src="@drawable/non_compliant_red_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/help_description_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/compliant" />
+        app:layout_constraintTop_toBottomOf="@+id/compliant" />
 
     <TextView
         style="@style/help_label"
@@ -46,16 +52,18 @@
         android:id="@+id/help_description_1"
         style="@style/help_description"
         android:text="Click on a compliance check in a shift's detail view for more information on compliance criteria"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/non_compliant" />
+        app:layout_constraintTop_toBottomOf="@+id/non_compliant" />
 
     <TextView
+        android:id="@+id/textView2"
         style="@style/help_description"
         android:text="Compliance checks can be enabled or disabled in the settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/help_description_1" />
+        app:layout_constraintTop_toBottomOf="@+id/help_description_1" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Show totals"
-        app:layout_constraintBottom_toTopOf="@+id/totals"
+        app:layout_constraintBottom_toTopOf="@id/add_single"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        tools:text="Add shift" />
 
-    <ImageView
-        android:id="@+id/totals"
-        style="@style/help_menu_icon"
-        android:contentDescription="@string/totals"
-        android:src="@drawable/ic_sigma_white_24dp"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_single"
+        style="@style/help_fab_icon"
+        android:src="@drawable/ic_add_white_24dp"
         app:layout_constraintBottom_toTopOf="@id/help_description_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <TextView
-        android:id="@+id/totals_label"
+        android:id="@+id/add_single_label"
         style="@style/help_label"
-        android:text="Choose totals from the menu"
-        app:layout_constraintBottom_toBottomOf="@id/totals"
+        app:layout_constraintBottom_toBottomOf="@id/add_single"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/totals"
-        app:layout_constraintTop_toTopOf="@id/totals" />
+        app:layout_constraintStart_toEndOf="@id/add_single"
+        app:layout_constraintTop_toTopOf="@id/add_single"
+        tools:text="Add a cross cover shift" />
 
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Opens a summary view containing information for all shifts, which can be filtered by payment status"
+        android:text="New cross cover shifts begin on the weekday following the previous shift"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/totals" />
+        app:layout_constraintTop_toBottomOf="@id/add_single" />
 
 </android.support.constraint.ConstraintLayout>

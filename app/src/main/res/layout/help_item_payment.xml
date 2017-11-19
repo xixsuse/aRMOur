@@ -7,7 +7,8 @@
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Payment"
+        android:text="@string/payment"
+        app:layout_constraintBottom_toTopOf="@+id/unclaimed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -15,13 +16,15 @@
     <ImageView
         android:id="@+id/unclaimed"
         style="@style/help_icon"
+        android:contentDescription="@string/unclaimed"
         android:src="@drawable/unclaimed_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/claimed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         style="@style/help_label"
-        android:text="Unclaimed"
+        android:text="@string/unclaimed"
         app:layout_constraintBottom_toBottomOf="@id/unclaimed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/unclaimed"
@@ -30,13 +33,15 @@
     <ImageView
         android:id="@+id/claimed"
         style="@style/help_icon"
+        android:contentDescription="@string/claimed"
         android:src="@drawable/claimed_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/paid"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/unclaimed" />
+        app:layout_constraintTop_toBottomOf="@+id/unclaimed" />
 
     <TextView
         style="@style/help_label"
-        android:text="Claimed"
+        android:text="@string/claimed"
         app:layout_constraintBottom_toBottomOf="@id/claimed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/claimed"
@@ -45,24 +50,37 @@
     <ImageView
         android:id="@+id/paid"
         style="@style/help_icon"
+        android:contentDescription="@string/paid"
         android:src="@drawable/paid_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/help_description_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/claimed" />
+        app:layout_constraintTop_toBottomOf="@+id/claimed" />
 
     <TextView
         style="@style/help_label"
-        android:text="Paid"
+        android:text="@string/paid"
         app:layout_constraintBottom_toBottomOf="@id/paid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/paid"
         app:layout_constraintTop_toTopOf="@id/paid" />
 
     <TextView
+        android:id="@+id/help_description_1"
         style="@style/help_description"
         android:text="Toggle claimed or paid in the detail view to keep track of payments"
+        app:layout_constraintBottom_toTopOf="@id/help_description_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/paid" />
+
+    <TextView
+        android:id="@+id/help_description_2"
+        style="@style/help_description"
+        android:text="Expenses are sorted by payment status"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/paid" />
+        app:layout_constraintTop_toBottomOf="@id/help_description_1" />
 
 </android.support.constraint.ConstraintLayout>

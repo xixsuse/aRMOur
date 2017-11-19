@@ -9,8 +9,10 @@ import android.support.annotation.Nullable;
 
 import com.skepticalone.armour.data.db.Contract;
 
+import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 @Entity(tableName = Contract.CrossCoverShifts.TABLE_NAME, indices = {@Index(value = {Contract.CrossCoverShifts.COLUMN_NAME_DATE}, unique = true)})
 public final class CrossCoverEntity extends Item {
@@ -34,10 +36,10 @@ public final class CrossCoverEntity extends Item {
     }
 
     public static CrossCoverEntity from(@Nullable final LocalDate lastShiftDate, @NonNull ZoneId timeZone, int paymentInCents) {
-        LocalDate newDate = LocalDate.now(timeZone);
-        if (lastShiftDate != null) {
-            LocalDate earliestShiftDate = lastShiftDate.plusDays(1);
-            if (newDate.isBefore(earliestShiftDate)) newDate = earliestShiftDate;
+        LocalDate newDate = lastShiftDate == null ? LocalDate.now(timeZone) : lastShiftDate.plusDays(1);
+        DayOfWeek dayOfWeek = newDate.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            newDate = newDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
         }
         return new CrossCoverEntity(NO_ID, null, newDate, PaymentData.from(paymentInCents));
     }

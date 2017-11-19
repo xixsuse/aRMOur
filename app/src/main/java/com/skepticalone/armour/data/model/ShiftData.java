@@ -13,6 +13,7 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 public final class ShiftData {
 
@@ -43,9 +44,20 @@ public final class ShiftData {
 
     @NonNull
     static ShiftData withEarliestStart(@NonNull final LocalTime startTime, @NonNull final LocalTime endTime, @Nullable final Instant earliestStart, @NonNull ZoneId zoneId, boolean skipWeekends) {
-        ZonedDateTime newStart = (earliestStart == null ? Instant.now() : earliestStart).atZone(zoneId).with(startTime);
-        while ((earliestStart != null && newStart.toInstant().isBefore(earliestStart)) || (skipWeekends && (newStart.getDayOfWeek() == DayOfWeek.SATURDAY || newStart.getDayOfWeek() == DayOfWeek.SUNDAY))) {
-            newStart = newStart.plusDays(1);
+        ZonedDateTime newStart;
+        if (earliestStart == null) {
+            newStart = ZonedDateTime.now(zoneId).with(startTime);
+        } else {
+            newStart = earliestStart.atZone(zoneId).with(startTime);
+            while (newStart.toInstant().isBefore(earliestStart)) {
+                newStart = newStart.plusDays(1);
+            }
+        }
+        if (skipWeekends) {
+            DayOfWeek dayOfWeek = newStart.getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+                newStart = newStart.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+            }
         }
         return from(newStart, endTime);
     }

@@ -8,20 +8,24 @@
         android:id="@+id/title"
         style="@style/help_title"
         android:text="Shifts"
+        app:layout_constraintBottom_toTopOf="@+id/normal_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <ImageView
         android:id="@+id/normal_day"
         style="@style/help_icon"
+        android:contentDescription="@string/normal_day"
         android:src="@drawable/ic_normal_day_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/long_day"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         style="@style/help_label"
-        android:text="Normal day"
+        android:text="@string/normal_day"
         app:layout_constraintBottom_toBottomOf="@id/normal_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/normal_day"
@@ -30,13 +34,15 @@
     <ImageView
         android:id="@+id/long_day"
         style="@style/help_icon"
+        android:contentDescription="@string/long_day"
         android:src="@drawable/ic_long_day_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/night_shift"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/normal_day" />
+        app:layout_constraintTop_toBottomOf="@+id/normal_day" />
 
     <TextView
         style="@style/help_label"
-        android:text="Long day"
+        android:text="@string/long_day"
         app:layout_constraintBottom_toBottomOf="@id/long_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/long_day"
@@ -45,13 +51,15 @@
     <ImageView
         android:id="@+id/night_shift"
         style="@style/help_icon"
+        android:contentDescription="@string/night_shift"
         android:src="@drawable/ic_night_shift_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/custom_shift"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/long_day" />
+        app:layout_constraintTop_toBottomOf="@+id/long_day" />
 
     <TextView
         style="@style/help_label"
-        android:text="Night shift"
+        android:text="@string/night_shift"
         app:layout_constraintBottom_toBottomOf="@id/night_shift"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/night_shift"
@@ -60,24 +68,27 @@
     <ImageView
         android:id="@+id/custom_shift"
         style="@style/help_icon"
+        android:contentDescription="@string/custom_shift"
         android:src="@drawable/ic_custom_shift_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/help_description_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/night_shift" />
+        app:layout_constraintTop_toBottomOf="@+id/night_shift" />
 
     <TextView
         style="@style/help_label"
-        android:text="Custom shift"
+        android:text="@string/custom_shift"
         app:layout_constraintBottom_toBottomOf="@id/custom_shift"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/custom_shift"
         app:layout_constraintTop_toTopOf="@id/custom_shift" />
 
     <TextView
+        android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Change the shift start and end times in the settings"
+        android:text="Start and end times can be changed in the settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/custom_shift" />
+        app:layout_constraintTop_toBottomOf="@+id/custom_shift" />
 
 </android.support.constraint.ConstraintLayout>

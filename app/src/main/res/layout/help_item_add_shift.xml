@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,14 +9,17 @@
         android:id="@+id/title"
         style="@style/help_title"
         android:text="Add shift"
+        app:layout_constraintBottom_toTopOf="@id/add_normal_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_normal_day"
         style="@style/help_fab_icon"
         android:src="@drawable/ic_normal_day_white_24dp"
+        app:layout_constraintBottom_toTopOf="@id/add_long_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
@@ -31,6 +35,7 @@
         android:id="@+id/add_long_day"
         style="@style/help_fab_icon"
         android:src="@drawable/ic_long_day_white_24dp"
+        app:layout_constraintBottom_toTopOf="@id/add_night_shift"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_normal_day" />
 
@@ -46,6 +51,7 @@
         android:id="@+id/add_night_shift"
         style="@style/help_fab_icon"
         android:src="@drawable/ic_night_shift_white_24dp"
+        app:layout_constraintBottom_toTopOf="@id/help_description_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_long_day" />
 
@@ -60,14 +66,18 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="New rostered shifts begin at least 8 hours after the previous shift ended"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/help_description_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_night_shift" />
+        app:layout_constraintTop_toBottomOf="@id/add_night_shift"
+        tools:text="New rostered shifts begin at least 8 hours following the end of the previous shift" />
 
     <TextView
+        android:id="@+id/help_description_2"
         style="@style/help_description"
-        android:text="New rostered shifts do not begin on a weekend if the skip weekends option for that shift type is enabled"
+        android:text="New rostered shifts always begin on a weekday if 'skip weekends' is enabled in the settings"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

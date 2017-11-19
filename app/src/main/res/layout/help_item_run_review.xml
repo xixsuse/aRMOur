@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Run review"
+        android:text="@string/run_review"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -15,6 +15,7 @@
     <ImageView
         android:id="@+id/log_shifts"
         style="@style/help_icon"
+        android:contentDescription="@string/logged"
         android:src="@drawable/ic_clipboard_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
@@ -30,6 +31,7 @@
     <ImageView
         android:id="@+id/select"
         style="@style/help_icon"
+        android:contentDescription="@string/selected_rostered_shifts"
         android:src="@drawable/ic_check_circle_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/log_shifts" />
@@ -45,6 +47,7 @@
     <ImageView
         android:id="@+id/run_review"
         style="@style/help_menu_icon"
+        android:contentDescription="@string/run_review"
         android:src="@drawable/run_review_white_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/select" />
