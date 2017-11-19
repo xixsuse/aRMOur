@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/help_title"
+        android:text="Run review"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/log_shifts"
+        style="@style/help_icon"
+        android:src="@drawable/ic_clipboard_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Log hours for each shift in the run review period"
+        app:layout_constraintBottom_toBottomOf="@id/log_shifts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/log_shifts"
+        app:layout_constraintTop_toTopOf="@id/log_shifts" />
+
+    <ImageView
+        android:id="@+id/select"
+        style="@style/help_icon"
+        android:src="@drawable/ic_check_circle_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/log_shifts" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Press and hold to select shifts in the run review period"
+        app:layout_constraintBottom_toBottomOf="@id/select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/select"
+        app:layout_constraintTop_toTopOf="@id/select" />
+
+    <ImageView
+        android:id="@+id/run_review"
+        style="@style/help_menu_icon"
+        android:src="@drawable/run_review_white_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/select" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Choose run review from the menu"
+        app:layout_constraintBottom_toBottomOf="@id/run_review"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/run_review"
+        app:layout_constraintTop_toTopOf="@id/run_review" />
+
+    <TextView
+        android:id="@+id/help_description_1"
+        style="@style/help_description"
+        android:text="Run review will ignore any selected shifts which are not logged"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/run_review" />
+
+    <TextView
+        style="@style/help_description"
+        android:text="Run category will be calculated based on the logged duration over the calculated run period in weeks (rounded up)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/help_description_1" />
+
+</android.support.constraint.ConstraintLayout>

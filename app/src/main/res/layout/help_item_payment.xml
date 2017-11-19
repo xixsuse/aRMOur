@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/help_title"
+        android:text="Payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/unclaimed"
+        style="@style/help_icon"
+        android:src="@drawable/unclaimed_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Unclaimed"
+        app:layout_constraintBottom_toBottomOf="@id/unclaimed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/unclaimed"
+        app:layout_constraintTop_toTopOf="@id/unclaimed" />
+
+    <ImageView
+        android:id="@+id/claimed"
+        style="@style/help_icon"
+        android:src="@drawable/claimed_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unclaimed" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Claimed"
+        app:layout_constraintBottom_toBottomOf="@id/claimed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/claimed"
+        app:layout_constraintTop_toTopOf="@id/claimed" />
+
+    <ImageView
+        android:id="@+id/paid"
+        style="@style/help_icon"
+        android:src="@drawable/paid_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/claimed" />
+
+    <TextView
+        style="@style/help_label"
+        android:text="Paid"
+        app:layout_constraintBottom_toBottomOf="@id/paid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/paid"
+        app:layout_constraintTop_toTopOf="@id/paid" />
+
+    <TextView
+        style="@style/help_description"
+        android:text="Toggle claimed or paid in the detail view to keep track of payments"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/paid" />
+
+</android.support.constraint.ConstraintLayout>
