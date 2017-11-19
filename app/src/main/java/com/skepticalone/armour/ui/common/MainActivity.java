@@ -1,6 +1,7 @@
 package com.skepticalone.armour.ui.common;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -79,9 +80,9 @@ public final class MainActivity extends CoordinatorActivity
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-//            case R.id.feedback:
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-//                return true;
+            case R.id.feedback:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+                return true;
             case R.id.help:
                 Intent intent = new Intent(this, HelpActivity.class);
                 intent.putExtra(ITEM_TYPE, navigation.getSelectedItemId());
