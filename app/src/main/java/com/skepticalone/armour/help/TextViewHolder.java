@@ -30,4 +30,8 @@ final class TextViewHolder extends RecyclerView.ViewHolder {
         ((TextView) itemView).setText(text);
     }
 
+    final void bind(@NonNull String text) {
+        ((TextView) itemView).setText(text);
+    }
+
 }

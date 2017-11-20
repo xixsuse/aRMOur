@@ -39,7 +39,9 @@ public final class RosteredShiftHelpFragment extends HelpFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = new RecyclerView(getActivity());
-        recyclerView.setAdapter(new RosteredShiftHelpAdapter());
+        HelpAdapter adapter = new RosteredShiftHelpAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new HelpItemDivider(getActivity(), adapter));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         return recyclerView;
     }

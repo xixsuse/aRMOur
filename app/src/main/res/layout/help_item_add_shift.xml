@@ -56,7 +56,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="@string/help_add_night_shift"
+        android:text="@string/help_add_night_shift_label"
         app:layout_constraintBottom_toBottomOf="@id/add_night_shift"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/add_night_shift"

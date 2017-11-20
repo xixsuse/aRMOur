@@ -119,7 +119,7 @@
     <string name="meca_safer_rosters_maximum_consecutive_weekends" tools:ignore="PluralsCandidate">%1$d weekends can be rostered to work in a row but no more than once every %2$d weeks. The remaining %3$d weekends must be completely free from duties.</string>
     <string name="meca_safer_rosters_rostered_day_off_strict">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. These weekday RDO(s) must be attached to a weekend RDO(s).</string>
     <string name="meca_safer_rosters_rostered_day_off_lenient">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. Where attaching RDOs to a weekend RDO is not possible, 2 consecutive RDOs may fall during the week.</string>
-    <string name="help_add_night_shift">Add a night shift</string>
+    <string name="help_add_night_shift_label">Add a night shift</string>
     <string name="help_add_long_day_label">Add a long day</string>
     <string name="help_add_normal_day_label">Add a normal day</string>
     <string name="help_add_cross_cover_shift_label">Add a cross cover shift</string>
