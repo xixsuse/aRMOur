@@ -23,7 +23,7 @@ abstract class HelpFragment extends Fragment {
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.help_fragment, container, false);
         onAddToView(inflater, (ViewGroup) layout.findViewById(R.id.help_items_container));
         return layout;
