@@ -21,15 +21,15 @@ public final class RosteredShiftHelpFragment extends HelpFragment {
         inflater.inflate(R.layout.help_item_compliance, container, true);
         View section;
         section = inflater.inflate(R.layout.help_item_add_shift, container, false);
-        ((TextView) section.findViewById(R.id.help_description_1)).setText("New rostered shifts begin at least " + getResources().getQuantityString(R.plurals.hours, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS) + " following the end of the previous shift");
-        (section.findViewById(R.id.help_description_2)).setVisibility(View.VISIBLE);
+        ((TextView) section.findViewById(R.id.help_description_1)).setText(getString(R.string.help_add_rostered_shift_description_1, getResources().getQuantityString(R.plurals.hours, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS, AppConstants.MINIMUM_HOURS_BETWEEN_SHIFTS)));
+        section.findViewById(R.id.help_description_2).setVisibility(View.VISIBLE);
         container.addView(section);
         inflater.inflate(R.layout.help_item_delete, container, true);
         section = inflater.inflate(R.layout.help_item_totals, container, false);
-        ((TextView) section.findViewById(R.id.help_description_1)).setText("Opens a summary view containing information for all shifts, which can be filtered by compliance");
+        ((TextView) section.findViewById(R.id.help_description_1)).setText(R.string.help_totals_rostered_shifts_description);
         container.addView(section);
         section = inflater.inflate(R.layout.help_item_subtotals, container, false);
-        ((TextView) section.findViewById(R.id.help_description_1)).setText("Opens a summary view containing information for selected shifts, which can be filtered by compliance");
+        ((TextView) section.findViewById(R.id.help_description_1)).setText(R.string.help_subtotals_rostered_shifts_description);
         container.addView(section);
         inflater.inflate(R.layout.help_item_run_review, container, true);
     }

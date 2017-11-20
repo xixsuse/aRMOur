@@ -22,7 +22,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="Log hours for each shift in the run review period"
+        android:text="@string/help_run_review_log_shifts_label"
         app:layout_constraintBottom_toBottomOf="@id/log_shifts"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/log_shifts"
@@ -38,7 +38,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="Press and hold to select shifts in the run review period"
+        android:text="@string/help_run_review_select_label"
         app:layout_constraintBottom_toBottomOf="@id/select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/select"
@@ -54,7 +54,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="Choose run review from the menu"
+        android:text="@string/help_run_review_run_review_label"
         app:layout_constraintBottom_toBottomOf="@id/run_review"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/run_review"
@@ -63,14 +63,14 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Run review will ignore any selected shifts which are not logged"
+        android:text="@string/help_run_review_description_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/run_review" />
 
     <TextView
         style="@style/help_description"
-        android:text="Run category will be calculated based on the logged duration over the calculated run period in weeks (rounded up)"
+        android:text="@string/help_run_review_description_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -42,7 +42,7 @@ public final class ExpenseViewModel extends ItemViewModel<ExpenseEntity, Expense
             @Override
             public void run() {
                 postCurrentItemId(getDao().insertSync(
-                        getApplication().getString(R.string.new_expense_title))
+                        getApplication().getString(R.string.new_expense))
                 );
             }
         });

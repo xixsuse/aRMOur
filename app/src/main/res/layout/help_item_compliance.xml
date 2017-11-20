@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Compliance"
+        android:text="@string/help_compliance_title"
         app:layout_constraintBottom_toTopOf="@+id/compliant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="A shift is compliant if it passes all checks"
+        android:text="@string/help_compliance_compliant_label"
         app:layout_constraintBottom_toBottomOf="@id/compliant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/compliant"
@@ -42,7 +42,7 @@
 
     <TextView
         style="@style/help_label"
-        android:text="Otherwise it is non-compliant"
+        android:text="@string/help_compliance_non_compliant_label"
         app:layout_constraintBottom_toBottomOf="@id/non_compliant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/non_compliant"
@@ -51,7 +51,7 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Click on a compliance check in a shift's detail view for more information on compliance criteria"
+        android:text="@string/help_compliance_description_1"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
     <TextView
         android:id="@+id/textView2"
         style="@style/help_description"
-        android:text="Compliance checks can be enabled or disabled in the settings"
+        android:text="@string/help_compliance_description_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

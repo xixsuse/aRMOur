@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Show subtotals for selected shifts"
+        android:text="@string/help_subtotals_title"
         app:layout_constraintBottom_toTopOf="@+id/select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,16 +17,16 @@
     <ImageView
         android:id="@+id/select"
         style="@style/help_icon"
+        android:contentDescription="@string/selected_item"
         android:src="@drawable/ic_check_circle_24dp"
         app:layout_constraintBottom_toTopOf="@+id/totals"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         android:id="@+id/select_label"
         style="@style/help_label"
-        android:text="Press and hold to select shifts"
+        android:text="@string/help_select_shifts_label"
         app:layout_constraintBottom_toBottomOf="@id/select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/select"
@@ -45,7 +44,7 @@
     <TextView
         android:id="@+id/totals_label"
         style="@style/help_label"
-        android:text="Choose subtotals from the menu"
+        android:text="@string/help_subtotals_subtotals_label"
         app:layout_constraintBottom_toBottomOf="@id/totals"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/totals"
@@ -54,7 +53,7 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Opens a summary view containing information for selected shifts, which can be filtered by payment status"
+        android:text="@string/help_subtotals_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Show totals"
+        android:text="@string/help_totals_title"
         app:layout_constraintBottom_toTopOf="@+id/totals"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
     <TextView
         android:id="@+id/totals_label"
         style="@style/help_label"
-        android:text="Choose totals from the menu"
+        android:text="@string/help_totals_totals_label"
         app:layout_constraintBottom_toBottomOf="@id/totals"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/totals"
@@ -35,7 +35,7 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Opens a summary view containing information for all shifts, which can be filtered by payment status"
+        android:text="@string/help_totals_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

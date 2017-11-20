@@ -67,7 +67,7 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Toggle claimed or paid in the detail view to keep track of payments"
+        android:text="@string/help_payment_description"
         app:layout_constraintBottom_toTopOf="@id/help_description_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
     <TextView
         android:id="@+id/help_description_2"
         style="@style/help_description"
-        android:text="Expenses are sorted by payment status"
+        android:text="@string/help_payment_expense_description"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

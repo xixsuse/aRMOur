@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/title"
         style="@style/help_title"
-        android:text="Shifts"
+        android:text="@string/help_shift_type_title"
         app:layout_constraintBottom_toTopOf="@+id/normal_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +85,7 @@
     <TextView
         android:id="@+id/help_description_1"
         style="@style/help_description"
-        android:text="Start and end times can be changed in the settings"
+        android:text="@string/help_shift_type_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

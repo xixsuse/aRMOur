@@ -22,21 +22,21 @@ public final class ExpenseHelpFragment extends HelpFragment {
         section.findViewById(R.id.help_description_2).setVisibility(View.VISIBLE);
         container.addView(section);
         section = inflater.inflate(R.layout.help_item_add_single, container, false);
-        ((TextView) section.findViewById(R.id.title)).setText("Add expense");
-        ((TextView) section.findViewById(R.id.add_single_label)).setText("Add an expense");
+        ((TextView) section.findViewById(R.id.title)).setText(R.string.new_expense);
+        ((TextView) section.findViewById(R.id.add_single_label)).setText(R.string.help_add_expense_label);
         section.findViewById(R.id.help_description_1).setVisibility(View.GONE);
         container.addView(section);
         section = inflater.inflate(R.layout.help_item_delete, container, false);
-        ((TextView) section.findViewById(R.id.title)).setText("Delete expenses");
-        ((TextView) section.findViewById(R.id.select_label)).setText("Press and hold to select expenses");
+        ((TextView) section.findViewById(R.id.title)).setText(R.string.help_delete_expenses_title);
+        ((TextView) section.findViewById(R.id.select_label)).setText(R.string.help_select_expenses_label);
         container.addView(section);
         section = inflater.inflate(R.layout.help_item_totals, container, false);
-        ((TextView) section.findViewById(R.id.help_description_1)).setText("Opens a summary view containing information for all expenses, which can be filtered by payment status");
+        ((TextView) section.findViewById(R.id.help_description_1)).setText(R.string.help_totals_expenses_description);
         container.addView(section);
         section = inflater.inflate(R.layout.help_item_subtotals, container, false);
-        ((TextView) section.findViewById(R.id.title)).setText("Show subtotals for selected expenses");
-        ((TextView) section.findViewById(R.id.select_label)).setText("Press and hold to select expenses");
-        ((TextView) section.findViewById(R.id.help_description_1)).setText("Opens a summary view containing information for selected expenses, which can be filtered by payment status");
+        ((TextView) section.findViewById(R.id.title)).setText(R.string.help_subtotals_expenses_title);
+        ((TextView) section.findViewById(R.id.select_label)).setText(R.string.help_select_expenses_label);
+        ((TextView) section.findViewById(R.id.help_description_1)).setText(R.string.help_subtotals_expenses_description);
         container.addView(section);
     }
 }

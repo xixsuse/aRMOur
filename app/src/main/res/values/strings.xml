@@ -23,6 +23,7 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="selected_item">Selected item</string>
     <string name="items_deleted">%s deleted</string>
     <string name="undo">Undo</string>
 
@@ -58,7 +59,8 @@
     <string name="all_expenses">All expenses</string>
     <string name="selected_expenses">Selected expenses</string>
 
-    <string name="new_expense_title">New expense</string>
+    <string name="new_shift">New shift</string>
+    <string name="new_expense">New expense</string>
     <string name="percentage_format">%1$s (%2$d%%)</string>
     <string name="payment_format">$%.2f</string>
     <string name="logged_format">%1$s\nLogged: %2$s</string>
@@ -107,7 +109,7 @@
     <string name="meca_maximum_hours_over_fortnight" tools:ignore="PluralsCandidate">(13.4.1) Where an employee is required to work in excess of %d hours in a period of 14 consecutive days the employer shall pay a penalty of $1000 to the employee.</string>
     <string name="meca_minimum_hours_between_shifts" tools:ignore="PluralsCandidate">(13.4.6) A minimum break of %d consecutive hours off duty shall be provided between any two periods of normal rostered duty.</string>
     <string name="meca_minimum_recovery_after_consecutive_nights" tools:ignore="PluralsCandidate">(13.4.7) As a minimum provision, a minimum break comprising the balance of the calendar day upon which the employee ceased the last night duty plus a further %1$d calendar days must be provided immediately following a period of %2$d night duties or more.</string>
-    <string name="meca_maximum_long_days_over_week" tools:ignore="PluralsCandidate">(13.4.8) Employees shall not be rostered on duty for more than %1$d long days in 7. For the purposes of this clause, a "long day" shall be hours worked in excess of %2$d hours.</string>
+    <string name="meca_maximum_long_days_over_week" tools:ignore="PluralsCandidate">(13.4.8) Employees shall not be rostered on duty for more than %1$d long days in 7. For the purposes of this clause, a “long day” shall be hours worked in excess of %2$d hours.</string>
     <string name="meca_maximum_consecutive_days" tools:ignore="PluralsCandidate">(13.5.1) No Employee shall be on duty or on call more than %d consecutive days without a rostered rest period officially off duty of at least 48 hours before commencing the next period of duty.</string>
     <string name="meca_consecutive_weekends">(13.5.1) Employees shall have every second weekend completely free from duties.</string>
     <string name="meca_1_in_3_weekends">(Schedule One) No RMO can be rostered to work more than 1 weekend in 3</string>
@@ -117,6 +119,45 @@
     <string name="meca_safer_rosters_maximum_consecutive_weekends" tools:ignore="PluralsCandidate">%1$d weekends can be rostered to work in a row but no more than once every %2$d weeks. The remaining %3$d weekends must be completely free from duties.</string>
     <string name="meca_safer_rosters_rostered_day_off_strict">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. These weekday RDO(s) must be attached to a weekend RDO(s).</string>
     <string name="meca_safer_rosters_rostered_day_off_lenient">For each weekend day worked, the RMO shall have a rostered weekday RDO in that fortnight. Where attaching RDOs to a weekend RDO is not possible, 2 consecutive RDOs may fall during the week.</string>
+    <string name="help_add_night_shift">Add a night shift</string>
+    <string name="help_add_long_day_label">Add a long day</string>
+    <string name="help_add_normal_day_label">Add a normal day</string>
+    <string name="help_add_cross_cover_shift_label">Add a cross cover shift</string>
+    <string name="help_add_expense_label">Add an expense</string>
+    <string name="help_add_rostered_shift_description_1">New rostered shifts begin at least %s following the end of the previous shift</string>
+    <string name="help_add_rostered_shift_description_2">New rostered shifts always begin on a weekday if <b>skip weekends</b> is enabled in the settings</string>
+    <string name="help_add_additional_shift_description">New additional shifts begin as soon as possible following the previous shift</string>
+    <string name="help_add_cross_cover_shift_description">New cross cover shifts begin on the weekday following the previous shift</string>
+    <string name="help_compliance_title">Compliance</string>
+    <string name="help_compliance_compliant_label">A shift is <b>compliant</b> if it passes all checks</string>
+    <string name="help_compliance_non_compliant_label">Otherwise it is <b>non-compliant</b></string>
+    <string name="help_compliance_description_1">Click on a compliance check in a shift’s detail view for more information on compliance criteria</string>
+    <string name="help_compliance_description_2">Compliance checks can be enabled or disabled in the settings</string>
+    <string name="help_delete_shifts_title">Delete shifts</string>
+    <string name="help_delete_expenses_title">Delete expenses</string>
+    <string name="help_delete_delete_label">Choose <b>delete</b> from the menu</string>
+    <string name="help_payment_description">Toggle <b>claimed</b> and <b>paid</b> in the detail view to keep track of payments</string>
+    <string name="help_payment_expense_description">Expenses are sorted by payment status</string>
+    <string name="help_run_review_log_shifts_label">Log hours for each shift in the run review period</string>
+    <string name="help_run_review_select_label">Press and hold to select shifts in the run review period</string>
+    <string name="help_run_review_run_review_label">Choose <b>run review</b> from the menu</string>
+    <string name="help_run_review_description_1">Run review will ignore shifts that are not logged</string>
+    <string name="help_run_review_description_2">Run category will be calculated from the total logged duration over the run review period in weeks (rounded up)</string>
+    <string name="help_select_expenses_label">Press and hold to select expenses</string>
+    <string name="help_select_shifts_label">Press and hold to select shifts</string>
+    <string name="help_shift_type_title">Shifts</string>
+    <string name="help_shift_type_description">Start and end times can be changed in the settings</string>
+    <string name="help_totals_title">Show totals</string>
+    <string name="help_totals_totals_label">Choose <b>totals</b> from the menu</string>
+    <string name="help_totals_description">Opens a summary view containing information for all shifts, which can be filtered by payment status</string>
+    <string name="help_totals_expenses_description">Opens a summary view containing information for all expenses, which can be filtered by payment status</string>
+    <string name="help_totals_rostered_shifts_description">Opens a summary view containing information for all shifts, which can be filtered by compliance</string>
+    <string name="help_subtotals_title">Show subtotals for selected shifts</string>
+    <string name="help_subtotals_expenses_title">Show subtotals for selected expenses</string>
+    <string name="help_subtotals_subtotals_label">Choose <b>subtotals</b> from the menu</string>
+    <string name="help_subtotals_description">Opens a summary view containing information for selected shifts, which can be filtered by payment status</string>
+    <string name="help_subtotals_expenses_description">Opens a summary view containing information for selected expenses, which can be filtered by payment status</string>
+    <string name="help_subtotals_rostered_shifts_description">Opens a summary view containing information for selected shifts, which can be filtered by compliance</string>
     <plurals name="weeks">
         <item quantity="one">%d week</item>
         <item quantity="other">%d weeks</item>
