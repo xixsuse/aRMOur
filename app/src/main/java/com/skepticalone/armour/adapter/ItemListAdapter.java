@@ -109,7 +109,7 @@ public abstract class ItemListAdapter<FinalItem extends Item> extends ContextAda
     public final void onBindViewHolder(ItemViewHolder holder, int position) {
         //noinspection ConstantConditions
         FinalItem item = mItems.get(position);
-        holder.setPrimaryIcon(mCallbacks.showSelectedIcon(position) ? R.drawable.ic_check_circle_24dp : getPrimaryIcon(item));
+        holder.setPrimaryIcon(mCallbacks.showSelectedIcon(position) ? R.drawable.ic_check_circle_red_24dp : getPrimaryIcon(item));
         holder.setSecondaryIcon(getSecondaryIcon(item));
         holder.setText(getFirstLine(item), getSecondLine(item), item.getComment());
     }

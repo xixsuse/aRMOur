@@ -23,7 +23,6 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
-    <string name="selected_item">Selected item</string>
     <string name="items_deleted">%s deleted</string>
     <string name="undo">Undo</string>
 
@@ -139,7 +138,6 @@
     <string name="help_payment_description">Toggle <b>claimed</b> and <b>paid</b> in the detail view to keep track of payments</string>
     <string name="help_payment_expense_description">Expenses are sorted by payment status</string>
     <string name="help_run_review_log_shifts_label">Log hours for each shift in the run review period</string>
-    <string name="help_run_review_select_label">Press and hold to select shifts in the run review period</string>
     <string name="help_run_review_run_review_label">Choose <b>run review</b> from the menu</string>
     <string name="help_run_review_description_1">Run review will ignore shifts that are not logged</string>
     <string name="help_run_review_description_2">Run category will be calculated from the total logged duration over the run review period in weeks (rounded up)</string>
@@ -149,15 +147,15 @@
     <string name="help_shift_type_description">Start and end times can be changed in the settings</string>
     <string name="help_totals_title">Show totals</string>
     <string name="help_totals_totals_label">Choose <b>totals</b> from the menu</string>
-    <string name="help_totals_description">Opens a summary view containing information for <b>all</b> shifts, which can be filtered by payment status</string>
-    <string name="help_totals_expenses_description">Opens a summary view containing information for <b>all</b> expenses, which can be filtered by payment status</string>
-    <string name="help_totals_rostered_shifts_description">Opens a summary view containing information for <b>all</b> shifts, which can be filtered by compliance</string>
+    <string name="help_totals_description">Shows a summary of <b>all</b> shifts, which can be filtered by payment status</string>
+    <string name="help_totals_expenses_description">Shows a summary of <b>all</b> expenses, which can be filtered by payment status</string>
+    <string name="help_totals_rostered_shifts_description">Shows a summary of <b>all</b> shifts, which can be filtered by compliance</string>
     <string name="help_subtotals_title">Show subtotals for selected shifts</string>
     <string name="help_subtotals_expenses_title">Show subtotals for selected expenses</string>
     <string name="help_subtotals_subtotals_label">Choose <b>subtotals</b> from the menu</string>
-    <string name="help_subtotals_description">Opens a summary view containing information for <b>selected</b> shifts, which can be filtered by payment status</string>
-    <string name="help_subtotals_expenses_description">Opens a summary view containing information for <b>selected</b> expenses, which can be filtered by payment status</string>
-    <string name="help_subtotals_rostered_shifts_description">Opens a summary view containing information for <b>selected</b> shifts, which can be filtered by compliance</string>
+    <string name="help_subtotals_description">Shows a summary of <b>selected</b> shifts, which can be filtered by payment status</string>
+    <string name="help_subtotals_expenses_description">Shows a summary of <b>selected</b> expenses, which can be filtered by payment status</string>
+    <string name="help_subtotals_rostered_shifts_description">Shows a summary of <b>selected</b> shifts, which can be filtered by compliance</string>
     <plurals name="weeks">
         <item quantity="one">%d week</item>
         <item quantity="other">%d weeks</item>

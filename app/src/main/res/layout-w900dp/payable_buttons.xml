@@ -7,8 +7,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:drawableEnd="@drawable/unclaimed_black_24dp"
-        android:drawableRight="@drawable/unclaimed_black_24dp"
+        android:drawableEnd="@drawable/ic_unclaimed_black_24dp"
+        android:drawableRight="@drawable/ic_unclaimed_black_24dp"
         android:textOff="@string/unclaimed"
         android:textOn="@string/unclaimed" />
 
@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:drawableEnd="@drawable/claimed_black_24dp"
-        android:drawableRight="@drawable/claimed_black_24dp"
+        android:drawableEnd="@drawable/ic_claimed_black_24dp"
+        android:drawableRight="@drawable/ic_claimed_black_24dp"
         android:textOff="@string/claimed"
         android:textOn="@string/claimed" />
 
@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:drawableEnd="@drawable/paid_black_24dp"
-        android:drawableRight="@drawable/paid_black_24dp"
+        android:drawableEnd="@drawable/ic_paid_black_24dp"
+        android:drawableRight="@drawable/ic_paid_black_24dp"
         android:textOff="@string/paid"
         android:textOn="@string/paid" />
 </merge>

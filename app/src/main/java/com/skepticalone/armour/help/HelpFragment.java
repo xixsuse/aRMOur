@@ -31,15 +31,15 @@ public final class HelpFragment extends Fragment {
             case R.id.rostered:
                 adapter = new RosteredShiftHelpAdapter();
                 break;
-//            case R.id.additional:
-//                title = R.string.additional_shifts;
-//                break;
-//            case R.id.cross_cover:
-//                title = R.string.cross_cover_shifts;
-//                break;
-//            case R.id.expenses:
-//                title = R.string.expenses;
-//                break;
+            case R.id.additional:
+                adapter = new AdditionalShiftHelpAdapter();
+                break;
+            case R.id.cross_cover:
+                adapter = new CrossCoverHelpAdapter();
+                break;
+            case R.id.expenses:
+                adapter = new ExpensesHelpAdapter();
+                break;
             default:
                 throw new IllegalStateException();
         }

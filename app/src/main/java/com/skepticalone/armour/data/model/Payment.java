@@ -50,7 +50,7 @@ public interface Payment {
 
         @DrawableRes
         public final int getIcon() {
-            return paid == null ? claimed == null ? R.drawable.unclaimed_black_24dp : R.drawable.claimed_black_24dp : R.drawable.paid_black_24dp;
+            return paid == null ? claimed == null ? R.drawable.ic_unclaimed_black_24dp : R.drawable.ic_claimed_black_24dp : R.drawable.ic_paid_black_24dp;
         }
     }
 

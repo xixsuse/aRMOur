@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/rostered"
-        android:icon="@drawable/compliant_black_24dp"
+        android:icon="@drawable/ic_compliant_black_24dp"
         android:title="@string/rostered_shifts" />
 
     <item

@@ -115,7 +115,7 @@
         <SwitchPreference
             android:defaultValue="@bool/default_allow_only_1_recovery_day_following_3_nights"
             android:dependency="@string/key_safer_rosters"
-            android:icon="@drawable/ic_recovery_following_nights"
+            android:icon="@drawable/ic_recovery_following_nights_black_24dp"
             android:key="@string/key_allow_only_1_recovery_day_following_3_nights"
             android:title="@string/allow_only_1_recovery_day_following_3_nights_title" />
         <SwitchPreference
@@ -168,7 +168,7 @@
             android:title="@string/consecutive_nights" />
         <SwitchPreference
             android:defaultValue="@bool/default_check_recovery_following_nights"
-            android:icon="@drawable/ic_recovery_following_nights"
+            android:icon="@drawable/ic_recovery_following_nights_black_24dp"
             android:key="@string/key_check_recovery_following_nights"
             android:title="@string/recovery_following_nights" />
         <SwitchPreference

@@ -45,7 +45,7 @@ final class ClaimedSwitchBinder extends ItemViewHolder.SwitchBinder {
 
     @Override
     int getPrimaryIcon() {
-        return payment.getClaimed() == null ? 0 : R.drawable.claimed_black_24dp;
+        return payment.getClaimed() == null ? 0 : R.drawable.ic_claimed_black_24dp;
     }
 
     @NonNull

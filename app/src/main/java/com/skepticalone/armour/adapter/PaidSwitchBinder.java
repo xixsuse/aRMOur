@@ -45,7 +45,7 @@ final class PaidSwitchBinder extends ItemViewHolder.SwitchBinder {
 
     @Override
     int getPrimaryIcon() {
-        return payment.getPaid() == null ? 0 : R.drawable.paid_black_24dp;
+        return payment.getPaid() == null ? 0 : R.drawable.ic_paid_black_24dp;
     }
 
     @NonNull

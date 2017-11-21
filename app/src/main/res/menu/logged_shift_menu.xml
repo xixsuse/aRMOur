@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/logged_shifts"
-        android:icon="@drawable/run_review_white_24dp"
+        android:icon="@drawable/ic_run_review_white_24dp"
         android:title="@string/run_review"
         app:showAsAction="ifRoom" />
 

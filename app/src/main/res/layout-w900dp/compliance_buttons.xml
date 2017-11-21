@@ -7,8 +7,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:drawableEnd="@drawable/compliant_black_24dp"
-        android:drawableRight="@drawable/compliant_black_24dp"
+        android:drawableEnd="@drawable/ic_compliant_black_24dp"
+        android:drawableRight="@drawable/ic_compliant_black_24dp"
         android:textOff="@string/compliant"
         android:textOn="@string/compliant" />
 
@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:drawableEnd="@drawable/non_compliant_red_24dp"
-        android:drawableRight="@drawable/non_compliant_red_24dp"
+        android:drawableEnd="@drawable/ic_non_compliant_red_24dp"
+        android:drawableRight="@drawable/ic_non_compliant_red_24dp"
         android:textOff="@string/non_compliant"
         android:textOn="@string/non_compliant" />
 </merge>

@@ -15,7 +15,7 @@ final class RecoveryFollowingNightsBinder extends ComplianceDataBinder<Complianc
 
     @Override
     int getPrimaryIcon() {
-        return R.drawable.ic_recovery_following_nights;
+        return R.drawable.ic_recovery_following_nights_black_24dp;
     }
 
     @NonNull

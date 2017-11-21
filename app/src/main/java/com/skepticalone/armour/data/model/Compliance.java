@@ -63,7 +63,7 @@ public final class Compliance {
 
     @DrawableRes
     public static int getComplianceIcon(boolean compliant) {
-        return compliant ? R.drawable.compliant_black_24dp : R.drawable.non_compliant_red_24dp;
+        return compliant ? R.drawable.ic_compliant_black_24dp : R.drawable.ic_non_compliant_red_24dp;
     }
 
     @Nullable
