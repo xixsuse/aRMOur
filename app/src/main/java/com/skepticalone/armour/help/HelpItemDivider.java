@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.skepticalone.armour.R;
+
 final class HelpItemDivider extends RecyclerView.ItemDecoration {
 
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
@@ -16,19 +18,21 @@ final class HelpItemDivider extends RecyclerView.ItemDecoration {
     private final Drawable mDivider;
     @NonNull
     private final Callbacks callbacks;
+    private final int mDividerTopMargin;
     private final Rect mBounds = new Rect();
 
     HelpItemDivider(@NonNull Context context, @NonNull Callbacks callbacks) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         //noinspection ConstantConditions
         mDivider = a.getDrawable(0);
+        mDividerTopMargin = context.getResources().getDimensionPixelSize(R.dimen.divider_top_margin);
         a.recycle();
         this.callbacks = callbacks;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.set(0, 0, 0, callbacks.shouldHaveDividerBelow(parent.getChildAdapterPosition(view)) ? mDivider.getIntrinsicHeight() : 0);
+        outRect.set(0, 0, 0, callbacks.shouldHaveDividerBelow(parent.getChildAdapterPosition(view)) ? mDividerTopMargin + mDivider.getIntrinsicHeight() : 0);
     }
 
     @Override

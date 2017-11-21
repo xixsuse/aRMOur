@@ -2,42 +2,73 @@ package com.skepticalone.armour.help;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.skepticalone.armour.R;
+import com.skepticalone.armour.ui.common.MainActivity;
 
-abstract class HelpFragment extends Fragment {
+public final class HelpFragment extends Fragment {
 
     public static HelpFragment newInstance(@IdRes int itemType) {
-        if (itemType == R.id.rostered) return new RosteredShiftHelpFragment();
-        if (itemType == R.id.additional) return new AdditionalShiftHelpFragment();
-        if (itemType == R.id.cross_cover) return new CrossCoverHelpFragment();
-        if (itemType == R.id.expenses) return new ExpenseHelpFragment();
-        throw new IllegalStateException();
+        Bundle args = new Bundle();
+        args.putInt(MainActivity.ITEM_TYPE, itemType);
+        HelpFragment fragment = new HelpFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.help_fragment, container, false);
-        onAddToView(inflater, (ViewGroup) layout.findViewById(R.id.help_items_container));
-        return layout;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.help_recycler, container, false);
+        final HelpAdapter adapter;
+        switch (getArguments().getInt(MainActivity.ITEM_TYPE, 0)) {
+            case R.id.rostered:
+                adapter = new RosteredShiftHelpAdapter();
+                break;
+//            case R.id.additional:
+//                title = R.string.additional_shifts;
+//                break;
+//            case R.id.cross_cover:
+//                title = R.string.cross_cover_shifts;
+//                break;
+//            case R.id.expenses:
+//                title = R.string.expenses;
+//                break;
+            default:
+                throw new IllegalStateException();
+        }
+        recyclerView.addItemDecoration(new HelpItemDivider(getActivity(), adapter));
+        recyclerView.setAdapter(adapter);
+        return recyclerView;
     }
 
     @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(getString(R.string.help_qualified, getString(getTitle())));
+        final @StringRes int title;
+        switch (getArguments().getInt(MainActivity.ITEM_TYPE, 0)) {
+            case R.id.rostered:
+                title = R.string.rostered_shifts;
+                break;
+            case R.id.additional:
+                title = R.string.additional_shifts;
+                break;
+            case R.id.cross_cover:
+                title = R.string.cross_cover_shifts;
+                break;
+            case R.id.expenses:
+                title = R.string.expenses;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        getActivity().setTitle(getString(R.string.help_qualified, getString(title)));
     }
-
-    @StringRes
-    abstract int getTitle();
-
-    abstract void onAddToView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container);
 
 }
